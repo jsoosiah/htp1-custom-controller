@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"> 
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 480 480" height="150" width="150">
+<defs>
+ <path id="d" style="fill:black" d="m 0,509 322,-322 69.5,69.5 c 0,0 -252.5,252.5 -252,252.5 l -139.5,0"/>
+</defs>
+<rect width="480" height="480" style="fill: white" />
+<use x="-168.5" xlink:href="#d" />
+<use x="6" xlink:href="#d" />
+<use x="180.5" xlink:href="#d" />
+<use x="355" xlink:href="#d" />
+</svg>
