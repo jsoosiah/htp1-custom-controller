@@ -3,7 +3,9 @@ import { useWebSocket } from './useWebSocket.js';
 import { applyPatch } from 'fast-json-patch/index.mjs';
 import { debounce } from 'lodash-es';
 
+// websocket URL - note that the IP address is hard-coded in development mode
 const websocketurl = `ws://${process.env.NODE_ENV === 'production' ? window.location.host : '192.168.1.13'}/ws/controller`;
+
 // local MSO state, used to display values on the interface
 const mso = ref({});
 
