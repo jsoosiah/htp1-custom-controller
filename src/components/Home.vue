@@ -32,6 +32,10 @@
             <span class="current-input-label">{{mso.inputs[mso.input].label}}</span>
           </div>
           <div class="col text-right">
+            <settings v-if="settingsModalIsOpen" @close="toggleSettingsModal()" />
+            <button class="btn btn-dark rounded-circle menu-btn" @click="toggleSettingsModal()">
+              <font-awesome-icon size="lg" :icon="['fas', 'cog']" />
+            </button>
             <button class="btn btn-dark rounded-circle menu-btn" @click="powerOff()">
               <font-awesome-icon size="lg" :icon="['fas', 'power-off']" />
             </button>
@@ -61,7 +65,7 @@
             <img v-if="streamTypeIcon(mso.status)" class="fillheight" :src="require(`@/assets/${streamTypeIcon(mso.status)}`)+'#svgView(preserveAspectRatio(xMinYMin))'">
           </div>
           <div class="col-auto text-center">
-            <span class="vol-display">{{mso.volume}} dB</span>
+            <span class="vol-display" :class="{'text-danger':mso.muted}" @click="toggleMute()">{{mso.volume}} dB</span>
           </div>
           <div class="col text-right">
             <img v-if="upmixerIcon(mso.status)" class="fillheight float-right" :src="require(`@/assets/${upmixerIcon(mso.status)}`)+'#svgView(preserveAspectRatio(xMaxYMax))'">
@@ -71,10 +75,10 @@
         <div class="row mt-2">
           <div class="col-md-12 text-center">
             <button type="button" class="btn btn-dark vol-btn" @click="setVolume(mso.volume - 1)">
-              <font-awesome-icon size="4x" :icon="['fas', 'volume-down']" />
+              <font-awesome-icon  :class="{'text-danger':mso.muted}" size="4x" :icon="['fas', 'volume-down']" />
             </button>
             <button type="button" class="btn btn-dark vol-btn" @click="setVolume(mso.volume + 1)">
-              <font-awesome-icon size="4x" :icon="['fas', 'volume-up']" />
+              <font-awesome-icon  :class="{'text-danger':mso.muted}" size="4x" :icon="['fas', 'volume-up']" />
             </button>
           </div>
         </div>
@@ -105,18 +109,7 @@
                   :class="{'btn-light':mso.night=='on','btn-dark':mso.night=='auto'||mso.night==='off','yellow-text-btn':mso.night==='auto'}" aria-label="night mode">
                   Night {{mso.night}}
               </button>
-              <button class="btn home-btn" 
-                  @click="toggleDirac()"
-                  v-if = "mso.cal.slots[mso.cal.currentdiracslot].checksum !== 31802"
-                  :class="{'btn-light':mso.cal.diracactive=='on','btn-dark':mso.cal.diracactive=='bypass'||mso.cal.diracactive==='off','yellow-text-btn':mso.cal.diracactive==='bypass'}" aria-label="Dirac status">
-                  Dirac {{mso.cal.diracactive}}
-                  {{ mso.cal.diracactive=='on' && mso.cal.slots[mso.cal.currentdiracslot].hasBCFilter ? ' BC' : '   '}}
-              </button>
-              <button class="btn home-btn" 
-                  v-if = "mso.cal.slots[mso.cal.currentdiracslot].checksum === 31802"
-                  aria-label="Dirac status">
-                  No Filter
-              </button>
+              <dirac-button />
               <button class="btn home-btn" 
                   @click="toggleLoudness()"
                   :class="{'btn-light':mso.loudness === 'on', 'btn-dark':mso.loudness === 'off'}">
@@ -146,12 +139,31 @@
 
 <script>
 
+import { ref } from 'vue';
+
 import useMso from '@/use/useMso.js';
 import useStream from '@/use/useStream.js';
 
+import Settings from './Settings.vue';
+import DiracButton from './DiracButton.vue';
+
 export default {
   setup() {
-    return { ...useMso(), ...useStream() };
+
+    const settingsModalIsOpen = ref(false);
+
+    function toggleSettingsModal() {
+      settingsModalIsOpen.value = !settingsModalIsOpen.value;
+    }
+
+    return { 
+      ...useMso(), ...useStream(),
+      settingsModalIsOpen, toggleSettingsModal
+    };
+  },
+  components: {
+    Settings,
+    DiracButton
   }
 }
 </script>
@@ -197,11 +209,14 @@ export default {
   .menu-btn {
     min-height:3.5rem;
     min-width: 3.5rem;
+    margin-left: 1rem;
   }
 
   .vol-display {
     font-weight: bold;
     font-size:3rem;
+    cursor: pointer;
+    color:white;
   }
 
   .vol-btn {

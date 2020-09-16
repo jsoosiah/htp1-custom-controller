@@ -1,17 +1,19 @@
 // Define WSClient instance, a WebSocket with auto reconnect - https://stackoverflow.com/questions/49629881/reconnecting-a-websocket-without-creating-a-new-instance
-const WSClient = {
+class WSClient {
 
-    // Default reconnect interval
-    reconnectInterval: 5000,
+    constructor() {
+        // Default reconnect interval
+        this.reconnectInterval = 5000;
 
-    // Define whether it has ever reconnected
-    reconnected: false,
+        // Define whether it has ever reconnected
+        this.reconnected = false;
 
-    // Log messages
-    debug: false,
+        // Log messages
+        this.debug = false;
+    }
 
     // Open the URL
-    open: function(url) {
+    open(url) {
 
         // Define that
         var that = this;
@@ -75,24 +77,29 @@ const WSClient = {
                     break;
             }
         }
-    },
+    }
+
+    // Close websocket
+    close() {
+        this.instance.close();
+    }
 
     // Setup send function
-    sendRaw: function(data, option) {
+    sendRaw(data, option) {
         try {
             this.instance.send(data, option);
         } catch (e) {
             this.instance.emit('error', e);
         }
-    },
+    }
 
     // Send the content
-    send: function(content) {
+    send(content) {
         this.instance.send(content);
-    },
+    }
 
     // Define the reconnection function
-    reconnect: function(e) {
+    reconnect(e) {
 
         // Define that
         var that = this;
@@ -117,7 +124,7 @@ const WSClient = {
             that.open(that.url);
 
         }, this.reconnectInterval);
-    },
+    }
 }
 
 // this implementation is ported from https://github.com/logaretm/vue-use-web by Abdelrahman Awad 
@@ -138,7 +145,7 @@ export function useWebSocket(url) {
         ws.send(data);
     };
     onMounted(() => {
-        ws = WSClient;
+        ws = new WSClient();
         ws.open(url);
 
         ws.onopen = () => {
