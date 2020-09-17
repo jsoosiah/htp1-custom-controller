@@ -18,10 +18,16 @@ npm run serve
 npm run build
 ```
 
-### Lints and fixes files
+### Building and Uploading to HTP-1
+1. With NodeJS / npm installed on your machine, check out the code and run the following:
 ```
-npm run lint
+npm install
+npm run build
 ```
+2. This compiles and minifies the project to the `dist` directory. Rename `dist` to `custom`.
+3. Upload the `custom` directory to `/opt/olympia/node-red/static` on the HTP-1, removing the old `custom` directory first, if it already exists on the HTP-1.
+4. The custom controller can be accessed at `http://{Your HTP-1 IP address}/custom/`.
+
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
