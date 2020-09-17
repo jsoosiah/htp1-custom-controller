@@ -1,29 +1,44 @@
 <template>
-  <button class="btn home-btn" 
-      @click="toggleDirac()"
-      v-if = "mso.cal.slots[mso.cal.currentdiracslot].checksum !== 31802"
-      :class="{'btn-light':mso.cal.diracactive==='on','btn-dark':mso.cal.diracactive==='bypass'||mso.cal.diracactive==='off','yellow-text-btn':mso.cal.diracactive==='bypass','btn-off':mso.cal.diracactive==='off'}" aria-label="Dirac status">
-      Dirac {{mso.cal.diracactive}}
-      {{ mso.cal.diracactive=='on' && mso.cal.slots[mso.cal.currentdiracslot].hasBCFilter ? ' BC' : '   '}}
-  </button>
-  <button class="btn home-btn" 
-      v-if = "mso.cal.slots[mso.cal.currentdiracslot].checksum === 31802"
-      aria-label="Dirac status">
-      No Filter
-  </button>
+  <three-state-button
+    v-if = "mso.cal.slots[mso.cal.currentdiracslot].checksum !== 31802"
+    :button-text="`Dirac ${mso.cal.diracactive}
+      ${ mso.cal.diracactive=='on' && mso.cal.slots[mso.cal.currentdiracslot].hasBCFilter ? ' BC' : '   '}`"
+    :states="{'off': 0, 'on': 1, 'bypass': 2}"
+    :state-value="mso.cal.diracactive"
+    @click="toggleDirac()"
+    :home-button="props.homeButton"
+    aria-label="Dirac status"
+  />
+  <three-state-button 
+    v-if = "mso.cal.slots[mso.cal.currentdiracslot].checksum === 31802"
+    button-text="No Filter"
+    :states="{'off': 0}"
+    :state-value="'off'"
+    :home-button="props.homeButton"
+    aria-label="Dirac status"
+  />
 </template>
 
 <script>
 
   import useMso from '@/use/useMso.js';
 
+  import ThreeStateButton from './ThreeStateButton.vue';
+
   export default {
     name: 'DiracButton',
-    setup() {
+    setup(props) {
 
       const { mso, toggleDirac } = useMso();
 
-      return { mso, toggleDirac };
+      return { mso, toggleDirac, props };
+    }, 
+    props: {
+      className: String,
+      homeButton: Boolean,
+    },
+    components: {
+      ThreeStateButton
     }
   }
 </script>

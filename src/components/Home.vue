@@ -1,4 +1,7 @@
 <template>
+    <div class="fixed-top text-center" style="z-index: 9999999999999999" v-if="mso?.sgen?.sgensw === 'on'">
+      <span class="sgen-on-warning">Signal Generator On</span>
+    </div>
     <div v-if="state !== 'OPEN'" class="connecting-overlay">
       <div class="card connecting-card">
         <div class="card-body">
@@ -86,42 +89,60 @@
         <div class="row mt-2">
           <div class="col-md-12 text-center">
               <h5>Input Select</h5>
-                <button class="btn home-btn" :class="{'btn-dark': key !== mso.input, 'btn-light': key === mso.input}" @click="setInput(key)" v-for="(inp, key) in visibleInputs">
-                  {{ inp.label }}
-                </button>
+              <two-state-button 
+                v-for="(inp, key) in visibleInputs"
+                :button-text="inp.label"
+                :state-on="key === mso.input"
+                :home-button="true"
+                @click="setInput(key)"
+              />
           </div>
         </div>
         <!-- Upmix Select -->
         <div class="row mt-2" v-if="mso.stat.systemAudio">
           <div class="col-md-12 text-center">
               <h5>Upmix Select</h5>
-              <button class="btn home-btn" :class="{'btn-dark': key !== mso.upmix.select, 'btn-light': key === mso.upmix.select}" @click="setUpmix(key)" v-for="(upmix, key) in visibleUpmixers">
-                {{ upmix.label }}
-              </button>
+              <two-state-button 
+                v-for="(upmix, key) in visibleUpmixers"
+                :button-text="upmix.label"
+                :state-on="key === mso.upmix.select"
+                :home-button="true"
+                @click="setUpmix(key)" 
+              />
           </div>
         </div>
         <!-- Modes -->
         <div class="row mt-2">
           <div class="col-md-12 text-center">
               <h5>Modes</h5>
-              <button class="btn home-btn" 
-                  @click="setNextNightMode()"
-                  :class="{'btn-light':mso.night=='on','btn-dark':mso.night=='auto'||mso.night==='off','yellow-text-btn':mso.night==='auto'}" aria-label="night mode">
-                  Night {{mso.night}}
-              </button>
-              <dirac-button />
-              <button class="btn home-btn" 
-                  @click="toggleLoudness()"
-                  :class="{'btn-light':mso.loudness === 'on', 'btn-dark':mso.loudness === 'off'}">
-                  Loudness {{mso.loudness}}
-              </button>
-              <!-- Can't use "mso.status.raw.streamInfoBytes[0] & 16" as & has special meaning in Angularjs -->
-              <button class="btn home-btn" @click="setNextDtsDialogEnh()"
-                            :class="{'btn-light':mso.dialogEnh > 0, 'btn-dark':mso.dialogEnh === 0}">
-          {{ ((((mso.status.raw.streamType>=33) && (mso.status.raw.streamType<=44) &&
-                                  ((mso.status.raw.streamInfoBytes[0] % 32) >= 16))) ? 'DTS ' : '') }} 
-                                  Dialog Enhance {{ mso.dialogEnh == 0 ? 'off' : mso.dialogEnh  + ' dB' }}
-              </button>
+              <!-- Night Mode -->
+              <three-state-button 
+                :button-text="`Night ${mso.night}`"
+                :states="{'off': 0, 'on': 1, 'auto': 2}"
+                :state-value="mso.night"
+                :home-button="true"
+                @click="setNextNightMode()"
+              />
+              <!-- Dirac -->
+              <dirac-button 
+                :home-button="true"
+              />
+              <!-- Loudness -->
+              <two-state-button 
+                :button-text="`Loudness ${mso.loudness}`" 
+                :state-on="mso.loudness === 'on'" 
+                :home-button="true"
+                @click="toggleLoudness()"
+              />
+              <!-- Dialog Enhance --> 
+              <two-state-button 
+                :button-text="`${((((mso.status.raw.streamType>=33) && (mso.status.raw.streamType<=44) &&
+                                  ((mso.status.raw.streamInfoBytes[0] % 32) >= 16))) ? 'DTS ' : '')}
+                                  Dialog Enhance ${mso.dialogEnh == 0 ? 'off' : mso.dialogEnh  + ' dB'}` "
+                :state-on="mso.dialogEnh > 0"
+                :home-button="true"
+                @click="setNextDtsDialogEnh()"
+              />
           </div>
         </div>
         <!-- Video Status -->
@@ -145,6 +166,8 @@ import useMso from '@/use/useMso.js';
 import useStream from '@/use/useStream.js';
 
 import Settings from './Settings.vue';
+import TwoStateButton from './TwoStateButton.vue';
+import ThreeStateButton from './ThreeStateButton.vue';
 import DiracButton from './DiracButton.vue';
 
 export default {
@@ -163,7 +186,9 @@ export default {
   },
   components: {
     Settings,
-    DiracButton
+    DiracButton,
+    TwoStateButton,
+    ThreeStateButton
   }
 }
 </script>
@@ -228,14 +253,6 @@ export default {
     margin:1rem;
   }
 
-  .home-btn {
-    min-height: 3rem;
-    min-width: 6rem;
-    margin: 0.5rem;
-    font-weight: 600;
-    text-transform: uppercase;
-  }
-
   .yellow-text-btn {
     color:yellow;
   }
@@ -243,5 +260,13 @@ export default {
     max-height:4rem;
     max-width:8rem;
     display: block;
+  }
+
+  .sgen-on-warning {
+    text-transform: uppercase;
+    font-weight: bold;
+    color: magenta;
+    background: rgba(0,0,0,0.75);
+    padding:0.25rem 0.5rem;
   }
 </style>

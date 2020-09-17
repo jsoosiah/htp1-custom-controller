@@ -10,7 +10,7 @@
         <td class="text-right float-right">
           <template v-if="showCenterFreqControlsForSpeaker(spk.code)">
             <label class="sr-only" :for="'xo-'+spk.code">Crossover Frequency Center (Hz)</label>
-            <div class="input-group input-group-sm mb-2 xo-select">
+            <div class="input-group input-group-sm mb-2 numeric-input">
               <div class="input-group-prepend">
                 <div class="input-group-text">fc</div>
               </div>
@@ -71,14 +71,6 @@
   .table-sm td {
     padding:0 0.3rem;
     min-height: 2.5rem;
-  }
-
-  .xo-select {
-    width: 7.5rem;
-  }
-
-  .xo-select input {
-    text-align: right;
   }
 
   .hidden-switch-label {

@@ -46,7 +46,7 @@ export default {
       document.body.classList.remove('modal-open');
     });
 
-    const activeTab = ref(0);
+    const activeTab = ref(3);
     const allTabs = ref([
       {'label': 'Speakers', 'component': 'speakers' },
       {'label': 'Calibration', 'component': 'calibration' },
@@ -83,24 +83,12 @@ export default {
 
 <style scoped>
 
-  ::v-deep .home-btn {
-    min-height: auto;
-    margin:0;
+  ::v-deep .numeric-input {
+    width: 7.5rem;
   }
 
-  ::v-deep .btn-dark {
-    background-color: #f8f9fa;
-    /*outline:#f8f9fa;*/
-    border-color: #f8f9fa;
-    color: #212529;
-  }
-
-  ::v-deep .btn-off {
-    color: gray;
-  }
-
-  ::v-deep .yellow-text-btn {
-    color: blue;
+  ::v-deep .numeric-input input {
+    text-align: right;
   }
 
   div {

@@ -146,22 +146,28 @@ export default function useMso() {
   }
 
   function toggleDirac() {
+
+    let diracActive;
+
     switch(mso.value.cal.diracactive) {
       case 'on':
-        mso.value.cal.diracactive = 'bypass';
+        // mso.value.cal.diracactive = 'bypass';
+        diracActive = 'bypass';
         break;
       case 'off':
-        mso.value.cal.diracactive = 'on';
+        // mso.value.cal.diracactive = 'on';
+        diracActive = 'on';
         break;
       default:
       case 'bypass':
-        mso.value.cal.diracactive = 'off';
+        // mso.value.cal.diracactive = 'off';
+        diracActive = 'off';
         break;
     }
 
     commandsToSend.value = addCommand(
       commandsToSend.value,
-      {'op':'replace', 'path': '/cal/diracactive', 'value': mso.value.cal.diracactive}
+      {'op':'replace', 'path': '/cal/diracactive', 'value': diracActive}
     );
   }
 
@@ -210,6 +216,100 @@ export default function useMso() {
       {'op': 'replace', 'path': `/speakers/groups/${spkCode}/fc`, value: mso.value.speakers.groups[spkCode].fc}
     );
   }
+
+  function setMinVolume(minVol) {
+    mso.value.cal.vpl = parseInt(minVol);
+
+    commandsToSend.value = addCommand(
+      commandsToSend.value,
+      {'op': 'replace', 'path': '/cal/vpl', value: mso.value.cal.vpl}
+    );
+  }
+
+  function setMaxVolume(maxVol) {
+    mso.value.cal.vph = parseInt(maxVol);
+
+    commandsToSend.value = addCommand(
+      commandsToSend.value,
+      {'op': 'replace', 'path': '/cal/vph', value: mso.value.cal.vph}
+    );
+  }
+
+  function setMaxOutputLevel(outputLevel) {
+    mso.value.cal.ampsense = parseFloat(outputLevel);
+
+    commandsToSend.value = addCommand(
+      commandsToSend.value,
+      {'op': 'replace', 'path': '/cal/ampsense', value: mso.value.cal.ampsense}
+    );
+  }
+
+  function setLipsyncDelay(lipsyncDelay) {
+    mso.value.cal.lipsync = parseInt(lipsyncDelay);
+
+    commandsToSend.value = addCommand(
+      commandsToSend.value,
+      {'op': 'replace', 'path': '/cal/lipsync', value: mso.value.cal.lipsync}
+    );
+  }
+
+  function setDiracSlot(slotNumber) {
+    mso.value.cal.currentdiracslot = slotNumber;
+
+    commandsToSend.value = addCommand(
+      commandsToSend.value,
+      {'op': 'replace', 'path': '/cal/currentdiracslot', value: mso.value.cal.currentdiracslot}
+    );
+  }
+
+  function setUserDelay(channel, delay) {
+    currentDiracSlot.value.channels[channel].delay = parseFloat(delay);
+
+    commandsToSend.value = addCommand(
+      commandsToSend.value,
+      {'op': 'replace', 'path': `/cal/slots/${mso.value.cal.currentdiracslot}/channels/${channel}/delay`, value: currentDiracSlot.value.channels[channel].delay}
+    );
+  }
+
+  function setUserTrim(channel, trim) {
+    currentDiracSlot.value.channels[channel].trim = parseFloat(trim);
+
+    commandsToSend.value = addCommand(
+      commandsToSend.value,
+      {'op': 'replace', 'path': `/cal/slots/${mso.value.cal.currentdiracslot}/channels/${channel}/trim`, value: currentDiracSlot.value.channels[channel].trim}
+    );
+  }
+
+  function toggleSignalGenerator() {
+    mso.value.sgen.sgensw = mso.value.sgen.sgensw === 'off' ? 'on' : 'off';
+
+    commandsToSend.value = addCommand(
+      commandsToSend.value,
+      {'op': 'replace', 'path': `/sgen/sgensw`, value: mso.value.sgen.sgensw}
+    );
+  }
+
+  function setSignalGeneratorChannel(channel) {
+    mso.value.sgen.select = channel;
+
+    commandsToSend.value = addCommand(
+      commandsToSend.value,
+      {'op': 'replace', 'path': `/sgen/select`, value: mso.value.sgen.select}
+    );
+  }
+
+  function setSignalGeneratorSignalType(signalType) {
+    mso.value.sgen.signalType = signalType;
+
+    commandsToSend.value = addCommand(
+      commandsToSend.value,
+      {'op': 'replace', 'path': `/sgen/signalType`, value: mso.value.sgen.signalType}
+    );
+  }
+
+  const currentDiracSlot = computed(() => {
+    return mso.value.cal.slots[mso.value.cal.currentdiracslot];
+  });
 
   const diracBCEnabled = computed(() => {
     return mso.value.cal.slots[mso.value.cal.currentdiracslot].hasBCFilter;
@@ -278,8 +378,13 @@ export default function useMso() {
       } else if (verb === 'msoupdate') {
           // update received. only process received commands if commandsToSend is empty;
           // otherwise we will store the received commands and wait for the next update
-          for (const cmd of arg) {
-            commandsReceived.value = addCommand(commandsReceived.value, cmd);
+          if (Array.isArray(arg)) {
+            for (const cmd of arg) {
+              commandsReceived.value = addCommand(commandsReceived.value, cmd);
+            }
+          } else {
+            console.log('msoupdate non-array', arg)
+            commandsReceived.value = addCommand(commandsReceived.value, arg);
           }
           
       } else if (verb === 'error') {
@@ -347,7 +452,10 @@ export default function useMso() {
     setVolume, toggleMute, setInput, setUpmix, 
     setNextNightMode, toggleDirac, toggleLoudness, setNextDtsDialogEnh,
     toggleSpeakerChannel, setSpeakerSize, setCenterFreq,
-    showCrossoverControls,
+    setMinVolume, setMaxVolume, setMaxOutputLevel, setLipsyncDelay, setDiracSlot,
+    setUserDelay, setUserTrim,
+    toggleSignalGenerator, setSignalGeneratorChannel, setSignalGeneratorSignalType,
+    showCrossoverControls, currentDiracSlot,
     state, loading,
     commandsToSend, commandsReceived, commandsToSendTouchedFlag, commandsReceivedTouchedFlag // debug
   };

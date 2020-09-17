@@ -11,7 +11,7 @@
                 <span class="bm-indicator" :class="{'alert-text-muted': showCrossoverControls, 'bm-enabled': !showCrossoverControls}">Dirac Live Bass Control {{ showCrossoverControls ? 'Off' : 'On' }}</span>
               </div>
               <div class="col">
-                <DiracButton />
+                <dirac-button />
               </div>
               <div class="col">
                 <span class="bm-indicator" :class="{'alert-text-muted': !showCrossoverControls, 'bm-enabled': showCrossoverControls}">HTP-1 Bass Management {{ showCrossoverControls ? 'On' : 'Off' }}</span>
