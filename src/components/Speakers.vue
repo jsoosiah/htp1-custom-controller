@@ -1,5 +1,5 @@
 <template>
-      <div class="alert alert-primary small" role="alert">
+      <div class="alert alert-info small" role="alert">
         <p><a href="#speaker-map" class="alert-link">Speaker Map</a> shows the mapping on the back panel. If the speakers are not enabled, no sound will be produced.</p>
 
         <p>If current Dirac Filter Slot has Bass Control and Dirac is On, speaker size selections are not available. Speaker sizes can be changed if Dirac is off or in bypass mode.</p>

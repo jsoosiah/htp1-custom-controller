@@ -1,4 +1,9 @@
 <template>
+    <div v-if="loading" class="loading-indicator">
+      <div class="spinner-border text-primary" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
     <div class="fixed-top text-center" style="z-index: 9999999999999999" v-if="mso?.sgen?.sgensw === 'on'">
       <span class="sgen-on-warning">Signal Generator On</span>
     </div>
@@ -8,11 +13,6 @@
           <h5 class="card-title">Please Wait</h5>
           Connection was lost. Reconnecting...
         </div>
-      </div>
-    </div>
-    <div v-if="loading" class="loading-indicator">
-      <div class="spinner-border text-primary" role="status">
-        <span class="sr-only">Loading...</span>
       </div>
     </div>
     <template v-if="!mso?.powerIsOn">
@@ -218,13 +218,14 @@ export default {
 
   .loading-indicator {
     position:fixed;
-    opacity: 50%;
-    z-index: 9999;
+    /*opacity: 50%;*/
+    z-index: 9999999999999999;
     text-align: right;
     vertical-align: text-bottom;
     bottom:0;
     right:0;
     padding:0.5rem;
+    /*color:white;*/
   }
 
   .current-input-label {

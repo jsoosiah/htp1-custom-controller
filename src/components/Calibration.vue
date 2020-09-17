@@ -3,60 +3,59 @@
 
   <div class="container">
     <div class="row">
-      <div class="col-xl">
-          <div class="form-group row">
-            <label for="inputEmail3" class="col-form-label col-sm-auto">Min. volume</label>
-            <div class="col-sm-6"><div class="input-group numeric-input">
+      <div class="col-md">
+          <div class="form-group">
+            <label for="inputEmail3" class="col-form-label ">Min. volume</label>
+            <div class="input-group numeric-input">
               <input type="number" class="form-control" aria-label="Minimum volume" aria-describedby="basic-addon2" :value="mso.cal.vpl" @change="({ type, target }) => setMinVolume(target.value)" min="-100" max ="-60">
               <div class="input-group-append">
                 <span class="input-group-text" id="basic-addon2">dB</span>
               </div>
-            </div></div>
+            </div>
           </div>
       </div>
-      <div class="col-xl">
-          <div class="form-group row">
-            <label for="inputEmail3" class="col-form-label col-sm-auto">Max. listening volume</label>
-            <div class="col-sm-6"><div class="input-group numeric-input">
+      <div class="col-md">
+          <div class="form-group">
+            <label for="inputEmail3" class="col-form-label ">Max. volume</label>
+            <div class="input-group numeric-input">
               <input type="number" class="form-control" aria-label="Minimum volume" aria-describedby="basic-addon2" :value="mso.cal.vph" @change="({ type, target }) => setMaxVolume(target.value)" min="-59" max ="22">
               <div class="input-group-append">
                 <span class="input-group-text" id="basic-addon2">dB</span>
               </div>
-            </div></div>
+            </div>
           </div>
       </div>
-      <div class="col-xl">
-          <div class="form-group row">
-            <label for="inputEmail3" class="col-form-label col-sm-auto">Max. output level</label>
-            <div class="col-sm-6"><div class="input-group numeric-input">
+      <div class="col-md">
+          <div class="form-group">
+            <label for="inputEmail3" class="col-form-label ">Max. output level</label>
+            <div class="input-group numeric-input">
               <input type="number" class="form-control" aria-label="Minimum volume" aria-describedby="basic-addon2" :value="mso.cal.ampsense" @change="({ type, target }) => setMaxOutputLevel(target.value)" min="0.1" max="4" step="0.1">
               <div class="input-group-append">
                 <span class="input-group-text" id="basic-addon2">Vrms</span>
               </div>
-            </div></div>
+            </div>
           </div>
       </div>
-    </div>
-    <div class="row">
-      <div class="col-xl">
-          <div class="form-group row">
-            <label for="inputPassword3" class="col-form-label col-sm-auto">Lipsync delay</label>
-              <div class="col-sm-6"><div class="input-group numeric-input">
+      <div class="col-md">
+          <div class="form-group">
+            <label for="inputPassword3" class="col-form-label ">Lipsync delay</label>
+              <div class="input-group numeric-input">
                 <input type="number" class="form-control" aria-label="Minimum volume" aria-describedby="basic-addon2" :value="mso.cal.lipsync" @change="({ type, target }) => setLipsyncDelay(target.value)" min="0" max="200">
                 <div class="input-group-append">
                   <span class="input-group-text" id="basic-addon2">ms</span>
                 </div>
-              </div></div>
+              </div>
           </div>
       </div>
-      <div class="col-xl">
-        <dirac-button />
-      </div>
     </div>
+    
   </div>
   <h6>Dirac Room Correction Filters <small class="text-muted">up to 6 sets or slots available</small></h6>
   <div class="alert alert-info small" role="alert">
     * denotes Dirac Live Room Correction filters with Bass Control
+  </div>
+  <div class="mb-3">
+    <dirac-button />
   </div>
   <nav class="nav nav-pills bg-light">
     <a class="nav-link" :class="{'active': mso.cal.currentdiracslot === key}" @click="setDiracSlot(key)" href="javascript:void(0)" v-for="(slot, key) in mso.cal.slots">{{slot.name}}{{(slot.hasBCFilter ? ' *' : '')}}</a>
@@ -167,5 +166,9 @@
 
   .table-sm td {
     padding:0 0.3rem;
+  }
+
+  .col-md {
+    padding-left: 0;
   }
 </style>

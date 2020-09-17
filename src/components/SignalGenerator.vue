@@ -8,8 +8,14 @@
     </div>
     <div class="row">
       <div class="col">
-        <h6>Channel Select</h6>
         <table class="table table-sm table-striped">
+          <thead>
+            <tr>
+              <th>
+                Channel Select
+              </th>
+            </tr>
+          </thead>
           <tbody>
             <tr v-for="channame in activeChannels">
               <td>
@@ -25,8 +31,14 @@
         </table>
       </div>
       <div class="col">
-        <h6>Signal Select</h6>
         <table class="table table-sm table-striped">
+          <thead>
+            <tr>
+              <th>
+                Signal Select
+              </th>
+            </tr>
+          </thead>
           <tbody>
             <tr v-for="signal in signalOptions">
               <td>
@@ -85,5 +97,11 @@
 </script>
 
 <style scoped>
-  
+  th {
+    font-size:80%;
+  }
+
+  .col {
+    padding-left: 0;
+  }
 </style>

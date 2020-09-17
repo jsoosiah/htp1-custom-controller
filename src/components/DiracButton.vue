@@ -11,7 +11,7 @@
   />
   <three-state-button 
     v-if = "mso.cal.slots[mso.cal.currentdiracslot].checksum === 31802"
-    button-text="No Filter"
+    button-text="Dirac No Filter"
     :states="{'off': 0}"
     :state-value="'off'"
     :home-button="props.homeButton"

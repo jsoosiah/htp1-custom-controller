@@ -307,6 +307,105 @@ export default function useMso() {
     );
   }
 
+  function toggleToneControl() {
+    mso.value.eq.tc = !mso.value.eq.tc;
+
+    commandsToSend.value = addCommand(
+      commandsToSend.value,
+      {'op': 'replace', 'path': `/eq/tc`, value: mso.value.eq.tc}
+    );
+  }
+
+  function setBassCornerFrequency(freq) {
+    mso.value.eq.bass.freq = parseFloat(freq);
+
+    commandsToSend.value = addCommand(
+      commandsToSend.value,
+      {'op': 'replace', 'path': `/eq/bass/freq`, value: mso.value.eq.bass.freq}
+    );
+  }
+
+  function setTrebleCornerFrequency(freq) {
+    mso.value.eq.treble.freq = parseFloat(freq);
+
+    commandsToSend.value = addCommand(
+      commandsToSend.value,
+      {'op': 'replace', 'path': `/eq/treble/freq`, value: mso.value.eq.treble.freq}
+    );
+  }
+
+  function setBassBoostCutLevel(level) {
+    mso.value.eq.bass.level = parseFloat(level);
+
+    commandsToSend.value = addCommand(
+      commandsToSend.value,
+      {'op': 'replace', 'path': `/eq/bass/level`, value: mso.value.eq.bass.level}
+    );
+  }
+
+  function setTrebleBoostCutLevel(level) {
+    mso.value.eq.treble.level = parseFloat(level);
+
+    commandsToSend.value = addCommand(
+      commandsToSend.value,
+      {'op': 'replace', 'path': `/eq/treble/level`, value: mso.value.eq.treble.level}
+    );
+  }
+
+  function setLoudnessCalibration(loudness) {
+    mso.value.loudnessCal = parseFloat(loudness);
+
+    commandsToSend.value = addCommand(
+      commandsToSend.value,
+      {'op': 'replace', 'path': `/loudnessCal`, value: mso.value.loudnessCal}
+    );
+  }
+
+  function toggleGlobalPEQ() {
+    mso.value.peq.peqsw = !mso.value.peq.peqsw;
+
+    commandsToSend.value = addCommand(
+      commandsToSend.value,
+      {'op': 'replace', 'path': `/peq/peqsw`, value: mso.value.peq.peqsw}
+    );
+  }
+
+  function setPEQCenterFrequency(channel, slot, centerFreq) {
+    mso.value.peq.slots[slot].channels[channel].Fc = parseFloat(centerFreq);
+
+    commandsToSend.value = addCommand(
+      commandsToSend.value,
+      {'op': 'replace', 'path': `/peq/slots/${slot}/channels/${channel}/Fc`, value: mso.value.peq.slots[slot].channels[channel].Fc}
+    );
+  }
+
+  function setPEQGain(channel, slot, gain) {
+    mso.value.peq.slots[slot].channels[channel].gaindB = parseFloat(gain);
+
+    commandsToSend.value = addCommand(
+      commandsToSend.value,
+      {'op': 'replace', 'path': `/peq/slots/${slot}/channels/${channel}/gaindB`, value: mso.value.peq.slots[slot].channels[channel].gaindB}
+    );
+  }
+
+  function setPEQQuality(channel, slot, q) {
+    mso.value.peq.slots[slot].channels[channel].Q = parseFloat(q);
+
+    commandsToSend.value = addCommand(
+      commandsToSend.value,
+      {'op': 'replace', 'path': `/peq/slots/${slot}/channels/${channel}/Q`, value: mso.value.peq.slots[slot].channels[channel].Q}
+    );
+  }
+
+  function setPEQFilterType(channel, slot, filterType) {
+    mso.value.peq.slots[slot].channels[channel].FilterType = parseInt(filterType);
+
+    commandsToSend.value = addCommand(
+      commandsToSend.value,
+      {'op': 'replace', 'path': `/peq/slots/${slot}/channels/${channel}/FilterType`, value: mso.value.peq.slots[slot].channels[channel].FilterType}
+    );
+  }
+
   const currentDiracSlot = computed(() => {
     return mso.value.cal.slots[mso.value.cal.currentdiracslot];
   });
@@ -455,6 +554,9 @@ export default function useMso() {
     setMinVolume, setMaxVolume, setMaxOutputLevel, setLipsyncDelay, setDiracSlot,
     setUserDelay, setUserTrim,
     toggleSignalGenerator, setSignalGeneratorChannel, setSignalGeneratorSignalType,
+    toggleToneControl, setBassCornerFrequency, setTrebleCornerFrequency, 
+    setBassBoostCutLevel, setTrebleBoostCutLevel, setLoudnessCalibration,
+    toggleGlobalPEQ, setPEQCenterFrequency, setPEQGain, setPEQQuality, setPEQFilterType,
     showCrossoverControls, currentDiracSlot,
     state, loading,
     commandsToSend, commandsReceived, commandsToSendTouchedFlag, commandsReceivedTouchedFlag // debug
