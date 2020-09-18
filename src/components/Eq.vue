@@ -80,7 +80,7 @@
       @click="toggleGlobalPEQ()"
     />
   </div>
-  <nav class="nav nav-pills bg-light">
+  <nav class="navbar nav-fill nav-pills bg-light navbar-light">
     <a 
       v-for="(channame, index) in activeChannels"
       class="nav-link" 
@@ -204,6 +204,11 @@
 </script>
 
 <style scoped>
+
+  .navbar {
+    padding: 0;
+  }
+
   .nav-link {
     text-transform: uppercase;
     font-size: .8rem;

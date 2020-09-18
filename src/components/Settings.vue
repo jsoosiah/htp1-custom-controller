@@ -9,7 +9,7 @@
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-          <nav class="nav nav-pills bg-light">
+          <nav class="navbar nav-fill nav-pills bg-light navbar-light">
             <a class="nav-link" :class="{'active': activeTab === key}" @click="setActiveTab(key)" href="javascript:void(0)" v-for="(tab, key) in allTabs">{{tab.label}}</a>
           </nav>
         <div class="modal-body text-left">
@@ -82,6 +82,10 @@ export default {
 </script>
 
 <style scoped>
+
+  .navbar {
+    padding: 0;
+  }
 
   ::v-deep .btn {
     text-transform: uppercase;

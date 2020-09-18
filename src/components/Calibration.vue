@@ -57,7 +57,7 @@
   <div class="mb-3">
     <dirac-button />
   </div>
-  <nav class="nav nav-pills bg-light">
+  <nav class="navbar nav-fill nav-pills bg-light navbar-light">
     <a class="nav-link" :class="{'active': mso.cal.currentdiracslot === key}" @click="setDiracSlot(key)" href="javascript:void(0)" v-for="(slot, key) in mso.cal.slots">{{slot.name}}{{(slot.hasBCFilter ? ' *' : '')}}</a>
   </nav>
   <table class="table table-sm table-responsive-md table-striped">
@@ -147,6 +147,11 @@
 </script>
 
 <style scoped>
+
+  .navbar {
+    padding: 0;
+  }
+
   .nav-link {
     text-transform: uppercase;
     font-size: .8rem;
