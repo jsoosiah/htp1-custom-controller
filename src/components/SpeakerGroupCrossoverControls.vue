@@ -3,7 +3,7 @@
     <tbody v-for="speakerGroup in props.speakerGroups">
       <tr></tr>
       <tr>
-        <th colspan="3">{{speakerGroup.header}}</th>
+        <th colspan="3">{{speakerGroup.header}} <small class="text-muted" v-if="speakerGroup.subtitle">{{speakerGroup.subtitle}}</small></th>
       </tr>
       <tr v-for="spk in speakerGroup.speakers">
         <td>
