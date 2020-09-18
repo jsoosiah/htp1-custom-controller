@@ -84,11 +84,11 @@
     <a 
       v-for="(channame, index) in activeChannels"
       class="nav-link" 
-      :class="{'active': selectedChannel === index}" 
+      :class="{'active': selectedChannel === index, 'italic': hasModifications(channame)}" 
       @click="setSelectedChannel(index)" 
       href="javascript:void(0)" 
     >
-      {{spkName(channame)}} {{ hasModifications(channame) ? '*' : '' }}
+      {{spkName(channame)}}
     </a>
   </nav>
   <table class="table table-sm table-responsive-md table-striped">
@@ -204,6 +204,15 @@
 </script>
 
 <style scoped>
+
+  .italic {
+    font-style: italic;
+  }
+
+  .italic:after {
+    content:" *";
+    font-weight: bold;
+  }
 
   .navbar {
     padding: 0;

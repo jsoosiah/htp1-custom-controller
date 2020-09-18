@@ -8,13 +8,14 @@
           <div class="col-auto">
             <div class="row">
               <div class="col">
-                <span class="bm-indicator" :class="{'alert-text-muted': showCrossoverControls, 'bm-enabled': !showCrossoverControls}">Dirac Live Bass Control {{ showCrossoverControls ? 'Off' : 'On' }}</span>
+                <div class="alert" :class="{'alert-text-muted': showCrossoverControls, 'alert-success': !showCrossoverControls}">
+                  Dirac Live Bass Control is {{ showCrossoverControls ? 'off' : 'on' }}</div>
               </div>
-              <div class="col">
+              <div class="col-auto">
                 <dirac-button />
               </div>
               <div class="col">
-                <span class="bm-indicator" :class="{'alert-text-muted': !showCrossoverControls, 'bm-enabled': showCrossoverControls}">HTP-1 Bass Management {{ showCrossoverControls ? 'On' : 'Off' }}</span>
+                <div class="alert" :class="{'alert-text-muted': !showCrossoverControls, 'alert-success': showCrossoverControls}">HTP-1 Bass Management is {{ showCrossoverControls ? 'on' : 'off' }}</div>
               </div>
             </div>
           </div>
@@ -24,18 +25,26 @@
   <div class="container">
     <div class="row">
       <div class="col-lg">
-        <table class="table table-sm table-borderless table-responsive-sm">
+        <h6>Speaker Selection</h6>
+        <table class="table table-sm table-striped table-responsive-sm">
           <tbody>
+            <tr></tr>
             <tr>
-              <th colspan="3"><h6>Main Speaker Outputs</h6></th>
+              <th colspan="3">Main Speaker Outputs</th>
             </tr>
             <speaker-group-crossover-controls v-bind:speakers="mainSpeakers" />
+          </tbody>
+          <tbody>
+            <tr></tr>
             <tr>
-              <th colspan="3"><h6>Surround Speaker Outputs</h6></th>
+              <th colspan="3">Surround Speaker Outputs</th>
             </tr>
             <speaker-group-crossover-controls v-bind:speakers="surroundSpeakers" />
+          </tbody>
+          <tbody>
+            <tr></tr>
             <tr>
-              <th colspan="3"><h6>Upper Speaker Outputs <small class="text-muted">Maximum of 6 highs/tops allowed</small></h6></th>
+              <th colspan="3">Upper Speaker Outputs <small class="text-muted">Maximum of 6 highs/tops allowed</small></th>
             </tr>
             <speaker-group-crossover-controls v-bind:speakers="upperSpeakers" />
           </tbody>
@@ -116,15 +125,29 @@
 
 <style scoped>
 
-  .alert {
+  th {
+    font-size: 80%;
+  }
+
+  small {
+    font-size: 90%;
+  }
+
+  .alert-info {
     /*width: 100;*/
     margin:-1rem -1rem 1rem -1rem;
     border-radius: 0;
   }
 
+  .alert-success {
+    font-weight: 600;
+  }
+
   .alert-text-muted {
     /*color: red;*/
     opacity: 0.75;
+    border:  1px solid rgba(0,0,0,.1);
+    border-radius: 0.25rem;
   }
 
   .bm-indicator {
@@ -134,7 +157,7 @@
   }
 
   .bm-enabled {
-    background-color: #212529;
+    /*background-color: #212529;*/
     color: #ffeeba;
     font-weight: 600;
   }
