@@ -19,7 +19,7 @@ npm run build
 ```
 
 ### Building and Uploading to HTP-1
-1. With NodeJS / npm installed on your machine, check out the code and run the following:
+1. With the latest NodeJS LTS installed on your machine, check out the code and run the following:
 ```
 npm install
 npm run build
