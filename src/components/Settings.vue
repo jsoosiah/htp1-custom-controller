@@ -46,7 +46,7 @@ export default {
       document.body.classList.remove('modal-open');
     });
 
-    const activeTab = ref(5);
+    const activeTab = ref(0);
     const allTabs = ref([
       {'label': 'Speakers', 'component': 'speakers' },
       {'label': 'Calibration', 'component': 'calibration' },

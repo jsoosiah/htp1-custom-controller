@@ -1,16 +1,21 @@
 <template>
-
-      <tr v-for="spk in speakers">
+  <table class="table table-sm table-striped table-responsive-sm">
+    <tbody v-for="speakerGroup in props.speakerGroups">
+      <tr></tr>
+      <tr>
+        <th colspan="3">{{speakerGroup.header}}</th>
+      </tr>
+      <tr v-for="spk in speakerGroup.speakers">
         <td>
           <div class="custom-control custom-switch">
             <input type="checkbox" class="custom-control-input" :id="'check-'+spk.code" :checked="mso.speakers.groups[spk.code]?.present" @click="toggleSpeakerChannel(spk.code)">
             <label :class="{'custom-control-label':spk.code !== 'lr', 'hidden-switch-label': spk.code === 'lr'}" :for="'check-'+spk.code">{{spk.label}}</label>
           </div>
         </td>
-        <td class="text-right float-right">
+        <td class="text-right">
           <template v-if="showCenterFreqControlsForSpeaker(spk.code)">
             <label class="sr-only" :for="'xo-'+spk.code">Crossover Frequency Center (Hz)</label>
-            <div class="input-group input-group-sm mb-2 numeric-input">
+            <div class="input-group input-group-sm numeric-input float-right">
               <div class="input-group-prepend">
                 <div class="input-group-text">fc</div>
               </div>
@@ -31,6 +36,8 @@
           </template>
         </td>
       </tr>
+    </tbody>
+  </table>
 </template>
 
 <script>
@@ -40,9 +47,9 @@
   export default {
     'name': 'SpeakerGroupCrossoverControls',
     'props': {
-      speakers: Array
+      speakerGroups: Array
     },
-    setup({ speakers }) {
+    setup(props) {
 
       const { mso, showCrossoverControls, toggleSpeakerChannel, setSpeakerSize, setCenterFreq } = useMso();
 
@@ -61,16 +68,33 @@
 
       return { 
         mso, showCrossoverControls, toggleSpeakerChannel, setSpeakerSize, setCenterFreq,
-        showCrossoverControlsForSpeaker, showCenterFreqControlsForSpeaker, showDolby 
+        showCrossoverControlsForSpeaker, showCenterFreqControlsForSpeaker, showDolby,
+        props
       };
     }
   }
 </script>
 
 <style scoped>
-  .table-sm td {
+
+  th {
+    font-size: 80%;
+  }
+
+  small {
+    font-size: 90%;
+  }
+
+  .input-group, .btn-group {
+    margin:.1rem;
+  }
+
+  table td {
+    height: 2.2rem;
+  }
+
+  td {
     padding:0 0.3rem;
-    min-height: 2.5rem;
   }
 
   .hidden-switch-label {

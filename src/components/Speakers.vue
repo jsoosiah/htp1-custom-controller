@@ -26,29 +26,7 @@
     <div class="row">
       <div class="col-lg">
         <h6>Speaker Selection</h6>
-        <table class="table table-sm table-striped table-responsive-sm">
-          <tbody>
-            <tr></tr>
-            <tr>
-              <th colspan="3">Main Speaker Outputs</th>
-            </tr>
-            <speaker-group-crossover-controls v-bind:speakers="mainSpeakers" />
-          </tbody>
-          <tbody>
-            <tr></tr>
-            <tr>
-              <th colspan="3">Surround Speaker Outputs</th>
-            </tr>
-            <speaker-group-crossover-controls v-bind:speakers="surroundSpeakers" />
-          </tbody>
-          <tbody>
-            <tr></tr>
-            <tr>
-              <th colspan="3">Upper Speaker Outputs <small class="text-muted">Maximum of 6 highs/tops allowed</small></th>
-            </tr>
-            <speaker-group-crossover-controls v-bind:speakers="upperSpeakers" />
-          </tbody>
-        </table>
+        <speaker-group-crossover-controls :speaker-groups="speakerGroups" />
       </div>
       <div class="col-lg">
         <h6>Speaker Layout</h6>
@@ -102,6 +80,24 @@
         {'label': 'L/R Rear Height', code: 'lrhr'},
       ];
 
+      const speakerGroups = [
+        {
+          header: 'Main Speaker Outputs',
+          subtitle: null,
+          speakers: mainSpeakers
+        },
+        {
+          header: 'Surround Speaker Outputs',
+          subtitle: null,
+          speakers: surroundSpeakers
+        },
+        {
+          header: 'Upper Speaker Outputs',
+          subtitle: 'Maximum of 6 highs/tops allowed',
+          speakers: upperSpeakers
+        }
+      ];
+
       const diagramSpeakerVisibility = computed(() => {
         const hideSpeakers = {};
         for (const spk of [...mainSpeakers, ...surroundSpeakers, ...upperSpeakers]) {
@@ -112,7 +108,10 @@
         return hideSpeakers;
       });
 
-      return { mso, showCrossoverControls, mainSpeakers, surroundSpeakers, upperSpeakers, diagramSpeakerVisibility };
+      return { 
+        mso, showCrossoverControls, mainSpeakers, surroundSpeakers, upperSpeakers, 
+        diagramSpeakerVisibility, speakerGroups 
+      };
     },
     components: {
       SpeakerDiagram,
@@ -124,14 +123,6 @@
 </script>
 
 <style scoped>
-
-  th {
-    font-size: 80%;
-  }
-
-  small {
-    font-size: 90%;
-  }
 
   .alert-info {
     /*width: 100;*/
@@ -146,7 +137,7 @@
   .alert-text-muted {
     /*color: red;*/
     opacity: 0.75;
-    border:  1px solid rgba(0,0,0,.1);
+    border:  1px solid rgba(12,84,96,.125);
     border-radius: 0.25rem;
   }
 
