@@ -168,7 +168,7 @@ export default function useMso() {
   }
 
   function setAuroMaticPreset(preset) {
-    mso.value.upmix.auro.preset = preset;
+    mso.value.upmix.auro.preset = parseInt(preset);
 
     commandsToSend.value = addCommand(
       commandsToSend.value,
@@ -177,7 +177,7 @@ export default function useMso() {
   }
 
   function setAuroMaticStrength(strength) {
-    mso.value.upmix.auro.strength = strength;
+    mso.value.upmix.auro.strength = parseInt(strength);
 
     commandsToSend.value = addCommand(
       commandsToSend.value,
