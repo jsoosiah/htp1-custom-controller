@@ -1,5 +1,5 @@
 <template>
-  <button class="btn" :class="{[props.homeButton?'btn-light':'btn-success']: props.stateOn, [props.homeButton?'btn-dark':'btn-secondary']: !props.stateOn, 'home-btn': props.homeButton}">
+  <button class="btn btn-sm" :class="{[props.homeButton?'btn-light':'btn-success']: props.stateOn, [props.homeButton?'btn-dark':'btn-secondary']: !props.stateOn, 'home-btn': props.homeButton}">
     {{props.buttonText}}
   </button>
 </template>
@@ -34,11 +34,12 @@
   .btn {
     text-transform: uppercase;
     font-weight: 600;
+    min-width: 7rem;
   }
 
   .home-btn {
     min-height: 3rem;
-    min-width: 6rem;
+    
     margin: 0.5rem;
   }
 

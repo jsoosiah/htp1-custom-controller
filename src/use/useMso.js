@@ -406,6 +406,55 @@ export default function useMso() {
     );
   }
 
+  function setInputLabel(input, label) {
+    mso.value.inputs[input].label = label;
+
+    commandsToSend.value = addCommand(
+      commandsToSend.value,
+      {'op': 'replace', 'path': `/inputs/${input}/label`, value: mso.value.inputs[input].label}
+    );
+  }
+
+  function toggleInputVisible(input) {
+    mso.value.inputs[input].visible = !mso.value.inputs[input].visible;
+
+    commandsToSend.value = addCommand(
+      commandsToSend.value,
+      {'op': 'replace', 'path': `/inputs/${input}/visible`, value: mso.value.inputs[input].visible}
+    );
+  }
+
+  function setInputFormatDetectOption(input, formatDetectOption) {
+    mso.value.inputs[input].formatDetectOption = formatDetectOption;
+
+    commandsToSend.value = addCommand(
+      commandsToSend.value,
+      {'op': 'replace', 'path': `/inputs/${input}/formatDetectOption`, value: mso.value.inputs[input].formatDetectOption}
+    );
+  }
+
+  function toggleInputUHD(input) {
+    mso.value.inputs[input].uhd = !mso.value.inputs[input].uhd;
+
+    commandsToSend.value = addCommand(
+      commandsToSend.value,
+      {'op': 'replace', 'path': `/inputs/${input}/uhd`, value: mso.value.inputs[input].uhd}
+    );
+  }
+
+  function setBluetoothDiscoverableTime(time) {
+    mso.value.bluetooth.discoverabletime = parseInt(time);
+
+    commandsToSend.value = addCommand(
+      commandsToSend.value,
+      {'op': 'replace', 'path': `/bluetooth/discoverabletime`, value: mso.value.bluetooth.discoverabletime}
+    );
+  }
+
+  function enableBluetoothDiscovery() {
+    send('btdiscover ' + mso.value.bluetooth.discoverabletime);
+  }
+
   const currentDiracSlot = computed(() => {
     return mso.value.cal.slots[mso.value.cal.currentdiracslot];
   });
@@ -557,6 +606,8 @@ export default function useMso() {
     toggleToneControl, setBassCornerFrequency, setTrebleCornerFrequency, 
     setBassBoostCutLevel, setTrebleBoostCutLevel, setLoudnessCalibration,
     toggleGlobalPEQ, setPEQCenterFrequency, setPEQGain, setPEQQuality, setPEQFilterType,
+    setInputLabel, toggleInputVisible, setInputFormatDetectOption, toggleInputUHD, 
+    setBluetoothDiscoverableTime, enableBluetoothDiscovery,
     showCrossoverControls, currentDiracSlot,
     state, loading,
     commandsToSend, commandsReceived, commandsToSendTouchedFlag, commandsReceivedTouchedFlag // debug

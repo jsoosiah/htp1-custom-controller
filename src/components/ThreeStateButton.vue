@@ -1,5 +1,5 @@
 <template>
-  <button class="btn" :class="buttonClasses">
+  <button class="btn btn-sm" :class="buttonClasses">
     {{props.buttonText}}
   </button>
 </template>
