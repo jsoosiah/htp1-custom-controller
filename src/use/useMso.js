@@ -49,6 +49,21 @@ const visibleUpmixers = computed(() => {
   return filtered;
 });
 
+const allUpmixers = computed(() => {
+  const filtered = {};
+  if (mso.value.upmix) {
+    for (const upmixKey in mso.value.upmix) {
+      if (typeof mso.value.upmix[upmixKey] === 'object') {
+        filtered[upmixKey] = mso.value.upmix[upmixKey];
+        filtered[upmixKey].label = upmixLabels[upmixKey];
+        filtered[upmixKey].value = upmixKey;
+      }
+    }
+  }
+
+  return filtered;
+});
+
 // loading indicator, when commands have been 
 // sent to MSO and a response is being awaited
 const loading = ref(true);
@@ -124,6 +139,66 @@ export default function useMso() {
       commandsToSend.value,
       {'op':'replace', 'path': '/upmix/select', 'value': upmixKey}
     );
+  }
+
+  function toggleUpmixHomevis(upmix) {
+    mso.value.upmix[upmix].homevis = !mso.value.upmix[upmix].homevis;
+    commandsToSend.value = addCommand(
+      commandsToSend.value,
+      {'op':'replace', 'path': `/upmix/${upmix}/homevis`, 'value': mso.value.upmix[upmix].homevis}
+    );
+  }
+
+  function toggleUpmixCenterSpread() {
+    mso.value.upmix.dolby.cs = !mso.value.upmix.dolby.cs;
+
+    commandsToSend.value = addCommand(
+      commandsToSend.value,
+      {'op':'replace', 'path': `/upmix/dolby/cs`, 'value': mso.value.upmix.dolby.cs}
+    );
+  }
+
+  function toggleUpmixWideSynth() {
+    mso.value.upmix.dts.ws = !mso.value.upmix.dts.ws;
+
+    commandsToSend.value = addCommand(
+      commandsToSend.value,
+      {'op':'replace', 'path': `/upmix/dts/ws`, 'value': mso.value.upmix.dts.ws}
+    );
+  }
+
+  function setAuroMaticPreset(preset) {
+    mso.value.upmix.auro.preset = preset;
+
+    commandsToSend.value = addCommand(
+      commandsToSend.value,
+      {'op':'replace', 'path': `/upmix/auro/preset`, 'value': mso.value.upmix.auro.preset}
+    );
+  }
+
+  function setAuroMaticStrength(strength) {
+    mso.value.upmix.auro.strength = strength;
+
+    commandsToSend.value = addCommand(
+      commandsToSend.value,
+      {'op':'replace', 'path': `/upmix/auro/strength`, 'value': mso.value.upmix.auro.strength}
+    );
+  }
+
+  function setDefaultAuroMaticStrength() {
+    setAuroMaticStrength(13);
+  }
+
+  function toggleReinforceBass() {
+
+    if (!diracBCEnabled.value) {
+      mso.value.bassenhance = mso.value.bassenhance === 'off' ? 'on' : 'off';
+
+      commandsToSend.value = addCommand(
+        commandsToSend.value,
+        {'op':'replace', 'path': `/bassenhance`, 'value': mso.value.bassenhance}
+      );
+    }
   }
 
   function setNextNightMode() {
@@ -595,9 +670,12 @@ export default function useMso() {
   );
 
   return { 
-    mso, visibleInputs, visibleUpmixers, 
+    mso, visibleInputs, visibleUpmixers, allUpmixers,
     powerOff, powerOn,
     setVolume, toggleMute, setInput, setUpmix, 
+    toggleUpmixHomevis, toggleUpmixCenterSpread, toggleUpmixWideSynth,
+    setAuroMaticPreset, setAuroMaticStrength, setDefaultAuroMaticStrength,
+    toggleReinforceBass,
     setNextNightMode, toggleDirac, toggleLoudness, setNextDtsDialogEnh,
     toggleSpeakerChannel, setSpeakerSize, setCenterFreq,
     setMinVolume, setMaxVolume, setMaxOutputLevel, setLipsyncDelay, setDiracSlot,

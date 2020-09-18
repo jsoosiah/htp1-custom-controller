@@ -46,7 +46,7 @@ export default {
       document.body.classList.remove('modal-open');
     });
 
-    const activeTab = ref(4);
+    const activeTab = ref(5);
     const allTabs = ref([
       {'label': 'Speakers', 'component': 'speakers' },
       {'label': 'Calibration', 'component': 'calibration' },
@@ -82,6 +82,11 @@ export default {
 </script>
 
 <style scoped>
+
+  ::v-deep .btn {
+    text-transform: uppercase;
+    font-weight: 600;
+  }
 
   ::v-deep .numeric-input {
     width: 7.5rem;
