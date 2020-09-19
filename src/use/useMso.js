@@ -620,6 +620,7 @@ export default function useMso() {
     // 3 dB, instead of only suddenly updating the volume to 0 dB
     // at the end
     maxWait: 500,
+    leading: true,
   });
 
   function receiveCommands() {
