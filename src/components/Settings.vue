@@ -10,7 +10,7 @@
           </button>
         </div>
           <nav class="navbar nav-fill nav-pills bg-light navbar-light">
-            <a class="nav-link" :class="{'active': props.activeTab === key}" @click="setActiveTab(key)" href="javascript:void(0)" v-for="(tab, key) in allTabs">{{tab.label}}</a>
+            <a class="nav-link" :class="{'active': props.activeTab === key}" @click="setActiveTab(key)" href="javascript:void(0)" v-for="(tab, key) in allTabs"><component :is="tab.icon"></component> {{tab.label}}</a>
           </nav>
         <div class="modal-body text-left">
           <component :is="allTabs[props.activeTab].component"></component>
@@ -34,6 +34,15 @@ import SoundEnhancement from './SoundEnhancement.vue';
 import Connectivity from './Connectivity.vue';
 import System from './System.vue';
 
+import CalibrationIcon from './icon/CalibrationIcon';
+import EqIcon from './icon/EqIcon';
+import InputsIcon from './icon/InputsIcon';
+import NetworkIcon from './icon/NetworkIcon';
+import SgenIcon from './icon/SgenIcon';
+import SpeakersIcon from './icon/SpeakersIcon';
+import SystemIcon from './icon/SystemIcon';
+import UpmixIcon from './icon/UpmixIcon';
+
 export default {
   name: 'Settings',
   props: {
@@ -52,16 +61,15 @@ export default {
       document.body.classList.remove('modal-open');
     });
 
-    // const activeTab = ref(6);
     const allTabs = ref([
-      {'label': 'Speakers', 'component': 'speakers' },
-      {'label': 'Calibration', 'component': 'calibration' },
-      {'label': 'Signal Generator', 'component': 'signal-generator' },
-      {'label': 'EQ', 'component': 'eq' },
-      {'label': 'Inputs', 'component': 'inputs' },
-      {'label': 'Sound Enhancement', 'component': 'sound-enhancement' },
-      {'label': 'Connectivity', 'component': 'connectivity' },
-      {'label': 'System', 'component': 'system' },
+      {'label': 'Speakers', 'component': 'speakers', icon: 'speakers-icon' },
+      {'label': 'Calibration', 'component': 'calibration', icon: 'calibration-icon' },
+      {'label': 'Signal Generator', 'component': 'signal-generator', icon: 'sgen-icon' },
+      {'label': 'EQ', 'component': 'eq', icon: 'eq-icon' },
+      {'label': 'Inputs', 'component': 'inputs', icon: 'inputs-icon' },
+      {'label': 'Sound Enhancement', 'component': 'sound-enhancement', icon: 'upmix-icon' },
+      {'label': 'Connectivity', 'component': 'connectivity', icon: 'network-icon' },
+      {'label': 'System', 'component': 'system', icon: 'system-icon' },
     ]);
 
     function setActiveTab(tab) {
@@ -84,6 +92,14 @@ export default {
     SoundEnhancement,
     Connectivity,
     System,
+    CalibrationIcon,
+    EqIcon,
+    InputsIcon,
+    NetworkIcon,
+    SgenIcon,
+    SpeakersIcon,
+    SystemIcon,
+    UpmixIcon,
   },
 }
 </script>
@@ -122,4 +138,18 @@ export default {
     padding:0.5rem 0.675rem;
     border-radius: 0;
   }
+
+  .material-icons {
+    font-size: 18px;
+  }
+
+  svg {
+    fill: #007bff;
+    height: 18px;
+  }
+
+  .active svg {
+    fill: white;
+  }
+
 </style>
