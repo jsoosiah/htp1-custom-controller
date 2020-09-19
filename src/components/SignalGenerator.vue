@@ -3,7 +3,7 @@
     <div class="row mb-3">
       <div class="col">
         <h6>Signal Generator</h6>
-        <two-state-button v-bind:button-text="`Signal Generator: ${mso.sgen.sgensw}`" v-bind:state-on="mso.sgen.sgensw === 'on'" @click="toggleSignalGenerator()" />
+        <two-state-button v-bind:button-text="`Signal Generator: ${mso.sgen?.sgensw}`" v-bind:state-on="mso.sgen?.sgensw === 'on'" @click="toggleSignalGenerator()" />
       </div>
     </div>
     <div class="row">
@@ -20,7 +20,7 @@
             <tr v-for="channame in activeChannels">
               <td>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="channel" :id="`radio-${channame}`" :value="channame" :checked="mso.sgen.select === channame" @click="setSignalGeneratorChannel(channame)">
+                  <input class="form-check-input" type="radio" name="channel" :id="`radio-${channame}`" :value="channame" :checked="mso.sgen?.select === channame" @click="setSignalGeneratorChannel(channame)">
                   <label class="form-check-label" :for="`radio-${channame}`">
                     {{spkName(channame)}}
                   </label>
@@ -43,7 +43,7 @@
             <tr v-for="signal in signalOptions">
               <td>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="signal" :id="`radio-${signal.value}`" :value="signal.value" :checked="mso.sgen.signalType === signal.value" @click="setSignalGeneratorSignalType(signal.value)">
+                  <input class="form-check-input" type="radio" name="signal" :id="`radio-${signal.value}`" :value="signal.value" :checked="mso.sgen?.signalType === signal.value" @click="setSignalGeneratorSignalType(signal.value)">
                   <label class="form-check-label" :for="`radio-${signal.value}`">
                     {{signal.label}}
                   </label>
@@ -82,7 +82,7 @@
       ];
 
       const activeChannels = computed(() => {
-        return getActiveChannels(mso.value.speakers.groups);
+        return getActiveChannels(mso.value.speakers?.groups);
       });
 
       return { 

@@ -6,7 +6,7 @@
         <th>Input</th>
         <th>Label</th>
         <th>Visible on Home Page</th>
-        <th v-if="mso.stat.displayAdvancedSettings">PCM Detect Sensitivity</th>
+        <th v-if="mso.stat?.displayAdvancedSettings">PCM Detect Sensitivity</th>
         <th>UHD Capable</th>
       </tr>
     </thead>
@@ -79,7 +79,7 @@
         type="number" 
         class="form-control" 
         aria-label="Discoverable Timeout" 
-        :value="mso.bluetooth.discoverabletime" 
+        :value="mso.bluetooth?.discoverabletime" 
         @change="({ type, target }) => setBluetoothDiscoverableTime(target.value)" 
         min="0"
       >

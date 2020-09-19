@@ -7,7 +7,7 @@
           <div class="form-group">
             <label for="inputEmail3" class="col-form-label ">Min. volume</label>
             <div class="input-group numeric-input">
-              <input type="number" class="form-control" aria-label="Minimum volume" aria-describedby="basic-addon2" :value="mso.cal.vpl" @change="({ type, target }) => setMinVolume(target.value)" min="-100" max ="-60">
+              <input type="number" class="form-control" aria-label="Minimum volume" aria-describedby="basic-addon2" :value="mso.cal?.vpl" @change="({ type, target }) => setMinVolume(target.value)" min="-100" max ="-60">
               <div class="input-group-append">
                 <span class="input-group-text" id="basic-addon2">dB</span>
               </div>
@@ -18,7 +18,7 @@
           <div class="form-group">
             <label for="inputEmail3" class="col-form-label ">Max. volume</label>
             <div class="input-group numeric-input">
-              <input type="number" class="form-control" aria-label="Minimum volume" aria-describedby="basic-addon2" :value="mso.cal.vph" @change="({ type, target }) => setMaxVolume(target.value)" min="-59" max ="22">
+              <input type="number" class="form-control" aria-label="Minimum volume" aria-describedby="basic-addon2" :value="mso.cal?.vph" @change="({ type, target }) => setMaxVolume(target.value)" min="-59" max ="22">
               <div class="input-group-append">
                 <span class="input-group-text" id="basic-addon2">dB</span>
               </div>
@@ -29,7 +29,7 @@
           <div class="form-group">
             <label for="inputEmail3" class="col-form-label ">Max. output level</label>
             <div class="input-group numeric-input">
-              <input type="number" class="form-control" aria-label="Minimum volume" aria-describedby="basic-addon2" :value="mso.cal.ampsense" @change="({ type, target }) => setMaxOutputLevel(target.value)" min="0.1" max="4" step="0.1">
+              <input type="number" class="form-control" aria-label="Minimum volume" aria-describedby="basic-addon2" :value="mso.cal?.ampsense" @change="({ type, target }) => setMaxOutputLevel(target.value)" min="0.1" max="4" step="0.1">
               <div class="input-group-append">
                 <span class="input-group-text" id="basic-addon2">Vrms</span>
               </div>
@@ -40,7 +40,7 @@
           <div class="form-group">
             <label for="inputPassword3" class="col-form-label ">Lipsync delay</label>
               <div class="input-group numeric-input">
-                <input type="number" class="form-control" aria-label="Minimum volume" aria-describedby="basic-addon2" :value="mso.cal.lipsync" @change="({ type, target }) => setLipsyncDelay(target.value)" min="0" max="200">
+                <input type="number" class="form-control" aria-label="Minimum volume" aria-describedby="basic-addon2" :value="mso.cal?.lipsync" @change="({ type, target }) => setLipsyncDelay(target.value)" min="0" max="200">
                 <div class="input-group-append">
                   <span class="input-group-text" id="basic-addon2">ms</span>
                 </div>
@@ -60,10 +60,10 @@
   <nav class="navbar nav-fill nav-pills bg-light navbar-light">
     <a 
       class="nav-link" 
-      :class="{'active': mso.cal.currentdiracslot === key, 'italic': slot.hasBCFilter}" 
+      :class="{'active': mso.cal?.currentdiracslot === key, 'italic': slot.hasBCFilter}" 
       @click="setDiracSlot(key)" 
       href="javascript:void(0)" 
-      v-for="(slot, key) in mso.cal.slots"
+      v-for="(slot, key) in mso.cal?.slots"
     >
       {{slot.name}}
     </a>
@@ -83,14 +83,14 @@
     <tbody>
       <tr v-for="channame in activeChannels">
         <td>{{spkName(channame)}}</td>
-        <td class="text-right" :title="currentDiracSlot.channels[channame].caldelay">
-          {{formatDecimal(currentDiracSlot.channels[channame].caldelay)}}
+        <td class="text-right" :title="currentDiracSlot?.channels[channame].caldelay">
+          {{formatDecimal(currentDiracSlot?.channels[channame].caldelay)}}
         </td>
         <td class="text-right">
           <input 
             type="number" 
             class="form-control form-control-sm text-right" 
-            :value="currentDiracSlot.channels[channame].delay" 
+            :value="currentDiracSlot?.channels[channame].delay" 
             @change="({ type, target }) => setUserDelay(channame, target.value)" 
             min="0" 
             max="100" 
@@ -98,25 +98,25 @@
           />
         </td>
         <td 
-          class="text-right" :title="currentDiracSlot.channels[channame].caldelay + currentDiracSlot.channels[channame].delay">
-          {{formatDecimal(currentDiracSlot.channels[channame].caldelay + currentDiracSlot.channels[channame].delay)}}
+          class="text-right" :title="currentDiracSlot?.channels[channame].caldelay + currentDiracSlot?.channels[channame].delay">
+          {{formatDecimal(currentDiracSlot?.channels[channame].caldelay + currentDiracSlot?.channels[channame].delay)}}
         </td>
-        <td class="text-right" :title="currentDiracSlot.channels[channame].caltrim">
-          {{formatDecimal(currentDiracSlot.channels[channame].caltrim)}}
+        <td class="text-right" :title="currentDiracSlot?.channels[channame].caltrim">
+          {{formatDecimal(currentDiracSlot?.channels[channame].caltrim)}}
         </td>
         <td class="text-right">
           <input 
             type="number" 
             class="form-control form-control-sm text-right" 
-            :value="currentDiracSlot.channels[channame].trim" 
+            :value="currentDiracSlot?.channels[channame].trim" 
             @change="({ type, target }) => setUserTrim(channame, target.value)" 
             min="-12" 
             max="12" 
             step=".5"
           >
         </td>
-        <td class="text-right" :title="currentDiracSlot.channels[channame].caltrim + currentDiracSlot.channels[channame].trim">
-          {{formatDecimal(currentDiracSlot.channels[channame].caltrim + currentDiracSlot.channels[channame].trim)}}
+        <td class="text-right" :title="currentDiracSlot?.channels[channame].caltrim + currentDiracSlot?.channels[channame].trim">
+          {{formatDecimal(currentDiracSlot?.channels[channame].caltrim + currentDiracSlot?.channels[channame].trim)}}
         </td>
       </tr>
     </tbody>
@@ -139,11 +139,11 @@
       const { getActiveChannels, spkName } = useSpeakerGroups();
 
       const activeChannels = computed(() => {
-        return getActiveChannels(mso.value.speakers.groups);
+        return getActiveChannels(mso.value.speakers?.groups);
       });
 
       function formatDecimal(num) {
-        return num.toFixed(1);
+        return num?.toFixed(1);
       }
 
       return {...useMso(), activeChannels, spkName, formatDecimal};

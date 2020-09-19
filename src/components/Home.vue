@@ -3,6 +3,7 @@
       <div class="spinner-border text-primary" role="status">
         <span class="sr-only">Loading...</span>
       </div>
+      {{loading}}
     </div>
     <div class="fixed-top text-center" style="z-index: 9999999999999999" v-if="mso?.sgen?.sgensw === 'on'">
       <span class="sgen-on-warning">Signal Generator On</span>
@@ -235,7 +236,9 @@ export default {
     vertical-align: text-bottom;
     bottom:0;
     right:0;
-    padding:0.5rem;
+    margin:1rem;
+    width:2rem;
+    height:2rem;
     /*color:white;*/
   }
 

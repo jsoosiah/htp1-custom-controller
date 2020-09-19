@@ -44,7 +44,7 @@
                 type="checkbox" 
                 class="custom-control-input" 
                 id="dolbycs" 
-                :checked="mso.upmix.dolby.cs" 
+                :checked="mso.upmix?.dolby.cs" 
                 @click="toggleUpmixCenterSpread()"
               >
               <label class="custom-control-label" for="dolbycs">
@@ -64,7 +64,7 @@
                   <option 
                     v-for="opt in auroPresets" 
                     :value="opt.value"
-                    :selected="opt.value === mso.upmix.auro.preset"
+                    :selected="opt.value === mso.upmix?.auro.preset"
                   >
                     {{opt.label}}
                   </option>
@@ -81,10 +81,10 @@
                     id="auro-strength" 
                     min="1" 
                     max="16"
-                    :value="mso.upmix.auro.strength"
+                    :value="mso.upmix?.auro.strength"
                     @input="({ type, target }) => setAuroMaticStrength(target.value)"
                   >
-                  <span class="col-auto auro-str-label">{{mso.upmix.auro.strength}}</span>
+                  <span class="col-auto auro-str-label">{{mso.upmix?.auro.strength}}</span>
                 </div>
               </div>
             </div>
@@ -123,8 +123,8 @@
       <tr>
         <td>
           <two-state-button 
-            :button-text="`Wide Synth: ${mso.upmix.dts.ws ? 'on' : 'off'}`" 
-            :state-on="mso.upmix.dts.ws" 
+            :button-text="`Wide Synth: ${mso.upmix?.dts.ws ? 'on' : 'off'}`" 
+            :state-on="mso.upmix?.dts.ws" 
             :home-button="false"
             @click="toggleUpmixWideSynth()"
           />

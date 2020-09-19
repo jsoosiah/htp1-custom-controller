@@ -101,7 +101,7 @@
       const diagramSpeakerVisibility = computed(() => {
         const hideSpeakers = {};
         for (const spk of [...mainSpeakers, ...surroundSpeakers, ...upperSpeakers]) {
-          if (mso.value.speakers.groups[spk.code].present === false) {
+          if (mso.value.speakers?.groups[spk.code].present === false) {
             hideSpeakers[`hide-${spk.code}`] = true;
           }
         }

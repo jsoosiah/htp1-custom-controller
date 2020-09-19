@@ -1,16 +1,16 @@
 <template>
   <three-state-button
-    v-if = "mso.cal.slots[mso.cal.currentdiracslot].checksum !== 31802"
-    :button-text="`Dirac ${mso.cal.diracactive}
-      ${ mso.cal.diracactive=='on' && mso.cal.slots[mso.cal.currentdiracslot].hasBCFilter ? ' BC' : '   '}`"
+    v-if = "mso?.cal?.slots[mso?.cal?.currentdiracslot].checksum !== 31802"
+    :button-text="`Dirac ${mso?.cal?.diracactive}
+      ${ mso?.cal?.diracactive=='on' && mso?.cal?.slots[mso?.cal?.currentdiracslot].hasBCFilter ? ' BC' : '   '}`"
     :states="{'off': 0, 'on': 1, 'bypass': 2}"
-    :state-value="mso.cal.diracactive"
+    :state-value="mso?.cal?.diracactive"
     @click="toggleDirac()"
     :home-button="props.homeButton"
     aria-label="Dirac status"
   />
   <three-state-button 
-    v-if = "mso.cal.slots[mso.cal.currentdiracslot].checksum === 31802"
+    v-if = "mso?.cal?.slots[mso?.cal?.currentdiracslot].checksum === 31802"
     button-text="Dirac No Filter"
     :states="{'off': 0}"
     :state-value="'off'"

@@ -2,13 +2,13 @@
   <h6>CEC</h6>
     <div class="mb-3">
       <two-state-button 
-        :button-text="`CEC: ${mso.CEC.cecOnSw}`" 
-        :state-on="mso.CEC.cecOnSw === 'on'" 
+        :button-text="`CEC: ${mso?.CEC?.cecOnSw}`" 
+        :state-on="mso?.CEC?.cecOnSw === 'on'" 
         :home-button="false"
         @click="toggleCEC()"
       />
     </div>
-    <table class="table table-sm table-responsive table-striped mb-3" v-if="mso.CEC.cecOnSw === 'on'">
+    <table class="table table-sm table-responsive table-striped mb-3" v-if="mso.CEC?.cecOnSw === 'on'">
       <thead>
         <th>
           CEC Options
@@ -41,7 +41,7 @@
                 type="checkbox" 
                 class="custom-control-input" 
                 id="cec-pwrk" 
-                :checked="mso.CEC.allowpwrk" 
+                :checked="mso.CEC?.allowpwrk" 
                 @click="toggleCECAllowPowerKey()"
               >
               <label class="custom-control-label" for="cec-pwrk">Allow power keys</label>
@@ -55,7 +55,7 @@
                 type="checkbox" 
                 class="custom-control-input" 
                 id="cec-volk" 
-                :checked="mso.CEC.allowvolk" 
+                :checked="mso.CEC?.allowvolk" 
                 @click="toggleCECAllowVolKey()"
               >
               <label class="custom-control-label" for="cec-volk">Allow volume/mute keys</label>
@@ -69,7 +69,7 @@
                 type="checkbox" 
                 class="custom-control-input" 
                 id="cec-saf" 
-                :checked="mso.CEC.allowsaf" 
+                :checked="mso.CEC?.allowsaf" 
                 @click="toggleCECAllowSysAudioOff()"
               >
               <label class="custom-control-label" for="cec-saf">Allow system audio off</label>
@@ -83,7 +83,7 @@
                 type="checkbox" 
                 class="custom-control-input" 
                 id="cec-inp" 
-                :checked="mso.CEC.allowinp" 
+                :checked="mso.CEC?.allowinp" 
                 @click="toggleCECAllowInputChange()"
               >
               <label class="custom-control-label" for="cec-inp">Allow input changes</label>
@@ -97,7 +97,7 @@
                 type="checkbox" 
                 class="custom-control-input" 
                 id="cec-stdb" 
-                :checked="mso.CEC.allowstdb" 
+                :checked="mso.CEC?.allowstdb" 
                 @click="toggleCECAllowStandby()"
               >
               <label class="custom-control-label" for="cec-stdb">Allow standby</label>

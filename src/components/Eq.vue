@@ -2,8 +2,8 @@
   <h6>Tone Control</h6>
 
   <two-state-button 
-    :button-text="`Tone Control: ${mso.eq.tc ? 'on' : 'off'}`"
-    :state-on="mso.eq.tc"
+    :button-text="`Tone Control: ${mso.eq?.tc ? 'on' : 'off'}`"
+    :state-on="mso.eq?.tc"
     @click="toggleToneControl()"
   />
 
@@ -13,7 +13,7 @@
           <div class="form-group">
             <label for="inputEmail3" class="col-form-label ">Bass Corner Frequency</label>
             <div class="input-group numeric-input">
-              <input type="number" class="form-control" aria-label="Minimum volume" aria-describedby="basic-addon2" :value="mso.eq.bass.freq" @change="({ type, target }) => setBassCornerFrequency(target.value)" min="40" max ="500">
+              <input type="number" class="form-control" aria-label="Minimum volume" aria-describedby="basic-addon2" :value="mso.eq?.bass.freq" @change="({ type, target }) => setBassCornerFrequency(target.value)" min="40" max ="500">
               <div class="input-group-append">
                 <span class="input-group-text" id="basic-addon2">Hz</span>
               </div>
@@ -24,7 +24,7 @@
           <div class="form-group">
             <label for="inputEmail3" class="col-form-label ">Treble Corner Frequency</label>
             <div class="input-group numeric-input">
-              <input type="number" class="form-control" aria-label="Minimum volume" aria-describedby="basic-addon2" :value="mso.eq.treble.freq" @change="({ type, target }) => setTrebleCornerFrequency(target.value)" min="501" max ="8000">
+              <input type="number" class="form-control" aria-label="Minimum volume" aria-describedby="basic-addon2" :value="mso.eq?.treble.freq" @change="({ type, target }) => setTrebleCornerFrequency(target.value)" min="501" max ="8000">
               <div class="input-group-append">
                 <span class="input-group-text" id="basic-addon2">Hz</span>
               </div>
@@ -35,7 +35,7 @@
           <div class="form-group">
             <label for="inputEmail3" class="col-form-label ">Bass Boost/Cut Level</label>
             <div class="input-group numeric-input">
-              <input type="number" class="form-control" aria-label="Minimum volume" aria-describedby="basic-addon2" :value="mso.eq.bass.level" @change="({ type, target }) => setBassBoostCutLevel(target.value)" min="-12" max="12">
+              <input type="number" class="form-control" aria-label="Minimum volume" aria-describedby="basic-addon2" :value="mso.eq?.bass.level" @change="({ type, target }) => setBassBoostCutLevel(target.value)" min="-12" max="12">
               <div class="input-group-append">
                 <span class="input-group-text" id="basic-addon2">dB</span>
               </div>
@@ -46,7 +46,7 @@
           <div class="form-group">
             <label for="inputPassword3" class="col-form-label ">Treble Boost/Cut Level</label>
               <div class="input-group numeric-input">
-                <input type="number" class="form-control" aria-label="Minimum volume" aria-describedby="basic-addon2" :value="mso.eq.treble.level" @change="({ type, target }) => setTrebleBoostCutLevel(target.value)" min="-12" max="12">
+                <input type="number" class="form-control" aria-label="Minimum volume" aria-describedby="basic-addon2" :value="mso.eq?.treble.level" @change="({ type, target }) => setTrebleBoostCutLevel(target.value)" min="-12" max="12">
                 <div class="input-group-append">
                   <span class="input-group-text" id="basic-addon2">dB</span>
                 </div>
@@ -75,8 +75,8 @@
 
   <div class="mb-3">
     <two-state-button 
-      :button-text="`Parametric Equalization: ${mso.peq.peqsw ? 'on' : 'off'}`"
-      :state-on="mso.peq.peqsw"
+      :button-text="`Parametric Equalization: ${mso.peq?.peqsw ? 'on' : 'off'}`"
+      :state-on="mso.peq?.peqsw"
       @click="toggleGlobalPEQ()"
     />
   </div>
@@ -102,7 +102,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr v-for="(slot, index) in mso.peq.slots">
+      <tr v-for="(slot, index) in mso.peq?.slots">
         <td class="text-right">{{index + 1}}</td>
         <td class="text-right">
           <input 
@@ -172,7 +172,7 @@
       const { getActiveChannels, spkName } = useSpeakerGroups();
 
       const activeChannels = computed(() => {
-        return getActiveChannels(mso.value.speakers.groups);
+        return getActiveChannels(mso.value.speakers?.groups);
       });
 
       const selectedChannel = ref(0);
@@ -182,7 +182,7 @@
       }
 
       function hasModifications(channame) {
-        return mso.value.peq.slots.filter(
+        return mso.value.peq?.slots.filter(
           slot => slot.channels[channame].gaindB !== 0
         ).length > 0;
       }
