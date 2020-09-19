@@ -1,3 +1,6 @@
+// websocket URL - note that the IP address is hard-coded in development mode
+const websocketurl = `ws://${process.env.NODE_ENV === 'production' ? window.location.host : '192.168.1.13'}/ws/controller`;
+
 // Define WSClient instance, a WebSocket with auto reconnect - https://stackoverflow.com/questions/49629881/reconnecting-a-websocket-without-creating-a-new-instance
 class WSClient {
 
@@ -130,7 +133,7 @@ class WSClient {
 // this implementation is ported from https://github.com/logaretm/vue-use-web by Abdelrahman Awad 
 // it uses the above WSClient to reconnect automatically 
 import { ref, onMounted, onUnmounted } from 'vue';
-export function useWebSocket(url) {
+function _useWebSocket(url) {
     const data = ref(null);
     const state = ref('CONNECTING');
     let ws;
@@ -169,3 +172,6 @@ export function useWebSocket(url) {
     };
 }
 
+export function useWebSocket() {
+    return _useWebSocket(websocketurl);
+}

@@ -3,9 +3,6 @@ import { useWebSocket } from './useWebSocket.js';
 import { applyPatch } from 'fast-json-patch/index.mjs';
 import { debounce } from 'lodash-es';
 
-// websocket URL - note that the IP address is hard-coded in development mode
-const websocketurl = `ws://${process.env.NODE_ENV === 'production' ? window.location.host : '192.168.1.13'}/ws/controller`;
-
 // local MSO state, used to display values on the interface
 const mso = ref({});
 
@@ -88,7 +85,7 @@ const commandsReceivedTouchedFlag = ref(false);
 */
 export default function useMso() {
 
-  const { data, state, send, close } = useWebSocket(websocketurl);
+  const { data, state, send, close } = useWebSocket();
 
   function powerOff() {
     // TODO show a bootstrap modal instead
@@ -530,6 +527,70 @@ export default function useMso() {
     send('btdiscover ' + mso.value.bluetooth.discoverabletime);
   }
 
+  function toggleCEC() {
+    mso.value.CEC.cecOnSw = mso.value.CEC.cecOnSw === 'off' ? 'on' : 'off';
+
+    commandsToSend.value = addCommand(
+      commandsToSend.value,
+      {'op': 'replace', 'path': `/CEC/cecOnSw`, value: mso.value.CEC.cecOnSw}
+    );
+  }
+
+  function setTVSoundSrcDefault(inp) {
+    mso.value.stat.TVSoundSrcDefault = inp;
+
+    commandsToSend.value = addCommand(
+      commandsToSend.value,
+      {'op': 'replace', 'path': `/stat/TVSoundSrcDefault`, value: mso.value.stat.TVSoundSrcDefault}
+    );
+  }
+
+  function toggleCECAllowPowerKey() {
+    mso.value.CEC.allowpwrk = !mso.value.CEC.allowpwrk;
+
+    commandsToSend.value = addCommand(
+      commandsToSend.value,
+      {'op': 'replace', 'path': `/CEC/allowpwrk`, value: mso.value.CEC.allowpwrk}
+    );
+  }
+
+  function toggleCECAllowVolKey() {
+    mso.value.CEC.allowvolk = !mso.value.CEC.allowvolk;
+
+    commandsToSend.value = addCommand(
+      commandsToSend.value,
+      {'op': 'replace', 'path': `/CEC/allowvolk`, value: mso.value.CEC.allowvolk}
+    );
+  }
+
+  function toggleCECAllowSysAudioOff() {
+    mso.value.CEC.allowsaf = !mso.value.CEC.allowsaf;
+
+    commandsToSend.value = addCommand(
+      commandsToSend.value,
+      {'op': 'replace', 'path': `/CEC/allowsaf`, value: mso.value.CEC.allowsaf}
+    );
+  }
+
+  function toggleCECAllowInputChange() {
+    mso.value.CEC.allowinp = !mso.value.CEC.allowinp;
+
+    commandsToSend.value = addCommand(
+      commandsToSend.value,
+      {'op': 'replace', 'path': `/CEC/allowinp`, value: mso.value.CEC.allowinp}
+    );
+  }
+
+  function toggleCECAllowStandby() {
+    mso.value.CEC.allowstdb = !mso.value.CEC.allowstdb;
+
+    commandsToSend.value = addCommand(
+      commandsToSend.value,
+      {'op': 'replace', 'path': `/CEC/allowstdb`, value: mso.value.CEC.allowstdb}
+    );
+  }
+
+
   const currentDiracSlot = computed(() => {
     return mso.value.cal.slots[mso.value.cal.currentdiracslot];
   });
@@ -686,6 +747,8 @@ export default function useMso() {
     toggleGlobalPEQ, setPEQCenterFrequency, setPEQGain, setPEQQuality, setPEQFilterType,
     setInputLabel, toggleInputVisible, setInputFormatDetectOption, toggleInputUHD, 
     setBluetoothDiscoverableTime, enableBluetoothDiscovery,
+    toggleCEC, setTVSoundSrcDefault, toggleCECAllowPowerKey, toggleCECAllowVolKey, 
+    toggleCECAllowSysAudioOff, toggleCECAllowInputChange, toggleCECAllowStandby,
     showCrossoverControls, currentDiracSlot,
     state, loading,
     commandsToSend, commandsReceived, commandsToSendTouchedFlag, commandsReceivedTouchedFlag // debug

@@ -35,7 +35,12 @@
             <span class="current-input-label">{{mso.inputs[mso.input].label}}</span>
           </div>
           <div class="col text-right">
-            <settings v-if="settingsModalIsOpen" @close="toggleSettingsModal()" />
+            <settings 
+              v-if="settingsModalIsOpen" 
+              @close="toggleSettingsModal()" 
+              @active-tab-change="setActiveTab"
+              :active-tab="activeTab"
+            />
             <button class="btn btn-dark rounded-circle menu-btn" @click="toggleSettingsModal()">
               <font-awesome-icon size="lg" :icon="['fas', 'cog']" />
             </button>
@@ -174,14 +179,20 @@ export default {
   setup() {
 
     const settingsModalIsOpen = ref(false);
+    const activeTab = ref(0);
 
     function toggleSettingsModal() {
       settingsModalIsOpen.value = !settingsModalIsOpen.value;
     }
 
+    function setActiveTab(tab) {
+      activeTab.value = tab;
+    }
+
     return { 
       ...useMso(), ...useStream(),
-      settingsModalIsOpen, toggleSettingsModal
+      settingsModalIsOpen, toggleSettingsModal,
+      activeTab, setActiveTab
     };
   },
   components: {

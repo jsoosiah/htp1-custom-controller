@@ -10,10 +10,10 @@
           </button>
         </div>
           <nav class="navbar nav-fill nav-pills bg-light navbar-light">
-            <a class="nav-link" :class="{'active': activeTab === key}" @click="setActiveTab(key)" href="javascript:void(0)" v-for="(tab, key) in allTabs">{{tab.label}}</a>
+            <a class="nav-link" :class="{'active': props.activeTab === key}" @click="setActiveTab(key)" href="javascript:void(0)" v-for="(tab, key) in allTabs">{{tab.label}}</a>
           </nav>
         <div class="modal-body text-left">
-          <component :is="allTabs[activeTab].component"></component>
+          <component :is="allTabs[props.activeTab].component"></component>
         </div>
       </div>
     </div>
@@ -36,6 +36,12 @@ import System from './System.vue';
 
 export default {
   name: 'Settings',
+  props: {
+    activeTab: {
+      type: Number,
+      required: true,
+    },
+  },
   setup(props, { emit }) {
 
     onMounted(() => {
@@ -46,7 +52,7 @@ export default {
       document.body.classList.remove('modal-open');
     });
 
-    const activeTab = ref(0);
+    // const activeTab = ref(6);
     const allTabs = ref([
       {'label': 'Speakers', 'component': 'speakers' },
       {'label': 'Calibration', 'component': 'calibration' },
@@ -59,14 +65,15 @@ export default {
     ]);
 
     function setActiveTab(tab) {
-      activeTab.value = tab;
+      // activeTab.value = tab;
+      emit('active-tab-change', tab);
     }
 
     function closeModal() {
       emit('close');
     }
 
-    return { activeTab, setActiveTab, allTabs, closeModal };
+    return { props, setActiveTab, allTabs, closeModal };
   },
   components: {
     Speakers,
