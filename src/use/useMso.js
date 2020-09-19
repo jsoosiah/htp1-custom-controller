@@ -61,10 +61,6 @@ const allUpmixers = computed(() => {
   return filtered;
 });
 
-// loading indicator, when commands have been 
-// sent to MSO and a response is being awaited
-const loading = ref(true);
-
 // list of commands to send to MSO based on user interactions
 // interactions are debounced so commands for rapid interactions
 // will be sent in bulk instead of individually
@@ -73,10 +69,12 @@ const commandsToSend = ref([]);
 // list of commands received from MSO, which need to be applied to local state
 const commandsReceived = ref([]);
 
-let commandsToSendTouchedTimer, commandsReceivedTouchedTimer;
-const userInteractionTimerInterval = 250;
-const commandsToSendTouchedFlag = ref(false);
-const commandsReceivedTouchedFlag = ref(false);
+// list of commands sent to MSO where a resonse has not yet been received
+const commandsAwaitingResponse = ref([]);
+
+// loading indicator, when commands have been 
+// sent to MSO and a response is being awaited
+const loading = computed(() => commandsAwaitingResponse.value.length > 0);
 
 /**
 * Composition function which exposes the MSO state, as well 
@@ -223,19 +221,18 @@ export default function useMso() {
 
     switch(mso.value.cal.diracactive) {
       case 'on':
-        // mso.value.cal.diracactive = 'bypass';
         diracActive = 'bypass';
         break;
       case 'off':
-        // mso.value.cal.diracactive = 'on';
         diracActive = 'on';
         break;
       default:
       case 'bypass':
-        // mso.value.cal.diracactive = 'off';
         diracActive = 'off';
         break;
     }
+
+    mso.value.cal.diracactive = diracActive;
 
     commandsToSend.value = addCommand(
       commandsToSend.value,
@@ -281,7 +278,7 @@ export default function useMso() {
   }
 
   function setCenterFreq(spkCode, centerFreq) {
-    mso.value.speakers.groups[spkCode].fc = centerFreq;
+    mso.value.speakers.groups[spkCode].fc = parseInt(centerFreq);
 
     commandsToSend.value = addCommand(
       commandsToSend.value,
@@ -607,9 +604,9 @@ export default function useMso() {
   function sendCommands() {
     console.log('sendCommands', commandsToSend.value.length)
     if (commandsToSend.value.length > 0) {
-      loading.value = true;
-      send('changemso ' + JSON.stringify(commandsToSend.value));
+      commandsAwaitingResponse.value = addCommandList(commandsAwaitingResponse.value, commandsToSend.value);
       console.log('changemso', commandsToSend.value.length, commandsToSend.value[0]);
+      send('changemso ' + JSON.stringify(commandsToSend.value));
       commandsToSend.value = [];
     }
   }
@@ -628,15 +625,25 @@ export default function useMso() {
   function receiveCommands() {
     if (commandsReceived.value.length > 0) {
       console.log('receiveCommands', commandsReceived.value.length, commandsReceived.value[0]);
-      applyPatch(mso.value, commandsReceived.value);
-      // console.log('receiveCommands mso result', mso.value);
-
-      // if (commandsToSend.value.length > 0) {
-      //   commandsToSend.value = [];
-      // }
       
       if (commandsReceived.value.length > 0) {
-        commandsReceived.value = [];
+
+        console.log('filter commandsAwaitingResponse before', commandsAwaitingResponse.value, commandsReceived.value);
+
+        commandsAwaitingResponse.value = filterMatchingCommandList(
+          commandsAwaitingResponse.value, commandsReceived.value
+        );
+
+        console.log('filter commandsAwaitingResponse after', commandsAwaitingResponse.value);
+
+        // only apply patch if not awaiting any more commands
+        if (commandsAwaitingResponse.value.length === 0) {
+          console.log('applyPatch', commandsReceived.value)
+          applyPatch(mso.value, commandsReceived.value);
+          commandsReceived.value = [];
+        } else {
+          console.log('skip applyPatch!!!!!!!', commandsAwaitingResponse.value)
+        }
       }
 
     } else {
@@ -644,7 +651,6 @@ export default function useMso() {
     }
   
     
-    loading.value = false;
   }
 
   const debouncedReceiveCommands = debounce(receiveCommands, 250);
@@ -676,7 +682,6 @@ export default function useMso() {
         console.log('error', arg);
       }
 
-      loading.value = false;
     },
     { lazy: true }
   );
@@ -699,14 +704,6 @@ export default function useMso() {
   watch(
     commandsToSend,
     val => {
-
-      commandsToSendTouchedFlag.value = true;
-
-      clearTimeout(commandsToSendTouchedTimer);
-      commandsToSendTouchedTimer = setTimeout(() => {
-        commandsToSendTouchedFlag.value = false;
-      }, userInteractionTimerInterval);
-
       debouncedSendCommands();
     }
   );
@@ -716,17 +713,7 @@ export default function useMso() {
   watch(
     commandsReceived,
     val => {
-
-      commandsReceivedTouchedFlag.value = true;
-
-      clearTimeout(commandsReceivedTouchedTimer);
-      commandsReceivedTouchedTimer = setTimeout(() => {
-        commandsReceivedTouchedFlag.value = false;
-        // only receive commands if commands have not been sent and received for x ms
-        if (!commandsToSendTouchedFlag.value && !commandsReceivedTouchedFlag.value) {
-          debouncedReceiveCommands();
-        }
-      }, userInteractionTimerInterval);
+      debouncedReceiveCommands();
     }
   );
 
@@ -751,7 +738,7 @@ export default function useMso() {
     toggleCECAllowSysAudioOff, toggleCECAllowInputChange, toggleCECAllowStandby,
     showCrossoverControls, currentDiracSlot,
     state, loading,
-    commandsToSend, commandsReceived, commandsToSendTouchedFlag, commandsReceivedTouchedFlag // debug
+    commandsToSend, commandsReceived, commandsAwaitingResponse // debug
   };
 }
 
@@ -771,14 +758,46 @@ function parseMSO(cmd) {
 // and all commands of type newCmd filtered out of cmdList,
 // since those should be unnecessary  
 function addCommand(cmdList, newCmd) {
-  const newCmdList = cmdList.filter(
-    cmd => {
-      return !(cmd.op === newCmd.op && cmd.path === newCmd.path);
-      // return true;
-    }
-  );
+  const newCmdList = filterMatchingCommandType(cmdList, newCmd);
 
   newCmdList.push(newCmd);
   
   return newCmdList;
+}
+
+function addCommandList(cmdList, newCmdList) {
+  let result = [];
+  for (const newCmd of newCmdList) {
+    result = addCommand(cmdList, newCmd);
+  }
+
+  return result;
+}
+
+function filterMatchingCommandType(cmdList, newCmd) {
+  return cmdList.filter(
+    cmd => {
+      return !(cmd.op === newCmd.op && cmd.path === newCmd.path);
+    }
+  );
+}
+
+// including value
+function filterMatchingCommand(cmdList, newCmd) {
+  return cmdList.filter(
+    cmd => {
+      return !(cmd.op === newCmd.op && cmd.path === newCmd.path && cmd.value === newCmd.value);
+    }
+  );
+}
+
+function filterMatchingCommandList(cmdList, newCmdList) {
+  
+  let result = [...cmdList];
+
+  for (const newCmd of newCmdList) {
+    result = filterMatchingCommand(result, newCmd);
+  }
+
+  return result;
 }

@@ -232,7 +232,7 @@
 
   .table .form-control {
     width: auto;
-    /*max-width: 6rem;*/
+    max-width: 6rem;
     float:right;
   }
 
