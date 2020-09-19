@@ -1,5 +1,5 @@
 <template>
-  <h6>CEC</h6>
+  <h6>HDMI CEC</h6>
     <div class="mb-3">
       <two-state-button 
         :button-text="`CEC: ${mso?.CEC?.cecOnSw}`" 

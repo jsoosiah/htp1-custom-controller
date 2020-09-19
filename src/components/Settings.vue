@@ -4,7 +4,7 @@
     <div class="modal-dialog modal-xl">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="settingsModalLabel">System Configuration</h5>
+          <h5 class="modal-title" id="settingsModalLabel"><font-awesome-icon size="lg" :icon="['fas', 'cog']" /> System Configuration</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="closeModal()">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -150,6 +150,10 @@ export default {
 
   .active svg {
     fill: white;
+  }
+
+  .modal-title svg {
+    margin: 0.2rem 0rem;
   }
 
 </style>
