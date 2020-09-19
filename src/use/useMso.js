@@ -1,23 +1,9 @@
 import { ref, watch, computed } from 'vue';
 import { useWebSocket } from './useWebSocket.js';
-import { applyPatch } from 'fast-json-patch/index.mjs';
+import { applyPatch, compare } from 'fast-json-patch/index.mjs';
 import { debounce } from 'lodash-es';
 
-// local MSO state, used to display values on the interface
-const mso = ref({});
-
-// visible MSO inputs, computed from MSO state
-const visibleInputs = computed(() => {
-  const filtered = {};
-  if (mso.value.inputs) {
-    for (const inpKey in mso.value.inputs) {
-      if (mso.value.inputs[inpKey].visible) {
-        filtered[inpKey] = mso.value.inputs[inpKey];
-      }
-    }
-  }
-  return filtered;
-});
+import useLoading from './useLoading.js';
 
 // map upmix codes to labels,
 // used internally by visibleUpmixers
@@ -31,51 +17,6 @@ const upmixLabels = {
   'stereo': 'Stereo'
 }
 
-// visible upmixers, computed from MSO state
-const visibleUpmixers = computed(() => {
-  const filtered = {};
-  if (mso.value.upmix) {
-    for (const upmixKey in mso.value.upmix) {
-      if (mso.value.upmix[upmixKey].homevis) {
-        filtered[upmixKey] = mso.value.upmix[upmixKey];
-        filtered[upmixKey].label = upmixLabels[upmixKey];
-      }
-    }
-  }
-
-  return filtered;
-});
-
-const allUpmixers = computed(() => {
-  const filtered = {};
-  if (mso.value.upmix) {
-    for (const upmixKey in mso.value.upmix) {
-      if (typeof mso.value.upmix[upmixKey] === 'object') {
-        filtered[upmixKey] = mso.value.upmix[upmixKey];
-        filtered[upmixKey].label = upmixLabels[upmixKey];
-        filtered[upmixKey].value = upmixKey;
-      }
-    }
-  }
-
-  return filtered;
-});
-
-// list of commands to send to MSO based on user interactions
-// interactions are debounced so commands for rapid interactions
-// will be sent in bulk instead of individually
-const commandsToSend = ref([]);
-
-// list of commands received from MSO, which need to be applied to local state
-const commandsReceived = ref([]);
-
-// list of commands sent to MSO where a resonse has not yet been received
-const commandsAwaitingResponse = ref([]);
-
-// loading indicator, when commands have been 
-// sent to MSO and a response is being awaited
-const loading = computed(() => commandsAwaitingResponse.value.length > 0);
-
 /**
 * Composition function which exposes the MSO state, as well 
 * as an API to interact with MSO, abstracting away all 
@@ -83,7 +24,88 @@ const loading = computed(() => commandsAwaitingResponse.value.length > 0);
 */
 export default function useMso() {
 
+  const { loading } = useLoading();
+
+  const localLoading = ref(false);
+
+  // local MSO state, used to display values on the interface
+  const mso = ref({});
+
   const { data, state, send, close } = useWebSocket();
+
+  // list of commands to send to MSO based on user interactions
+  // interactions are debounced so commands for rapid interactions
+  // will be sent in bulk instead of individually
+  const commandsToSend = ref([]);
+
+  // list of commands received from MSO, which need to be applied to local state
+  const commandsReceived = ref([]);
+
+  // list of commands sent to MSO where a resonse has not yet been received
+  const commandsAwaitingResponse = ref([]);
+
+  // mso computed getters ------------------------------------
+
+  // loading indicator, when commands have been 
+  // sent to MSO and a response is being awaited
+  // const loading = computed(() => commandsAwaitingResponse.value.length > 0);
+
+  // visible MSO inputs, computed from MSO state
+  const visibleInputs = computed(() => {
+    const filtered = {};
+    if (mso.value.inputs) {
+      for (const inpKey in mso.value.inputs) {
+        if (mso.value.inputs[inpKey].visible) {
+          filtered[inpKey] = mso.value.inputs[inpKey];
+        }
+      }
+    }
+    return filtered;
+  });
+
+  // visible upmixers, computed from MSO state
+  const visibleUpmixers = computed(() => {
+    const filtered = {};
+    if (mso.value.upmix) {
+      for (const upmixKey in mso.value.upmix) {
+        if (mso.value.upmix[upmixKey].homevis) {
+          filtered[upmixKey] = mso.value.upmix[upmixKey];
+          filtered[upmixKey].label = upmixLabels[upmixKey];
+        }
+      }
+    }
+
+    return filtered;
+  });
+
+  const allUpmixers = computed(() => {
+    const filtered = {};
+    if (mso.value.upmix) {
+      for (const upmixKey in mso.value.upmix) {
+        if (typeof mso.value.upmix[upmixKey] === 'object') {
+          filtered[upmixKey] = mso.value.upmix[upmixKey];
+          filtered[upmixKey].label = upmixLabels[upmixKey];
+          filtered[upmixKey].value = upmixKey;
+        }
+      }
+    }
+
+    return filtered;
+  });
+
+  const currentDiracSlot = computed(() => {
+    return mso.value.cal?.slots[mso.value.cal?.currentdiracslot];
+  });
+
+  const diracBCEnabled = computed(() => {
+    return mso.value.cal?.slots[mso.value.cal?.currentdiracslot].hasBCFilter;
+  });
+
+  const showCrossoverControls = computed(() => {
+    return !(mso.value.cal?.diracactive=='on' && diracBCEnabled.value);
+  });
+
+  // mso mutators --------------------------------------------
 
   function powerOff() {
     // TODO show a bootstrap modal instead
@@ -102,6 +124,7 @@ export default function useMso() {
 
   // TODO enforce min/max volume
   function setVolume(volumeLevel) {
+    console.log('!!!!!!!!!!!!!! setVolume', volumeLevel);
     mso.value.volume = volumeLevel;
     // modifying commandsToSend directly with commandsToSend.push
     // does not seem to trigger the watch function below,
@@ -587,24 +610,9 @@ export default function useMso() {
     );
   }
 
-
-  const currentDiracSlot = computed(() => {
-    return mso.value.cal.slots[mso.value.cal.currentdiracslot];
-  });
-
-  const diracBCEnabled = computed(() => {
-    return mso.value.cal.slots[mso.value.cal.currentdiracslot].hasBCFilter;
-  });
-
-  const showCrossoverControls = computed(() => {
-    console.log('showCrossoverControls', mso.value.cal.diracactive, diracBCEnabled.value)
-    return !(mso.value.cal.diracactive=='on' && diracBCEnabled.value);
-  });
-
   function sendCommands() {
-    console.log('sendCommands', commandsToSend.value.length)
+    console.log('sendCommands', commandsToSend, commandsAwaitingResponse)
     if (commandsToSend.value.length > 0) {
-      commandsAwaitingResponse.value = addCommandList(commandsAwaitingResponse.value, commandsToSend.value);
       console.log('changemso', commandsToSend.value.length, commandsToSend.value[0]);
       send('changemso ' + JSON.stringify(commandsToSend.value));
       commandsToSend.value = [];
@@ -621,6 +629,7 @@ export default function useMso() {
     // at the end
     maxWait: 500,
     leading: true,
+    trailing: true
   });
 
   function receiveCommands() {
@@ -629,32 +638,25 @@ export default function useMso() {
       
       if (commandsReceived.value.length > 0) {
 
-        console.log('filter commandsAwaitingResponse before', commandsAwaitingResponse.value, commandsReceived.value);
-
         commandsAwaitingResponse.value = filterMatchingCommandList(
           commandsAwaitingResponse.value, commandsReceived.value
         );
 
-        console.log('filter commandsAwaitingResponse after', commandsAwaitingResponse.value);
-
         // only apply patch if not awaiting any more commands
         if (commandsAwaitingResponse.value.length === 0) {
-          console.log('applyPatch', commandsReceived.value)
+          console.log('!!!! applyPatch', commandsReceived.value)
           applyPatch(mso.value, commandsReceived.value);
           commandsReceived.value = [];
+
         } else {
-          console.log('skip applyPatch!!!!!!!', commandsAwaitingResponse.value)
+          console.log('skip applyPatch', commandsAwaitingResponse.value)
         }
       }
 
     } else {
       console.log('skip receiveCommands', commandsToSend.value.length, commandsReceived.value.length);
     }
-  
-    
   }
-
-  const debouncedReceiveCommands = debounce(receiveCommands, 250);
 
   // watch websocket messages and keep local mso state up to date
   watch(
@@ -700,12 +702,50 @@ export default function useMso() {
     }
   );
 
-  // watch commandsToSend, and send them to MSO
-  // after user interaction has stopped for x ms
+  // watch commandsToSend, add them to commandsAwaitingResponse
+  // triggers the commandsAwaitingResponse watcher
   watch(
     commandsToSend,
-    val => {
-      debouncedSendCommands();
+    newCommandsToSend => {
+      console.log('watch commandsToSend', newCommandsToSend.length, newCommandsToSend)
+      if (newCommandsToSend.length > 0) {
+        commandsAwaitingResponse.value = addCommandList(commandsAwaitingResponse.value, newCommandsToSend);
+        // debouncedSendCommands();
+      }
+    }
+  );
+
+  // watch commandsAwaitingResponse, if any are present, 
+  // debounce send commands to MSO
+  watch(
+    commandsAwaitingResponse,
+    newCommandsAwaitingResponse => {
+      console.log('watch commandsAwaitingResponse', newCommandsAwaitingResponse.length)
+      if (newCommandsAwaitingResponse.length > 0) {
+        debouncedSendCommands();
+        // sendCommands();
+        localLoading.value = true;
+      } else {
+        localLoading.value = false;
+      }
+
+      
+    }
+  );
+
+  // watch local loading indicator,
+  // update global loading indicator
+  watch(
+    localLoading, 
+    (newLocalLoading, oldLocalLoading) => {
+      // console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!! localLoading', newLocalLoading, oldLocalLoading);
+      // if (newLocalLoading !== oldLocalLoading) {
+        if (newLocalLoading) {
+          loading.value += 1;
+        } else {
+          loading.value -= 1;
+        }
+      // }
     }
   );
 
@@ -713,8 +753,10 @@ export default function useMso() {
   // after user interaction has stopped for x ms
   watch(
     commandsReceived,
-    val => {
-      debouncedReceiveCommands();
+    newCommandsReceived => {
+      if (newCommandsReceived.length > 0) {
+        receiveCommands();
+      }
     }
   );
 
@@ -779,6 +821,7 @@ function filterMatchingCommandType(cmdList, newCmd) {
   return cmdList.filter(
     cmd => {
       return !(cmd.op === newCmd.op && cmd.path === newCmd.path);
+      // return true;
     }
   );
 }
