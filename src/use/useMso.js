@@ -17,6 +17,20 @@ const upmixLabels = {
   'stereo': 'Stereo'
 }
 
+// local MSO state, used to display values on the interface
+const mso = ref({});
+
+// list of commands to send to MSO based on user interactions
+// interactions are debounced so commands for rapid interactions
+// will be sent in bulk instead of individually
+const commandsToSend = ref([]);
+
+// list of commands received from MSO, which need to be applied to local state
+const commandsReceived = ref([]);
+
+// list of commands sent to MSO where a resonse has not yet been received
+const commandsAwaitingResponse = ref([]);
+
 /**
 * Composition function which exposes the MSO state, as well 
 * as an API to interact with MSO, abstracting away all 
@@ -26,23 +40,9 @@ export default function useMso() {
 
   const { loading } = useLoading();
 
-  const localLoading = ref(false);
-
-  // local MSO state, used to display values on the interface
-  const mso = ref({});
-
   const { data, state, send, close } = useWebSocket();
 
-  // list of commands to send to MSO based on user interactions
-  // interactions are debounced so commands for rapid interactions
-  // will be sent in bulk instead of individually
-  const commandsToSend = ref([]);
-
-  // list of commands received from MSO, which need to be applied to local state
-  const commandsReceived = ref([]);
-
-  // list of commands sent to MSO where a resonse has not yet been received
-  const commandsAwaitingResponse = ref([]);
+  const localLoading = ref(false);
 
   // mso computed getters ------------------------------------
 
