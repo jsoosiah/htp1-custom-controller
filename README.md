@@ -3,6 +3,17 @@
 ## Overview
 This project is an unofficial web interface to control the Monoprice Monolith HTP-1 written in Vue 3. The goal is a lightweight, responsive, and mobile-friendly interface. 
 
+## Screens
+
+![HTP-1 Home](docs/htp1-home.png)
+![HTP-1 Home - Mobile](docs/htp1-home-mobile.png)
+![HTP-1 Speakers](docs/htp1-speakers.png)
+![HTP-1 Calibratoin](docs/htp1-calibration.png)
+![HTP-1 Signal Generator](docs/htp1-sgen.png)
+![HTP-1 EQ](docs/htp1-eq.png)
+![HTP-1 Inputs](docs/htp1-inputs.png)
+![HTP-1 Sound Enhancement](docs/htp1-upmix.png)
+
 ## Project setup
 ```
 npm install
