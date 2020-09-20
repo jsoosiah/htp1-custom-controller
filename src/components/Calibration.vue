@@ -5,8 +5,8 @@
     <div class="row">
       <div class="col-md">
           <div class="form-group">
-            <label for="inputEmail3" class="col-form-label ">Min. volume</label>
-            <div class="input-group numeric-input">
+            <label for="inputEmail3" class="col-form-label col-form-label-sm">Min. volume</label>
+            <div class="input-group input-group-sm numeric-input">
               <input type="number" class="form-control" aria-label="Minimum volume" aria-describedby="basic-addon2" :value="mso.cal?.vpl" @change="({ type, target }) => setMinVolume(target.value)" min="-100" max ="-60">
               <div class="input-group-append">
                 <span class="input-group-text" id="basic-addon2">dB</span>
@@ -16,8 +16,8 @@
       </div>
       <div class="col-md">
           <div class="form-group">
-            <label for="inputEmail3" class="col-form-label ">Max. volume</label>
-            <div class="input-group numeric-input">
+            <label for="inputEmail3" class="col-form-label col-form-label-sm">Max. volume</label>
+            <div class="input-group input-group-sm numeric-input">
               <input type="number" class="form-control" aria-label="Minimum volume" aria-describedby="basic-addon2" :value="mso.cal?.vph" @change="({ type, target }) => setMaxVolume(target.value)" min="-59" max ="22">
               <div class="input-group-append">
                 <span class="input-group-text" id="basic-addon2">dB</span>
@@ -27,8 +27,8 @@
       </div>
       <div class="col-md">
           <div class="form-group">
-            <label for="inputEmail3" class="col-form-label ">Max. output level</label>
-            <div class="input-group numeric-input">
+            <label for="inputEmail3" class="col-form-label col-form-label-sm">Max. output level</label>
+            <div class="input-group input-group-sm numeric-input">
               <input type="number" class="form-control" aria-label="Minimum volume" aria-describedby="basic-addon2" :value="mso.cal?.ampsense" @change="({ type, target }) => setMaxOutputLevel(target.value)" min="0.1" max="4" step="0.1">
               <div class="input-group-append">
                 <span class="input-group-text" id="basic-addon2">Vrms</span>
@@ -38,8 +38,8 @@
       </div>
       <div class="col-md">
           <div class="form-group">
-            <label for="inputPassword3" class="col-form-label ">Lipsync delay</label>
-              <div class="input-group numeric-input">
+            <label for="inputPassword3" class="col-form-label col-form-label-sm">Lipsync delay</label>
+              <div class="input-group input-group-sm numeric-input">
                 <input type="number" class="form-control" aria-label="Minimum volume" aria-describedby="basic-addon2" :value="mso.cal?.lipsync" @change="({ type, target }) => setLipsyncDelay(target.value)" min="0" max="200">
                 <div class="input-group-append">
                   <span class="input-group-text" id="basic-addon2">ms</span>

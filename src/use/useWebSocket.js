@@ -143,8 +143,10 @@ function _useWebSocket(url) {
         ws.close(code, reason);
     };
     const send = function send(data) {
-        if (!ws)
+        if (!ws || state.value !== 'OPEN') {
+            console.log('send: socket not ready, ignoring', data);
             return;
+        }
         ws.send(data);
     };
     onMounted(() => {

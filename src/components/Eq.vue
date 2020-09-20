@@ -11,8 +11,8 @@
     <div class="row">
       <div class="col-lg">
           <div class="form-group">
-            <label for="inputEmail3" class="col-form-label ">Bass Corner Frequency</label>
-            <div class="input-group numeric-input">
+            <label for="inputEmail3" class="col-form-label col-form-label-sm ">Bass Corner Frequency</label>
+            <div class="input-group input-group-sm numeric-input">
               <input type="number" class="form-control" aria-label="Minimum volume" aria-describedby="basic-addon2" :value="mso.eq?.bass.freq" @change="({ type, target }) => setBassCornerFrequency(target.value)" min="40" max ="500">
               <div class="input-group-append">
                 <span class="input-group-text" id="basic-addon2">Hz</span>
@@ -22,8 +22,8 @@
       </div>
       <div class="col-lg">
           <div class="form-group">
-            <label for="inputEmail3" class="col-form-label ">Treble Corner Frequency</label>
-            <div class="input-group numeric-input">
+            <label for="inputEmail3" class="col-form-label col-form-label-sm ">Treble Corner Frequency</label>
+            <div class="input-group input-group-sm numeric-input">
               <input type="number" class="form-control" aria-label="Minimum volume" aria-describedby="basic-addon2" :value="mso.eq?.treble.freq" @change="({ type, target }) => setTrebleCornerFrequency(target.value)" min="501" max ="8000">
               <div class="input-group-append">
                 <span class="input-group-text" id="basic-addon2">Hz</span>
@@ -33,8 +33,8 @@
       </div>
       <div class="col-lg">
           <div class="form-group">
-            <label for="inputEmail3" class="col-form-label ">Bass Boost/Cut Level</label>
-            <div class="input-group numeric-input">
+            <label for="inputEmail3" class="col-form-label col-form-label-sm ">Bass Boost/Cut Level</label>
+            <div class="input-group input-group-sm numeric-input">
               <input type="number" class="form-control" aria-label="Minimum volume" aria-describedby="basic-addon2" :value="mso.eq?.bass.level" @change="({ type, target }) => setBassBoostCutLevel(target.value)" min="-12" max="12">
               <div class="input-group-append">
                 <span class="input-group-text" id="basic-addon2">dB</span>
@@ -44,19 +44,19 @@
       </div>
       <div class="col-lg">
           <div class="form-group">
-            <label for="inputPassword3" class="col-form-label ">Treble Boost/Cut Level</label>
-              <div class="input-group numeric-input">
-                <input type="number" class="form-control" aria-label="Minimum volume" aria-describedby="basic-addon2" :value="mso.eq?.treble.level" @change="({ type, target }) => setTrebleBoostCutLevel(target.value)" min="-12" max="12">
-                <div class="input-group-append">
-                  <span class="input-group-text" id="basic-addon2">dB</span>
-                </div>
+            <label for="inputPassword3" class="col-form-label col-form-label-sm ">Treble Boost/Cut Level</label>
+            <div class="input-group input-group-sm numeric-input">
+              <input type="number" class="form-control" aria-label="Minimum volume" aria-describedby="basic-addon2" :value="mso.eq?.treble.level" @change="({ type, target }) => setTrebleBoostCutLevel(target.value)" min="-12" max="12">
+              <div class="input-group-append">
+                <span class="input-group-text" id="basic-addon2">dB</span>
               </div>
+            </div>
           </div>
       </div>
       <div class="col-lg">
           <div class="form-group">
-            <label for="inputPassword3" class="col-form-label ">Loudness Calibration</label>
-              <div class="input-group numeric-input">
+            <label for="inputPassword3" class="col-form-label col-form-label-sm ">Loudness Calibration</label>
+              <div class="input-group input-group-sm numeric-input">
                 <input type="number" class="form-control" aria-label="Minimum volume" aria-describedby="basic-addon2" :value="mso.loudnessCal" @change="({ type, target }) => setLoudnessCalibration(target.value)" min="50" max="90">
                 <div class="input-group-append">
                   <span class="input-group-text" id="basic-addon2">dB</span>

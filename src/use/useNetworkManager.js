@@ -12,10 +12,10 @@ const loading = ref(true);
 
 /**
 * Composition function which exposes the nmstat state, as well 
-* as an API to interact with nmstat, abstracting away all 
-* websocket interactions to keep components clean.
+* as an API to interact with netapply, abstracting away all 
+* network-related websocket interactions to keep components clean.
 */
-export default function useNetworkStat() {
+export default function useNetworkManager() {
 
   const { data, state, send, close } = useWebSocket();
 
@@ -54,6 +54,11 @@ export default function useNetworkStat() {
     send(`netapply {"action":"reset" }`);
   }
 
+  function applyNetworkConfig(netconfig) {
+    console.log('applyNetworkConfig', netconfig);
+    send(`netapply {"action": "conedit", "config":${JSON.stringify(netconfig)} }`);
+  }
+
   function receiveNMConDetail(detail) {
 
   }
@@ -66,6 +71,24 @@ export default function useNetworkStat() {
     console.log('receiveNMStat', nms);
     nmstat.value = nms;
   }
+
+  // NetworkManager uses CIDR-type notation for IP addresses. These are helper functions.
+  function int2ip(ipInt) {
+    return ((ipInt >>> 24) + '.' + (ipInt >> 16 & 255) + '.' + (ipInt >> 8 & 255) + '.' + (ipInt & 255));
+  }
+
+  function ip2int(ip) {
+    return ip.split('.').reduce((ipInt, octet) => ((ipInt << 8) + parseInt(octet, 10)), 0) >>> 0;
+  }
+
+  function cidr2mask(cidr) {
+    return int2ip(parseInt('1'.repeat(cidr) + '0'.repeat(32 - cidr), 2));
+  }
+
+  function mask2cidr(mask) {
+    return ip2int(mask).toString(2).indexOf('0');
+  }
+
 
   // watch websocket state, once open, request scan to 
   // retrieve full nmstat state to hold in local state
@@ -85,7 +108,7 @@ export default function useNetworkStat() {
     data, 
     val => {
       const { verb, arg } = parseMSO(val);
-      console.log('received verb', verb);
+      console.log('received verb', verb, arg);
       if (verb === 'wifinetworks') {
 
       } else if (verb === 'nmcondetail') {
@@ -106,9 +129,10 @@ export default function useNetworkStat() {
   );
 
   return { 
-    nmstat, 
+    nmstat, applyNetworkConfig,
     scan, wificonfig, wificonnect, wifidisconnect, wififorget, 
-    getConDetails, wifipower, reseteth0, receiveNMConDetail, receiveNMCons,     
+    getConDetails, wifipower, reseteth0, receiveNMConDetail, receiveNMCons,
+    int2ip, ip2int, cidr2mask, mask2cidr,
     state, loading,
   };
 }

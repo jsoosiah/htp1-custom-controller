@@ -105,36 +105,24 @@
     </tbody>
   </table>
 
-  <table class="table table-sm table-borderless table-responsive">
-    <tbody>
-      <tr>
-        <td>
-          <two-state-button 
-            :button-text="`Reinforce Bass: ${mso.bassenhance}`" 
-            :state-on="mso.bassenhance === 'on'" 
-            :home-button="false"
-            @click="toggleReinforceBass()"
-          />
-        </td>
-        <td>
-          Adds subwoofer signal to large speakers{{!showCrossoverControls ? ' - unavailable with Dirac Bass Control' : ''}}
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <two-state-button 
-            :button-text="`Wide Synth: ${mso.upmix?.dts.ws ? 'on' : 'off'}`" 
-            :state-on="mso.upmix?.dts.ws" 
-            :home-button="false"
-            @click="toggleUpmixWideSynth()"
-          />
-        </td>
-        <td>
-          Synthesizes wide speakers when possible
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="form-group">
+    <two-state-button 
+      :button-text="`Reinforce Bass: ${mso.bassenhance}`" 
+      :state-on="mso.bassenhance === 'on'" 
+      :home-button="false"
+      @click="toggleReinforceBass()"
+    />
+    <small class="form-text text-muted">Adds subwoofer signal to large speakers{{!showCrossoverControls ? ' - unavailable with Dirac Bass Control' : ''}}</small>
+  </div>
+  <div class="form-group">
+    <two-state-button 
+      :button-text="`Wide Synth: ${mso.upmix?.dts.ws ? 'on' : 'off'}`" 
+      :state-on="mso.upmix?.dts.ws" 
+      :home-button="false"
+      @click="toggleUpmixWideSynth()"
+    />
+    <small class="form-text text-muted">Synthesizes wide speakers when possible</small>
+  </div>
 </template>
 
 <script>

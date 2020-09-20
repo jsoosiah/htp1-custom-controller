@@ -179,7 +179,7 @@ export default {
   setup() {
 
     const settingsModalIsOpen = ref(false);
-    const activeTab = ref(0);
+    const activeTab = ref(6);
 
     function toggleSettingsModal() {
       settingsModalIsOpen.value = !settingsModalIsOpen.value;
