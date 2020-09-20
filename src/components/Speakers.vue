@@ -1,40 +1,41 @@
 <template>
-      <div class="alert alert-info small" role="alert">
-        <p><a href="#speaker-map" class="alert-link">Speaker Map</a> shows the mapping on the back panel. If the speakers are not enabled, no sound will be produced.</p>
-
+  <div class="container">
+    <div class="row">
+      <h6>Speaker Selection</h6>
+      <div class="alert alert-info small alert-box" role="alert">
         <p>If current Dirac Filter Slot has Bass Control and Dirac is On, speaker size selections are not available. Speaker sizes can be changed if Dirac is off or in bypass mode.</p>
-
         <div class="row">
           <div class="col-auto">
             <div class="row">
-              <div class="col">
-                <div class="alert" :class="{'alert-text-muted': showCrossoverControls, 'alert-success': !showCrossoverControls}">
-                  Dirac Live Bass Control is {{ showCrossoverControls ? 'off' : 'on' }}</div>
-              </div>
               <div class="col-auto">
                 <dirac-button />
               </div>
               <div class="col">
-                <div class="alert" :class="{'alert-text-muted': !showCrossoverControls, 'alert-success': showCrossoverControls}">HTP-1 Bass Management is {{ showCrossoverControls ? 'on' : 'off' }}</div>
+                <div class="alert bm-status" :class="{'alert-text-muted': showCrossoverControls, 'alert-success': !showCrossoverControls}">
+                  Dirac Live Bass Control is {{ showCrossoverControls ? 'off' : 'on' }}</div>
+              </div>
+              <div class="col">
+                <div class="alert bm-status" :class="{'alert-text-muted': !showCrossoverControls, 'alert-success': showCrossoverControls}">HTP-1 Bass Management is {{ showCrossoverControls ? 'on' : 'off' }}</div>
               </div>
             </div>
           </div>
+          <div class="col-auto"></div>
         </div>
-
       </div>
-  <div class="container">
+    </div>
     <div class="row">
       <div class="col-lg">
-        <h6>Speaker Selection</h6>
         <speaker-group-crossover-controls :speaker-groups="speakerGroups" />
       </div>
       <div class="col-lg">
-        <h6>Speaker Layout</h6>
         <SpeakerDiagram :class="diagramSpeakerVisibility" />
       </div>
     </div>
     <div class="row speaker-map-container">
-      <h6 id="speaker-map">Speaker Map <small class="text-muted">Click image to zoom</small></h6>
+      <h6>Speaker Map <small class="text-muted">Click image to zoom</small></h6>
+      <div class="alert alert-info small" role="alert">
+        <p>Depending on the selected speakers, the physical labels on the back panel may not match the actual speaker mapping. The mapping is shown below. If the speakers are not enabled, no sound will be produced.</p>
+      </div>
       <SpeakerMap />
     </div>
   </div>
@@ -124,10 +125,10 @@
 
 <style scoped>
 
-  .alert-info {
-    /*width: 100;*/
-    margin:-1rem -1rem 1rem -1rem;
-    border-radius: 0;
+  .alert-box {
+    width: 100%;
+    /*margin:-1rem -1rem 1rem -1rem;*/
+    /*border-radius: 0;*/
   }
 
   .alert-success {
@@ -153,8 +154,12 @@
     font-weight: 600;
   }
 
+  .bm-status {
+    min-width: 15rem;
+  }
+
   .col-lg {
-    padding: 0;
+    padding-left: 0;
   }
 
   .speaker-map-container {

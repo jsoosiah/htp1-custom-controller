@@ -166,28 +166,52 @@
   .hide-sub5 #sub5 {
     display: none;
   }
-  .hide-lrs #lrs {
+  .hide-lrs #ls {
     display: none;
   }
-  .hide-lrb #lrb {
+  .hide-lrs #rs {
     display: none;
   }
-  .hide-lrw #lrw {
+  .hide-lrb #lb {
     display: none;
   }
-  .hide-lrtf #lrtf {
+  .hide-lrb #rb {
     display: none;
   }
-  .hide-lrtm #lrtm {
+  .hide-lrw #lw {
     display: none;
   }
-  .hide-lrtr #lrtr {
+  .hide-lrw #rw {
     display: none;
   }
-  .hide-lrhf #lrhf {
+  .hide-lrtf #ltf {
     display: none;
   }
-  .hide-lrhr #lrhr {
+  .hide-lrtf #rtf {
+    display: none;
+  }
+  .hide-lrtm #ltm {
+    display: none;
+  }
+  .hide-lrtm #rtm {
+    display: none;
+  }
+  .hide-lrtr #ltr {
+    display: none;
+  }
+  .hide-lrtr #rtr {
+    display: none;
+  }
+  .hide-lrhf #lfh {
+    display: none;
+  }
+  .hide-lrhf #rfh {
+    display: none;
+  }
+  .hide-lrhr #lrh {
+    display: none;
+  }
+  .hide-lrhr #rrh {
     display: none;
   }
 </style>
