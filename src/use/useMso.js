@@ -698,6 +698,8 @@ export default function useMso() {
         case 'OPEN':
           send('getmso');
           break;
+        default:
+          commandsAwaitingResponse.value = [];
       }
     }
   );
