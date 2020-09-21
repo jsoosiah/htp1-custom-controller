@@ -1,5 +1,5 @@
 <template>
-  <h6>Input Setup</h6>
+  <h5>Input Setup</h5>
   <table class="table table-sm table-responsive-md table-striped">
     <thead>
       <tr>
@@ -71,7 +71,7 @@
       </tr>
     </tbody>
   </table>
-  <h6>Bluetooth Settings</h6>
+  <h5>Bluetooth Settings</h5>
   <div class="form-group">
     <label for="inputEmail3" class="col-form-label">Discoverable Timeout (0=Always Discoverable)</label>
     <div class="input-group numeric-input">

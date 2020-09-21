@@ -1,5 +1,5 @@
 <template>
-  <h6>Output Settings</h6>
+  <h5>Output Settings</h5>
 
   <div class="container">
     <div class="row">
@@ -50,7 +50,7 @@
     </div>
     
   </div>
-  <h6>Dirac Room Correction Filters <small class="text-muted">up to 6 sets or slots available</small></h6>
+  <h5>Dirac Room Correction Filters <small class="text-muted">up to 6 sets or slots available</small></h5>
   <div class="alert alert-info small" role="alert">
     * denotes Dirac Live Room Correction filters with Bass Control
   </div>

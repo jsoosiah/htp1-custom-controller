@@ -2,7 +2,7 @@
   <div class="container">
     <div class="row mb-3">
       <div class="col">
-        <h6>Signal Generator</h6>
+        <h5>Signal Generator</h5>
         <two-state-button v-bind:button-text="`Signal Generator: ${mso.sgen?.sgensw}`" v-bind:state-on="mso.sgen?.sgensw === 'on'" @click="toggleSignalGenerator()" />
       </div>
     </div>

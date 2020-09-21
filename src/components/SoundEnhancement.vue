@@ -1,5 +1,5 @@
 <template>
-  <h6>Upmix Settings</h6>
+  <h5>Upmix Settings</h5>
   <table class="table table-sm table-responsive-md table-striped">
     <thead>
       <tr>

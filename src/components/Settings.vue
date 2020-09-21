@@ -4,7 +4,7 @@
     <div class="modal-dialog modal-xl">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="settingsModalLabel"><font-awesome-icon size="lg" :icon="['fas', 'cog']" /> System Configuration</h5>
+          <h4 class="modal-title" id="settingsModalLabel"><font-awesome-icon size="lg" :icon="['fas', 'cog']" /> System Configuration</h4>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="closeModal()">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -106,6 +106,10 @@ export default {
 
 <style scoped>
 
+  .modal-title {
+    line-height: 1;
+  }
+
   .navbar {
     padding: 0;
   }
@@ -153,7 +157,7 @@ export default {
   }
 
   .modal-title svg {
-    margin: 0.2rem 0rem;
+    margin: 0.3rem 0rem;
   }
 
 </style>

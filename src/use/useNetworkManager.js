@@ -6,6 +6,8 @@ import { debounce } from 'lodash-es';
 // local nmstat state, used to display values on the interface
 const nmstat = ref({});
 
+const condetails = ref({});
+
 // loading indicator, when commands have been 
 // sent to MSO and a response is being awaited
 const loading = ref(true);
@@ -25,6 +27,7 @@ export default function useNetworkManager() {
   }
 
   function wificonfig(ssid, password) {
+    console.log('wificonfig', ssid, password)
     if (password) {
       send(`netapply {"action":"add", "ssid":${JSON.stringify(ssid)}, "password":${JSON.stringify(password)} }`);
     }
@@ -60,7 +63,7 @@ export default function useNetworkManager() {
   }
 
   function receiveNMConDetail(detail) {
-
+    condetails.value = detail;
   }
 
   function receiveNMCons(cons) {
@@ -92,16 +95,16 @@ export default function useNetworkManager() {
 
   // watch websocket state, once open, request scan to 
   // retrieve full nmstat state to hold in local state
-  watch(
-    state,
-    val => {
-      switch (val) {
-        case 'OPEN':
-          scan();
-          break;
-      }
-    }
-  );
+  // watch(
+  //   state,
+  //   val => {
+  //     switch (val) {
+  //       case 'OPEN':
+  //         scan();
+  //         break;
+  //     }
+  //   }
+  // );
 
   // watch websocket messages and keep local nmstat state up to date
   watch(
@@ -112,8 +115,7 @@ export default function useNetworkManager() {
       if (verb === 'wifinetworks') {
 
       } else if (verb === 'nmcondetail') {
-
-          
+        receiveNMConDetail(arg);
       } else if (verb === 'nmcons') {
 
       } else if (verb === 'nmstat') {
@@ -129,7 +131,7 @@ export default function useNetworkManager() {
   );
 
   return { 
-    nmstat, applyNetworkConfig,
+    nmstat, condetails, applyNetworkConfig,
     scan, wificonfig, wificonnect, wifidisconnect, wififorget, 
     getConDetails, wifipower, reseteth0, receiveNMConDetail, receiveNMCons,
     int2ip, ip2int, cidr2mask, mask2cidr,

@@ -1,5 +1,5 @@
 <template>
-  <h6>Tone Control</h6>
+  <h5>Tone Control</h5>
 
   <two-state-button 
     :button-text="`Tone Control: ${mso.eq?.tc ? 'on' : 'off'}`"
@@ -68,7 +68,7 @@
     
   </div>
 
-  <h6>Parametric Equalization Filters <small class="text-muted">up to 16 bands are available</small></h6>
+  <h5>Parametric Equalization Filters <small class="text-muted">up to 16 bands are available</small></h5>
   <div class="alert alert-info small" role="alert">
     Note that a gain of 0dB is equivalent to bypassing the filter; * denotes channels that have been modified and have active PEQ filters
   </div>

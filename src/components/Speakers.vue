@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="row">
-      <h6>Speaker Selection</h6>
+      <h5>Speaker Selection</h5>
       <div class="alert alert-info small alert-box" role="alert">
         <p>If current Dirac Filter Slot has Bass Control and Dirac is On, speaker size selections are not available. Speaker sizes can be changed if Dirac is off or in bypass mode.</p>
         <div class="row">
@@ -32,9 +32,9 @@
       </div>
     </div>
     <div class="row speaker-map-container">
-      <h6>Speaker Map <small class="text-muted">Click image to zoom</small></h6>
+      <h5>Speaker Map <small class="text-muted">Click image to zoom</small></h5>
       <div class="alert alert-info small" role="alert">
-        <p>Depending on the selected speakers, the physical labels on the back panel may not match the actual speaker mapping. The mapping is shown below. If the speakers are not enabled, no sound will be produced.</p>
+        <p>Depending on the combination of selected speakers, the physical labels on the back panel may not match the actual speaker mapping. The correct mapping is shown below. If the speakers are not enabled, no sound will be produced.</p>
       </div>
       <SpeakerMap />
     </div>
