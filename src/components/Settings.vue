@@ -1,6 +1,11 @@
 <template>
   <!-- Modal -->
-  <div class="modal fade show" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel">
+  <div 
+    class="modal fade show" 
+    id="settingsModal" 
+    tabindex="-1" 
+    aria-labelledby="settingsModalLabel"
+  >
     <div class="modal-dialog modal-xl">
       <div class="modal-content">
         <div class="modal-header">
@@ -13,12 +18,18 @@
             <a class="nav-link" :class="{'active': props.activeTab === key}" @click="setActiveTab(key)" href="javascript:void(0)" v-for="(tab, key) in allTabs"><component :is="tab.icon"></component> {{tab.label}}</a>
           </nav>
         <div class="modal-body text-left">
-          <component :is="allTabs[props.activeTab].component"></component>
+          <transition name="component-fade" mode="out-in">
+            <component :is="allTabs[props.activeTab].component" :key="allTabs[props.activeTab].component"></component>
+          </transition>
         </div>
       </div>
     </div>
   </div>
-  <div class="modal-backdrop fade show" @click="closeModal()"></div>
+  <div 
+    class="modal-backdrop fade show" 
+    @click="closeModal()"
+  >
+  </div>
 </template>
 
 <script>
@@ -114,17 +125,17 @@ export default {
     padding: 0;
   }
 
-  ::v-deep .btn {
+  ::v-deep(.btn) {
     text-transform: uppercase;
     font-weight: 600;
   }
 
-  ::v-deep .numeric-input {
+  ::v-deep(.numeric-input) {
     width: 7.5rem;
   }
 
-  ::v-deep .numeric-input input {
-    text-align: right;
+  ::v-deep(.numeric-input) input {
+    /*text-align: right;*/
   }
 
   div {
@@ -160,4 +171,26 @@ export default {
     margin: 0.3rem 0rem;
   }
 
+  ::v-deep(.component-fade-enter-active), ::v-deep(.component-fade-leave-active) {
+    transition: opacity .1s ease;
+  }
+  ::v-deep(.component-fade-enter), ::v-deep(.component-fade-leave-to)
+  /* .component-fade-leave-active below version 2.1.8 */ {
+    opacity: 0;
+  }
+
+  ::v-deep(div.transition-container) {
+    z-index: 10;
+    display: block;
+  }
+
+</style>
+
+<style>
+  .component-fade-enter-active, .component-fade-leave-active {
+    transition: opacity .1s ease;
+  }
+  .component-fade-enter, .component-fade-leave-to {
+    opacity: 0;
+  }
 </style>

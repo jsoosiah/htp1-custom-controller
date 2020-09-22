@@ -35,12 +35,16 @@
             <span class="current-input-label">{{mso.inputs[mso.input].label}}</span>
           </div>
           <div class="col text-right">
-            <settings 
-              v-if="settingsModalIsOpen" 
-              @close="toggleSettingsModal()" 
-              @active-tab-change="setActiveTab"
-              :active-tab="activeTab"
-            />
+            <transition name="mfade">
+              <div class="transition-container-fixed" v-if="settingsModalIsOpen">
+                <settings 
+                  @close="toggleSettingsModal()" 
+                  @active-tab-change="setActiveTab"
+                  :active-tab="activeTab"
+                />
+              </div>
+            </transition>
+
             <button class="btn btn-dark rounded-circle menu-btn" @click="toggleSettingsModal()">
               <font-awesome-icon size="lg" :icon="['fas', 'cog']" />
             </button>
@@ -283,4 +287,21 @@ export default {
     background: rgba(0,0,0,0.75);
     padding:0.25rem 0.5rem;
   }
+
+  .mfade-enter-active,
+  .mfade-leave-active {
+    transition: opacity .2s ease;
+  }
+
+  .mfade-enter-from,
+  .mfade-leave-to {
+    opacity: 0;
+  }
+
+  .transition-container-fixed {
+    display: block;
+    z-index: 9;
+    position: fixed;
+  }
+
 </style>
