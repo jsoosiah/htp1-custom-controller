@@ -7,6 +7,9 @@
     <div class="fixed-top text-center" style="z-index: 9999999999999999" v-if="mso?.sgen?.sgensw === 'on'">
       <span class="sgen-on-warning">Signal Generator On</span>
     </div>
+    <div class="fixed-top text-center" style="z-index: 9999999999999999" v-if="calToolConnected">
+      <span class="sgen-on-warning">Dirac Calibration in Progress - Currently in Readonly Mode</span>
+    </div>
     <div v-if="state !== 'OPEN'" class="connecting-overlay">
       <div class="card connecting-card">
         <div class="card-body">

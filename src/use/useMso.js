@@ -105,6 +105,10 @@ export default function useMso() {
     return !(mso.value.cal?.diracactive=='on' && diracBCEnabled.value);
   });
 
+  const calToolConnected = computed(() => {
+    return mso.value.cal?.caltoolconnected;
+  });
+
   // mso mutators --------------------------------------------
 
   function powerOff() {
@@ -124,84 +128,39 @@ export default function useMso() {
 
   // TODO enforce min/max volume
   function setVolume(volumeLevel) {
-    console.log('!!!!!!!!!!!!!! setVolume', volumeLevel);
-    mso.value.volume = volumeLevel;
-
-    // modifying commandsToSend directly with commandsToSend.push
-    // does not seem to trigger the watch function below,
-    // so instead create a new array with the new value appended
-    commandsToSend.value = addCommand(
-      commandsToSend.value, 
-      {'op':'replace', 'path': '/volume', 'value': volumeLevel}
-    );
+    patchMso({'op':'replace', 'path': '/volume', 'value': volumeLevel});
   }
 
   function toggleMute() {
-    mso.value.muted = !mso.value.muted;
-    commandsToSend.value = addCommand(
-      commandsToSend.value, 
-      {'op':'replace', 'path': '/muted', 'value': mso.value.muted}
-    )
+    patchMso({'op':'replace', 'path': '/muted', 'value': !mso.value.muted});
   }
 
   function setInput(inpid) {
-    mso.value.input = inpid;
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op':'replace', 'path': '/input', 'value': inpid}
-    );
+    patchMso({'op':'replace', 'path': '/input', 'value': inpid});
   }
 
   function setUpmix(upmixKey) {
-    mso.value.upmix.select = upmixKey;
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op':'replace', 'path': '/upmix/select', 'value': upmixKey}
-    );
+    patchMso({'op':'replace', 'path': '/upmix/select', 'value': upmixKey});
   }
 
   function toggleUpmixHomevis(upmix) {
-    mso.value.upmix[upmix].homevis = !mso.value.upmix[upmix].homevis;
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op':'replace', 'path': `/upmix/${upmix}/homevis`, 'value': mso.value.upmix[upmix].homevis}
-    );
+    patchMso({'op':'replace', 'path': `/upmix/${upmix}/homevis`, 'value': !mso.value.upmix[upmix].homevis});
   }
 
   function toggleUpmixCenterSpread() {
-    mso.value.upmix.dolby.cs = !mso.value.upmix.dolby.cs;
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op':'replace', 'path': `/upmix/dolby/cs`, 'value': mso.value.upmix.dolby.cs}
-    );
+    patchMso({'op':'replace', 'path': `/upmix/dolby/cs`, 'value': !mso.value.upmix.dolby.cs});
   }
 
   function toggleUpmixWideSynth() {
-    mso.value.upmix.dts.ws = !mso.value.upmix.dts.ws;
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op':'replace', 'path': `/upmix/dts/ws`, 'value': mso.value.upmix.dts.ws}
-    );
+    patchMso({'op':'replace', 'path': `/upmix/dts/ws`, 'value': !mso.value.upmix.dts.ws});
   }
 
   function setAuroMaticPreset(preset) {
-    mso.value.upmix.auro.preset = parseInt(preset);
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op':'replace', 'path': `/upmix/auro/preset`, 'value': mso.value.upmix.auro.preset}
-    );
+    patchMso({'op':'replace', 'path': `/upmix/auro/preset`, 'value': parseInt(preset)});
   }
 
   function setAuroMaticStrength(strength) {
-    mso.value.upmix.auro.strength = parseInt(strength);
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op':'replace', 'path': `/upmix/auro/strength`, 'value': mso.value.upmix.auro.strength}
-    );
+    patchMso({'op':'replace', 'path': `/upmix/auro/strength`, 'value': parseInt(strength)});
   }
 
   function setDefaultAuroMaticStrength() {
@@ -209,34 +168,28 @@ export default function useMso() {
   }
 
   function toggleReinforceBass() {
-
     if (!diracBCEnabled.value) {
-      mso.value.bassenhance = mso.value.bassenhance === 'off' ? 'on' : 'off';
-
-      commandsToSend.value = addCommand(
-        commandsToSend.value,
-        {'op':'replace', 'path': `/bassenhance`, 'value': mso.value.bassenhance}
-      );
+      patchMso({'op':'replace', 'path': `/bassenhance`, 'value': mso.value.bassenhance === 'off' ? 'on' : 'off'});
     }
   }
 
   function setNextNightMode() {
+
+    let nightValue;
+
     switch(mso.value.night) {
       case 'auto':
-        mso.value.night = 'on';
+        nightValue = 'on';
         break;
       case 'off':
-        mso.value.night = 'auto';
+        nightValue = 'auto';
         break;
       default:
       case 'on':
-        mso.value.night = 'off';
+        nightValue = 'off';
     }
 
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op':'replace', 'path': '/night', 'value': mso.value.night}
-    );
+    patchMso({'op':'replace', 'path': '/night', 'value': nightValue});
   }
 
   function toggleDirac() {
@@ -256,292 +209,132 @@ export default function useMso() {
         break;
     }
 
-    mso.value.cal.diracactive = diracActive;
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op':'replace', 'path': '/cal/diracactive', 'value': diracActive}
-    );
+    patchMso({'op':'replace', 'path': '/cal/diracactive', 'value': diracActive});
   }
 
   function toggleLoudness() {
-    mso.value.loudness = mso.value.loudness === 'off' ? 'on' : 'off';
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op':'replace', 'path': '/loudness', 'value': mso.value.loudness}
-    );
+    patchMso({'op':'replace', 'path': '/loudness', 'value': mso.value.loudness === 'off' ? 'on' : 'off'});
   }
 
   function setNextDtsDialogEnh() {
-    mso.value.dialogEnh = (mso.value.dialogEnh + 1) % 7;
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op':'replace', 'path': '/dialogEnh', 'value': mso.value.dialogEnh}
-    );
+    patchMso({'op':'replace', 'path': '/dialogEnh', 'value': (mso.value.dialogEnh + 1) % 7});
   }
 
   // TODO validate
   function toggleSpeakerChannel(spkCode) {
-    mso.value.speakers.groups[spkCode].present = !mso.value.speakers.groups[spkCode].present;
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op': 'replace', 'path': `/speakers/groups/${spkCode}/present`, value: mso.value.speakers.groups[spkCode].present}
-    );
+    patchMso({'op': 'replace', 'path': `/speakers/groups/${spkCode}/present`, value: !mso.value.speakers.groups[spkCode].present});
   }
 
   function setSpeakerSize(spkCode, sizeCode) {
-    mso.value.speakers.groups[spkCode].size = sizeCode;
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op': 'replace', 'path': `/speakers/groups/${spkCode}/size`, value: mso.value.speakers.groups[spkCode].size}
-    );
+    patchMso({'op': 'replace', 'path': `/speakers/groups/${spkCode}/size`, value: sizeCode});
   }
 
   function setCenterFreq(spkCode, centerFreq) {
-    mso.value.speakers.groups[spkCode].fc = parseInt(centerFreq);
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op': 'replace', 'path': `/speakers/groups/${spkCode}/fc`, value: mso.value.speakers.groups[spkCode].fc}
-    );
+    patchMso({'op': 'replace', 'path': `/speakers/groups/${spkCode}/fc`, value: parseInt(centerFreq)});
   }
 
   function setMinVolume(minVol) {
-    mso.value.cal.vpl = parseInt(minVol);
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op': 'replace', 'path': '/cal/vpl', value: mso.value.cal.vpl}
-    );
+    patchMso({'op': 'replace', 'path': '/cal/vpl', value: parseInt(minVol)});
   }
 
   function setMaxVolume(maxVol) {
-    mso.value.cal.vph = parseInt(maxVol);
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op': 'replace', 'path': '/cal/vph', value: mso.value.cal.vph}
-    );
+    patchMso({'op': 'replace', 'path': '/cal/vph', value: parseInt(maxVol)});
   }
 
   function setMaxOutputLevel(outputLevel) {
-    mso.value.cal.ampsense = parseFloat(outputLevel);
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op': 'replace', 'path': '/cal/ampsense', value: mso.value.cal.ampsense}
-    );
+    patchMso({'op': 'replace', 'path': '/cal/ampsense', value: parseFloat(outputLevel)});
   }
 
   function setLipsyncDelay(lipsyncDelay) {
-    mso.value.cal.lipsync = parseInt(lipsyncDelay);
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op': 'replace', 'path': '/cal/lipsync', value: mso.value.cal.lipsync}
-    );
+    patchMso({'op': 'replace', 'path': '/cal/lipsync', value: parseInt(lipsyncDelay)});
   }
 
   function setDiracSlot(slotNumber) {
-    mso.value.cal.currentdiracslot = slotNumber;
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op': 'replace', 'path': '/cal/currentdiracslot', value: mso.value.cal.currentdiracslot}
-    );
+    patchMso({'op': 'replace', 'path': '/cal/currentdiracslot', value: slotNumber});
   }
 
   function setUserDelay(channel, delay) {
-    currentDiracSlot.value.channels[channel].delay = parseFloat(delay);
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op': 'replace', 'path': `/cal/slots/${mso.value.cal.currentdiracslot}/channels/${channel}/delay`, value: currentDiracSlot.value.channels[channel].delay}
-    );
+    patchMso({'op': 'replace', 'path': `/cal/slots/${mso.value.cal.currentdiracslot}/channels/${channel}/delay`, value: parseFloat(delay)});
   }
 
   function setUserTrim(channel, trim) {
-    currentDiracSlot.value.channels[channel].trim = parseFloat(trim);
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op': 'replace', 'path': `/cal/slots/${mso.value.cal.currentdiracslot}/channels/${channel}/trim`, value: currentDiracSlot.value.channels[channel].trim}
-    );
+    patchMso({'op': 'replace', 'path': `/cal/slots/${mso.value.cal.currentdiracslot}/channels/${channel}/trim`, value: parseFloat(trim)});
   }
 
   function toggleSignalGenerator() {
-    mso.value.sgen.sgensw = mso.value.sgen.sgensw === 'off' ? 'on' : 'off';
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op': 'replace', 'path': `/sgen/sgensw`, value: mso.value.sgen.sgensw}
-    );
+    patchMso({'op': 'replace', 'path': `/sgen/sgensw`, value: mso.value.sgen.sgensw === 'off' ? 'on' : 'off'});
   }
 
   function setSignalGeneratorChannel(channel) {
-    mso.value.sgen.select = channel;
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op': 'replace', 'path': `/sgen/select`, value: mso.value.sgen.select}
-    );
+    patchMso({'op': 'replace', 'path': `/sgen/select`, value: channel});
   }
 
   function setSignalGeneratorSignalType(signalType) {
-    mso.value.sgen.signalType = signalType;
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op': 'replace', 'path': `/sgen/signalType`, value: mso.value.sgen.signalType}
-    );
+    patchMso({'op': 'replace', 'path': `/sgen/signalType`, value: signalType});
   }
 
   function toggleToneControl() {
-    mso.value.eq.tc = !mso.value.eq.tc;
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op': 'replace', 'path': `/eq/tc`, value: mso.value.eq.tc}
-    );
+    patchMso({'op': 'replace', 'path': `/eq/tc`, value: !mso.value.eq.tc});
   }
 
   function setBassCornerFrequency(freq) {
-    mso.value.eq.bass.freq = parseFloat(freq);
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op': 'replace', 'path': `/eq/bass/freq`, value: mso.value.eq.bass.freq}
-    );
+    patchMso({'op': 'replace', 'path': `/eq/bass/freq`, value: parseFloat(freq)});
   }
 
   function setTrebleCornerFrequency(freq) {
-    mso.value.eq.treble.freq = parseFloat(freq);
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op': 'replace', 'path': `/eq/treble/freq`, value: mso.value.eq.treble.freq}
-    );
+    patchMso({'op': 'replace', 'path': `/eq/treble/freq`, value: parseFloat(freq)});
   }
 
   function setBassBoostCutLevel(level) {
-    mso.value.eq.bass.level = parseFloat(level);
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op': 'replace', 'path': `/eq/bass/level`, value: mso.value.eq.bass.level}
-    );
+    patchMso({'op': 'replace', 'path': `/eq/bass/level`, value: parseFloat(level)});
   }
 
   function setTrebleBoostCutLevel(level) {
-    mso.value.eq.treble.level = parseFloat(level);
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op': 'replace', 'path': `/eq/treble/level`, value: mso.value.eq.treble.level}
-    );
+    patchMso({'op': 'replace', 'path': `/eq/treble/level`, value: parseFloat(level)});
   }
 
   function setLoudnessCalibration(loudness) {
-    mso.value.loudnessCal = parseFloat(loudness);
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op': 'replace', 'path': `/loudnessCal`, value: mso.value.loudnessCal}
-    );
+    patchMso({'op': 'replace', 'path': `/loudnessCal`, value: parseFloat(loudness)});
   }
 
   function toggleGlobalPEQ() {
-    mso.value.peq.peqsw = !mso.value.peq.peqsw;
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op': 'replace', 'path': `/peq/peqsw`, value: mso.value.peq.peqsw}
-    );
+    patchMso({'op': 'replace', 'path': `/peq/peqsw`, value: !mso.value.peq.peqsw});
   }
 
   function setPEQCenterFrequency(channel, slot, centerFreq) {
-    mso.value.peq.slots[slot].channels[channel].Fc = parseFloat(centerFreq);
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op': 'replace', 'path': `/peq/slots/${slot}/channels/${channel}/Fc`, value: mso.value.peq.slots[slot].channels[channel].Fc}
-    );
+    patchMso({'op': 'replace', 'path': `/peq/slots/${slot}/channels/${channel}/Fc`, value: parseFloat(centerFreq)});
   }
 
   function setPEQGain(channel, slot, gain) {
-    mso.value.peq.slots[slot].channels[channel].gaindB = parseFloat(gain);
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op': 'replace', 'path': `/peq/slots/${slot}/channels/${channel}/gaindB`, value: mso.value.peq.slots[slot].channels[channel].gaindB}
-    );
+    patchMso({'op': 'replace', 'path': `/peq/slots/${slot}/channels/${channel}/gaindB`, value: parseFloat(gain)});
   }
 
   function setPEQQuality(channel, slot, q) {
-    mso.value.peq.slots[slot].channels[channel].Q = parseFloat(q);
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op': 'replace', 'path': `/peq/slots/${slot}/channels/${channel}/Q`, value: mso.value.peq.slots[slot].channels[channel].Q}
-    );
+    patchMso({'op': 'replace', 'path': `/peq/slots/${slot}/channels/${channel}/Q`, value: parseFloat(q)});
   }
 
   function setPEQFilterType(channel, slot, filterType) {
-    mso.value.peq.slots[slot].channels[channel].FilterType = parseInt(filterType);
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op': 'replace', 'path': `/peq/slots/${slot}/channels/${channel}/FilterType`, value: mso.value.peq.slots[slot].channels[channel].FilterType}
-    );
+    patchMso({'op': 'replace', 'path': `/peq/slots/${slot}/channels/${channel}/FilterType`, value: parseInt(filterType)});
   }
 
   function setInputLabel(input, label) {
-    mso.value.inputs[input].label = label;
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op': 'replace', 'path': `/inputs/${input}/label`, value: mso.value.inputs[input].label}
-    );
+    patchMso({'op': 'replace', 'path': `/inputs/${input}/label`, value: label});
   }
 
   function toggleInputVisible(input) {
-    mso.value.inputs[input].visible = !mso.value.inputs[input].visible;
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op': 'replace', 'path': `/inputs/${input}/visible`, value: mso.value.inputs[input].visible}
-    );
+    patchMso({'op': 'replace', 'path': `/inputs/${input}/visible`, value: !mso.value.inputs[input].visible});
   }
 
   function setInputFormatDetectOption(input, formatDetectOption) {
-    mso.value.inputs[input].formatDetectOption = formatDetectOption;
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op': 'replace', 'path': `/inputs/${input}/formatDetectOption`, value: mso.value.inputs[input].formatDetectOption}
-    );
+    patchMso({'op': 'replace', 'path': `/inputs/${input}/formatDetectOption`, value: formatDetectOption});
   }
 
   function toggleInputUHD(input) {
-    mso.value.inputs[input].uhd = !mso.value.inputs[input].uhd;
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op': 'replace', 'path': `/inputs/${input}/uhd`, value: mso.value.inputs[input].uhd}
-    );
+    patchMso({'op': 'replace', 'path': `/inputs/${input}/uhd`, value: !mso.value.inputs[input].uhd});
   }
 
   function setBluetoothDiscoverableTime(time) {
-    mso.value.bluetooth.discoverabletime = parseInt(time);
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op': 'replace', 'path': `/bluetooth/discoverabletime`, value: mso.value.bluetooth.discoverabletime}
-    );
+    patchMso({'op': 'replace', 'path': `/bluetooth/discoverabletime`, value: parseInt(time)});
   }
 
   function enableBluetoothDiscovery() {
@@ -549,147 +342,75 @@ export default function useMso() {
   }
 
   function toggleCEC() {
-    mso.value.CEC.cecOnSw = mso.value.CEC.cecOnSw === 'off' ? 'on' : 'off';
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op': 'replace', 'path': `/CEC/cecOnSw`, value: mso.value.CEC.cecOnSw}
-    );
+    patchMso({'op': 'replace', 'path': `/CEC/cecOnSw`, value: mso.value.CEC.cecOnSw === 'off' ? 'on' : 'off'});
   }
 
   function setTVSoundSrcDefault(inp) {
-    mso.value.stat.TVSoundSrcDefault = inp;
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op': 'replace', 'path': `/stat/TVSoundSrcDefault`, value: mso.value.stat.TVSoundSrcDefault}
-    );
+    patchMso({'op': 'replace', 'path': `/stat/TVSoundSrcDefault`, value: inp});
   }
 
   function toggleCECAllowPowerKey() {
-    mso.value.CEC.allowpwrk = !mso.value.CEC.allowpwrk;
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op': 'replace', 'path': `/CEC/allowpwrk`, value: mso.value.CEC.allowpwrk}
-    );
+    patchMso({'op': 'replace', 'path': `/CEC/allowpwrk`, value: !mso.value.CEC.allowpwrk});
   }
 
   function toggleCECAllowVolKey() {
-    mso.value.CEC.allowvolk = !mso.value.CEC.allowvolk;
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op': 'replace', 'path': `/CEC/allowvolk`, value: mso.value.CEC.allowvolk}
-    );
+    patchMso({'op': 'replace', 'path': `/CEC/allowvolk`, value: !mso.value.CEC.allowvolk});
   }
 
   function toggleCECAllowSysAudioOff() {
-    mso.value.CEC.allowsaf = !mso.value.CEC.allowsaf;
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op': 'replace', 'path': `/CEC/allowsaf`, value: mso.value.CEC.allowsaf}
-    );
+    patchMso({'op': 'replace', 'path': `/CEC/allowsaf`, value: !mso.value.CEC.allowsaf});
   }
 
   function toggleCECAllowInputChange() {
-    mso.value.CEC.allowinp = !mso.value.CEC.allowinp;
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op': 'replace', 'path': `/CEC/allowinp`, value: mso.value.CEC.allowinp}
-    );
+    patchMso({'op': 'replace', 'path': `/CEC/allowinp`, value: !mso.value.CEC.allowinp});
   }
 
   function toggleCECAllowStandby() {
-    mso.value.CEC.allowstdb = !mso.value.CEC.allowstdb;
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op': 'replace', 'path': `/CEC/allowstdb`, value: mso.value.CEC.allowstdb}
-    );
+    patchMso({'op': 'replace', 'path': `/CEC/allowstdb`, value: !mso.value.CEC.allowstdb});
   }
 
   function setUnitName(name) {
-    mso.value.unitname = name;
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op': 'replace', 'path': `/unitname`, value: mso.value.unitname}
-    );
+    patchMso({'op': 'replace', 'path': `/unitname`, value: name});
   }
 
   function toggleFastStart() {
-    mso.value.fastStart = mso.value.fastStart === 'off' ? 'on' : 'off';
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op': 'replace', 'path': `/fastStart`, value: mso.value.fastStart}
-    );
+    patchMso({'op': 'replace', 'path': `/fastStart`, value: mso.value.fastStart === 'off' ? 'on' : 'off'});
   }
 
   function toggleFastStartPassThrough() {
-    mso.value.fastStartPassThrough = mso.value.fastStartPassThrough === 'off' ? 'on' : 'off';
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op': 'replace', 'path': `/fastStartPassThrough`, value: mso.value.fastStartPassThrough}
-    );
+    patchMso({'op': 'replace', 'path': `/fastStartPassThrough`, value: mso.value.fastStartPassThrough === 'off' ? 'on' : 'off'});
   }
 
   function setPowerOnVol(volumeLevel) {
-    mso.value.powerOnVol = parseInt(volumeLevel);
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op': 'replace', 'path': `/powerOnVol`, value: mso.value.powerOnVol}
-    );
+    patchMso({'op': 'replace', 'path': `/powerOnVol`, value: parseInt(volumeLevel)});
   }
 
   function setFrontPanelBrightness(brightness) {
-    mso.value.hw.fpBright = parseInt(brightness);
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op': 'replace', 'path': `/hw/fpBright`, value: mso.value.hw.fpBright}
-    );
+    patchMso({'op': 'replace', 'path': `/hw/fpBright`, value: parseInt(brightness)});
   }
 
   function toggleVideoStatusHomePage() {
-    mso.value.stat.displayVideoStat = !mso.value.stat.displayVideoStat;
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op': 'replace', 'path': `/stat/displayVideoStat`, value: mso.value.stat.displayVideoStat}
-    );
+    patchMso({'op': 'replace', 'path': `/stat/displayVideoStat`, value: !mso.value.stat.displayVideoStat});
   }
 
   function toggleExtendedAudioStatus() {
-    mso.value.stat.displayAudioStat = !mso.value.stat.displayAudioStat;
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op': 'replace', 'path': `/stat/displayAudioStat`, value: mso.value.stat.displayAudioStat}
-    );
+    patchMso({'op': 'replace', 'path': `/stat/displayAudioStat`, value: !mso.value.stat.displayAudioStat});
   }
 
   function toggleAdvancedInputSettings() {
-    mso.value.stat.displayAdvancedSettings = !mso.value.stat.displayAdvancedSettings;
-
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op': 'replace', 'path': `/stat/displayAdvancedSettings`, value: mso.value.stat.displayAdvancedSettings}
-    );
+    patchMso({'op': 'replace', 'path': `/stat/displayAdvancedSettings`, value: !mso.value.stat.displayAdvancedSettings});
   }
 
   function toggleSupportTools() {
-    mso.value.stat.enableSupportTools = !mso.value.stat.enableSupportTools;
+    patchMso({'op': 'replace', 'path': `/stat/enableSupportTools`, value: !mso.value.stat.enableSupportTools});
+  }
 
-    commandsToSend.value = addCommand(
-      commandsToSend.value,
-      {'op': 'replace', 'path': `/stat/enableSupportTools`, value: mso.value.stat.enableSupportTools}
-    );
+  function patchMso(singlePatch) {
+    // block changes if dirac calibration is in progress
+    if (!calToolConnected.value) {
+      applyPatch(mso.value, [singlePatch]);
+      commandsToSend.value = addCommand(commandsToSend.value, singlePatch);
+    }
   }
 
   function sendCommands() {
@@ -797,7 +518,6 @@ export default function useMso() {
       console.log('watch commandsToSend', newCommandsToSend.length, newCommandsToSend)
       if (newCommandsToSend.length > 0) {
         commandsAwaitingResponse.value = addCommandList(commandsAwaitingResponse.value, newCommandsToSend);
-        // debouncedSendCommands();
       }
     }
   );
@@ -869,7 +589,7 @@ export default function useMso() {
     setUnitName, toggleFastStart, toggleFastStartPassThrough, setPowerOnVol,
     setFrontPanelBrightness, toggleVideoStatusHomePage, toggleExtendedAudioStatus,
     toggleAdvancedInputSettings, toggleSupportTools,
-    showCrossoverControls, currentDiracSlot,
+    showCrossoverControls, currentDiracSlot, calToolConnected,
     state, loading,
     commandsToSend, commandsReceived, commandsAwaitingResponse // debug
   };
