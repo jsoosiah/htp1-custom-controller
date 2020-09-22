@@ -41,7 +41,7 @@
             <label class="custom-control-label" :for="'visible-'+inpcode"></label>
           </div>
         </td>
-        <td>
+        <td v-if="mso.stat?.displayAdvancedSettings">
             <select 
               v-if="getFormatDetectOptions(inp.menuSounds).length > 0"
               class="form-control form-control-sm" 

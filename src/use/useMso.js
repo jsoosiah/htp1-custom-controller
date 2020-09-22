@@ -610,6 +610,87 @@ export default function useMso() {
     );
   }
 
+  function setUnitName(name) {
+    mso.value.unitname = name;
+
+    commandsToSend.value = addCommand(
+      commandsToSend.value,
+      {'op': 'replace', 'path': `/unitname`, value: mso.value.unitname}
+    );
+  }
+
+  function toggleFastStart() {
+    mso.value.fastStart = mso.value.fastStart === 'off' ? 'on' : 'off';
+
+    commandsToSend.value = addCommand(
+      commandsToSend.value,
+      {'op': 'replace', 'path': `/fastStart`, value: mso.value.fastStart}
+    );
+  }
+
+  function toggleFastStartPassThrough() {
+    mso.value.fastStartPassThrough = mso.value.fastStartPassThrough === 'off' ? 'on' : 'off';
+
+    commandsToSend.value = addCommand(
+      commandsToSend.value,
+      {'op': 'replace', 'path': `/fastStartPassThrough`, value: mso.value.fastStartPassThrough}
+    );
+  }
+
+  function setPowerOnVol(volumeLevel) {
+    mso.value.powerOnVol = parseInt(volumeLevel);
+
+    commandsToSend.value = addCommand(
+      commandsToSend.value,
+      {'op': 'replace', 'path': `/powerOnVol`, value: mso.value.powerOnVol}
+    );
+  }
+
+  function setFrontPanelBrightness(brightness) {
+    mso.value.hw.fpBright = parseInt(brightness);
+
+    commandsToSend.value = addCommand(
+      commandsToSend.value,
+      {'op': 'replace', 'path': `/hw/fpBright`, value: mso.value.hw.fpBright}
+    );
+  }
+
+  function toggleVideoStatusHomePage() {
+    mso.value.stat.displayVideoStat = !mso.value.stat.displayVideoStat;
+
+    commandsToSend.value = addCommand(
+      commandsToSend.value,
+      {'op': 'replace', 'path': `/stat/displayVideoStat`, value: mso.value.stat.displayVideoStat}
+    );
+  }
+
+  function toggleExtendedAudioStatus() {
+    mso.value.stat.displayAudioStat = !mso.value.stat.displayAudioStat;
+
+    commandsToSend.value = addCommand(
+      commandsToSend.value,
+      {'op': 'replace', 'path': `/stat/displayAudioStat`, value: mso.value.stat.displayAudioStat}
+    );
+  }
+
+  function toggleAdvancedInputSettings() {
+    mso.value.stat.displayAdvancedSettings = !mso.value.stat.displayAdvancedSettings;
+
+    commandsToSend.value = addCommand(
+      commandsToSend.value,
+      {'op': 'replace', 'path': `/stat/displayAdvancedSettings`, value: mso.value.stat.displayAdvancedSettings}
+    );
+  }
+
+  function toggleSupportTools() {
+    mso.value.stat.enableSupportTools = !mso.value.stat.enableSupportTools;
+
+    commandsToSend.value = addCommand(
+      commandsToSend.value,
+      {'op': 'replace', 'path': `/stat/enableSupportTools`, value: mso.value.stat.enableSupportTools}
+    );
+  }
+
   function sendCommands() {
     console.log('sendCommands', commandsToSend, commandsAwaitingResponse)
     if (commandsToSend.value.length > 0) {
@@ -781,6 +862,9 @@ export default function useMso() {
     setBluetoothDiscoverableTime, enableBluetoothDiscovery,
     toggleCEC, setTVSoundSrcDefault, toggleCECAllowPowerKey, toggleCECAllowVolKey, 
     toggleCECAllowSysAudioOff, toggleCECAllowInputChange, toggleCECAllowStandby,
+    setUnitName, toggleFastStart, toggleFastStartPassThrough, setPowerOnVol,
+    setFrontPanelBrightness, toggleVideoStatusHomePage, toggleExtendedAudioStatus,
+    toggleAdvancedInputSettings, toggleSupportTools,
     showCrossoverControls, currentDiracSlot,
     state, loading,
     commandsToSend, commandsReceived, commandsAwaitingResponse // debug

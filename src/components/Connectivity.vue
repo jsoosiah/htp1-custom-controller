@@ -133,12 +133,17 @@
         </tr>
       </tbody>
     </table>
-    <h6>Configuration for Ethernet Network</h6>
-    <dhcp-settings
-      id="eth0" 
-      :network="network.eth0"
-      :blank-ip="BLANK_IP_ADDRESS"
-    />
+    <h6>Configuration for Wired Network</h6>
+    <template v-if="network.eth0.uuid">
+      <dhcp-settings
+        id="eth0" 
+        :network="network.eth0"
+        :blank-ip="BLANK_IP_ADDRESS"
+      />
+    </template>
+    <template v-else>
+      <p>Connect the Ethernet cable in order to configure the wired network. </p>
+    </template>
 
     <h5>Wi-Fi</h5>
     <table class="table table-sm table-responsive table-striped">
@@ -315,7 +320,7 @@
       function populateNetworkFromConfig(netInterface, config) {
         console.log('populateNetworkFromConfig', netInterface, config);
         let net = network[netInterface];
-        net.dhcp = config.ipv4.method === 'auto';
+        net.dhcp = config.ipv4?.method === 'auto';
         if(net.dhcp)
         {
             // Fill in blank config so we have it if user goes to manual.
@@ -324,7 +329,7 @@
             net.dns=[''];
         }
         else {
-            net.addresses = config.ipv4.addresses.split(',').map(addr => {
+            net.addresses = config.ipv4?.addresses.split(',').map(addr => {
                 addr = addr.trim();
                 console.log('cidr',addr, addr.split('/')[1], cidr2mask(addr.split('/')[1]))
                 return {
@@ -333,8 +338,8 @@
                     netmask: cidr2mask(addr.split('/')[1]),
                 }
             });
-            net.gateway = config.ipv4.gateway;
-            net.dns = config.ipv4.dns.split(',');
+            net.gateway = config.ipv4?.gateway;
+            net.dns = config.ipv4?.dns.split(',');
         }
 
         if (config.GENERAL?.UUID) {
@@ -395,7 +400,7 @@
         }
       )
 
-      // cancel the last scan timeout if 
+      // clear scan interval if 
       // navigating away from this page
       onUnmounted(() => {
         clearInterval(scanInterval);

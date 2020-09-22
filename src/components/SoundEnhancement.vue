@@ -56,7 +56,7 @@
             <div class="col-lg">
               
               <div class="form-group">
-                <label for="inputEmail3" class="col-form-label ">AuroMatic Preset</label>
+                <label for="inputEmail3" class="col-form-label col-form-label-sm ">AuroMatic Preset</label>
                 <select 
                   class="form-control form-control-sm" 
                   @change="({ type, target }) => setAuroMaticPreset(target.value)"
@@ -73,7 +73,7 @@
             </div>
             <div class="col-lg">
               <div class="form-group">
-                <label class="col-form-label" for="auro-strength">AuroMatic Strength</label>
+                <label class="col-form-label col-form-label-sm" for="auro-strength">AuroMatic Strength</label>
                 <div class="form-row">
                   <input 
                     type="range" 
@@ -90,7 +90,7 @@
             </div>
             <div class="col-lg-auto">
               <div class="form-group">
-                <label class="col-form-label">&nbsp;</label>
+                <label class="col-form-label col-form-label-sm">&nbsp;</label>
                 <button 
                   class="btn btn-sm btn-primary form-control"
                   @click="setDefaultAuroMaticStrength()"
