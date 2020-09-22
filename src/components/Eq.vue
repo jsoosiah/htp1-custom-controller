@@ -101,7 +101,7 @@
           <th class="text-right">Filter Type</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody :class="{'hiding':!tabLoaded, 'showing':tabLoaded}">
         <tr v-for="(slot, index) in mso.peq?.slots">
           <td class="text-right">{{index + 1}}</td>
           <td class="text-right">
@@ -172,6 +172,8 @@
       const { mso } = useMso();
       const { getActiveChannels, spkName } = useSpeakerGroups();
 
+      const tabLoaded = ref(true);
+
       const activeChannels = computed(() => {
         return getActiveChannels(mso.value.speakers?.groups);
       });
@@ -179,7 +181,13 @@
       const selectedChannel = ref(0);
 
       function setSelectedChannel(chanNumber) {
-        selectedChannel.value = chanNumber;
+
+        tabLoaded.value = false;
+
+        setTimeout(() => {
+          selectedChannel.value = chanNumber;
+          tabLoaded.value = true;
+        }, 100);
       }
 
       function hasModifications(channame) {
@@ -195,7 +203,7 @@
       ];
 
       return {
-        ...useMso(), activeChannels, spkName, selectedChannel, setSelectedChannel, hasModifications, filterTypes
+        ...useMso(), activeChannels, spkName, selectedChannel, setSelectedChannel, hasModifications, filterTypes, tabLoaded
       };
     },
     components: {

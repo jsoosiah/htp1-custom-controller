@@ -55,13 +55,17 @@
     </div>
 
     <h5>Import/Export Configuration</h5>
-    <pre class="pre-scrollable bg-light p-2">{{mso}}</pre>
-    <button 
-      class="btn btn-sm btn-primary mb-3"
-      @click="downloadMsoAsJson()"
-    >
-      Export Configuration
-    </button>
+    <div class="row">
+      <div class="col-auto">
+        <pre class="pre-scrollable bg-light p-2">{{mso}}</pre>
+        <button 
+          class="btn btn-sm btn-primary mb-3"
+          @click="downloadMsoAsJson()"
+        >
+          Export Configuration
+        </button>
+      </div>
+    </div>
     <h5>Advanced</h5>
     <div class="mb-3">
       <div class="custom-control custom-switch">
@@ -161,7 +165,6 @@
   }
 
   .pre-scrollable {
-    
   }
 
 </style>

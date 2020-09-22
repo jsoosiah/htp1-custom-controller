@@ -18,9 +18,12 @@
             <a class="nav-link" :class="{'active': props.activeTab === key}" @click="setActiveTab(key)" href="javascript:void(0)" v-for="(tab, key) in allTabs"><component :is="tab.icon"></component> {{tab.label}}</a>
           </nav>
         <div class="modal-body text-left">
-          <transition name="component-fade" mode="out-in">
-            <component :is="allTabs[props.activeTab].component" :key="allTabs[props.activeTab].component"></component>
-          </transition>
+          <div :class="{'hiding':!tabLoaded, 'showing':tabLoaded}">
+            <component 
+              :is="allTabs[props.activeTab].component" 
+              :key="allTabs[props.activeTab].component"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -72,6 +75,8 @@ export default {
       document.body.classList.remove('modal-open');
     });
 
+    const tabLoaded = ref(true);
+
     const allTabs = ref([
       {'label': 'Speakers', 'component': 'speakers', icon: 'speakers-icon' },
       {'label': 'Calibration', 'component': 'calibration', icon: 'calibration-icon' },
@@ -83,16 +88,22 @@ export default {
       {'label': 'System', 'component': 'system', icon: 'system-icon' },
     ]);
 
-    function setActiveTab(tab) {
-      // activeTab.value = tab;
-      emit('active-tab-change', tab);
+    async function setActiveTab(tab) {
+      tabLoaded.value = false;
+      
+      setTimeout(() => {
+        emit('active-tab-change', tab);
+        tabLoaded.value = true;
+      }, 100)
+      
+      
     }
 
     function closeModal() {
       emit('close');
     }
 
-    return { props, setActiveTab, allTabs, closeModal };
+    return { props, setActiveTab, allTabs, closeModal, tabLoaded };
   },
   components: {
     Speakers,
@@ -135,7 +146,7 @@ export default {
   }
 
   ::v-deep(.numeric-input) input {
-    /*text-align: right;*/
+    text-align: right;
   }
 
   div {
@@ -171,26 +182,27 @@ export default {
     margin: 0.3rem 0rem;
   }
 
-  ::v-deep(.component-fade-enter-active), ::v-deep(.component-fade-leave-active) {
-    transition: opacity .1s ease;
+  .component-fade-enter-active {
+    transition: opacity .15s ease;
   }
-  ::v-deep(.component-fade-enter), ::v-deep(.component-fade-leave-to)
-  /* .component-fade-leave-active below version 2.1.8 */ {
+
+  .component-fade-leave-active {
+    transition: opacity .5s ease;
+  }
+
+  .component-fade-leave-to {
     opacity: 0;
   }
 
-  ::v-deep(div.transition-container) {
-    z-index: 10;
+  .component-fade-enter-to {
+    opacity: 1;
+  }
+
+  .transition-container {
     display: block;
+    z-index: 9;
+    /*position: fixed;*/
   }
 
-</style>
 
-<style>
-  .component-fade-enter-active, .component-fade-leave-active {
-    transition: opacity .1s ease;
-  }
-  .component-fade-enter, .component-fade-leave-to {
-    opacity: 0;
-  }
 </style>

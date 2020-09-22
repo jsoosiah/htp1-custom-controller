@@ -61,7 +61,7 @@
       <a 
         class="nav-link" 
         :class="{'active': mso.cal?.currentdiracslot === key, 'italic': slot.hasBCFilter}" 
-        @click="setDiracSlot(key)" 
+        @click="setDiracTab(key)" 
         href="javascript:void(0)" 
         v-for="(slot, key) in mso.cal?.slots"
       >
@@ -80,7 +80,7 @@
           <th class="text-right">Total Trim (dB)</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody :class="{'hiding':currentDiracTab === null, 'showing':currentDiracTab !== null}">
         <tr v-for="channame in activeChannels">
           <td>{{spkName(channame)}}</td>
           <td class="text-right" :title="currentDiracSlot?.channels[channame].caldelay">
@@ -126,7 +126,7 @@
 
 <script>
 
-  import { computed, watch } from 'vue';
+  import { computed, watch, ref } from 'vue';
 
   import useMso from '@/use/useMso.js';
   import useSpeakerGroups from '@/use/useSpeakerGroups.js';
@@ -136,8 +136,14 @@
     name: 'Calibration',
     setup() {
 
-      const { mso } = useMso();
+      const { 
+        mso, setDiracSlot, setUserTrim, setUserDelay, 
+        setMinVolume, setMaxVolume, setMaxOutputLevel, setLipsyncDelay,
+        currentDiracSlot
+      } = useMso();
       const { getActiveChannels, spkName } = useSpeakerGroups();
+
+      const currentDiracTab = ref(null);
 
       const activeChannels = computed(() => {
         return getActiveChannels(mso.value.speakers?.groups);
@@ -147,7 +153,30 @@
         return num?.toFixed(1);
       }
 
-      return {...useMso(), activeChannels, spkName, formatDecimal};
+      async function setDiracTab(tab) {
+        currentDiracTab.value = null;
+        
+        setTimeout(() => {
+          setDiracSlot(tab);
+          currentDiracTab.value = tab;
+        }, 100);
+      }
+
+      watch(
+        mso,
+        newMso => {
+          console.log('watch', currentDiracTab.value, newMso.cal, currentDiracTab.value === null && newMso.cal)
+          if (currentDiracTab.value === null && newMso.cal) {
+            currentDiracTab.value = newMso.cal.currentdiracslot;
+          }
+        }
+      );
+
+      return {
+        mso, setDiracSlot, setUserTrim, setUserDelay, 
+        setMinVolume, setMaxVolume, setMaxOutputLevel, setLipsyncDelay, currentDiracSlot,
+        activeChannels, spkName, formatDecimal, currentDiracTab, setDiracTab 
+      };
     },
     components: {
       DiracButton,
@@ -194,4 +223,5 @@
   .col-md {
     padding-left: 0;
   }
+
 </style>

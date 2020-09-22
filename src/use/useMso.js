@@ -1,6 +1,6 @@
 import { ref, watch, computed } from 'vue';
 import { useWebSocket } from './useWebSocket.js';
-import { applyPatch, compare } from 'fast-json-patch/index.mjs';
+import { applyPatch, deepClone, compare } from 'fast-json-patch/index.mjs';
 import { debounce } from 'lodash-es';
 
 import useLoading from './useLoading.js';
@@ -126,6 +126,7 @@ export default function useMso() {
   function setVolume(volumeLevel) {
     console.log('!!!!!!!!!!!!!! setVolume', volumeLevel);
     mso.value.volume = volumeLevel;
+
     // modifying commandsToSend directly with commandsToSend.push
     // does not seem to trigger the watch function below,
     // so instead create a new array with the new value appended
@@ -726,7 +727,10 @@ export default function useMso() {
         // only apply patch if not awaiting any more commands
         if (commandsAwaitingResponse.value.length === 0) {
           console.log('!!!! applyPatch', commandsReceived.value)
+          // const newMso = deepClone(mso.value);
+          // applyPatch(newMso, commandsReceived.value);
           applyPatch(mso.value, commandsReceived.value);
+          // mso.value = newMso;
           commandsReceived.value = [];
 
         } else {

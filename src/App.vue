@@ -24,4 +24,15 @@ export default {
     color:#dedad6;
     background-color: black;
   }
+
+  .hiding {
+    transition: opacity 0.1s ease;
+    opacity: 0;
+  }
+
+  .showing {
+    transition: opacity 0.1s ease;
+    opacity: 1;
+  }
+  
 </style>

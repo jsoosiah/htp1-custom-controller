@@ -53,7 +53,7 @@
 
   export default {
     name: 'Speakers',
-    setup() {
+    setup(props, { emit }) {
 
       const { mso, showCrossoverControls } = useMso();
 

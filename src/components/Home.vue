@@ -290,7 +290,7 @@ export default {
 
   .mfade-enter-active,
   .mfade-leave-active {
-    transition: opacity .2s ease;
+    transition: opacity .1s ease;
   }
 
   .mfade-enter-from,
