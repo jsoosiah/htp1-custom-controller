@@ -78,48 +78,14 @@
             />
           </div>
         </form>
-
-        <pre class="pre-scrollable bg-light p-2" v-if="false">{{ msoImport }}</pre>
-
-        <template v-if="msoImport">
-          <p>The following changes will be imported into the current configuration:</p>
-
-          <template v-if="msoImportPatch.length > 0">
-            <table class="table table-sm table-striped table-responsive">
-              <thead>
-                <tr>
-                  <th>op</th>
-                  <th>path</th>
-                  <th>value</th>
-                </tr>
-              </thead>
-              <tbody class="import-patch">
-                <tr v-for="patch in msoImportPatch">
-                  <td>
-                    {{patch.op}}
-                  </td>
-                  <td>
-                    {{patch.path}}
-                  </td>
-                  <td>
-                    {{patch.value}}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <button 
-              class="btn btn-sm btn-primary mb-3"
-              @click="importMso()"
-            >
-              Confirm Import Configuration
-            </button>
-          </template>
-          <template v-else>
-            <div class="alert alert-success small" role="alert">
-              The selected configuration file matches the current configuration. No changes necessary. 
-            </div>
-          </template>
-        </template>
+        
+        <pre class="pre-scrollable bg-light p-2" v-if="false">{{ importJson }}</pre>
+        
+        <mso-importer 
+          v-if="importJson" 
+          @confirm-import="importMso"
+          :mso-import-patch="msoImportPatch"
+        />
       </div>
     </div>
     <h5>Advanced</h5>
@@ -188,13 +154,19 @@
   import { ref, computed } from 'vue';
   import { compare } from 'fast-json-patch/index.mjs';
 
+  import useImportExport from '@/use/useImportExport.js';
   import useMso from '@/use/useMso.js';
 
   import TwoStateButton from './TwoStateButton.vue';
+  import MsoImporter from './MsoImporter.vue';
 
   export default {
     name: 'System',
     setup() {
+
+      const { importJson,
+              exportJsonToFile,
+              importJsonFileToSelected } = useImportExport();
 
       const { 
         mso, setUnitName, setFrontPanelBrightness, toggleFastStart, toggleFastStartPassThrough, 
@@ -202,39 +174,18 @@
         toggleAdvancedInputSettings, toggleSupportTools, importMsoPatchList
       } = useMso();
 
-      const msoImport = ref(null);
-      // const msoImportPatch = ref([]);
-
       function downloadMsoAsJson(){
-        const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(mso.value));
-        const downloadAnchorNode = document.createElement('a');
-        downloadAnchorNode.setAttribute('href', dataStr);
-        downloadAnchorNode.setAttribute('download', 'config.json');
-        document.body.appendChild(downloadAnchorNode); // required for firefox
-        downloadAnchorNode.click();
-        downloadAnchorNode.remove();
+        exportJsonToFile(mso.value, 'config');
       }
 
       function importMsoFileSelected(e) {
         const file = e.target.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.readAsText(event.target.files[0]);
-          reader.onload = e => {
-            try {
-              msoImport.value = JSON.parse(e.target.result);
-              console.log('onload', mso.value, msoImport.value);
-              // msoImportPatch.value = compare(mso.value, msoImport.value);
-            } catch (e) {
-
-            }
-          }
-        }
+        importJsonFileToSelected(file);
       }
 
       const msoImportPatch = computed(() => {
-        return compare(mso.value, msoImport.value);
-      })
+        return compare(mso.value, importJson.value);
+      });
 
       function importMso() {
         importMsoPatchList(msoImportPatch.value);
@@ -244,11 +195,12 @@
         mso, setUnitName, setFrontPanelBrightness, toggleFastStart, toggleFastStartPassThrough, 
         setPowerOnVol, toggleVideoStatusHomePage, toggleExtendedAudioStatus, toggleAdvancedInputSettings, 
         toggleSupportTools, importMsoPatchList, 
-        downloadMsoAsJson, importMsoFileSelected, msoImport, msoImportPatch, importMso
+        downloadMsoAsJson, importMsoFileSelected, importJson, msoImportPatch, importMso
       };
     },
     components: {
       TwoStateButton,
+      MsoImporter
     }
   }
 </script>

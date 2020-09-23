@@ -321,6 +321,14 @@ export default function useMso() {
     patchMso({'op': 'replace', 'path': `/peq/slots/${slot}/channels/${channel}/FilterType`, value: parseInt(filterType)});
   }
 
+  function resetPEQ(channel, slot) {
+    console.log('resetPEQ', channel, slot);
+    setPEQCenterFrequency(channel, slot, 100);
+    setPEQGain(channel, slot, 0);
+    setPEQQuality(channel, slot, 1);
+    setPEQFilterType(channel, slot, 0);
+  }
+
   function setInputLabel(input, label) {
     patchMso({'op': 'replace', 'path': `/inputs/${input}/label`, value: label});
   }
@@ -603,7 +611,8 @@ export default function useMso() {
     toggleSignalGenerator, setSignalGeneratorChannel, setSignalGeneratorSignalType,
     toggleToneControl, setBassCornerFrequency, setTrebleCornerFrequency, 
     setBassBoostCutLevel, setTrebleBoostCutLevel, setLoudnessCalibration,
-    toggleGlobalPEQ, setPEQSlot, setPEQCenterFrequency, setPEQGain, setPEQQuality, setPEQFilterType,
+    toggleGlobalPEQ, setPEQSlot, setPEQCenterFrequency, setPEQGain, 
+    setPEQQuality, setPEQFilterType, resetPEQ,
     setInputLabel, toggleInputVisible, setInputFormatDetectOption, toggleInputUHD, 
     setBluetoothDiscoverableTime, enableBluetoothDiscovery,
     toggleCEC, setTVSoundSrcDefault, toggleCECAllowPowerKey, toggleCECAllowVolKey, 

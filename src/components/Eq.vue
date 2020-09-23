@@ -166,6 +166,47 @@
           </tr>
         </tbody>
       </table>
+
+      <!-- import/export operations for band -->
+      <div class="row">
+        <div class="col-auto">
+          <button 
+            class="btn btn-sm btn-primary mb-3"
+            @click="downloadSingleBandConfig(mso.peq?.currentpeqslot)"
+          >
+            Export Band {{mso.peq?.currentpeqslot + 1}} PEQ Configuration to File
+          </button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-auto">
+          <div class="form-group">
+            <label for="import=file">Import Band PEQ Configuration File to Band {{mso.peq?.currentpeqslot + 1}}</label>
+            <input 
+              type="file" 
+              class="form-control-file" 
+              id="import=file" 
+              @change="importFileSelected"
+            />
+          </div>
+          <mso-importer 
+            v-if="importJson" 
+            @confirm-import="importMsoPatchList(bandImportPatch)"
+            :mso-import-patch="bandImportPatch"
+          />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-auto">
+          <button 
+            class="btn btn-sm btn-danger mb-3"
+            @click="resetPEQsForBand(mso.peq?.currentpeqslot)"
+          >
+            Reset Settings for Band {{mso.peq?.currentpeqslot + 1}} 
+          </button>
+        </div>
+      </div>
+
     </template>
     
     <!-- group by channel -->
@@ -244,6 +285,47 @@
           </tr>
         </tbody>
       </table>
+
+      <!-- import/export operations for channel -->
+      <div class="row">
+        <div class="col-auto">
+        <button 
+          class="btn btn-sm btn-primary mb-3"
+          @click="downloadSingleChannelConfig(activeChannels[selectedChannel])"
+        >
+          Export {{spkName(activeChannels[selectedChannel])}} PEQ Configuration to File
+        </button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-auto">
+          <div class="form-group">
+            <label for="import=file">Import Channel PEQ Configuration File to Channel {{spkName(activeChannels[selectedChannel])}}</label>
+            <input 
+              type="file" 
+              class="form-control-file" 
+              id="import=file" 
+              @change="importFileSelected"
+            />
+          </div>
+          <mso-importer 
+            v-if="importJson" 
+            @confirm-import="importMsoPatchList(channelImportPatch)"
+            :mso-import-patch="channelImportPatch"
+          />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-auto">
+          <button 
+            class="btn btn-sm btn-danger mb-3"
+            @click="resetPEQsForChannel(activeChannels[selectedChannel])"
+          >
+            Reset Settings for Channel {{spkName(activeChannels[selectedChannel])}}
+          </button>
+        </div>
+      </div>
     </template>
   </div>
 </template>
@@ -251,18 +333,23 @@
 <script>
 
   import { ref, computed } from 'vue';
+  import { compare } from 'fast-json-patch/index.mjs';
 
   import useLocalStorage from '@/use/useLocalStorage.js';
+  import useImportExport from '@/use/useImportExport.js';
   import useMso from '@/use/useMso.js';
   import useSpeakerGroups from '@/use/useSpeakerGroups.js';
 
   import TwoStateButton from './TwoStateButton.vue';
+  import MsoImporter from './MsoImporter.vue';
 
   export default {
     name: 'Eq',
     setup() {
+
+      const { importJson, exportJsonToFile, importJsonFileToSelected } = useImportExport();
       const { eqGroupBy, setEqGroupBy } = useLocalStorage();
-      const { mso, setPEQSlot } = useMso();
+      const { mso, setPEQSlot, resetPEQ } = useMso();
       const { getActiveChannels, spkName } = useSpeakerGroups();
 
       const tabLoaded = ref(true);
@@ -314,6 +401,74 @@
         
       }
 
+      function downloadSingleBandConfig(band) {
+        exportJsonToFile(mso.value.peq?.slots[band].channels, `peq-band-${band+1}`);
+      }
+
+      function downloadSingleChannelConfig(channame) {
+        const singleChannelPeqs = mso.value.peq?.slots.map(
+          slot => ({channels: {
+            [channame]: slot.channels[channame]
+          }})
+        );
+        exportJsonToFile(singleChannelPeqs, `peq-channel-${channame}`);
+      }
+
+      function importFileSelected(e) {
+        const file = e.target.files[0];
+        importJsonFileToSelected(file);
+      }
+
+      function resetPEQsForBand(band) {
+        for (const channame of activeChannels.value) {
+          resetPEQ(channame, band);
+        }
+      }
+
+      function resetPEQsForChannel(channel) {
+        for (let band = 0; band < 16; band++) {
+          resetPEQ(channel, band);
+        }
+      }
+
+      const channelImportPatch = computed(() => {
+
+        if (!importJson.value || eqGroupBy === 1) {
+          return [];
+        }
+
+        const fixedImportJson = [];
+
+        console.log('importJson', importJson.value)
+
+        // rewrite the channel name to the selected channel
+        for (const slot of importJson.value) {
+          for (const [key, channel] of Object.entries(slot.channels)) {
+            fixedImportJson.push({channels: {
+              [activeChannels.value[selectedChannel.value]]: channel
+            }});
+            break;
+          }
+        }
+
+        console.log('fixedImportJson', fixedImportJson);
+
+        // fix relative paths
+        return compare(mso.value.peq?.slots, fixedImportJson).filter(patch => patch.op === 'replace')
+        .map(patch => ({...patch, path: `/peq/slots${patch.path}`}))
+        ;
+      });
+
+      const bandImportPatch = computed(() => {
+        if (!importJson.value || eqGroupBy === 0) {
+          return [];
+        }
+
+        // fix relative paths
+        return compare(mso.value.peq?.slots[mso.value?.peq.currentpeqslot].channels, importJson.value)
+        .map(patch => ({...patch, path: `/peq/slots/${mso.value?.peq.currentpeqslot}/channels${patch.path}`}));
+      });
+
       const filterTypes = [
         { label: 'PEQ', value: 0 },
         { label: 'Low Shelf', value: 1 },
@@ -321,12 +476,13 @@
       ];
 
       return {
-        ...useMso(), activeChannels, spkName, selectedChannel, setSelectedChannel, bandHasModifications, channelHasModifications, filterTypes, tabLoaded, setSelectedBand,
+        ...useMso(), activeChannels, spkName, selectedChannel, setSelectedChannel, bandHasModifications, channelHasModifications, filterTypes, tabLoaded, setSelectedBand, downloadSingleChannelConfig, downloadSingleBandConfig, importFileSelected, importJson, bandImportPatch, channelImportPatch, resetPEQsForBand, resetPEQsForChannel,
         eqGroupBy, setGroupBy
       };
     },
     components: {
       TwoStateButton,
+      MsoImporter
     }
   }
 </script>

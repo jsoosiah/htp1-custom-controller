@@ -143,12 +143,26 @@
               />
               <!-- Dialog Enhance --> 
               <two-state-button 
-                :button-text="`${((((mso.status.raw.streamType>=33) && (mso.status.raw.streamType<=44) &&
-                                  ((mso.status.raw.streamInfoBytes[0] % 32) >= 16))) ? 'DTS ' : '')}
+                :button-text="`${((((mso.status?.raw?.streamType>=33) && (mso.status?.raw?.streamType<=44) &&
+                                  ((mso.status?.raw?.streamInfoBytes[0] % 32) >= 16))) ? 'DTS ' : '')}
                                   Dialog Enhance ${mso.dialogEnh == 0 ? 'off' : mso.dialogEnh  + ' dB'}` "
                 :state-on="mso.dialogEnh > 0"
                 :home-button="true"
                 @click="setNextDtsDialogEnh()"
+              />
+              <!-- Tone Control -->
+              <two-state-button 
+                :button-text="`Tone Control ${mso.eq?.tc ? 'on' : 'off'}`"
+                :state-on="mso.eq?.tc"
+                :home-button="true"
+                @click="toggleToneControl()"
+              />
+              <!-- PEQ -->
+              <two-state-button 
+                :button-text="`PEQ ${mso.peq?.peqsw ? 'on' : 'off'}`"
+                :state-on="mso.peq?.peqsw"
+                :home-button="true"
+                @click="toggleGlobalPEQ()"
               />
           </div>
         </div>
