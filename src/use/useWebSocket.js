@@ -1,7 +1,12 @@
 // websocket URL - note that the IP address is hard-coded in development mode
 // const websocketurl = `ws://${process.env.NODE_ENV === 'production' ? window.location.host : '192.168.1.13'}/ws/controller`;
+
 // websocket URL - user configurable and saved to device local storage
-const websocketIp = ref(localStorage.getItem('websocketIp'));
+// const websocketIp = ref(localStorage.getItem('websocketIp'));
+
+import useLocalStorage from './useLocalStorage.js';
+
+const { websocketIp, setWebsocketIp } = useLocalStorage();
 
 const websocketurl = computed(() => {
     console.log('compute websocketurl', websocketIp.value);
@@ -172,12 +177,6 @@ export default function useWebSocket() {
                 data.value = e.data;
             };
         }
-    }
-
-
-    function setWebsocketIp(url) {
-        websocketIp.value = url;
-        localStorage.setItem('websocketIp', url);
     }
 
     watch(

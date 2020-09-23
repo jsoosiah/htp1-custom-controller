@@ -37,8 +37,8 @@
               <div class="transition-container-fixed" v-if="settingsModalIsOpen">
                 <settings 
                   @close="toggleSettingsModal()" 
-                  @active-tab-change="setActiveTab"
-                  :active-tab="activeTab"
+                  @active-tab-change="setSettingsActiveTab"
+                  :active-tab="settingsActiveTab"
                 />
               </div>
             </transition>
@@ -169,6 +169,7 @@
 
 import { ref } from 'vue';
 
+import useLocalStorage from '@/use/useLocalStorage.js';
 import useMso from '@/use/useMso.js';
 import useStream from '@/use/useStream.js';
 
@@ -181,10 +182,9 @@ import IpSelect from './IpSelect.vue';
 export default {
   setup() {
 
-    console.log('useMso', typeof useMso);
+    const { settingsActiveTab, setSettingsActiveTab } = useLocalStorage();
 
     const settingsModalIsOpen = ref(false);
-    const activeTab = ref(0);
 
     function toggleSettingsModal() {
       settingsModalIsOpen.value = !settingsModalIsOpen.value;
@@ -197,7 +197,7 @@ export default {
     return { 
       ...useMso(), ...useStream(),
       settingsModalIsOpen, toggleSettingsModal,
-      activeTab, setActiveTab
+      settingsActiveTab, setSettingsActiveTab
     };
   },
   components: {

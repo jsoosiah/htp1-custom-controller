@@ -20,7 +20,7 @@
         </div>
         <div class="modal-body text-left">
           <template v-if="websocketIp">
-            <p>Connection to {{ websocketIp }} was lost. Connection will be attempted automatically. Or, please update the IP address below.</p>
+            <p>Connection to {{ websocketIp }} was lost. Reconnect will be attempted automatically. Or, please update the IP address below.</p>
           </template>
           <template v-else>
             

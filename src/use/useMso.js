@@ -301,6 +301,10 @@ export default function useMso() {
     patchMso({'op': 'replace', 'path': `/peq/peqsw`, value: !mso.value.peq.peqsw});
   }
 
+  function setPEQSlot(bandNumber) {
+    patchMso({'op': 'replace', 'path': `/peq/currentpeqslot`, value: parseInt(bandNumber)});
+  }
+
   function setPEQCenterFrequency(channel, slot, centerFreq) {
     patchMso({'op': 'replace', 'path': `/peq/slots/${slot}/channels/${channel}/Fc`, value: parseFloat(centerFreq)});
   }
@@ -412,6 +416,7 @@ export default function useMso() {
 
   function patchMso(singlePatch) {
     // block changes if dirac calibration is in progress
+    console.log('patchMso', singlePatch)
     if (!calToolConnected.value) {
       // update local mso state
       applyPatch(mso.value, [singlePatch]);
@@ -598,7 +603,7 @@ export default function useMso() {
     toggleSignalGenerator, setSignalGeneratorChannel, setSignalGeneratorSignalType,
     toggleToneControl, setBassCornerFrequency, setTrebleCornerFrequency, 
     setBassBoostCutLevel, setTrebleBoostCutLevel, setLoudnessCalibration,
-    toggleGlobalPEQ, setPEQCenterFrequency, setPEQGain, setPEQQuality, setPEQFilterType,
+    toggleGlobalPEQ, setPEQSlot, setPEQCenterFrequency, setPEQGain, setPEQQuality, setPEQFilterType,
     setInputLabel, toggleInputVisible, setInputFormatDetectOption, toggleInputUHD, 
     setBluetoothDiscoverableTime, enableBluetoothDiscovery,
     toggleCEC, setTVSoundSrcDefault, toggleCECAllowPowerKey, toggleCECAllowVolKey, 

@@ -70,90 +70,181 @@
 
     <h5>Parametric Equalization Filters <small class="text-muted">up to 16 bands are available</small></h5>
     <div class="alert alert-info small" role="alert">
-      Note that a gain of 0dB is equivalent to bypassing the filter; * denotes channels that have been modified and have active PEQ filters
+      Note that a gain of 0dB is equivalent to bypassing the filter; * denotes channels or bands that have been modified and have active PEQ filters
     </div>
 
-    <div class="mb-3">
-      <two-state-button 
-        :button-text="`Parametric Equalization: ${mso.peq?.peqsw ? 'on' : 'off'}`"
-        :state-on="mso.peq?.peqsw"
-        @click="toggleGlobalPEQ()"
-      />
+    <div class="row justify-content-between">
+      <div class="col-auto mb-3">
+        <two-state-button 
+          :button-text="`Parametric Equalization: ${mso.peq?.peqsw ? 'on' : 'off'}`"
+          :state-on="mso.peq?.peqsw"
+          @click="toggleGlobalPEQ()"
+        />
+      </div>
+      <div class="col-auto mb-3">
+        <div class="btn-group btn-group-sm" role="group" aria-label="Group By">
+          <button @click="setGroupBy(0)" type="button" class="btn" :class="{'btn-primary': eqGroupBy === 0, 'btn-secondary': eqGroupBy !== 0}">Group by Channel</button>
+          <button @click="setGroupBy(1)" type="button" class="btn" :class="{'btn-primary': eqGroupBy === 1, 'btn-secondary': eqGroupBy !== 1}">Group by Band</button>
+        </div>
+      </div>
     </div>
-    <nav class="navbar nav-fill nav-pills bg-light navbar-light">
-      <a 
-        v-for="(channame, index) in activeChannels"
-        class="nav-link" 
-        :class="{'active': selectedChannel === index, 'italic': hasModifications(channame)}" 
-        @click="setSelectedChannel(index)" 
-        href="javascript:void(0)" 
-      >
-        {{spkName(channame)}}
-      </a>
-    </nav>
-    <table class="table table-sm table-responsive-md table-striped">
-      <thead>
-        <tr>
-          <th class="text-right">Band</th>
-          <th class="text-right">Center Freq. (Hz)</th>
-          <th class="text-right">Gain (dB)</th>
-          <th class="text-right">Q</th>
-          <th class="text-right">Filter Type</th>
-        </tr>
-      </thead>
-      <tbody :class="{'hiding':!tabLoaded, 'showing':tabLoaded}">
-        <tr v-for="(slot, index) in mso.peq?.slots">
-          <td class="text-right">{{index + 1}}</td>
-          <td class="text-right">
-            <input 
-              type="number" 
-              class="form-control form-control-sm text-right" 
-              :value="slot.channels[activeChannels[selectedChannel]].Fc" 
-              @change="({ type, target }) => setPEQCenterFrequency(activeChannels[selectedChannel], index, target.value)" 
-              min="15" 
-              max="20000" 
-              step=".1"
-            />
-          </td>
-          <td class="text-right">
-            <input 
-              type="number" 
-              class="form-control form-control-sm text-right" 
-              :value="slot.channels[activeChannels[selectedChannel]].gaindB" 
-              @change="({ type, target }) => setPEQGain(activeChannels[selectedChannel], index, target.value)" 
-              min="-20" 
-              max="20" 
-              step=".1"
-            />
-          </td>
-          <td class="text-right">
-            <input 
-              type="number" 
-              class="form-control form-control-sm text-right" 
-              :value="slot.channels[activeChannels[selectedChannel]].Q" 
-              @change="({ type, target }) => setPEQQuality(activeChannels[selectedChannel], index, target.value)" 
-              min=".1" 
-              max="10" 
-              step=".1"
-            />
-          </td>
-          <td class="text-right">
-              <select 
-                class="form-control form-control-sm" 
-                @change="({ type, target }) => setPEQFilterType(activeChannels[selectedChannel], index, target.value)"
-              >
-                <option 
-                  v-for="filterType in filterTypes" 
-                  :value="filterType.value"
-                  :selected="filterType.value === slot.channels[activeChannels[selectedChannel]].FilterType"
+
+    <!-- group by band --> 
+    <template v-if="eqGroupBy === 1">
+      <nav class="navbar nav-fill nav-pills bg-light navbar-light">
+        <a 
+          v-for="(slot, index) in mso.peq?.slots"
+          
+          class="nav-link" 
+          :class="{'active': mso.peq?.currentpeqslot === index, 'italic': bandHasModifications(index)}" 
+          @click="setSelectedBand(index)" 
+          href="javascript:void(0)" 
+        >
+         Band {{index + 1}}
+        </a>
+      </nav>
+      <table class="table table-sm table-responsive-lg table-striped">
+        <thead>
+          <tr>
+            <th>Channel</th>
+            <th class="text-right">Center Freq. (Hz)</th>
+            <th class="text-right">Gain (dB)</th>
+            <th class="text-right">Q</th>
+            <th class="text-right">Filter Type</th>
+          </tr>
+        </thead>
+        <tbody :class="{'hiding':!tabLoaded, 'showing':tabLoaded}">
+          <tr v-for="(channame, chanIndex) in activeChannels">
+            <td>{{spkName(channame)}}</td>
+            <td class="text-right">
+              <input 
+                type="number" 
+                class="form-control form-control-sm text-right" 
+                :value="mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].Fc" 
+                @change="({ type, target }) => setPEQCenterFrequency(activeChannels[chanIndex], mso.peq?.currentpeqslot, target.value)" 
+                min="15" 
+                max="20000" 
+                step=".1"
+              />
+            </td>
+            <td class="text-right">
+              <input 
+                type="number" 
+                class="form-control form-control-sm text-right" 
+                :value="mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].gaindB" 
+                @change="({ type, target }) => setPEQGain(activeChannels[chanIndex], mso.peq?.currentpeqslot, target.value)" 
+                min="-20" 
+                max="20" 
+                step=".1"
+              />
+            </td>
+            <td class="text-right">
+              <input 
+                type="number" 
+                class="form-control form-control-sm text-right" 
+                :value="mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].Q" 
+                @change="({ type, target }) => setPEQQuality(activeChannels[chanIndex], mso.peq?.currentpeqslot, target.value)" 
+                min=".1" 
+                max="10" 
+                step=".1"
+              />
+            </td>
+            <td class="text-right">
+                <select 
+                  class="form-control form-control-sm" 
+                  @change="({ type, target }) => setPEQFilterType(activeChannels[chanIndex], mso.peq?.currentpeqslot, target.value)"
                 >
-                  {{filterType.label}}
-                </option>
-              </select>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+                  <option 
+                    v-for="filterType in filterTypes" 
+                    :value="filterType.value"
+                    :selected="filterType.value === mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].FilterType"
+                  >
+                    {{filterType.label}}
+                  </option>
+                </select>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </template>
+    
+    <!-- group by channel -->
+    <template v-else>
+      <nav class="navbar nav-fill nav-pills bg-light navbar-light">
+        <a 
+          v-for="(channame, index) in activeChannels"
+          class="nav-link" 
+          :class="{'active': selectedChannel === index, 'italic': channelHasModifications(channame)}" 
+          @click="setSelectedChannel(index)" 
+          href="javascript:void(0)" 
+        >
+          {{spkName(channame)}}
+        </a>
+      </nav>
+      <table class="table table-sm table-responsive-md table-striped">
+        <thead>
+          <tr>
+            <th class="text-right">Band</th>
+            <th class="text-right">Center Freq. (Hz)</th>
+            <th class="text-right">Gain (dB)</th>
+            <th class="text-right">Q</th>
+            <th class="text-right">Filter Type</th>
+          </tr>
+        </thead>
+        <tbody :class="{'hiding':!tabLoaded, 'showing':tabLoaded}">
+          <tr v-for="(slot, index) in mso.peq?.slots">
+            <td class="text-right">{{index + 1}}</td>
+            <td class="text-right">
+              <input 
+                type="number" 
+                class="form-control form-control-sm text-right" 
+                :value="slot.channels[activeChannels[selectedChannel]].Fc" 
+                @change="({ type, target }) => setPEQCenterFrequency(activeChannels[selectedChannel], index, target.value)" 
+                min="15" 
+                max="20000" 
+                step=".1"
+              />
+            </td>
+            <td class="text-right">
+              <input 
+                type="number" 
+                class="form-control form-control-sm text-right" 
+                :value="slot.channels[activeChannels[selectedChannel]].gaindB" 
+                @change="({ type, target }) => setPEQGain(activeChannels[selectedChannel], index, target.value)" 
+                min="-20" 
+                max="20" 
+                step=".1"
+              />
+            </td>
+            <td class="text-right">
+              <input 
+                type="number" 
+                class="form-control form-control-sm text-right" 
+                :value="slot.channels[activeChannels[selectedChannel]].Q" 
+                @change="({ type, target }) => setPEQQuality(activeChannels[selectedChannel], index, target.value)" 
+                min=".1" 
+                max="10" 
+                step=".1"
+              />
+            </td>
+            <td class="text-right">
+                <select 
+                  class="form-control form-control-sm" 
+                  @change="({ type, target }) => setPEQFilterType(activeChannels[selectedChannel], index, target.value)"
+                >
+                  <option 
+                    v-for="filterType in filterTypes" 
+                    :value="filterType.value"
+                    :selected="filterType.value === slot.channels[activeChannels[selectedChannel]].FilterType"
+                  >
+                    {{filterType.label}}
+                  </option>
+                </select>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </template>
   </div>
 </template>
 
@@ -161,6 +252,7 @@
 
   import { ref, computed } from 'vue';
 
+  import useLocalStorage from '@/use/useLocalStorage.js';
   import useMso from '@/use/useMso.js';
   import useSpeakerGroups from '@/use/useSpeakerGroups.js';
 
@@ -169,7 +261,8 @@
   export default {
     name: 'Eq',
     setup() {
-      const { mso } = useMso();
+      const { eqGroupBy, setEqGroupBy } = useLocalStorage();
+      const { mso, setPEQSlot } = useMso();
       const { getActiveChannels, spkName } = useSpeakerGroups();
 
       const tabLoaded = ref(true);
@@ -190,10 +283,35 @@
         }, 100);
       }
 
-      function hasModifications(channame) {
+      function setSelectedBand(bandNumber) {
+        tabLoaded.value = false;
+
+        setTimeout(() => {
+          setPEQSlot(bandNumber);
+          tabLoaded.value = true;
+        }, 100);
+      }
+
+      function channelHasModifications(channame) {
         return mso.value.peq?.slots.filter(
           slot => slot.channels[channame].gaindB !== 0
         ).length > 0;
+      }
+
+      function bandHasModifications(band) {
+        return Object.entries(mso.value.peq?.slots[band].channels).filter(chan => {
+          return chan[1].gaindB !== 0
+        }).length > 0;
+      }
+
+      function setGroupBy(grpBy) {
+        tabLoaded.value = false;
+
+        setTimeout(() => {
+          setEqGroupBy(grpBy);
+          tabLoaded.value = true;
+        }, 100);
+        
       }
 
       const filterTypes = [
@@ -203,7 +321,8 @@
       ];
 
       return {
-        ...useMso(), activeChannels, spkName, selectedChannel, setSelectedChannel, hasModifications, filterTypes, tabLoaded
+        ...useMso(), activeChannels, spkName, selectedChannel, setSelectedChannel, bandHasModifications, channelHasModifications, filterTypes, tabLoaded, setSelectedBand,
+        eqGroupBy, setGroupBy
       };
     },
     components: {
