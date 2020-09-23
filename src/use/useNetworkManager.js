@@ -1,5 +1,5 @@
 import { ref, watch, computed } from 'vue';
-import { useWebSocket } from './useWebSocket.js';
+import useWebSocket from './useWebSocket.js';
 import { applyPatch } from 'fast-json-patch/index.mjs';
 import { debounce } from 'lodash-es';
 

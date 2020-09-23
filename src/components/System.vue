@@ -55,15 +55,71 @@
     </div>
 
     <h5>Import/Export Configuration</h5>
+    <h6>Export</h6>
     <div class="row">
       <div class="col-auto">
+        <label>Export Preview</label>
         <pre class="pre-scrollable bg-light p-2">{{mso}}</pre>
         <button 
           class="btn btn-sm btn-primary mb-3"
           @click="downloadMsoAsJson()"
         >
-          Export Configuration
+          Export Current Configuration to File
         </button>
+        <h6>Import</h6>
+        <form>
+          <div class="form-group">
+            <label for="import=file">Select Import Configuration File</label>
+            <input 
+              type="file" 
+              class="form-control-file" 
+              id="import=file" 
+              @change="importMsoFileSelected"
+            />
+          </div>
+        </form>
+
+        <pre class="pre-scrollable bg-light p-2" v-if="false">{{ msoImport }}</pre>
+
+        <template v-if="msoImport">
+          <p>The following changes will be imported into the current configuration:</p>
+
+          <template v-if="msoImportPatch.length > 0">
+            <table class="table table-sm table-striped table-responsive">
+              <thead>
+                <tr>
+                  <th>op</th>
+                  <th>path</th>
+                  <th>value</th>
+                </tr>
+              </thead>
+              <tbody class="import-patch">
+                <tr v-for="patch in msoImportPatch">
+                  <td>
+                    {{patch.op}}
+                  </td>
+                  <td>
+                    {{patch.path}}
+                  </td>
+                  <td>
+                    {{patch.value}}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <button 
+              class="btn btn-sm btn-primary mb-3"
+              @click="importMso()"
+            >
+              Confirm Import Configuration
+            </button>
+          </template>
+          <template v-else>
+            <div class="alert alert-success small" role="alert">
+              The selected configuration file matches the current configuration. No changes necessary. 
+            </div>
+          </template>
+        </template>
       </div>
     </div>
     <h5>Advanced</h5>
@@ -106,23 +162,28 @@
       </div>
     </div>
 
-    <h5>Support</h5>
-    <div class="custom-control custom-switch">
-      <input 
-        type="checkbox" 
-        class="custom-control-input" 
-        id="enable-support-tools" 
-        :checked="mso.stat?.enableSupportTools" 
-        @click="toggleSupportTools()"
-      >
-      <label class="custom-control-label" for="enable-support-tools">
-        Enable Support Tools
-      </label>
-    </div>
+    <template v-if="false">
+      <h5>Support</h5>
+      <div class="custom-control custom-switch">
+        <input 
+          type="checkbox" 
+          class="custom-control-input" 
+          id="enable-support-tools" 
+          :checked="mso.stat?.enableSupportTools" 
+          @click="toggleSupportTools()"
+        >
+        <label class="custom-control-label" for="enable-support-tools">
+          Enable Support Tools
+        </label>
+      </div>
+    </template>
   </div>
 </template>
 
 <script>
+
+  import { ref, computed } from 'vue';
+  import { compare } from 'fast-json-patch/index.mjs';
 
   import useMso from '@/use/useMso.js';
 
@@ -135,8 +196,11 @@
       const { 
         mso, setUnitName, setFrontPanelBrightness, toggleFastStart, toggleFastStartPassThrough, 
         setPowerOnVol, toggleVideoStatusHomePage, toggleExtendedAudioStatus, 
-        toggleAdvancedInputSettings, toggleSupportTools 
+        toggleAdvancedInputSettings, toggleSupportTools, importMsoPatchList
       } = useMso();
+
+      const msoImport = ref(null);
+      // const msoImportPatch = ref([]);
 
       function downloadMsoAsJson(){
         const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(mso.value));
@@ -148,9 +212,36 @@
         downloadAnchorNode.remove();
       }
 
-      return { mso, setUnitName, setFrontPanelBrightness, toggleFastStart, toggleFastStartPassThrough, 
+      function importMsoFileSelected(e) {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.readAsText(event.target.files[0]);
+          reader.onload = e => {
+            try {
+              msoImport.value = JSON.parse(e.target.result);
+              console.log('onload', mso.value, msoImport.value);
+              // msoImportPatch.value = compare(mso.value, msoImport.value);
+            } catch (e) {
+
+            }
+          }
+        }
+      }
+
+      const msoImportPatch = computed(() => {
+        return compare(mso.value, msoImport.value);
+      })
+
+      function importMso() {
+        importMsoPatchList(msoImportPatch.value);
+      }
+
+      return { 
+        mso, setUnitName, setFrontPanelBrightness, toggleFastStart, toggleFastStartPassThrough, 
         setPowerOnVol, toggleVideoStatusHomePage, toggleExtendedAudioStatus, toggleAdvancedInputSettings, 
-        toggleSupportTools, downloadMsoAsJson 
+        toggleSupportTools, importMsoPatchList, 
+        downloadMsoAsJson, importMsoFileSelected, msoImport, msoImportPatch, importMso
       };
     },
     components: {
@@ -165,6 +256,11 @@
   }
 
   .pre-scrollable {
+  }
+
+  .import-patch {
+    max-height: 340px;
+    overflow: auto;
   }
 
 </style>

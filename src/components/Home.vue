@@ -11,12 +11,7 @@
       <span class="sgen-on-warning">Dirac Calibration in Progress - Currently in Readonly Mode</span>
     </div>
     <div v-if="state !== 'OPEN'" class="connecting-overlay">
-      <div class="card connecting-card">
-        <div class="card-body">
-          <h5 class="card-title">Please Wait</h5>
-          Connection was lost. Reconnecting...
-        </div>
-      </div>
+      <ip-select />
     </div>
     <template v-if="!mso?.powerIsOn">
       <div class="container">
@@ -181,9 +176,12 @@ import Settings from './Settings.vue';
 import TwoStateButton from './TwoStateButton.vue';
 import ThreeStateButton from './ThreeStateButton.vue';
 import DiracButton from './DiracButton.vue';
+import IpSelect from './IpSelect.vue';
 
 export default {
   setup() {
+
+    console.log('useMso', typeof useMso);
 
     const settingsModalIsOpen = ref(false);
     const activeTab = ref(0);
@@ -206,7 +204,8 @@ export default {
     Settings,
     DiracButton,
     TwoStateButton,
-    ThreeStateButton
+    ThreeStateButton,
+    IpSelect,
   }
 }
 </script>
@@ -220,18 +219,6 @@ export default {
     background: rgba(0,0,0,0.5);
     z-index: 9999;
     position:fixed;
-  }
-
-  .connecting-card {
-    width:18rem;
-    height: 9rem;
-    /*margin: 0 auto;*/
-    position: fixed;
-    left: 50%;
-    top:50%;
-    margin-left: -9rem;
-    margin-top: -4.5rem;
-    color: #212529;
   }
 
   .loading-indicator {

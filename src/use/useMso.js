@@ -1,5 +1,5 @@
 import { ref, watch, computed } from 'vue';
-import { useWebSocket } from './useWebSocket.js';
+import useWebSocket from './useWebSocket.js';
 import { applyPatch, deepClone, compare } from 'fast-json-patch/index.mjs';
 import { debounce } from 'lodash-es';
 
@@ -69,7 +69,7 @@ export default function useMso() {
     if (mso.value.upmix) {
       for (const upmixKey in mso.value.upmix) {
         if (mso.value.upmix[upmixKey].homevis) {
-          filtered[upmixKey] = mso.value.upmix[upmixKey];
+          filtered[upmixKey] = {...mso.value.upmix[upmixKey]};
           filtered[upmixKey].label = upmixLabels[upmixKey];
         }
       }
@@ -405,10 +405,18 @@ export default function useMso() {
     patchMso({'op': 'replace', 'path': `/stat/enableSupportTools`, value: !mso.value.stat.enableSupportTools});
   }
 
+  // danger
+  function importMsoPatchList(patchList) {
+    commandsToSend.value = patchList;
+  }
+
   function patchMso(singlePatch) {
     // block changes if dirac calibration is in progress
     if (!calToolConnected.value) {
+      // update local mso state
       applyPatch(mso.value, [singlePatch]);
+      // add to commandsToSend, which will trigger its
+      // watcher and queue it to be sent to the mso websocket
       commandsToSend.value = addCommand(commandsToSend.value, singlePatch);
     }
   }
@@ -448,10 +456,19 @@ export default function useMso() {
         // only apply patch if not awaiting any more commands
         if (commandsAwaitingResponse.value.length === 0) {
           console.log('!!!! applyPatch', commandsReceived.value)
+          
+          // use this to trigger mso watcher, 
+          // requires deep clone for every mso mutation
           // const newMso = deepClone(mso.value);
           // applyPatch(newMso, commandsReceived.value);
-          applyPatch(mso.value, commandsReceived.value);
           // mso.value = newMso;
+
+          // this does not trigger mso watcher
+          // but does not require deep clone, so it's 
+          // more lightweight if mso watcher isn't needed
+          applyPatch(mso.value, commandsReceived.value);
+
+
           commandsReceived.value = [];
 
         } else {
@@ -588,7 +605,7 @@ export default function useMso() {
     toggleCECAllowSysAudioOff, toggleCECAllowInputChange, toggleCECAllowStandby,
     setUnitName, toggleFastStart, toggleFastStartPassThrough, setPowerOnVol,
     setFrontPanelBrightness, toggleVideoStatusHomePage, toggleExtendedAudioStatus,
-    toggleAdvancedInputSettings, toggleSupportTools,
+    toggleAdvancedInputSettings, toggleSupportTools, importMsoPatchList,
     showCrossoverControls, currentDiracSlot, calToolConnected,
     state, loading,
     commandsToSend, commandsReceived, commandsAwaitingResponse // debug
