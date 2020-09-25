@@ -72,7 +72,9 @@
     <div class="alert alert-info small" role="alert">
       Note that a gain of 0dB is equivalent to bypassing the filter; * denotes channels or bands that have been modified and have active PEQ filters
     </div>
-
+    <eq-chart 
+      :peq-slots="mso.peq?.slots || []"
+    />
     <div class="row justify-content-between">
       <div class="col-auto mb-3">
         <two-state-button 
@@ -342,6 +344,7 @@
 
   import TwoStateButton from './TwoStateButton.vue';
   import MsoImporter from './MsoImporter.vue';
+  import EqChart from './EqChart.vue';
 
   export default {
     name: 'Eq',
@@ -482,7 +485,8 @@
     },
     components: {
       TwoStateButton,
-      MsoImporter
+      MsoImporter,
+      EqChart,
     }
   }
 </script>

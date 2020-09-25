@@ -15,8 +15,10 @@
     "bootstrap": "^4.5.2",
     "core-js": "^3.6.5",
     "fast-json-patch": "^3.0.0-1",
+    "highcharts": "^8.2.0",
     "lodash-es": "^4.17.15",
-    "vue": "^3.0.0"
+    "vue": "^3.0.0",
+    "vue-highcharts": "^0.2.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
