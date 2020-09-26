@@ -12,14 +12,14 @@ const condetails = ref({});
 // sent to MSO and a response is being awaited
 const loading = ref(true);
 
+const { data, state, send, close } = useWebSocket();
+
 /**
 * Composition function which exposes the nmstat state, as well 
 * as an API to interact with netapply, abstracting away all 
 * network-related websocket interactions to keep components clean.
 */
 export default function useNetworkManager() {
-
-  const { data, state, send, close } = useWebSocket();
 
   function scan() {
     console.log('scan: entering');

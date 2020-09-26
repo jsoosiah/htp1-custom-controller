@@ -30,7 +30,7 @@
       <div class="container">
         <div class="row mt-2">
           <div class="col text-left">
-            <span class="current-input-label">{{mso.inputs[mso.input].label}}</span>
+            <span class="current-input-label">{{mso.inputs && mso.inputs[mso.input].label}}</span>
           </div>
           <div class="col text-right">
             <transition name="mfade">
@@ -54,18 +54,18 @@
         <!-- Program Format, Blank, Listening Format   -->
         <div class="row mt-2">
           <div class="col text-left">
-            <h5>Program Format: {{mso.status.DECProgramFormat}}</h5>
+            <h5>Program Format: {{mso.status?.DECProgramFormat}}</h5>
             <div>
-              {{mso.status.DECSourceProgram}}
+              {{mso.status?.DECSourceProgram}}
             </div>
           </div>
           <div class="col text-right">
-            <h5>Listening Format: {{mso.status.ENCListeningFormat}}</h5>
+            <h5>Listening Format: {{mso.status?.ENCListeningFormat}}</h5>
             <!-- Surround Mode -->
             <!--             <h5>Surround Mode</h5>      -->
-            <!--             <div>{{mso.status.SurroundMode}}</div>   -->
+            <!--             <div>{{mso.status?.SurroundMode}}</div>   -->
             <div>
-                {{mso.status.SurroundMode}}
+                {{mso.status?.SurroundMode}}
             </div>
           </div>
         </div>
@@ -75,7 +75,14 @@
             <img v-if="streamTypeIcon(mso.status)" class="fillheight" :src="require(`@/assets/${streamTypeIcon(mso.status)}`)+'#svgView(preserveAspectRatio(xMinYMin))'">
           </div>
           <div class="col-auto text-center">
-            <span class="vol-display" :class="{'text-danger':mso.muted}" @click="toggleMute()">{{mso.volume}} dB</span>
+            <span 
+              class="vol-display" 
+              :class="{'text-danger':mso.muted}" 
+              @mousedown="toggleMute()"
+              @touchstart="toggleMute()"
+            >
+              {{mso.volume}} dB
+            </span>
           </div>
           <div class="col text-right">
             <img v-if="upmixerIcon(mso.status)" class="fillheight float-right" :src="require(`@/assets/${upmixerIcon(mso.status)}`)+'#svgView(preserveAspectRatio(xMaxYMax))'">
@@ -84,10 +91,26 @@
         <!-- Volume Buttons -->
         <div class="row mt-2">
           <div class="col-md-12 text-center">
-            <button type="button" class="btn btn-dark vol-btn" @click="setVolume(mso.volume - 1)">
+            <button 
+              type="button" 
+              class="btn btn-dark vol-btn" 
+              @mousedown="handleVolumeDownTouchStart"
+              @touchstart="handleVolumeDownTouchStart"
+              @mouseup="handleVolumeDownTouchEnd"
+              @touchend="handleVolumeDownTouchEnd"
+              @touchcancel="handleVolumeDownTouchEnd"
+            >
               <font-awesome-icon  :class="{'text-danger':mso.muted}" size="4x" :icon="['fas', 'volume-down']" />
             </button>
-            <button type="button" class="btn btn-dark vol-btn" @click="setVolume(mso.volume + 1)">
+            <button 
+              type="button" 
+              class="btn btn-dark vol-btn" 
+              @mousedown="handleVolumeUpTouchStart"
+              @touchstart="handleVolumeUpTouchStart"
+              @mouseup="handleVolumeUpTouchEnd"
+              @touchend="handleVolumeUpTouchEnd"
+              @touchcancel="handleVolumeUpTouchEnd"
+            >
               <font-awesome-icon  :class="{'text-danger':mso.muted}" size="4x" :icon="['fas', 'volume-up']" />
             </button>
           </div>
@@ -193,12 +216,64 @@ import ThreeStateButton from './ThreeStateButton.vue';
 import DiracButton from './DiracButton.vue';
 import IpSelect from './IpSelect.vue';
 
+// ms length required to hold button before it is considered a long press
+const LONG_PRESS_THRESHOLD = 400; 
+
 export default {
   setup() {
 
     const { settingsActiveTab, setSettingsActiveTab } = useLocalStorage();
 
+    const { 
+      mso, setVolume, toggleMute,
+      loading, calToolConnected, state,
+      visibleInputs, visibleUpmixers
+    } = useMso();
+
     const settingsModalIsOpen = ref(false);
+    // const holdingVolumeUp = ref(false);
+    // const holdingVolumeDown = ref(false);
+
+    // timeouts for detecting if the user held down
+    // long enough to trigger the long press state
+    let volumeUpDetectHoldingTimeout;
+    let volumeDownDetectHoldingTimeout;
+
+    // intervals for performing the actual volume adjustments
+    let incrementVolumeInterval;
+    let decrementVolumeInterval;
+
+    function handleVolumeUpTouchStart() {
+
+      setVolume(mso.value.volume + 1);
+
+      volumeUpDetectHoldingTimeout = setTimeout(() => {
+        // holdingVolumeUp.value = true;
+        incrementVolumeInterval = setInterval(() => setVolume(mso.value.volume + 1), 100);
+      }, LONG_PRESS_THRESHOLD);
+    }
+
+    function handleVolumeDownTouchStart() {
+
+      setVolume(mso.value.volume - 1);
+
+      volumeDownDetectHoldingTimeout = setTimeout(() => {
+        // holdingVolumeDown.value = true;
+        decrementVolumeInterval = setInterval(() => setVolume(mso.value.volume - 1), 100);
+      }, LONG_PRESS_THRESHOLD);
+    }
+
+    function handleVolumeUpTouchEnd() {
+      clearTimeout(volumeUpDetectHoldingTimeout);
+      // holdingVolumeUp.value = false;
+      clearInterval(incrementVolumeInterval);
+    }
+
+    function handleVolumeDownTouchEnd() {
+      clearTimeout(volumeDownDetectHoldingTimeout);
+      // holdingVolumeDown.value = false;
+      clearInterval(decrementVolumeInterval);
+    }
 
     function toggleSettingsModal() {
       settingsModalIsOpen.value = !settingsModalIsOpen.value;
@@ -209,9 +284,15 @@ export default {
     }
 
     return { 
-      ...useMso(), ...useStream(),
+      mso, setVolume, toggleMute,
+      loading, calToolConnected, state,
+      visibleInputs, visibleUpmixers,
+      ...useStream(),
       settingsModalIsOpen, toggleSettingsModal,
-      settingsActiveTab, setSettingsActiveTab
+      settingsActiveTab, setSettingsActiveTab,
+      handleVolumeDownTouchStart, handleVolumeDownTouchEnd,
+      handleVolumeUpTouchStart, handleVolumeUpTouchEnd,
+      // holdingVolumeDown, holdingVolumeUp // debug
     };
   },
   components: {

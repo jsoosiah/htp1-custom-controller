@@ -52,7 +52,7 @@
     </div>
     <h5>Dirac Room Correction Filters <small class="text-muted">up to 6 sets or slots available</small></h5>
     <div class="alert alert-info small" role="alert">
-      * denotes Dirac Live Room Correction filters with Bass Control
+      * denotes Dirac Live Room Correction filters with Bass Control.
     </div>
     <div class="mb-3">
       <dirac-button />
@@ -143,7 +143,7 @@
       } = useMso();
       const { getActiveChannels, spkName } = useSpeakerGroups();
 
-      const currentDiracTab = ref(null);
+      const currentDiracTab = ref(mso.value.cal?.currentdiracslot);
 
       const activeChannels = computed(() => {
         return getActiveChannels(mso.value.speakers?.groups);
@@ -161,16 +161,6 @@
           currentDiracTab.value = tab;
         }, 100);
       }
-
-      watch(
-        mso,
-        newMso => {
-          console.log('watch', currentDiracTab.value, newMso.cal, currentDiracTab.value === null && newMso.cal)
-          if (currentDiracTab.value === null && newMso.cal) {
-            currentDiracTab.value = newMso.cal.currentdiracslot;
-          }
-        }
-      );
 
       return {
         mso, setDiracSlot, setUserTrim, setUserDelay, 

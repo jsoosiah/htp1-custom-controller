@@ -109,12 +109,8 @@
     </table>
     <template v-if="nmstat.eth0detail">
       <h5>Ethernet</h5>
+      <h6>Current Settings</h6>
       <table class="table table-sm table-responsive table-striped">
-        <thead>
-          <tr>
-            <th colspan="2">Current Settings</th>
-          </tr>
-        </thead>
         <tbody>
           <tr>
             <td>IP Address</td>
@@ -147,12 +143,8 @@
       </template>
 
       <h5>Wi-Fi</h5>
+      <h6>Current Settings</h6>
       <table class="table table-sm table-responsive table-striped">
-        <thead>
-          <tr>
-            <th colspan="2">Current Settings</th>
-          </tr>
-        </thead>
         <tbody>
           <tr>
             <td>Connected Network</td>
@@ -274,7 +266,7 @@
 
 <script>
 
-  import { reactive, ref, computed, watch, onUnmounted } from 'vue';
+  import { reactive, ref, computed, watch, onMounted, onUnmounted } from 'vue';
 
   import useMso from '@/use/useMso.js';
   import useNetworkManager from '@/use/useNetworkManager.js';
@@ -390,17 +382,12 @@
         }
       )
 
-      watch(
-        state,
-        val => {
-          switch (val) {
-            case 'OPEN':
-              scan();
-              scanInterval = setInterval(scan, 5000);
-              break;
-          }
-        }
-      )
+      // perform initial network scan
+      // and continue scanning every 5 seconds
+      onMounted(() => {
+        scan();
+        scanInterval = setInterval(scan, 5000);
+      });
 
       // clear scan interval if 
       // navigating away from this page

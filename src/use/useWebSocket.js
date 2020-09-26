@@ -145,55 +145,54 @@ class WSClient {
 // this implementation is ported from https://github.com/logaretm/vue-use-web by Abdelrahman Awad 
 // it uses the above WSClient to reconnect automatically 
 import { ref, onMounted, onUnmounted, watch, computed } from 'vue';
-export default function useWebSocket() {
-    const data = ref(null);
-    const state = ref('CONNECTING');
-    let ws;
-    const close = function close(code, reason) {
-        if (!ws)
-            return;
-        ws.close(code, reason);
-    };
-    const send = function send(data) {
-        if (!ws || state.value !== 'OPEN') {
-            console.log('send: socket not ready, ignoring', data);
-            return;
-        }
-        ws.send(data);
-    };
 
-    function initialize() {
-        if (websocketurl.value) {
-            ws = new WSClient();
-            ws.open();
 
-            ws.onopen = () => {
-                state.value = 'OPEN';
-            };
-            ws.onclose = ws.onerror = () => {
-                state.value = 'CLOSED';
-            };
-            ws.onmessage = (e) => {
-                data.value = e.data;
-            };
-        }
+const data = ref(null);
+const state = ref('CONNECTING');
+let ws;
+const close = function close(code, reason) {
+    if (!ws)
+        return;
+    ws.close(code, reason);
+};
+const send = function send(data) {
+    if (!ws || state.value !== 'OPEN') {
+        console.log('send: socket not ready, ignoring', data);
+        return;
     }
+    ws.send(data);
+};
 
-    watch(
-        websocketurl, 
-        newWebsocketurl => {
-            if (ws) {
-                ws.close();
-            }
-            initialize();
-    });
+function initialize() {
+    console.log('initialize: entering', websocketurl.value);
+    if (websocketurl.value) {
+        ws = new WSClient();
+        ws.open();
 
-    onMounted(() => {
+        ws.onopen = () => {
+            state.value = 'OPEN';
+        };
+        ws.onclose = ws.onerror = () => {
+            state.value = 'CLOSED';
+        };
+        ws.onmessage = (e) => {
+            data.value = e.data;
+        };
+    }
+}
+
+watch(
+    websocketurl, 
+    newWebsocketurl => {
+        if (ws) {
+            ws.close();
+        }
         initialize();
-    });
-    onUnmounted(() => {
-        ws.close();
-    });
+});
+
+initialize();
+
+export default function useWebSocket() {
 
     return {
         data,

@@ -10,7 +10,7 @@
     <div class="row mt-3" v-show="!mso.eq?.tc">
       <div class="col">
         <div class="alert alert-warning small" role="alert">
-          Tone controls are currently turned off. The below settings may be modified, but they will not have any effect until tone controls are turned on.
+          Tone controls are currently turned off. The following tone control settings may be modified, but they will not have any effect until tone controls are turned on.
         </div>
       </div>
     </div>
@@ -78,7 +78,7 @@
 
     <h5>Parametric Equalization Filters <small class="text-muted">up to 16 bands are available</small></h5>
     <div class="alert alert-info small" role="alert">
-      Note that a gain of 0dB is equivalent to bypassing the filter; * denotes channels or bands that have been modified and have active PEQ filters
+      Note that a gain of 0dB is equivalent to bypassing the filter; * denotes channels or bands that have been modified and have active PEQ filters.
     </div>
     <eq-chart 
       :peq-slots="mso.peq?.slots || []"
@@ -104,7 +104,7 @@
     <div class="row" v-show="!mso.peq?.peqsw">
       <div class="col">
         <div class="alert alert-warning small" role="alert">
-          Parametric equalization is currently turned off. The below settings may be modified, but they will not have any effect until PEQ is turned on.
+          Parametric equalization is currently turned off. The following PEQ settings may be modified, but they will not have any effect until PEQ is turned on.
         </div>
       </div>
     </div>

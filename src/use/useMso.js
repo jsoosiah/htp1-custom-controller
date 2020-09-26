@@ -31,6 +31,8 @@ const commandsReceived = ref([]);
 // list of commands sent to MSO where a resonse has not yet been received
 const commandsAwaitingResponse = ref([]);
 
+const { data, state, send, close } = useWebSocket();
+
 /**
 * Composition function which exposes the MSO state, as well 
 * as an API to interact with MSO, abstracting away all 
@@ -40,7 +42,7 @@ export default function useMso() {
 
   const { loading } = useLoading();
 
-  const { data, state, send, close } = useWebSocket();
+  
 
   const localLoading = ref(false);
 
@@ -430,6 +432,7 @@ export default function useMso() {
       applyPatch(mso.value, [singlePatch]);
       // add to commandsToSend, which will trigger its
       // watcher and queue it to be sent to the mso websocket
+      // TODO remove this
       commandsToSend.value = addCommand(commandsToSend.value, singlePatch);
     }
   }

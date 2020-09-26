@@ -68,53 +68,60 @@
 
         const ctx = chartRef.value.getContext("2d");
 
-        myChart = Chart.Line(ctx, {
-          type: 'bar',
-          data: {
-                datasets: []
-          },
-          options: {
+        const chartData = [];
+        updateChartData(chartData);
+
+        // delay chart loading to let initial page load happen quickly
+        setTimeout(() => {
+          myChart = Chart.Line(ctx, {
+            type: 'bar',
+            data: {
+              datasets: chartData
+            },
+            options: {
               responsive: true,
               maintainAspectRatio: false,
               aspectRatio: 1.25,
               showLines: true,
               scales: {
-                  yAxes: [{
-                      scaleLabel: {
-                        display: true,
-                        labelString: 'Gain (dB)'
-                      }
-                  }],
-                  xAxes: [{
-                    type: 'logarithmic',
-                    ticks: {
-                      min: 20,
-                      max: 20000,
-                      callback: function(value, index) {
-                        let formatted = value.toLocaleString('en-US');
-                        let parts = formatted.split(',');
-                        
-                        if ((Math.floor(index / 9)) % 2 === 0) {
-                          if (index % 2 === 0) {
+                yAxes: [{
+                  scaleLabel: {
+                    display: true,
+                    labelString: 'Gain (dB)'
+                  },
+                }],
+                xAxes: [{
+                  type: 'logarithmic',
+                  ticks: {
+                    min: 20,
+                    max: 20000,
+                    callback: function(value, index) {
+                      let formatted = value.toLocaleString('en-US');
+                      let parts = formatted.split(',');
+                      
+                      if ((Math.floor(index / 9)) % 2 === 0) {
+                        if (index % 2 === 0) {
 
-                          } else {
-                            return '';
-                          }
                         } else {
-                          if (index % 2 === 0) {
-                            return '';
-                          }
-                          
+                          return '';
                         }
+                      } else {
+                        if (index % 2 === 0) {
+                          return '';
+                        }
+                        
+                      }
 
-                        return parts[0] + (parts.length > 1 ? 'k':'');
-                      },
+                      return parts[0] + (parts.length > 1 ? 'k':'');
                     },
-                    scaleLabel: {
-                      display: true,
-                      labelString: 'Frequency (Hz)'
-                    }
-                  }]
+                    minRotation: 0,
+                    maxRotation: 50
+                  },
+                  scaleLabel: {
+                    display: true,
+                    labelString: 'Frequency (Hz)'
+                  },
+                }]
               },
               tooltips: {
                 enabled: true,
@@ -131,8 +138,9 @@
               legend: {
                 position: 'bottom'
               }
-          }
-        });
+            }
+          });
+        }, 100)
       });
 
       function clearData(tmpSeriesData) {
@@ -168,7 +176,7 @@
         return {
           pointBackgroundColor: 'rgba(0,0,0,0)',
           pointBorderColor: 'rgba(0,0,0,0)',
-          pointRadius: selected ? 8 : 4,
+          pointRadius: selected ? 32 : 16,
           borderWidth: selected ? 8 : 2,
         }
       }
@@ -194,47 +202,38 @@
         }
       )
 
-      // watch(
-      //   props.selectedChannel,
-      //   (newSelectedChannel,oldSelectedChannel) => {
-      //     console.log('watch selectedChannel', newSelectedChannel, oldSelectedChannel);
-      //     updateChart();
-      //   }
-      // )
+      function updateChartData(datasets) {
+        if (datasets.length > 0) { // update single channel
+          for (let i = 0; i < props.activeChannels.length; i++) {
+            console.log('i', i, props.selectedChannel, i === props.selectedChannel)
+            // update line thickness of all channels
+            updateChartChannelActive(datasets[i], props.activeChannels[i]);
+
+            if (i === props.selectedChannel) { // update plot for selected channel only
+              computeSingleSeriesData(
+                datasets[props.selectedChannel], 
+                props.activeChannels[props.selectedChannel]
+              );
+            }
+          }
+
+        } else { // initialize all channels
+
+          const newSeriesData = [];
+
+          for (let i = 0; i < props.activeChannels.length; i++) {
+            const ch = props.activeChannels[i];
+            datasets.push(initializeSingleSeriesData(ch, i));
+            computeSingleSeriesData(
+              datasets[datasets.length-1], ch
+            );
+          }
+        }
+      }
 
       function updateChart() {
           if (myChart) {
-            console.log('myChart', myChart);
-            if (myChart.chart.config.data.datasets.length > 0) { // update single channel
-              for (let i = 0; i < props.activeChannels.length; i++) {
-                console.log('i', i, props.selectedChannel, i === props.selectedChannel)
-                // update line thickness of all channels
-                updateChartChannelActive(myChart.chart.config.data.datasets[i], props.activeChannels[i]);
-
-                if (i === props.selectedChannel) { // update plot for selected channel only
-                  computeSingleSeriesData(
-                    myChart.chart.config.data.datasets[props.selectedChannel], 
-                    props.activeChannels[props.selectedChannel]
-                  );
-                }
-
-                
-              }
-
-            } else { // initialize all channels
-
-              const newSeriesData = [];
-
-              for (let i = 0; i < props.activeChannels.length; i++) {
-                const ch = props.activeChannels[i];
-                myChart.chart.config.data.datasets.push(initializeSingleSeriesData(ch, i));
-                computeSingleSeriesData(
-                  myChart.chart.config.data.datasets[myChart.chart.config.data.datasets.length-1], 
-                  ch
-                );
-              }
-            }
-
+            updateChartData(myChart.chart.config.data.datasets);
             myChart.chart.update();
          }
       }
