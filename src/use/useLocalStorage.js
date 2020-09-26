@@ -9,7 +9,6 @@ const settingsActiveTab = ref(localStorage.getItem('settingsActiveTab') ? parseI
 // EQ group by setting - 0 to group by channel, 1 to group by band
 const eqGroupBy = ref(localStorage.getItem('eqGroupBy') ? parseInt(localStorage.getItem('eqGroupBy')) : 0);
 
-
 export default function useLocalStorage() {
 
   function setWebsocketIp(url) {

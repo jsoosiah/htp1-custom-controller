@@ -1,13 +1,43 @@
 <template>
-  <Highcharts ref="highchartsRef" :options="options"></Highcharts>
+  <div class="chart-container">
+    <canvas ref="chartRef"></canvas>
+  </div>
 </template>
 
 <script>
 
   import { ref, reactive, computed, onMounted, watch } from 'vue';
   import { debounce } from 'lodash-es';
+  import Chart from 'chart.js';
 
   const NUM_SAMPLES = 128;
+
+  const COLOR_PALLETE = [
+    [147,208,226],
+    [229,174,174],
+    [141,202,189],
+    [216,191,227],
+    [167,197,159],
+    [136,174,225],
+    [222,196,159],
+    [149,187,239],
+    [208,234,197],
+    [169,174,206],
+    [195,240,237],
+    [232,211,202],
+    [151,177,171],
+    [192,206,230],
+    [178,188,166],
+    [178,204,198]
+  ];
+
+  function getBorderColor(index) {
+    return `rgba(${COLOR_PALLETE[index][0]}, ${COLOR_PALLETE[index][1]}, ${COLOR_PALLETE[index][2]}, .5)`;
+  }
+
+  function getBackgroundColor(index) {
+    return `rgba(${COLOR_PALLETE[index][0]}, ${COLOR_PALLETE[index][1]}, ${COLOR_PALLETE[index][2]}, .1)`;
+  }
 
   export default {
     name: 'EqChart',
@@ -31,7 +61,86 @@
     },
     setup(props) {
 
-      const highchartsRef = ref(null);
+      const chartRef = ref(null);
+      let myChart = null;
+
+      onMounted(() => {
+
+        const ctx = chartRef.value.getContext("2d");
+
+        myChart = Chart.Line(ctx, {
+          type: 'bar',
+          data: {
+                datasets: []
+          },
+          options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              aspectRatio: 1.25,
+              showLines: true,
+              scales: {
+                  yAxes: [{
+                      scaleLabel: {
+                        display: true,
+                        labelString: 'Gain (dB)'
+                      }
+                  }],
+                  xAxes: [{
+                    type: 'logarithmic',
+                    ticks: {
+                      min: 20,
+                      max: 20000,
+                      callback: function(value, index) {
+                        let formatted = value.toLocaleString('en-US');
+                        let parts = formatted.split(',');
+                        
+                        if ((Math.floor(index / 9)) % 2 === 0) {
+                          if (index % 2 === 0) {
+
+                          } else {
+                            return '';
+                          }
+                        } else {
+                          if (index % 2 === 0) {
+                            return '';
+                          }
+                          
+                        }
+
+                        return parts[0] + (parts.length > 1 ? 'k':'');
+                      },
+                    },
+                    scaleLabel: {
+                      display: true,
+                      labelString: 'Frequency (Hz)'
+                    }
+                  }]
+              },
+              tooltips: {
+                enabled: true,
+                mode: 'single',
+                callbacks: {
+                  title: function(tooltipItems, data) {
+                    return tooltipItems.map(tooltipItem => tooltipItem.xLabel.toFixed(2) + ' Hz');
+                  },
+                  label: function(tooltipItem, data) {
+                    return `${data.datasets[tooltipItem.datasetIndex].label}: ${tooltipItem.yLabel.toFixed(2)} dB`;
+                  }
+                }
+              },
+              legend: {
+                position: 'bottom'
+              }
+          }
+        });
+      });
+
+      function clearData(tmpSeriesData) {
+        for (let i = 0; i < tmpSeriesData.data.length; i++) {
+          tmpSeriesData.data[i].x = 0;
+          tmpSeriesData.data[i].y = 0;
+        }
+      }
 
       function intializeData() {
         const data = [];
@@ -43,13 +152,37 @@
         return data;
       }
 
-      function initializeSingleSeriesData(ch) {
+      function updateChartChannelActive(tmpSeriesData, ch) {
+        const chartChannelActive = getChartChannelActive(ch);
+
+        tmpSeriesData.pointBackgroundColor = chartChannelActive.pointBackgroundColor;
+        tmpSeriesData.pointBorderColor = chartChannelActive.pointBorderColor;
+        tmpSeriesData.pointRadius = chartChannelActive.pointRadius;
+        tmpSeriesData.borderWidth = chartChannelActive.borderWidth;
+      }
+
+      function getChartChannelActive(ch) {
+
+        const selected = ch === props.activeChannels[props.selectedChannel];
+
         return {
-          name: props.spkName(ch), 
-          data: intializeData(),
-          turboThreshold: NUM_SAMPLES,
-          type: 'line'
-        };
+          pointBackgroundColor: 'rgba(0,0,0,0)',
+          pointBorderColor: 'rgba(0,0,0,0)',
+          pointRadius: selected ? 8 : 4,
+          borderWidth: selected ? 8 : 2,
+        }
+      }
+
+      function initializeSingleSeriesData(ch, index) {
+
+        const singleSeriesData = getChartChannelActive(ch);
+
+        singleSeriesData.label = props.spkName(ch);
+        singleSeriesData.data = intializeData();
+        singleSeriesData.borderColor = getBorderColor(index);
+        singleSeriesData.backgroundColor = getBackgroundColor(index);
+
+        return singleSeriesData;
       }
 
       const stopPropWatch = watch(
@@ -61,30 +194,48 @@
         }
       )
 
-      watch(
-        props.selectedChannel,
-        (newSelectedChannel,oldSelectedChannel) => {
-          console.log('watch selectedChannel', newSelectedChannel, oldSelectedChannel);
-        }
-      )
+      // watch(
+      //   props.selectedChannel,
+      //   (newSelectedChannel,oldSelectedChannel) => {
+      //     console.log('watch selectedChannel', newSelectedChannel, oldSelectedChannel);
+      //     updateChart();
+      //   }
+      // )
 
       function updateChart() {
-          if (highchartsRef.value) {
-            if (highchartsRef.value.chart.series.length > 0) { // update single channel
-              highchartsRef.value.chart.series[props.selectedChannel].setData(
-                computeSingleSeriesData(props.activeChannels[props.selectedChannel]).data, 
-              );
+          if (myChart) {
+            console.log('myChart', myChart);
+            if (myChart.chart.config.data.datasets.length > 0) { // update single channel
+              for (let i = 0; i < props.activeChannels.length; i++) {
+                console.log('i', i, props.selectedChannel, i === props.selectedChannel)
+                // update line thickness of all channels
+                updateChartChannelActive(myChart.chart.config.data.datasets[i], props.activeChannels[i]);
+
+                if (i === props.selectedChannel) { // update plot for selected channel only
+                  computeSingleSeriesData(
+                    myChart.chart.config.data.datasets[props.selectedChannel], 
+                    props.activeChannels[props.selectedChannel]
+                  );
+                }
+
+                
+              }
 
             } else { // initialize all channels
 
               const newSeriesData = [];
 
-              for (const ch of props.activeChannels) {
-                highchartsRef.value.chart.addSeries(computeSingleSeriesData(ch), false);
+              for (let i = 0; i < props.activeChannels.length; i++) {
+                const ch = props.activeChannels[i];
+                myChart.chart.config.data.datasets.push(initializeSingleSeriesData(ch, i));
+                computeSingleSeriesData(
+                  myChart.chart.config.data.datasets[myChart.chart.config.data.datasets.length-1], 
+                  ch
+                );
               }
-
-              highchartsRef.value.chart.redraw(true);
             }
+
+            myChart.chart.update();
          }
       }
 
@@ -94,9 +245,10 @@
         trailing: true,
       });
 
-      function computeSingleSeriesData(ch) {
-        
-        const tmpSeriesData = initializeSingleSeriesData(ch);
+      function computeSingleSeriesData(tmpSeriesData, ch) {
+        // console.log('computeSingleSeriesData', tmpSeriesData, ch)
+        clearData(tmpSeriesData);
+        // console.log('cleared',tmpSeriesData);
 
         // https://www.earlevel.com/main/2013/10/13/biquad-calculator-v2/
 
@@ -211,9 +363,9 @@
             }
         }
 
-        // console.log('compute', ch, props.peqSlots, tmpSeriesData);
+        console.log('compute', ch, props.peqSlots, tmpSeriesData);
 
-        return tmpSeriesData;
+        // return tmpSeriesData;
       }
 
       const options = {
@@ -257,11 +409,13 @@
         credits: false,
       };
 
-      return { props, highchartsRef, options };
+      return { props, chartRef, options };
     }
   }
 </script>
 
 <style scoped>
-  
+  .chart-container {
+    min-height: 400px;
+  }
 </style>

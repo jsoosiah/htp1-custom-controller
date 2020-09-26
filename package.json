@@ -13,12 +13,11 @@
     "@fortawesome/free-solid-svg-icons": "^5.14.0",
     "@fortawesome/vue-fontawesome": "^3.0.0-1",
     "bootstrap": "^4.5.2",
+    "chart.js": "^2.9.3",
     "core-js": "^3.6.5",
     "fast-json-patch": "^3.0.0-1",
-    "highcharts": "^8.2.0",
     "lodash-es": "^4.17.15",
-    "vue": "^3.0.0",
-    "vue-highcharts": "^0.2.0"
+    "vue": "^3.0.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",

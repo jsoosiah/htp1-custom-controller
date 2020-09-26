@@ -181,13 +181,13 @@
 
 <script>
 
-import { ref } from 'vue';
+import { ref, defineAsyncComponent } from 'vue';
 
 import useLocalStorage from '@/use/useLocalStorage.js';
 import useMso from '@/use/useMso.js';
 import useStream from '@/use/useStream.js';
 
-import Settings from './Settings.vue';
+// import Settings from './Settings.vue';
 import TwoStateButton from './TwoStateButton.vue';
 import ThreeStateButton from './ThreeStateButton.vue';
 import DiracButton from './DiracButton.vue';
@@ -215,7 +215,7 @@ export default {
     };
   },
   components: {
-    Settings,
+    Settings: defineAsyncComponent(() => import('./Settings.vue')),
     DiracButton,
     TwoStateButton,
     ThreeStateButton,

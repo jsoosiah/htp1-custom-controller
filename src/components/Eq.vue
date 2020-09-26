@@ -7,6 +7,14 @@
       @click="toggleToneControl()"
     />
 
+    <div class="row mt-3" v-show="!mso.eq?.tc">
+      <div class="col">
+        <div class="alert alert-warning small" role="alert">
+          Tone controls are currently turned off. The below settings may be modified, but they will not have any effect until tone controls are turned on.
+        </div>
+      </div>
+    </div>
+
     <div class="container">
       <div class="row">
         <div class="col-lg">
@@ -90,6 +98,13 @@
         <div class="btn-group btn-group-sm" role="group" aria-label="Group By">
           <button @click="setGroupBy(0)" type="button" class="btn" :class="{'btn-primary': eqGroupBy === 0, 'btn-secondary': eqGroupBy !== 0}">Group by Channel</button>
           <button @click="setGroupBy(1)" type="button" class="btn" :class="{'btn-primary': eqGroupBy === 1, 'btn-secondary': eqGroupBy !== 1}">Group by Band</button>
+        </div>
+      </div>
+    </div>
+    <div class="row" v-show="!mso.peq?.peqsw">
+      <div class="col">
+        <div class="alert alert-warning small" role="alert">
+          Parametric equalization is currently turned off. The below settings may be modified, but they will not have any effect until PEQ is turned on.
         </div>
       </div>
     </div>
