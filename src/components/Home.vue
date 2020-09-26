@@ -245,33 +245,35 @@ export default {
 
     function handleVolumeUpTouchStart() {
 
+      handleVolumeUpTouchEnd();
+      handleVolumeDownTouchEnd();
+
       setVolume(mso.value.volume + 1);
 
       volumeUpDetectHoldingTimeout = setTimeout(() => {
-        // holdingVolumeUp.value = true;
         incrementVolumeInterval = setInterval(() => setVolume(mso.value.volume + 1), 100);
       }, LONG_PRESS_THRESHOLD);
     }
 
     function handleVolumeDownTouchStart() {
 
+      handleVolumeUpTouchEnd();
+      handleVolumeDownTouchEnd();
+
       setVolume(mso.value.volume - 1);
 
       volumeDownDetectHoldingTimeout = setTimeout(() => {
-        // holdingVolumeDown.value = true;
         decrementVolumeInterval = setInterval(() => setVolume(mso.value.volume - 1), 100);
       }, LONG_PRESS_THRESHOLD);
     }
 
     function handleVolumeUpTouchEnd() {
       clearTimeout(volumeUpDetectHoldingTimeout);
-      // holdingVolumeUp.value = false;
       clearInterval(incrementVolumeInterval);
     }
 
     function handleVolumeDownTouchEnd() {
       clearTimeout(volumeDownDetectHoldingTimeout);
-      // holdingVolumeDown.value = false;
       clearInterval(decrementVolumeInterval);
     }
 
