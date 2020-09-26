@@ -227,7 +227,8 @@ export default {
     const { 
       mso, setVolume, toggleMute,
       loading, calToolConnected, state,
-      visibleInputs, visibleUpmixers
+      visibleInputs, visibleUpmixers, powerOn, setInput, setUpmix, powerOff, 
+      setNextNightMode, toggleLoudness, setNextDtsDialogEnh, toggleToneControl, toggleGlobalPEQ,
     } = useMso();
 
     const settingsModalIsOpen = ref(false);
@@ -296,6 +297,8 @@ export default {
       mso, setVolume, toggleMute,
       loading, calToolConnected, state,
       visibleInputs, visibleUpmixers,
+      powerOn, setInput, setUpmix, powerOff, 
+      setNextNightMode, toggleLoudness, setNextDtsDialogEnh, toggleToneControl, toggleGlobalPEQ,
       ...useStream(),
       settingsModalIsOpen, toggleSettingsModal,
       settingsActiveTab, setSettingsActiveTab,
