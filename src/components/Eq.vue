@@ -74,6 +74,9 @@
     </div>
     <eq-chart 
       :peq-slots="mso.peq?.slots || []"
+      :active-channels="activeChannels"
+      :selected-channel="selectedChannel"
+      :spk-name="spkName"
     />
     <div class="row justify-content-between">
       <div class="col-auto mb-3">
@@ -127,6 +130,7 @@
                 min="15" 
                 max="20000" 
                 step=".1"
+                @focus="setSelectedChannel(chanIndex, true)"
               />
             </td>
             <td class="text-right">
@@ -138,6 +142,7 @@
                 min="-20" 
                 max="20" 
                 step=".1"
+                @focus="setSelectedChannel(chanIndex, true)"
               />
             </td>
             <td class="text-right">
@@ -149,12 +154,14 @@
                 min=".1" 
                 max="10" 
                 step=".1"
+                @focus="setSelectedChannel(chanIndex, true)"
               />
             </td>
             <td class="text-right">
                 <select 
                   class="form-control form-control-sm" 
                   @change="({ type, target }) => setPEQFilterType(activeChannels[chanIndex], mso.peq?.currentpeqslot, target.value)"
+                  @focus="setSelectedChannel(chanIndex, true)"
                 >
                   <option 
                     v-for="filterType in filterTypes" 
@@ -363,7 +370,12 @@
 
       const selectedChannel = ref(0);
 
-      function setSelectedChannel(chanNumber) {
+      function setSelectedChannel(chanNumber, skipLoader) {
+
+        if (skipLoader) {
+          selectedChannel.value = chanNumber;
+          return;
+        }
 
         tabLoaded.value = false;
 
