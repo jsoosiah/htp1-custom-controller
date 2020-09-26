@@ -96,9 +96,9 @@
               class="btn btn-dark vol-btn" 
               @mousedown="handleVolumeDownTouchStart"
               @touchstart="handleVolumeDownTouchStart"
-              @mouseup="handleVolumeDownTouchEnd"
-              @touchend="handleVolumeDownTouchEnd"
-              @touchcancel="handleVolumeDownTouchEnd"
+              @mouseup="handleVolumeTouchEnd"
+              @touchend="handleVolumeTouchEnd"
+              @touchcancel="handleVolumeTouchEnd"
             >
               <font-awesome-icon  :class="{'text-danger':mso.muted}" size="4x" :icon="['fas', 'volume-down']" />
             </button>
@@ -107,9 +107,9 @@
               class="btn btn-dark vol-btn" 
               @mousedown="handleVolumeUpTouchStart"
               @touchstart="handleVolumeUpTouchStart"
-              @mouseup="handleVolumeUpTouchEnd"
-              @touchend="handleVolumeUpTouchEnd"
-              @touchcancel="handleVolumeUpTouchEnd"
+              @mouseup="handleVolumeTouchEnd"
+              @touchend="handleVolumeTouchEnd"
+              @touchcancel="handleVolumeTouchEnd"
             >
               <font-awesome-icon  :class="{'text-danger':mso.muted}" size="4x" :icon="['fas', 'volume-up']" />
             </button>
@@ -243,38 +243,45 @@ export default {
     let incrementVolumeInterval;
     let decrementVolumeInterval;
 
-    function handleVolumeUpTouchStart() {
-
-      handleVolumeUpTouchEnd();
-      handleVolumeDownTouchEnd();
+    function handleVolumeUpTouchStart(e) {
+      e.preventDefault();
+      console.log('handleVolumeUpTouchStart')
+      clearTimeout(volumeDownDetectHoldingTimeout);
+      clearTimeout(volumeUpDetectHoldingTimeout);
+      clearInterval(decrementVolumeInterval);
+      clearInterval(incrementVolumeInterval);
 
       setVolume(mso.value.volume + 1);
 
       volumeUpDetectHoldingTimeout = setTimeout(() => {
+        clearInterval(incrementVolumeInterval);
         incrementVolumeInterval = setInterval(() => setVolume(mso.value.volume + 1), 100);
       }, LONG_PRESS_THRESHOLD);
     }
 
-    function handleVolumeDownTouchStart() {
-
-      handleVolumeUpTouchEnd();
-      handleVolumeDownTouchEnd();
+    function handleVolumeDownTouchStart(e) {
+      e.preventDefault();
+      console.log('handleVolumeDownTouchStart')
+      clearTimeout(volumeDownDetectHoldingTimeout);
+      clearTimeout(volumeUpDetectHoldingTimeout);
+      clearInterval(decrementVolumeInterval);
+      clearInterval(incrementVolumeInterval);
 
       setVolume(mso.value.volume - 1);
 
       volumeDownDetectHoldingTimeout = setTimeout(() => {
+        clearInterval(decrementVolumeInterval);
         decrementVolumeInterval = setInterval(() => setVolume(mso.value.volume - 1), 100);
       }, LONG_PRESS_THRESHOLD);
     }
 
-    function handleVolumeUpTouchEnd() {
-      clearTimeout(volumeUpDetectHoldingTimeout);
-      clearInterval(incrementVolumeInterval);
-    }
-
-    function handleVolumeDownTouchEnd() {
+    function handleVolumeTouchEnd(e) {
+      e.preventDefault();
+      console.log('handleVolumeTouchEnd')
       clearTimeout(volumeDownDetectHoldingTimeout);
+      clearTimeout(volumeUpDetectHoldingTimeout);
       clearInterval(decrementVolumeInterval);
+      clearInterval(incrementVolumeInterval);
     }
 
     function toggleSettingsModal() {
@@ -292,8 +299,7 @@ export default {
       ...useStream(),
       settingsModalIsOpen, toggleSettingsModal,
       settingsActiveTab, setSettingsActiveTab,
-      handleVolumeDownTouchStart, handleVolumeDownTouchEnd,
-      handleVolumeUpTouchStart, handleVolumeUpTouchEnd,
+      handleVolumeDownTouchStart, handleVolumeUpTouchStart, handleVolumeTouchEnd,
       // holdingVolumeDown, holdingVolumeUp // debug
     };
   },
