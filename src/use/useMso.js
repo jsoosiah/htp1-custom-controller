@@ -1,9 +1,10 @@
 import { ref, watch, computed } from 'vue';
-import useWebSocket from './useWebSocket.js';
 import { applyPatch, deepClone, compare } from 'fast-json-patch/index.mjs';
-import { debounce } from 'lodash-es';
+import { debounce, get } from 'lodash-es';
 
+import useWebSocket from './useWebSocket.js';
 import useLoading from './useLoading.js';
+import useSpeakerGroups from './useSpeakerGroups.js';
 
 // map upmix codes to labels,
 // used internally by visibleUpmixers
@@ -32,6 +33,8 @@ const commandsReceived = ref([]);
 const commandsAwaitingResponse = ref([]);
 
 const { data, state, send, close } = useWebSocket();
+
+const { getActiveChannels } = useSpeakerGroups();
 
 /**
 * Composition function which exposes the MSO state, as well 
@@ -111,6 +114,10 @@ export default function useMso() {
     return mso.value.cal?.caltoolconnected;
   });
 
+  const activeChannels = computed(() => {
+    return getActiveChannels(mso.value.speakers?.groups);
+  });
+
   // mso mutators --------------------------------------------
 
   function powerOff() {
@@ -118,51 +125,55 @@ export default function useMso() {
     if (confirm("The power will be turned off.")) {
       commandsToSend.value = [
         {'op':'replace', 'path': '/powerIsOn', 'value': false}
-      ]
+      ];
     }
+
+    return true;
   }
 
   function powerOn() {
     commandsToSend.value = [
       {'op':'replace', 'path': '/powerIsOn', 'value': true}
-    ]
+    ];
+
+    return true;
   }
 
   // TODO enforce min/max volume
   function setVolume(volumeLevel) {
-    patchMso({'op':'replace', 'path': '/volume', 'value': volumeLevel});
+    return patchMso({'op':'replace', 'path': '/volume', 'value': volumeLevel});
   }
 
   function toggleMute() {
-    patchMso({'op':'replace', 'path': '/muted', 'value': !mso.value.muted});
+    return patchMso({'op':'replace', 'path': '/muted', 'value': !mso.value.muted});
   }
 
   function setInput(inpid) {
-    patchMso({'op':'replace', 'path': '/input', 'value': inpid});
+    return patchMso({'op':'replace', 'path': '/input', 'value': inpid});
   }
 
   function setUpmix(upmixKey) {
-    patchMso({'op':'replace', 'path': '/upmix/select', 'value': upmixKey});
+    return patchMso({'op':'replace', 'path': '/upmix/select', 'value': upmixKey});
   }
 
   function toggleUpmixHomevis(upmix) {
-    patchMso({'op':'replace', 'path': `/upmix/${upmix}/homevis`, 'value': !mso.value.upmix[upmix].homevis});
+    return patchMso({'op':'replace', 'path': `/upmix/${upmix}/homevis`, 'value': !mso.value.upmix[upmix].homevis});
   }
 
   function toggleUpmixCenterSpread() {
-    patchMso({'op':'replace', 'path': `/upmix/dolby/cs`, 'value': !mso.value.upmix.dolby.cs});
+    return patchMso({'op':'replace', 'path': `/upmix/dolby/cs`, 'value': !mso.value.upmix.dolby.cs});
   }
 
   function toggleUpmixWideSynth() {
-    patchMso({'op':'replace', 'path': `/upmix/dts/ws`, 'value': !mso.value.upmix.dts.ws});
+    return patchMso({'op':'replace', 'path': `/upmix/dts/ws`, 'value': !mso.value.upmix.dts.ws});
   }
 
   function setAuroMaticPreset(preset) {
-    patchMso({'op':'replace', 'path': `/upmix/auro/preset`, 'value': parseInt(preset)});
+    return patchMso({'op':'replace', 'path': `/upmix/auro/preset`, 'value': parseInt(preset)});
   }
 
   function setAuroMaticStrength(strength) {
-    patchMso({'op':'replace', 'path': `/upmix/auro/strength`, 'value': parseInt(strength)});
+    return patchMso({'op':'replace', 'path': `/upmix/auro/strength`, 'value': parseInt(strength)});
   }
 
   function setDefaultAuroMaticStrength() {
@@ -171,7 +182,7 @@ export default function useMso() {
 
   function toggleReinforceBass() {
     if (!diracBCEnabled.value) {
-      patchMso({'op':'replace', 'path': `/bassenhance`, 'value': mso.value.bassenhance === 'off' ? 'on' : 'off'});
+      return patchMso({'op':'replace', 'path': `/bassenhance`, 'value': mso.value.bassenhance === 'off' ? 'on' : 'off'});
     }
   }
 
@@ -191,7 +202,7 @@ export default function useMso() {
         nightValue = 'off';
     }
 
-    patchMso({'op':'replace', 'path': '/night', 'value': nightValue});
+    return patchMso({'op':'replace', 'path': '/night', 'value': nightValue});
   }
 
   function toggleDirac() {
@@ -211,144 +222,152 @@ export default function useMso() {
         break;
     }
 
-    patchMso({'op':'replace', 'path': '/cal/diracactive', 'value': diracActive});
+    return patchMso({'op':'replace', 'path': '/cal/diracactive', 'value': diracActive});
   }
 
   function toggleLoudness() {
-    patchMso({'op':'replace', 'path': '/loudness', 'value': mso.value.loudness === 'off' ? 'on' : 'off'});
+    return patchMso({'op':'replace', 'path': '/loudness', 'value': mso.value.loudness === 'off' ? 'on' : 'off'});
   }
 
   function setNextDtsDialogEnh() {
-    patchMso({'op':'replace', 'path': '/dialogEnh', 'value': (mso.value.dialogEnh + 1) % 7});
+    return patchMso({'op':'replace', 'path': '/dialogEnh', 'value': (mso.value.dialogEnh + 1) % 7});
   }
 
-  // TODO validate
-  function toggleSpeakerChannel(spkCode) {
-    patchMso({'op': 'replace', 'path': `/speakers/groups/${spkCode}/present`, value: !mso.value.speakers.groups[spkCode].present});
+  function toggleSpeakerGroup(spkCode) {
+    return patchMso({'op': 'replace', 'path': `/speakers/groups/${spkCode}/present`, value: !mso.value.speakers.groups[spkCode].present});
+  }
+
+  function setSpeakerGroupPresent(spkCode, present) {
+    return patchMso({'op': 'replace', 'path': `/speakers/groups/${spkCode}/present`, value: present});
+  }
+
+  function initializeSpeakerGroup(spkCode) {
+    // TODO does this work?
+    return patchMso({'op': 'add', 'path': `/speakers/groups/${spkCode}`, value: { present: false, size: 'l', fc: 40 }});
   }
 
   function setSpeakerSize(spkCode, sizeCode) {
-    patchMso({'op': 'replace', 'path': `/speakers/groups/${spkCode}/size`, value: sizeCode});
+    return patchMso({'op': 'replace', 'path': `/speakers/groups/${spkCode}/size`, value: sizeCode});
   }
 
   function setCenterFreq(spkCode, centerFreq) {
-    patchMso({'op': 'replace', 'path': `/speakers/groups/${spkCode}/fc`, value: parseInt(centerFreq)});
+    return patchMso({'op': 'replace', 'path': `/speakers/groups/${spkCode}/fc`, value: parseInt(centerFreq)});
   }
 
   function setMinVolume(minVol) {
-    patchMso({'op': 'replace', 'path': '/cal/vpl', value: parseInt(minVol)});
+    return patchMso({'op': 'replace', 'path': '/cal/vpl', value: parseInt(minVol)});
   }
 
   function setMaxVolume(maxVol) {
-    patchMso({'op': 'replace', 'path': '/cal/vph', value: parseInt(maxVol)});
+    return patchMso({'op': 'replace', 'path': '/cal/vph', value: parseInt(maxVol)});
   }
 
   function setMaxOutputLevel(outputLevel) {
-    patchMso({'op': 'replace', 'path': '/cal/ampsense', value: parseFloat(outputLevel)});
+    return patchMso({'op': 'replace', 'path': '/cal/ampsense', value: parseFloat(outputLevel)});
   }
 
   function setLipsyncDelay(lipsyncDelay) {
-    patchMso({'op': 'replace', 'path': '/cal/lipsync', value: parseInt(lipsyncDelay)});
+    return patchMso({'op': 'replace', 'path': '/cal/lipsync', value: parseInt(lipsyncDelay)});
   }
 
   function setDiracSlot(slotNumber) {
-    patchMso({'op': 'replace', 'path': '/cal/currentdiracslot', value: slotNumber});
+    return patchMso({'op': 'replace', 'path': '/cal/currentdiracslot', value: slotNumber});
   }
 
   function setUserDelay(channel, delay) {
-    patchMso({'op': 'replace', 'path': `/cal/slots/${mso.value.cal.currentdiracslot}/channels/${channel}/delay`, value: parseFloat(delay)});
+    return patchMso({'op': 'replace', 'path': `/cal/slots/${mso.value.cal.currentdiracslot}/channels/${channel}/delay`, value: parseFloat(delay)});
   }
 
   function setUserTrim(channel, trim) {
-    patchMso({'op': 'replace', 'path': `/cal/slots/${mso.value.cal.currentdiracslot}/channels/${channel}/trim`, value: parseFloat(trim)});
+    return patchMso({'op': 'replace', 'path': `/cal/slots/${mso.value.cal.currentdiracslot}/channels/${channel}/trim`, value: parseFloat(trim)});
   }
 
   function toggleSignalGenerator() {
-    patchMso({'op': 'replace', 'path': `/sgen/sgensw`, value: mso.value.sgen.sgensw === 'off' ? 'on' : 'off'});
+    return patchMso({'op': 'replace', 'path': `/sgen/sgensw`, value: mso.value.sgen.sgensw === 'off' ? 'on' : 'off'});
   }
 
   function setSignalGeneratorChannel(channel) {
-    patchMso({'op': 'replace', 'path': `/sgen/select`, value: channel});
+    return patchMso({'op': 'replace', 'path': `/sgen/select`, value: channel});
   }
 
   function setSignalGeneratorSignalType(signalType) {
-    patchMso({'op': 'replace', 'path': `/sgen/signalType`, value: signalType});
+    return patchMso({'op': 'replace', 'path': `/sgen/signalType`, value: signalType});
   }
 
   function toggleToneControl() {
-    patchMso({'op': 'replace', 'path': `/eq/tc`, value: !mso.value.eq.tc});
+    return patchMso({'op': 'replace', 'path': `/eq/tc`, value: !mso.value.eq.tc});
   }
 
   function setBassCornerFrequency(freq) {
-    patchMso({'op': 'replace', 'path': `/eq/bass/freq`, value: parseFloat(freq)});
+    return patchMso({'op': 'replace', 'path': `/eq/bass/freq`, value: parseFloat(freq)});
   }
 
   function setTrebleCornerFrequency(freq) {
-    patchMso({'op': 'replace', 'path': `/eq/treble/freq`, value: parseFloat(freq)});
+    return patchMso({'op': 'replace', 'path': `/eq/treble/freq`, value: parseFloat(freq)});
   }
 
   function setBassBoostCutLevel(level) {
-    patchMso({'op': 'replace', 'path': `/eq/bass/level`, value: parseFloat(level)});
+    return patchMso({'op': 'replace', 'path': `/eq/bass/level`, value: parseFloat(level)});
   }
 
   function setTrebleBoostCutLevel(level) {
-    patchMso({'op': 'replace', 'path': `/eq/treble/level`, value: parseFloat(level)});
+    return patchMso({'op': 'replace', 'path': `/eq/treble/level`, value: parseFloat(level)});
   }
 
   function setLoudnessCalibration(loudness) {
-    patchMso({'op': 'replace', 'path': `/loudnessCal`, value: parseFloat(loudness)});
+    return patchMso({'op': 'replace', 'path': `/loudnessCal`, value: parseFloat(loudness)});
   }
 
   function toggleGlobalPEQ() {
-    patchMso({'op': 'replace', 'path': `/peq/peqsw`, value: !mso.value.peq.peqsw});
+    return patchMso({'op': 'replace', 'path': `/peq/peqsw`, value: !mso.value.peq.peqsw});
   }
 
   function setPEQSlot(bandNumber) {
-    patchMso({'op': 'replace', 'path': `/peq/currentpeqslot`, value: parseInt(bandNumber)});
+    return patchMso({'op': 'replace', 'path': `/peq/currentpeqslot`, value: parseInt(bandNumber)});
   }
 
   function setPEQCenterFrequency(channel, slot, centerFreq) {
-    patchMso({'op': 'replace', 'path': `/peq/slots/${slot}/channels/${channel}/Fc`, value: parseFloat(centerFreq)});
+    return patchMso({'op': 'replace', 'path': `/peq/slots/${slot}/channels/${channel}/Fc`, value: parseFloat(centerFreq)});
   }
 
   function setPEQGain(channel, slot, gain) {
-    patchMso({'op': 'replace', 'path': `/peq/slots/${slot}/channels/${channel}/gaindB`, value: parseFloat(gain)});
+    return patchMso({'op': 'replace', 'path': `/peq/slots/${slot}/channels/${channel}/gaindB`, value: parseFloat(gain)});
   }
 
   function setPEQQuality(channel, slot, q) {
-    patchMso({'op': 'replace', 'path': `/peq/slots/${slot}/channels/${channel}/Q`, value: parseFloat(q)});
+    return patchMso({'op': 'replace', 'path': `/peq/slots/${slot}/channels/${channel}/Q`, value: parseFloat(q)});
   }
 
   function setPEQFilterType(channel, slot, filterType) {
-    patchMso({'op': 'replace', 'path': `/peq/slots/${slot}/channels/${channel}/FilterType`, value: parseInt(filterType)});
+    return patchMso({'op': 'replace', 'path': `/peq/slots/${slot}/channels/${channel}/FilterType`, value: parseInt(filterType)});
   }
 
   function resetPEQ(channel, slot) {
-    console.log('resetPEQ', channel, slot);
-    setPEQCenterFrequency(channel, slot, 100);
-    setPEQGain(channel, slot, 0);
-    setPEQQuality(channel, slot, 1);
-    setPEQFilterType(channel, slot, 0);
+    return 
+      setPEQCenterFrequency(channel, slot, 100) &&
+      setPEQGain(channel, slot, 0) &&
+      setPEQQuality(channel, slot, 1) &&
+      setPEQFilterType(channel, slot, 0);
   }
 
   function setInputLabel(input, label) {
-    patchMso({'op': 'replace', 'path': `/inputs/${input}/label`, value: label});
+    return patchMso({'op': 'replace', 'path': `/inputs/${input}/label`, value: label});
   }
 
   function toggleInputVisible(input) {
-    patchMso({'op': 'replace', 'path': `/inputs/${input}/visible`, value: !mso.value.inputs[input].visible});
+    return patchMso({'op': 'replace', 'path': `/inputs/${input}/visible`, value: !mso.value.inputs[input].visible});
   }
 
   function setInputFormatDetectOption(input, formatDetectOption) {
-    patchMso({'op': 'replace', 'path': `/inputs/${input}/formatDetectOption`, value: formatDetectOption});
+    return patchMso({'op': 'replace', 'path': `/inputs/${input}/formatDetectOption`, value: formatDetectOption});
   }
 
   function toggleInputUHD(input) {
-    patchMso({'op': 'replace', 'path': `/inputs/${input}/uhd`, value: !mso.value.inputs[input].uhd});
+    return patchMso({'op': 'replace', 'path': `/inputs/${input}/uhd`, value: !mso.value.inputs[input].uhd});
   }
 
   function setBluetoothDiscoverableTime(time) {
-    patchMso({'op': 'replace', 'path': `/bluetooth/discoverabletime`, value: parseInt(time)});
+    return patchMso({'op': 'replace', 'path': `/bluetooth/discoverabletime`, value: parseInt(time)});
   }
 
   function enableBluetoothDiscovery() {
@@ -356,67 +375,71 @@ export default function useMso() {
   }
 
   function toggleCEC() {
-    patchMso({'op': 'replace', 'path': `/CEC/cecOnSw`, value: mso.value.CEC.cecOnSw === 'off' ? 'on' : 'off'});
+    return patchMso({'op': 'replace', 'path': `/CEC/cecOnSw`, value: mso.value.CEC.cecOnSw === 'off' ? 'on' : 'off'});
   }
 
   function setTVSoundSrcDefault(inp) {
-    patchMso({'op': 'replace', 'path': `/stat/TVSoundSrcDefault`, value: inp});
+    return patchMso({'op': 'replace', 'path': `/stat/TVSoundSrcDefault`, value: inp});
   }
 
   function toggleCECAllowPowerKey() {
-    patchMso({'op': 'replace', 'path': `/CEC/allowpwrk`, value: !mso.value.CEC.allowpwrk});
+    return patchMso({'op': 'replace', 'path': `/CEC/allowpwrk`, value: !mso.value.CEC.allowpwrk});
   }
 
   function toggleCECAllowVolKey() {
-    patchMso({'op': 'replace', 'path': `/CEC/allowvolk`, value: !mso.value.CEC.allowvolk});
+    return patchMso({'op': 'replace', 'path': `/CEC/allowvolk`, value: !mso.value.CEC.allowvolk});
   }
 
   function toggleCECAllowSysAudioOff() {
-    patchMso({'op': 'replace', 'path': `/CEC/allowsaf`, value: !mso.value.CEC.allowsaf});
+    return patchMso({'op': 'replace', 'path': `/CEC/allowsaf`, value: !mso.value.CEC.allowsaf});
   }
 
   function toggleCECAllowInputChange() {
-    patchMso({'op': 'replace', 'path': `/CEC/allowinp`, value: !mso.value.CEC.allowinp});
+    return patchMso({'op': 'replace', 'path': `/CEC/allowinp`, value: !mso.value.CEC.allowinp});
   }
 
   function toggleCECAllowStandby() {
-    patchMso({'op': 'replace', 'path': `/CEC/allowstdb`, value: !mso.value.CEC.allowstdb});
+    return patchMso({'op': 'replace', 'path': `/CEC/allowstdb`, value: !mso.value.CEC.allowstdb});
   }
 
   function setUnitName(name) {
-    patchMso({'op': 'replace', 'path': `/unitname`, value: name});
+    return patchMso({'op': 'replace', 'path': `/unitname`, value: name});
   }
 
   function toggleFastStart() {
-    patchMso({'op': 'replace', 'path': `/fastStart`, value: mso.value.fastStart === 'off' ? 'on' : 'off'});
+    return patchMso({'op': 'replace', 'path': `/fastStart`, value: mso.value.fastStart === 'off' ? 'on' : 'off'});
   }
 
   function toggleFastStartPassThrough() {
-    patchMso({'op': 'replace', 'path': `/fastStartPassThrough`, value: mso.value.fastStartPassThrough === 'off' ? 'on' : 'off'});
+    return patchMso({'op': 'replace', 'path': `/fastStartPassThrough`, value: mso.value.fastStartPassThrough === 'off' ? 'on' : 'off'});
+  }
+
+  function disableFastStartPassThrough() {
+    return patchMso({'op': 'replace', 'path': `/fastStartPassThrough`, value: 'off'});
   }
 
   function setPowerOnVol(volumeLevel) {
-    patchMso({'op': 'replace', 'path': `/powerOnVol`, value: parseInt(volumeLevel)});
+    return patchMso({'op': 'replace', 'path': `/powerOnVol`, value: parseInt(volumeLevel)});
   }
 
   function setFrontPanelBrightness(brightness) {
-    patchMso({'op': 'replace', 'path': `/hw/fpBright`, value: parseInt(brightness)});
+    return patchMso({'op': 'replace', 'path': `/hw/fpBright`, value: parseInt(brightness)});
   }
 
   function toggleVideoStatusHomePage() {
-    patchMso({'op': 'replace', 'path': `/stat/displayVideoStat`, value: !mso.value.stat.displayVideoStat});
+    return patchMso({'op': 'replace', 'path': `/stat/displayVideoStat`, value: !mso.value.stat.displayVideoStat});
   }
 
   function toggleExtendedAudioStatus() {
-    patchMso({'op': 'replace', 'path': `/stat/displayAudioStat`, value: !mso.value.stat.displayAudioStat});
+    return patchMso({'op': 'replace', 'path': `/stat/displayAudioStat`, value: !mso.value.stat.displayAudioStat});
   }
 
   function toggleAdvancedInputSettings() {
-    patchMso({'op': 'replace', 'path': `/stat/displayAdvancedSettings`, value: !mso.value.stat.displayAdvancedSettings});
+    return patchMso({'op': 'replace', 'path': `/stat/displayAdvancedSettings`, value: !mso.value.stat.displayAdvancedSettings});
   }
 
   function toggleSupportTools() {
-    patchMso({'op': 'replace', 'path': `/stat/enableSupportTools`, value: !mso.value.stat.enableSupportTools});
+    return patchMso({'op': 'replace', 'path': `/stat/enableSupportTools`, value: !mso.value.stat.enableSupportTools});
   }
 
   // danger
@@ -424,17 +447,113 @@ export default function useMso() {
     commandsToSend.value = patchList;
   }
 
+  function applyProductRules() {
+
+    console.log('applyProductRules')
+
+    const groups = ['c', 'lrs', 'lrb', 'lrw', 'lrtf', 'lrtm', 'lrtr', 'lrhf', 'lrhr', 'sub1', 'sub2', 'sub3', 'sub4', 'sub5'];
+    const spg = mso.value.speakers.groups;
+
+    for (const group of groups) {
+      if (spg[group] === undefined) {
+        initializeSpeakerGroup(group);
+      }
+    }
+
+    // too many channels, disable speaker groups until under 16
+    if (activeChannels.value.length > 16) {
+      let over = activeChannels.value.length - 16;
+      // iterate speaker groups in reverse order, 
+      // excluding subs, so starting at index 8 = lrhr
+      // and disable them until the total channel count <= 16
+      for (let i = 8; i >= 0; i--) { 
+        if (spg[groups[i]].present) {
+          setSpeakerGroupPresent(groups[i], false);
+          over -= 2;
+        }
+        
+        // total channels is now 16 or less
+        if (over <= 0) {
+          break;
+        }
+      }
+    }
+
+    setSpeakerGroupPresent('lrb', spg.lrb.present && spg.lrs.present); // No backs when no surround
+    setSpeakerGroupPresent('lrw', spg.lrw.present && spg.lrb.present); // No wides when no backs
+    console.log('lrhf?', spg.lrhf.present && (!spg.lrtf.present));
+    setSpeakerGroupPresent('lrhf', spg.lrhf.present && (!spg.lrtf.present)); // No height front if top front present
+
+    if ((!spg.lrs.present) && (spg.lrtm.present) && (spg.lrtf.present || spg.lrtr.present || spg.lrhf.present || spg.lrhr.present)) {
+        setSpeakerGroupPresent('lrtf', false);
+        setSpeakerGroupPresent('lrtr', false);
+        setSpeakerGroupPresent('lrhf', false);
+        setSpeakerGroupPresent('lrhr', false);
+    };
+    if ((!spg.lrs.present) && (!spg.lrtm.present) && (spg.lrtr.present || spg.lrhr.present)) {
+        setSpeakerGroupPresent('lrtf', spg.lrtf.present && (!spg.lrhf.present));
+        setSpeakerGroupPresent('lrtr', false);
+        setSpeakerGroupPresent('lrhr', false);
+    };
+    if ((!spg.c.present) && (!spg.lrb.present)) {
+        setSpeakerGroupPresent('lrtm', false);
+    };
+    spg.lrtf.present = spg.lrtf.present && (!spg.lrhf.present); // only one front allowed
+    spg.lrtr.present = spg.lrtr.present && (!spg.lrhr.present); // only one rear allowed
+    if ((!spg.lrtf.present) && (!spg.lrhf.present)) {
+        setSpeakerGroupPresent('lrhr', false); // no fronts . clear rears
+        setSpeakerGroupPresent('lrtr', false);
+    };
+    // No top middle when top front present but top rear not present
+    if (spg.lrtm.present && spg.lrtf.present) {
+        if ((!spg.lrtr.present) && (!spg.lrhr.present)) {
+            setSpeakerGroupPresent('lrtm', false);
+        }
+    }
+    if (spg.lrtm.present && spg.lrhf.present) {
+        if ((!spg.lrtr.present) && (!spg.lrhr.present)) {
+            setSpeakerGroupPresent('lrtm', false);
+        }
+    }
+
+    setSpeakerGroupPresent('sub2', spg.sub2.present && spg.sub1.present); // No sub2 without sub
+    setSpeakerGroupPresent('sub3', spg.sub3.present && spg.sub2.present); // No sub3 without sub2
+    setSpeakerGroupPresent('sub4', spg.sub4.present && spg.sub3.present); // No sub4 without sub3
+    setSpeakerGroupPresent('sub5', spg.sub5.present && spg.sub4.present); // No sub5 without sub4
+
+    for (const groupName of Object.keys(spg)) {
+      const group = spg[groupName];
+      if (group.fc) {
+        setCenterFreq(groupName, Math.round(group.fc / 10) * 10);
+      };
+    }
+
+    if (mso.value.fastStart === 'off') {
+        disableFastStartPassThrough();
+    };
+  }
+
   function patchMso(singlePatch) {
     // block changes if dirac calibration is in progress
-    console.log('patchMso', singlePatch)
     if (!calToolConnected.value) {
+
+      // check if patch already matches local mso state
+      const oldValue = get(mso.value, singlePatch.path.substring(1).split('/'));
+      if (oldValue === singlePatch.value) {
+        return false;
+      }
+
+      console.log('patchMso', singlePatch);
+
       // update local mso state
       applyPatch(mso.value, [singlePatch]);
       // add to commandsToSend, which will trigger its
       // watcher and queue it to be sent to the mso websocket
-      // TODO remove this
       commandsToSend.value = addCommand(commandsToSend.value, singlePatch);
+      return true;
     }
+
+    return false;
   }
 
   function sendCommands() {
@@ -487,6 +606,8 @@ export default function useMso() {
 
           commandsReceived.value = [];
 
+          applyProductRules();
+
         } else {
           console.log('skip applyPatch', commandsAwaitingResponse.value)
         }
@@ -506,6 +627,7 @@ export default function useMso() {
       if (verb === 'mso') {
         // full mso object
         mso.value = arg;
+        applyProductRules();
         console.log(mso.value)
       } else if (verb === 'msoupdate') {
           // update received. only process received commands if commandsToSend is empty;
@@ -578,14 +700,11 @@ export default function useMso() {
   watch(
     localLoading, 
     (newLocalLoading, oldLocalLoading) => {
-      // console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!! localLoading', newLocalLoading, oldLocalLoading);
-      // if (newLocalLoading !== oldLocalLoading) {
         if (newLocalLoading) {
           loading.value += 1;
         } else {
           loading.value -= 1;
         }
-      // }
     }
   );
 
@@ -608,7 +727,7 @@ export default function useMso() {
     setAuroMaticPreset, setAuroMaticStrength, setDefaultAuroMaticStrength,
     toggleReinforceBass,
     setNextNightMode, toggleDirac, toggleLoudness, setNextDtsDialogEnh,
-    toggleSpeakerChannel, setSpeakerSize, setCenterFreq,
+    toggleSpeakerGroup, setSpeakerSize, setCenterFreq,
     setMinVolume, setMaxVolume, setMaxOutputLevel, setLipsyncDelay, setDiracSlot,
     setUserDelay, setUserTrim,
     toggleSignalGenerator, setSignalGeneratorChannel, setSignalGeneratorSignalType,
@@ -623,7 +742,7 @@ export default function useMso() {
     setUnitName, toggleFastStart, toggleFastStartPassThrough, setPowerOnVol,
     setFrontPanelBrightness, toggleVideoStatusHomePage, toggleExtendedAudioStatus,
     toggleAdvancedInputSettings, toggleSupportTools, importMsoPatchList,
-    showCrossoverControls, currentDiracSlot, calToolConnected,
+    showCrossoverControls, currentDiracSlot, calToolConnected, activeChannels,
     state, loading,
     commandsToSend, commandsReceived, commandsAwaitingResponse // debug
   };

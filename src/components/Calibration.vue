@@ -139,15 +139,15 @@
       const { 
         mso, setDiracSlot, setUserTrim, setUserDelay, 
         setMinVolume, setMaxVolume, setMaxOutputLevel, setLipsyncDelay,
-        currentDiracSlot
+        currentDiracSlot, activeChannels
       } = useMso();
-      const { getActiveChannels, spkName } = useSpeakerGroups();
+      const { spkName } = useSpeakerGroups();
 
       const currentDiracTab = ref(mso.value.cal?.currentdiracslot);
 
-      const activeChannels = computed(() => {
-        return getActiveChannels(mso.value.speakers?.groups);
-      });
+      // const activeChannels = computed(() => {
+      //   return getActiveChannels(mso.value.speakers?.groups);
+      // });
 
       function formatDecimal(num) {
         return num?.toFixed(1);

@@ -55,7 +55,7 @@
     name: 'Speakers',
     setup(props, { emit }) {
 
-      const { mso, showCrossoverControls } = useMso();
+      const { mso, showCrossoverControls, activeChannels } = useMso();
 
       const mainSpeakers = [
         {'label': 'Left / Right', code: 'lr'},
@@ -111,7 +111,7 @@
 
       return { 
         mso, showCrossoverControls, mainSpeakers, surroundSpeakers, upperSpeakers, 
-        diagramSpeakerVisibility, speakerGroups 
+        diagramSpeakerVisibility, speakerGroups, activeChannels
       };
     },
     components: {

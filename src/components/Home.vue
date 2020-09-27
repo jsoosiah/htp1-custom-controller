@@ -78,8 +78,8 @@
             <span 
               class="vol-display" 
               :class="{'text-danger':mso.muted}" 
-              @mousedown="toggleMute()"
-              @touchstart="toggleMute()"
+              @mousedown="handleMute"
+              @touchstart="handleMute"
             >
               {{mso.volume}} dB
             </span>
@@ -244,6 +244,11 @@ export default {
     let incrementVolumeInterval;
     let decrementVolumeInterval;
 
+    function handleMute(e) {
+      e.preventDefault();
+      toggleMute();
+    }
+
     function handleVolumeUpTouchStart(e) {
       e.preventDefault();
       console.log('handleVolumeUpTouchStart')
@@ -303,6 +308,7 @@ export default {
       settingsModalIsOpen, toggleSettingsModal,
       settingsActiveTab, setSettingsActiveTab,
       handleVolumeDownTouchStart, handleVolumeUpTouchStart, handleVolumeTouchEnd,
+      handleMute,
       // holdingVolumeDown, holdingVolumeUp // debug
     };
   },
