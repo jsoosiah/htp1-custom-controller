@@ -127,26 +127,30 @@
         <div class="row mt-2">
           <div class="col-md-12 text-center">
               <h5>Input Select</h5>
-              <two-state-button 
-                v-for="(inp, key) in visibleInputs"
-                :button-text="inp.label"
-                :state-on="key === mso.input"
-                :home-button="true"
-                @click="setInput(key)"
-              />
+              <div class="inputs-container my-3">
+                <two-state-button 
+                  v-for="(inp, key) in visibleInputs"
+                  :button-text="inp.label"
+                  :state-on="key === mso.input"
+                  :home-button="true"
+                  @click="setInput(key)"
+                />
+              </div>
           </div>
         </div>
         <!-- Upmix Select -->
         <div class="row mt-2" v-if="mso.stat.systemAudio">
           <div class="col-md-12 text-center">
               <h5>Upmix Select</h5>
-              <two-state-button 
-                v-for="(upmix, key) in visibleUpmixers"
-                :button-text="upmix.label"
-                :state-on="key === mso.upmix.select"
-                :home-button="true"
-                @click="setUpmix(key)" 
-              />
+              <div class="upmix-container my-3">
+                <two-state-button 
+                  v-for="(upmix, key) in visibleUpmixers"
+                  :button-text="upmix.label"
+                  :state-on="key === mso.upmix.select"
+                  :home-button="true"
+                  @click="setUpmix(key)" 
+                />
+              </div>
           </div>
         </div>
         <!-- Modes -->
@@ -432,6 +436,11 @@ export default {
     display: block;
     z-index: 9;
     position: fixed;
+  }
+
+  .inputs-container::v-deep(.home-btn),
+  .upmix-container::v-deep(.home-btn) {
+    margin: 0.03125rem;
   }
 
 </style>
