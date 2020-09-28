@@ -126,7 +126,7 @@
         <!-- Input Select -->
         <div class="row mt-2">
           <div class="col-md-12 text-center" :class="{'experimental': experimental}">
-              <h5 @click="openInputSettings">Input Select</h5>
+              <h5><span class="link" @click="openInputSettings">Input Select</span></h5>
               <div class="inputs-container my-3">
                 <two-state-button 
                   v-for="(inp, key) in visibleInputs"
@@ -141,7 +141,7 @@
         <!-- Upmix Select -->
         <div class="row mt-2" v-if="mso.stat.systemAudio">
           <div class="col-md-12 text-center" :class="{'experimental': experimental}">
-              <h5 @click="openSoundEnhancementSettings">Upmix Select</h5>
+              <h5><span class="link" @click="openSoundEnhancementSettings">Upmix Select</span></h5>
               <div class="upmix-container my-3">
                 <two-state-button 
                   v-for="(upmix, key) in visibleUpmixers"
@@ -504,6 +504,10 @@ export default {
 
   .experimental::v-deep(.home-btn) {
     margin: 0;
+  }
+
+  .link {
+    cursor: pointer;
   }
 
 </style>
