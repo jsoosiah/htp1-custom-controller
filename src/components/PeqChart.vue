@@ -89,6 +89,10 @@
                     display: true,
                     labelString: 'Gain (dB)'
                   },
+                  ticks: {
+                    suggestedMin: -5,
+                    suggestedMax: 5,
+                  }
                 }],
                 xAxes: [{
                   type: 'logarithmic',

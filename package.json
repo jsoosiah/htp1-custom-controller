@@ -17,6 +17,7 @@
     "core-js": "^3.6.5",
     "fast-json-patch": "^3.0.0-1",
     "lodash-es": "^4.17.15",
+    "tippy.js": "^6.2.6",
     "vue": "^3.0.0"
   },
   "devDependencies": {

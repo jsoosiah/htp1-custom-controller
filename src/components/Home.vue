@@ -5,7 +5,10 @@
       </div>
     </div>
     <div class="fixed-top text-center" style="z-index: 9999999999999999" v-if="mso?.sgen?.sgensw === 'on'">
-      <span class="sgen-on-warning">Signal Generator On</span>
+      <a class="sgen-on-warning" @click="openSignalGeneratorSettings">
+        Signal Generator On 
+        <span v-if="!(settingsModalIsOpen && settingsActiveTab === SIGNAL_GENERATOR_TAB)"><br/>(Click to Open Signal Generator Settings)</span>
+      </a>
     </div>
     <div class="fixed-top text-center" style="z-index: 9999999999999999" v-if="calToolConnected">
       <span class="sgen-on-warning">Dirac Calibration in Progress - Currently in Readonly Mode</span>
@@ -30,7 +33,12 @@
       <div class="container">
         <div class="row mt-2">
           <div class="col text-left">
-            <span class="current-input-label">{{mso.inputs && mso.inputs[mso.input].label}}</span>
+            <a 
+              class="current-input-label"
+              @click="openInputSettings"
+            >
+              {{mso.inputs && mso.inputs[mso.input].label}}
+            </a>
           </div>
           <div class="col text-right">
             <transition name="mfade">
@@ -219,6 +227,9 @@ import IpSelect from './IpSelect.vue';
 // ms length required to hold button before it is considered a long press
 const LONG_PRESS_THRESHOLD = 400; 
 
+const INPUTS_TAB = 5;
+const SIGNAL_GENERATOR_TAB = 2;
+
 export default {
   setup() {
 
@@ -294,8 +305,14 @@ export default {
       settingsModalIsOpen.value = !settingsModalIsOpen.value;
     }
 
-    function setActiveTab(tab) {
-      activeTab.value = tab;
+    function openSignalGeneratorSettings() {
+      setSettingsActiveTab(SIGNAL_GENERATOR_TAB);
+      settingsModalIsOpen.value = true;
+    }
+
+    function openInputSettings() {
+      setSettingsActiveTab(INPUTS_TAB);
+      settingsModalIsOpen.value = true;
     }
 
     return { 
@@ -308,7 +325,7 @@ export default {
       settingsModalIsOpen, toggleSettingsModal,
       settingsActiveTab, setSettingsActiveTab,
       handleVolumeDownTouchStart, handleVolumeUpTouchStart, handleVolumeTouchEnd,
-      handleMute,
+      handleMute, openSignalGeneratorSettings, openInputSettings, SIGNAL_GENERATOR_TAB
       // holdingVolumeDown, holdingVolumeUp // debug
     };
   },
@@ -348,7 +365,13 @@ export default {
   }
 
   .current-input-label {
-    font-size:2rem;
+    font-size:2.3rem;
+    color:inherit;
+    cursor: pointer;
+  }
+
+  .current-input-label:hover {
+    text-decoration: none;
   }
 
   .menu-btn {
@@ -388,6 +411,11 @@ export default {
     color: magenta;
     background: rgba(0,0,0,0.75);
     padding:0.25rem 0.5rem;
+    cursor: pointer;
+  }
+
+  .sgen-on-warning:hover {
+    text-decoration: none;
   }
 
   .mfade-enter-active,

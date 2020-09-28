@@ -42,14 +42,16 @@ import { ref, onMounted, onUnmounted } from 'vue';
 import Speakers from './Speakers.vue';
 import Calibration from './Calibration.vue';
 import SignalGenerator from './SignalGenerator.vue';
-import Eq from './Eq.vue';
+import Peq from './Peq.vue';
+import ToneControl from './ToneControl.vue';
 import Inputs from './Inputs.vue';
 import SoundEnhancement from './SoundEnhancement.vue';
 import Connectivity from './Connectivity.vue';
 import System from './System.vue';
 
 import CalibrationIcon from './icon/CalibrationIcon';
-import EqIcon from './icon/EqIcon';
+import PeqIcon from './icon/PeqIcon';
+import ToneControlIcon from './icon/ToneControlIcon';
 import InputsIcon from './icon/InputsIcon';
 import NetworkIcon from './icon/NetworkIcon';
 import SgenIcon from './icon/SgenIcon';
@@ -81,7 +83,8 @@ export default {
       {'label': 'Speakers', 'component': 'speakers', icon: 'speakers-icon' },
       {'label': 'Calibration', 'component': 'calibration', icon: 'calibration-icon' },
       {'label': 'Signal Generator', 'component': 'signal-generator', icon: 'sgen-icon' },
-      {'label': 'EQ', 'component': 'eq', icon: 'eq-icon' },
+      {'label': 'PEQ', 'component': 'peq', icon: 'peq-icon' },
+      {'label': 'Tone Control', 'component': 'tone-control', icon: 'tone-control-icon' },
       {'label': 'Inputs', 'component': 'inputs', icon: 'inputs-icon' },
       {'label': 'Sound Enhancement', 'component': 'sound-enhancement', icon: 'upmix-icon' },
       {'label': 'Connectivity', 'component': 'connectivity', icon: 'network-icon' },
@@ -109,13 +112,15 @@ export default {
     Speakers,
     Calibration,
     SignalGenerator,
-    Eq,
+    Peq,
+    ToneControl,
     Inputs,
     SoundEnhancement,
     Connectivity,
     System,
     CalibrationIcon,
-    EqIcon,
+    PeqIcon,
+    ToneControlIcon,
     InputsIcon,
     NetworkIcon,
     SgenIcon,

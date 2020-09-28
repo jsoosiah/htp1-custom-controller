@@ -5,7 +5,7 @@ export default function useImportExport() {
   const importJson = ref(null);
 
   function exportJsonToFile(json, filename){
-    const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(json));
+    const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(json, null, 2));
     const downloadAnchorNode = document.createElement('a');
     downloadAnchorNode.setAttribute('href', dataStr);
     downloadAnchorNode.setAttribute('download', `${filename}-${currentDateStr()}.json`);

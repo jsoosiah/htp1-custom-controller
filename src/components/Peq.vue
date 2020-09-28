@@ -1,86 +1,10 @@
 <template>
   <div class="transition-container">
-    <h5>Tone Control</h5>
-    <two-state-button 
-      :button-text="`Tone Control: ${mso.eq?.tc ? 'on' : 'off'}`"
-      :state-on="mso.eq?.tc"
-      @click="toggleToneControl()"
-    />
-
-    <div class="row mt-3" v-show="!mso.eq?.tc">
-      <div class="col">
-        <div class="alert alert-warning small" role="alert">
-          Tone controls are currently turned off. The following tone control settings may be modified, but they will not have any effect until tone controls are turned on.
-        </div>
-      </div>
-    </div>
-
-    <div class="container">
-      <div class="row">
-        <div class="col-lg">
-            <div class="form-group">
-              <label for="inputEmail3" class="col-form-label col-form-label-sm ">Bass Corner Frequency</label>
-              <div class="input-group input-group-sm numeric-input">
-                <input type="number" class="form-control" aria-label="Minimum volume" aria-describedby="basic-addon2" :value="mso.eq?.bass.freq" @change="({ type, target }) => setBassCornerFrequency(target.value)" min="40" max ="500">
-                <div class="input-group-append">
-                  <span class="input-group-text" id="basic-addon2">Hz</span>
-                </div>
-              </div>
-            </div>
-        </div>
-        <div class="col-lg">
-            <div class="form-group">
-              <label for="inputEmail3" class="col-form-label col-form-label-sm ">Treble Corner Frequency</label>
-              <div class="input-group input-group-sm numeric-input">
-                <input type="number" class="form-control" aria-label="Minimum volume" aria-describedby="basic-addon2" :value="mso.eq?.treble.freq" @change="({ type, target }) => setTrebleCornerFrequency(target.value)" min="501" max ="8000">
-                <div class="input-group-append">
-                  <span class="input-group-text" id="basic-addon2">Hz</span>
-                </div>
-              </div>
-            </div>
-        </div>
-        <div class="col-lg">
-            <div class="form-group">
-              <label for="inputEmail3" class="col-form-label col-form-label-sm ">Bass Boost/Cut Level</label>
-              <div class="input-group input-group-sm numeric-input">
-                <input type="number" class="form-control" aria-label="Minimum volume" aria-describedby="basic-addon2" :value="mso.eq?.bass.level" @change="({ type, target }) => setBassBoostCutLevel(target.value)" min="-12" max="12">
-                <div class="input-group-append">
-                  <span class="input-group-text" id="basic-addon2">dB</span>
-                </div>
-              </div>
-            </div>
-        </div>
-        <div class="col-lg">
-            <div class="form-group">
-              <label for="inputPassword3" class="col-form-label col-form-label-sm ">Treble Boost/Cut Level</label>
-              <div class="input-group input-group-sm numeric-input">
-                <input type="number" class="form-control" aria-label="Minimum volume" aria-describedby="basic-addon2" :value="mso.eq?.treble.level" @change="({ type, target }) => setTrebleBoostCutLevel(target.value)" min="-12" max="12">
-                <div class="input-group-append">
-                  <span class="input-group-text" id="basic-addon2">dB</span>
-                </div>
-              </div>
-            </div>
-        </div>
-        <div class="col-lg">
-            <div class="form-group">
-              <label for="inputPassword3" class="col-form-label col-form-label-sm ">Loudness Calibration</label>
-                <div class="input-group input-group-sm numeric-input">
-                  <input type="number" class="form-control" aria-label="Minimum volume" aria-describedby="basic-addon2" :value="mso.loudnessCal" @change="({ type, target }) => setLoudnessCalibration(target.value)" min="50" max="90">
-                  <div class="input-group-append">
-                    <span class="input-group-text" id="basic-addon2">dB</span>
-                  </div>
-                </div>
-            </div>
-        </div>
-      </div>
-      
-    </div>
-
     <h5>Parametric Equalization Filters <small class="text-muted">up to 16 bands are available</small></h5>
     <div class="alert alert-info small" role="alert">
       Note that a gain of 0dB is equivalent to bypassing the filter; * denotes channels or bands that have been modified and have active PEQ filters.
     </div>
-    <eq-chart 
+    <peq-chart 
       :peq-slots="mso.peq?.slots || []"
       :active-channels="activeChannels"
       :selected-channel="selectedChannel"
@@ -108,7 +32,6 @@
         </div>
       </div>
     </div>
-
     <!-- group by band --> 
     <template v-if="eqGroupBy === 1">
       <nav class="navbar nav-fill nav-pills bg-light navbar-light">
@@ -192,6 +115,7 @@
       </table>
 
       <!-- import/export operations for band -->
+      <h6>Manage Band {{mso.peq?.currentpeqslot + 1}}</h6>
       <div class="row">
         <div class="col-auto">
           <button 
@@ -210,11 +134,11 @@
               type="file" 
               class="form-control-file" 
               id="import=file" 
-              @change="importFileSelected"
+              @change="singleImportFileSelected"
             />
           </div>
           <mso-importer 
-            v-if="importJson" 
+            v-if="singleImportJson" 
             @confirm-import="importMsoPatchList(bandImportPatch)"
             :mso-import-patch="bandImportPatch"
           />
@@ -223,7 +147,7 @@
       <div class="row">
         <div class="col-auto">
           <button 
-            class="btn btn-sm btn-danger mb-3"
+            class="btn btn-sm btn-warning mb-3"
             @click="resetPEQsForBand(mso.peq?.currentpeqslot)"
           >
             Reset Settings for Band {{mso.peq?.currentpeqslot + 1}} 
@@ -311,6 +235,7 @@
       </table>
 
       <!-- import/export operations for channel -->
+      <h6>Manage Channel {{spkName(activeChannels[selectedChannel])}}</h6>
       <div class="row">
         <div class="col-auto">
         <button 
@@ -329,11 +254,11 @@
               type="file" 
               class="form-control-file" 
               id="import=file" 
-              @change="importFileSelected"
+              @change="singleImportFileSelected"
             />
           </div>
           <mso-importer 
-            v-if="importJson" 
+            v-if="singleImportJson" 
             @confirm-import="importMsoPatchList(channelImportPatch)"
             :mso-import-patch="channelImportPatch"
           />
@@ -343,7 +268,7 @@
       <div class="row">
         <div class="col-auto">
           <button 
-            class="btn btn-sm btn-danger mb-3"
+            class="btn btn-sm btn-warning mb-3"
             @click="resetPEQsForChannel(activeChannels[selectedChannel])"
           >
             Reset Settings for Channel {{spkName(activeChannels[selectedChannel])}}
@@ -351,6 +276,46 @@
         </div>
       </div>
     </template>
+    <!-- global import/export operations -->
+    <h6>Manage all Channels/Bands</h6>
+    <div class="row">
+      <div class="col-auto">
+        <button 
+          class="btn btn-sm btn-primary mb-3"
+          @click="downloadFullConfig()"
+        >
+          Export Full PEQ Configuration to File
+        </button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-auto">
+        <div class="form-group">
+          <label for="import=file">Import Full Configuration File</label>
+          <input 
+            type="file" 
+            class="form-control-file" 
+            id="import=file" 
+            @change="fullImportFileSelected"
+          />
+        </div>
+        <mso-importer 
+          v-if="fullImportJson" 
+          @confirm-import="importMsoPatchList(fullImportPatch)"
+          :mso-import-patch="fullImportPatch"
+        />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-auto">
+        <button 
+          class="btn btn-sm btn-danger mb-3"
+          @click="resetAllPEQs"
+        >
+          Reset All PEQ Settings
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -366,13 +331,17 @@
 
   import TwoStateButton from './TwoStateButton.vue';
   import MsoImporter from './MsoImporter.vue';
-  import EqChart from './EqChart.vue';
+  import PeqChart from './PeqChart.vue';
 
   export default {
     name: 'Eq',
     setup() {
 
-      const { importJson, exportJsonToFile, importJsonFileToSelected } = useImportExport();
+      // const singleImportExport = useImportExport();
+      // const fullImportExport = useImportExport();
+      const { importJson: singleImportJson, importJsonFileToSelected: singleImportJsonFileToSelected, exportJsonToFile } = useImportExport();
+      const { importJson: fullImportJson, importJsonFileToSelected: fullImportJsonFileToSelected } = useImportExport();
+      
       const { eqGroupBy, setEqGroupBy } = useLocalStorage();
       const { mso, setPEQSlot, resetPEQ } = useMso();
       const { getActiveChannels, spkName } = useSpeakerGroups();
@@ -431,6 +400,10 @@
         
       }
 
+      function downloadFullConfig() {
+        exportJsonToFile(mso.value.peq?.slots, `peq-all`);
+      }
+
       function downloadSingleBandConfig(band) {
         exportJsonToFile(mso.value.peq?.slots[band].channels, `peq-band-${band+1}`);
       }
@@ -444,9 +417,14 @@
         exportJsonToFile(singleChannelPeqs, `peq-channel-${channame}`);
       }
 
-      function importFileSelected(e) {
+      function singleImportFileSelected(e) {
         const file = e.target.files[0];
-        importJsonFileToSelected(file);
+        singleImportJsonFileToSelected(file);
+      }
+
+      function fullImportFileSelected(e) {
+        const file = e.target.files[0];
+        fullImportJsonFileToSelected(file);
       }
 
       function resetPEQsForBand(band) {
@@ -461,18 +439,27 @@
         }
       }
 
+      function resetAllPEQs() {
+        if (confirm('All PEQs will be reset for all channels.')) {
+          for (let band = 0; band < 16; band++) {
+            for (const channame of activeChannels.value) {
+              resetPEQ(channame, band);
+            }
+          }
+        }
+      }
+
+      // TODO validate
       const channelImportPatch = computed(() => {
 
-        if (!importJson.value || eqGroupBy === 1) {
+        if (!singleImportJson.value || eqGroupBy === 1) {
           return [];
         }
 
         const fixedImportJson = [];
 
-        console.log('importJson', importJson.value)
-
         // rewrite the channel name to the selected channel
-        for (const slot of importJson.value) {
+        for (const slot of singleImportJson.value) {
           for (const [key, channel] of Object.entries(slot.channels)) {
             fixedImportJson.push({channels: {
               [activeChannels.value[selectedChannel.value]]: channel
@@ -485,18 +472,25 @@
 
         // fix relative paths
         return compare(mso.value.peq?.slots, fixedImportJson).filter(patch => patch.op === 'replace')
-        .map(patch => ({...patch, path: `/peq/slots${patch.path}`}))
-        ;
+          .map(patch => ({...patch, path: `/peq/slots${patch.path}`}));
       });
 
+      // TODO validate
       const bandImportPatch = computed(() => {
-        if (!importJson.value || eqGroupBy === 0) {
+        if (!singleImportJson.value || eqGroupBy === 0) {
           return [];
         }
 
         // fix relative paths
-        return compare(mso.value.peq?.slots[mso.value?.peq.currentpeqslot].channels, importJson.value)
-        .map(patch => ({...patch, path: `/peq/slots/${mso.value?.peq.currentpeqslot}/channels${patch.path}`}));
+        return compare(mso.value.peq?.slots[mso.value?.peq.currentpeqslot].channels, singleImportJson.value)
+          .map(patch => ({...patch, path: `/peq/slots/${mso.value?.peq.currentpeqslot}/channels${patch.path}`}));
+      });
+
+      // TODO validate
+      const fullImportPatch = computed(() => {
+        // fix relative paths
+        return compare(mso.value.peq?.slots, fullImportJson.value)
+          .map(patch => ({...patch, path: `/peq/slots${patch.path}`}));
       });
 
       const filterTypes = [
@@ -506,14 +500,19 @@
       ];
 
       return {
-        ...useMso(), activeChannels, spkName, selectedChannel, setSelectedChannel, bandHasModifications, channelHasModifications, filterTypes, tabLoaded, setSelectedBand, downloadSingleChannelConfig, downloadSingleBandConfig, importFileSelected, importJson, bandImportPatch, channelImportPatch, resetPEQsForBand, resetPEQsForChannel,
+        ...useMso(), activeChannels, spkName, selectedChannel, setSelectedChannel, 
+        bandHasModifications, channelHasModifications, filterTypes, tabLoaded, setSelectedBand, 
+        downloadSingleChannelConfig, downloadSingleBandConfig, downloadFullConfig, 
+        singleImportFileSelected, fullImportFileSelected, 
+        singleImportJson, fullImportJson, bandImportPatch, channelImportPatch, fullImportPatch,
+        resetPEQsForBand, resetPEQsForChannel, resetAllPEQs,
         eqGroupBy, setGroupBy
       };
     },
     components: {
       TwoStateButton,
       MsoImporter,
-      EqChart,
+      PeqChart,
     }
   }
 </script>

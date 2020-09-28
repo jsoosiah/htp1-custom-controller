@@ -65,13 +65,9 @@
     name: 'IPSelect',
     setup() {
 
-      console.log('useWebSocket',useWebSocket);
-
       const { websocketIp, websocketurl, setWebsocketIp } = useWebSocket();
 
       const ipAddressText = ref('');
-
-      console.log('websocketIp', websocketIp);
 
       function validateAndSetWebsocketurl(url) {
         // todo: if valid 

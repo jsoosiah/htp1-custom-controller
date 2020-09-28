@@ -343,11 +343,13 @@ export default function useMso() {
   }
 
   function resetPEQ(channel, slot) {
-    return 
-      setPEQCenterFrequency(channel, slot, 100) &&
-      setPEQGain(channel, slot, 0) &&
-      setPEQQuality(channel, slot, 1) &&
-      setPEQFilterType(channel, slot, 0);
+
+    const fc = setPEQCenterFrequency(channel, slot, 100);
+    const gain = setPEQGain(channel, slot, 0);
+    const q = setPEQQuality(channel, slot, 1);
+    const filterType = setPEQFilterType(channel, slot, 0);
+
+    return fc && gain && q && filterType;
   }
 
   function setInputLabel(input, label) {
@@ -452,85 +454,87 @@ export default function useMso() {
     console.log('applyProductRules')
 
     const groups = ['c', 'lrs', 'lrb', 'lrw', 'lrtf', 'lrtm', 'lrtr', 'lrhf', 'lrhr', 'sub1', 'sub2', 'sub3', 'sub4', 'sub5'];
-    const spg = mso.value.speakers.groups;
+    const spg = mso.value.speakers?.groups;
 
-    for (const group of groups) {
-      if (spg[group] === undefined) {
-        initializeSpeakerGroup(group);
-      }
-    }
-
-    // too many channels, disable speaker groups until under 16
-    if (activeChannels.value.length > 16) {
-      let over = activeChannels.value.length - 16;
-      // iterate speaker groups in reverse order, 
-      // excluding subs, so starting at index 8 = lrhr
-      // and disable them until the total channel count <= 16
-      for (let i = 8; i >= 0; i--) { 
-        if (spg[groups[i]].present) {
-          setSpeakerGroupPresent(groups[i], false);
-          over -= 2;
-        }
-        
-        // total channels is now 16 or less
-        if (over <= 0) {
-          break;
+    if (spg) {
+      for (const group of groups) {
+        if (spg[group] === undefined) {
+          initializeSpeakerGroup(group);
         }
       }
-    }
 
-    setSpeakerGroupPresent('lrb', spg.lrb.present && spg.lrs.present); // No backs when no surround
-    setSpeakerGroupPresent('lrw', spg.lrw.present && spg.lrb.present); // No wides when no backs
-    console.log('lrhf?', spg.lrhf.present && (!spg.lrtf.present));
-    setSpeakerGroupPresent('lrhf', spg.lrhf.present && (!spg.lrtf.present)); // No height front if top front present
-
-    if ((!spg.lrs.present) && (spg.lrtm.present) && (spg.lrtf.present || spg.lrtr.present || spg.lrhf.present || spg.lrhr.present)) {
-        setSpeakerGroupPresent('lrtf', false);
-        setSpeakerGroupPresent('lrtr', false);
-        setSpeakerGroupPresent('lrhf', false);
-        setSpeakerGroupPresent('lrhr', false);
-    };
-    if ((!spg.lrs.present) && (!spg.lrtm.present) && (spg.lrtr.present || spg.lrhr.present)) {
-        setSpeakerGroupPresent('lrtf', spg.lrtf.present && (!spg.lrhf.present));
-        setSpeakerGroupPresent('lrtr', false);
-        setSpeakerGroupPresent('lrhr', false);
-    };
-    if ((!spg.c.present) && (!spg.lrb.present)) {
-        setSpeakerGroupPresent('lrtm', false);
-    };
-    spg.lrtf.present = spg.lrtf.present && (!spg.lrhf.present); // only one front allowed
-    spg.lrtr.present = spg.lrtr.present && (!spg.lrhr.present); // only one rear allowed
-    if ((!spg.lrtf.present) && (!spg.lrhf.present)) {
-        setSpeakerGroupPresent('lrhr', false); // no fronts . clear rears
-        setSpeakerGroupPresent('lrtr', false);
-    };
-    // No top middle when top front present but top rear not present
-    if (spg.lrtm.present && spg.lrtf.present) {
-        if ((!spg.lrtr.present) && (!spg.lrhr.present)) {
-            setSpeakerGroupPresent('lrtm', false);
+      // too many channels, disable speaker groups until under 16
+      if (activeChannels.value.length > 16) {
+        let over = activeChannels.value.length - 16;
+        // iterate speaker groups in reverse order, 
+        // excluding subs, so starting at index 8 = lrhr
+        // and disable them until the total channel count <= 16
+        for (let i = 8; i >= 0; i--) { 
+          if (spg[groups[i]].present) {
+            setSpeakerGroupPresent(groups[i], false);
+            over -= 2;
+          }
+          
+          // total channels is now 16 or less
+          if (over <= 0) {
+            break;
+          }
         }
-    }
-    if (spg.lrtm.present && spg.lrhf.present) {
-        if ((!spg.lrtr.present) && (!spg.lrhr.present)) {
-            setSpeakerGroupPresent('lrtm', false);
-        }
-    }
+      }
 
-    setSpeakerGroupPresent('sub2', spg.sub2.present && spg.sub1.present); // No sub2 without sub
-    setSpeakerGroupPresent('sub3', spg.sub3.present && spg.sub2.present); // No sub3 without sub2
-    setSpeakerGroupPresent('sub4', spg.sub4.present && spg.sub3.present); // No sub4 without sub3
-    setSpeakerGroupPresent('sub5', spg.sub5.present && spg.sub4.present); // No sub5 without sub4
+      setSpeakerGroupPresent('lrb', spg.lrb.present && spg.lrs.present); // No backs when no surround
+      setSpeakerGroupPresent('lrw', spg.lrw.present && spg.lrb.present); // No wides when no backs
+      console.log('lrhf?', spg.lrhf.present && (!spg.lrtf.present));
+      setSpeakerGroupPresent('lrhf', spg.lrhf.present && (!spg.lrtf.present)); // No height front if top front present
 
-    for (const groupName of Object.keys(spg)) {
-      const group = spg[groupName];
-      if (group.fc) {
-        setCenterFreq(groupName, Math.round(group.fc / 10) * 10);
+      if ((!spg.lrs.present) && (spg.lrtm.present) && (spg.lrtf.present || spg.lrtr.present || spg.lrhf.present || spg.lrhr.present)) {
+          setSpeakerGroupPresent('lrtf', false);
+          setSpeakerGroupPresent('lrtr', false);
+          setSpeakerGroupPresent('lrhf', false);
+          setSpeakerGroupPresent('lrhr', false);
+      };
+      if ((!spg.lrs.present) && (!spg.lrtm.present) && (spg.lrtr.present || spg.lrhr.present)) {
+          setSpeakerGroupPresent('lrtf', spg.lrtf.present && (!spg.lrhf.present));
+          setSpeakerGroupPresent('lrtr', false);
+          setSpeakerGroupPresent('lrhr', false);
+      };
+      if ((!spg.c.present) && (!spg.lrb.present)) {
+          setSpeakerGroupPresent('lrtm', false);
+      };
+      spg.lrtf.present = spg.lrtf.present && (!spg.lrhf.present); // only one front allowed
+      spg.lrtr.present = spg.lrtr.present && (!spg.lrhr.present); // only one rear allowed
+      if ((!spg.lrtf.present) && (!spg.lrhf.present)) {
+          setSpeakerGroupPresent('lrhr', false); // no fronts . clear rears
+          setSpeakerGroupPresent('lrtr', false);
+      };
+      // No top middle when top front present but top rear not present
+      if (spg.lrtm.present && spg.lrtf.present) {
+          if ((!spg.lrtr.present) && (!spg.lrhr.present)) {
+              setSpeakerGroupPresent('lrtm', false);
+          }
+      }
+      if (spg.lrtm.present && spg.lrhf.present) {
+          if ((!spg.lrtr.present) && (!spg.lrhr.present)) {
+              setSpeakerGroupPresent('lrtm', false);
+          }
+      }
+
+      setSpeakerGroupPresent('sub2', spg.sub2.present && spg.sub1.present); // No sub2 without sub
+      setSpeakerGroupPresent('sub3', spg.sub3.present && spg.sub2.present); // No sub3 without sub2
+      setSpeakerGroupPresent('sub4', spg.sub4.present && spg.sub3.present); // No sub4 without sub3
+      setSpeakerGroupPresent('sub5', spg.sub5.present && spg.sub4.present); // No sub5 without sub4
+
+      for (const groupName of Object.keys(spg)) {
+        const group = spg[groupName];
+        if (group.fc) {
+          setCenterFreq(groupName, Math.round(group.fc / 10) * 10);
+        };
+      }
+
+      if (mso.value.fastStart === 'off') {
+          disableFastStartPassThrough();
       };
     }
-
-    if (mso.value.fastStart === 'off') {
-        disableFastStartPassThrough();
-    };
   }
 
   function patchMso(singlePatch) {

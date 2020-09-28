@@ -14,9 +14,18 @@
               :id="'check-'+spk.code" 
               :checked="mso.speakers?.groups[spk.code]?.present" 
               @change="toggleSpeakerGroup(spk.code)"
-              :disabled="!enableSpeakerToggle(spk.code)"
+              :disabled="!enableSpeakerToggle(spk.code).enabled"
             />
-            <label :class="{'custom-control-label':spk.code !== 'lr', 'hidden-switch-label': spk.code === 'lr'}" :for="'check-'+spk.code">{{spk.label}}</label>
+            <label 
+              :class="{'custom-control-label':spk.code !== 'lr', 'hidden-switch-label': spk.code === 'lr'}" 
+              :for="'check-'+spk.code"
+              :id="'tooltip-container-' + spk.code"
+            >
+              {{spk.label}} 
+            <font-awesome-icon 
+              :icon="['fas', 'question-circle']"
+              v-if="!enableSpeakerToggle(spk.code).enabled && enableSpeakerToggle(spk.code).message"
+            /></label>
           </div>
         </td>
         <td class="text-right">
@@ -49,6 +58,10 @@
 
 <script>
 
+  import { watchEffect, computed, onMounted } from 'vue';
+  import tippy from 'tippy.js';
+  import 'tippy.js/dist/tippy.css'; // optional for styling
+
   import useMso from '@/use/useMso.js';
 
   export default {
@@ -61,44 +74,123 @@
       const { mso, showCrossoverControls, toggleSpeakerGroup, 
         setSpeakerSize, setCenterFreq, activeChannels } = useMso();
 
+      // track tippy instances so old ones can be destroyed
+      const tippies = {};
+
+      onMounted(() => {
+        watchEffect(
+          () => {
+            for (const group of props.speakerGroups) {
+              for (const speaker of group.speakers) {
+                const validation = enableSpeakerToggle(speaker.code);
+
+                if (tippies[speaker.code]) {
+                  tippies[speaker.code][0].destroy();
+                }
+
+                if (!validation.enabled && validation.message) {
+                  tippies[speaker.code] = tippy(`#tooltip-container-${speaker.code}`, {
+                    content: validation.message,
+                    placement: 'right'
+                  });
+                }
+              }
+            }
+          }
+        )
+      });
+
+      // rule states the conditions for which the toggle should be enabled
+      // all rules in the array will be combined with AND
+      // if the toggle is disabled, message is displayed to the user as the reason 
+      const speakerGroupValidations = computed(() => {
+
+        const groups = mso.value.speakers.groups;
+
+        return {
+          'lr': [
+              {rule: false, message: null} // always disable LR toggle
+            ], 
+          'sub2': [
+              {rule: groups.sub1.present, message: 'Subwoofer must be enabled before Subwoofer 2.'}
+            ], 
+          'sub3': [
+              {rule: groups.sub2.present, message: 'Subwoofer 2 must be enabled before Subwoofer 3.'}
+            ], 
+          'sub4': [
+              {rule: groups.sub3.present, message: 'Subwoofer 3 must be enabled before Subwoofer 4.'}
+            ], 
+          'sub5': [
+              {rule: groups.sub4.present, message: 'Subwoofer 4 must be enabled before Subwoofer 5.'}
+            ], 
+          'lrb': [
+              {rule: groups.lrs.present, message: 'L/R Surround must be enabled before L/R Rear Surround.'}
+            ], 
+          'lrw': [
+              {rule: groups.lrb.present, message: 'L/R Rear Surround must be enabled before L/R Wide.'}
+            ], 
+          'lrhf': [
+              {rule: !groups.lrtf.present, message: 'L/R Top Front must be disabled to enable L/R Front Height.'},
+              {rule: groups.lrs.present || !groups.lrtm.present, message: 'L/R Surround must be enabled or L/R Top Middle must be disabled to enable L/R Front Height.'}
+            ], 
+          'lrtf': [
+              {rule: !groups.lrhf.present, message: 'L/R Front Height must be disabled to enable L/R Top Front.'},
+              {rule: groups.lrs.present || !groups.lrtm.present, message: 'L/R Surround must be enabled or L/R Top Middle must be disabled to enable L/R Top Front.'}
+            ], 
+          'lrtm': [
+              {rule: groups.c.present || groups.lrb.present, message: 'Center or L/R Rear Surround must be enabled before L/R Top Middle.'},
+              {rule: (!(groups.lrhf.present || groups.lrtf.present) || (groups.lrhr.present || groups.lrtr.present)), message: 'If L/R Top Front or L/R Front Height is enabled, then L/R Top Rear or L/R Rear Height must be enabled before L/R Top Middle'}
+            ], 
+          'lrhr': [
+              {rule: !groups.lrtr.present, message: 'L/R Top Rear must be disabled to enable L/R Rear Height.'},
+              {rule: groups.lrtf.present || groups.lrhf.present, message: 'L/R Top Front or L/R Front Height must be enabled before L/R Rear Height.'}
+            ], 
+          'lrtr': [
+              {rule: !groups.lrhr.present, message: 'L/R Rear Height must be disabled to enable L/R Top Rear.'},
+              {rule: groups.lrtf.present || groups.lrhf.present, message: 'L/R Top Front or L/R Front Height must be enabled before L/R Top Rear.'}
+            ]
+          };
+      });
+
       function enableSpeakerToggle(spkCode) {
+
+        const result = {
+          enabled: true,
+          message: ''
+        };
 
         const groups = mso.value.speakers.groups;
 
         if (!groups[spkCode].present) {
           // if 16 channels are already set, disable toggles that are off to prevent adding more speakers
-          if (activeChannels.value.length >= 16) {
-            return false;
+
+          let limit = 16;
+          if (spkCode !== 'c' && !spkCode.startsWith('sub')) {
+            limit = 15;
           }
 
-          if (spkCode === 'lr') { // always disable LR toggle 
-            return false;
-          } else if (spkCode === 'sub5') { // sub5 requires sub4
-            return groups.sub4.present;
-          } else if (spkCode === 'sub4') { // sub4 requires sub3
-            return groups.sub3.present;
-          } else if (spkCode === 'sub3') { // sub3 requires sub2
-            return groups.sub2.present;
-          } else if (spkCode === 'sub2') { // sub2 requires sub1
-            return groups.sub1.present;
-          } else if (spkCode === 'lrb') { // backs require side surrounds
-            return groups.lrs.present;
-          } else if (spkCode === 'lrw') { // wides require backs
-            return groups.lrb.present;
-          } else if (spkCode === 'lrhf') { // height front requires no top fronts, not (no surrounds and top middle)
-            return !groups.lrtf.present && !(!groups.lrs.present && groups.lrtm.present);
-          } else if (spkCode === 'lrtf') { // top front requires no height fronts, not (no surrounds and top middle)
-            return !groups.lrhf.present && !(!groups.lrs.present && groups.lrtm.present);
-          } else if (spkCode === 'lrhr') { // height rear requires height/top fronts, no top rears
-            return (groups.lrtf.present || groups.lrhf.present) && !groups.lrtr.present;
-          } else if (spkCode === 'lrtr') { // top rear requires height/top fronts, no height rears
-            return (groups.lrtf.present || groups.lrhf.present) && !groups.lrhr.present;
-          } else if (spkCode === 'lrtm') { // top middle requires center or backs, and if height/top fronts, then also height/top rears
-            return (groups.c.present || groups.lrb.present) && (!(groups.lrhf.present || groups.lrtf.present) || (groups.lrhr.present || groups.lrtr.present));
+          if (activeChannels.value.length >= limit && spkCode !== 'lr') {
+            // return false;
+            result.enabled = false;
+            result.message = 'A maximum of 16 speakers is allowed.';
+            return result;
+          }
+
+          const validations = speakerGroupValidations.value[spkCode]; //getSpeakerGroupValidations(spkCode, groups);
+
+          if (validations && validations.length > 0) {
+            for (const validation of validations) {
+              // console.log('validations', spkCode, validations)
+              if (!validation.rule) {
+                result.enabled = false;
+                result.message = validation.message;
+                return result;
+              }
+            }
           }
         }
 
-        return true;
+        return result;
       }
 
       function showCrossoverControlsForSpeaker(spkCode) {
