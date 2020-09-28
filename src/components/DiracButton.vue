@@ -34,7 +34,6 @@
       return { mso, toggleDirac, props };
     }, 
     props: {
-      className: String,
       homeButton: Boolean,
     },
     components: {

@@ -55,7 +55,7 @@
       * denotes Dirac Live Room Correction filters with Bass Control.
     </div>
     <div class="mb-3">
-      <dirac-button />
+      <dirac-button-group :home-button="false" />
     </div>
     <nav class="navbar nav-fill nav-pills bg-light navbar-light">
       <a 
@@ -130,7 +130,7 @@
 
   import useMso from '@/use/useMso.js';
   import useSpeakerGroups from '@/use/useSpeakerGroups.js';
-  import DiracButton from './DiracButton.vue';
+  import DiracButtonGroup from './DiracButtonGroup.vue';
 
   export default {
     name: 'Calibration',
@@ -169,7 +169,7 @@
       };
     },
     components: {
-      DiracButton,
+      DiracButtonGroup,
     }
   }
 </script>

@@ -125,8 +125,8 @@
         </div>
         <!-- Input Select -->
         <div class="row mt-2">
-          <div class="col-md-12 text-center">
-              <h5>Input Select</h5>
+          <div class="col-md-12 text-center" :class="{'experimental': experimental}">
+              <h5 @click="openInputSettings">Input Select</h5>
               <div class="inputs-container my-3">
                 <two-state-button 
                   v-for="(inp, key) in visibleInputs"
@@ -140,8 +140,8 @@
         </div>
         <!-- Upmix Select -->
         <div class="row mt-2" v-if="mso.stat.systemAudio">
-          <div class="col-md-12 text-center">
-              <h5>Upmix Select</h5>
+          <div class="col-md-12 text-center" :class="{'experimental': experimental}">
+              <h5 @click="openSoundEnhancementSettings">Upmix Select</h5>
               <div class="upmix-container my-3">
                 <two-state-button 
                   v-for="(upmix, key) in visibleUpmixers"
@@ -154,20 +154,26 @@
           </div>
         </div>
         <!-- Modes -->
-        <div class="row mt-2">
+        <div class="row mt-2" v-if="!experimental">
           <div class="col-md-12 text-center">
               <h5>Modes</h5>
-              <!-- Night Mode -->
-              <three-state-button 
-                :button-text="`Night ${mso.night}`"
-                :states="{'off': 0, 'on': 1, 'auto': 2}"
-                :state-value="mso.night"
-                :home-button="true"
-                @click="setNextNightMode()"
-              />
               <!-- Dirac -->
               <dirac-button 
                 :home-button="true"
+              />
+              <!-- PEQ -->
+              <two-state-button 
+                :button-text="`PEQ ${mso.peq?.peqsw ? 'on' : 'off'}`"
+                :state-on="mso.peq?.peqsw"
+                :home-button="true"
+                @click="toggleGlobalPEQ()"
+              />
+              <!-- Tone Control -->
+              <two-state-button 
+                :button-text="`Tone Control ${mso.eq?.tc ? 'on' : 'off'}`"
+                :state-on="mso.eq?.tc"
+                :home-button="true"
+                @click="toggleToneControl()"
               />
               <!-- Loudness -->
               <two-state-button 
@@ -185,20 +191,54 @@
                 :home-button="true"
                 @click="setNextDtsDialogEnh()"
               />
-              <!-- Tone Control -->
-              <two-state-button 
-                :button-text="`Tone Control ${mso.eq?.tc ? 'on' : 'off'}`"
-                :state-on="mso.eq?.tc"
+              <!-- Night Mode -->
+              <three-state-button 
+                :button-text="`Night ${mso.night}`"
+                :states="{'off': 0, 'on': 1, 'auto': 2}"
+                :state-value="mso.night"
                 :home-button="true"
-                @click="toggleToneControl()"
+                @click="setNextNightMode()"
               />
-              <!-- PEQ -->
-              <two-state-button 
-                :button-text="`PEQ ${mso.peq?.peqsw ? 'on' : 'off'}`"
-                :state-on="mso.peq?.peqsw"
-                :home-button="true"
-                @click="toggleGlobalPEQ()"
-              />
+          </div>
+        </div>
+        <div class="row mt-2" v-if="experimental">
+          <div class="col-md-12 text-center">
+            <h5>Modes (Experimental)</h5>
+            
+            <dirac-button-group :home-button="true" />
+
+            <multi-state-button-group
+              :states="[{value: 0, label: 'PEQ Off'}, {value: 1, label: 'PEQ On'}]"
+              :state-value="mso.peq?.peqsw ? 1 : 0"
+              :home-button="true"
+              @set-on="setGlobalPEQOn"
+              @set-off="setGlobalPEQOff"
+            />
+
+            <multi-state-button-group
+              :states="[{value: 0, label: 'Tone Control Off'}, {value: 1, label: 'Tone Control On'}]"
+              :state-value="mso.eq?.tc ? 1 : 0"
+              :home-button="true"
+              @set-on="setToneControlOn"
+              @set-off="setToneControlOff"
+            />
+
+            <multi-state-button-group
+              :states="[{value: 0, label: 'Loudness Off'}, {value: 1, label: 'Loudness On'}]"
+              :state-value="mso.loudness === 'on' ? 1 : 0"
+              :home-button="true"
+              @set-on="setLoudnessOn"
+              @set-off="setLoudnessOff"
+            />
+
+            <multi-state-button-group
+              :states="[{value: 0, label: 'Night Off'}, {value: 2, label: 'Night Auto'}, {value: 1, label: 'Night On'}]"
+              :state-value="mso.night === 'on' ? 1 : mso.night === 'off' ? 0 : 2"
+              :home-button="true"
+              @set-on="setNightOn"
+              @set-off="setNightOff"
+              @set-other="setNightAuto"
+            />
           </div>
         </div>
         <!-- Video Status -->
@@ -216,7 +256,7 @@
 
 <script>
 
-import { ref, defineAsyncComponent } from 'vue';
+import { ref, defineAsyncComponent, computed } from 'vue';
 
 import useLocalStorage from '@/use/useLocalStorage.js';
 import useMso from '@/use/useMso.js';
@@ -225,12 +265,15 @@ import useStream from '@/use/useStream.js';
 // import Settings from './Settings.vue';
 import TwoStateButton from './TwoStateButton.vue';
 import ThreeStateButton from './ThreeStateButton.vue';
+import MultiStateButtonGroup from './MultiStateButtonGroup.vue';
 import DiracButton from './DiracButton.vue';
+import DiracButtonGroup from './DiracButtonGroup.vue';
 import IpSelect from './IpSelect.vue';
 
 // ms length required to hold button before it is considered a long press
 const LONG_PRESS_THRESHOLD = 400; 
 
+const SOUND_ENHANCEMENTS_TAB = 6;
 const INPUTS_TAB = 5;
 const SIGNAL_GENERATOR_TAB = 2;
 
@@ -244,7 +287,11 @@ export default {
       loading, calToolConnected, state,
       visibleInputs, visibleUpmixers, powerOn, setInput, setUpmix, powerOff, 
       setNextNightMode, toggleLoudness, setNextDtsDialogEnh, toggleToneControl, toggleGlobalPEQ,
+      setNightOff, setNightAuto, setNightOn, setLoudnessOff, setLoudnessOn, 
+      setToneControlOff, setToneControlOn, setGlobalPEQOff, setGlobalPEQOn, setDtsDialogEnh
     } = useMso();
+
+    const experimental = computed(() => window.location.href.includes('experimental'));
 
     const settingsModalIsOpen = ref(false);
     // const holdingVolumeUp = ref(false);
@@ -319,6 +366,11 @@ export default {
       settingsModalIsOpen.value = true;
     }
 
+    function openSoundEnhancementSettings() {
+      setSettingsActiveTab(SOUND_ENHANCEMENTS_TAB);
+      settingsModalIsOpen.value = true;
+    }
+
     return { 
       mso, setVolume, toggleMute,
       loading, calToolConnected, state,
@@ -329,15 +381,22 @@ export default {
       settingsModalIsOpen, toggleSettingsModal,
       settingsActiveTab, setSettingsActiveTab,
       handleVolumeDownTouchStart, handleVolumeUpTouchStart, handleVolumeTouchEnd,
-      handleMute, openSignalGeneratorSettings, openInputSettings, SIGNAL_GENERATOR_TAB
-      // holdingVolumeDown, holdingVolumeUp // debug
+      handleMute, openSignalGeneratorSettings, openInputSettings, openSoundEnhancementSettings, SIGNAL_GENERATOR_TAB,
+      setNightOff, setNightAuto, setNightOn,
+      setLoudnessOff, setLoudnessOn,
+      setToneControlOff, setToneControlOn,
+      setGlobalPEQOff, setGlobalPEQOn,
+      setDtsDialogEnh,
+      experimental
     };
   },
   components: {
     Settings: defineAsyncComponent(() => import('./Settings.vue')),
     DiracButton,
+    DiracButtonGroup,
     TwoStateButton,
     ThreeStateButton,
+    MultiStateButtonGroup,
     IpSelect,
   }
 }
@@ -438,9 +497,13 @@ export default {
     position: fixed;
   }
 
-  .inputs-container::v-deep(.home-btn),
+  /*.inputs-container::v-deep(.home-btn),
   .upmix-container::v-deep(.home-btn) {
-    margin: 0.03125rem;
+    margin: 0;
+  }*/
+
+  .experimental::v-deep(.home-btn) {
+    margin: 0;
   }
 
 </style>

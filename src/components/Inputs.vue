@@ -7,8 +7,8 @@
           <th>Input</th>
           <th>Label</th>
           <th>Visible on Home Page</th>
-          <th v-if="mso.stat?.displayAdvancedSettings">PCM Detect Sensitivity</th>
           <th>UHD Capable</th>
+          <th v-if="mso.stat?.displayAdvancedSettings">PCM Detect Sensitivity</th>
         </tr>
       </thead>
       <tbody>
@@ -42,6 +42,18 @@
               <label class="custom-control-label" :for="'visible-'+inpcode"></label>
             </div>
           </td>
+          <td>
+            <div class="custom-control custom-switch" v-if="inpcode.startsWith('h')">
+              <input 
+                type="checkbox" 
+                class="custom-control-input" 
+                :id="'uhd-'+inpcode" 
+                :checked="inp.uhd" 
+                @click="toggleInputUHD(inpcode)"
+              >
+              <label class="custom-control-label" :for="'uhd-'+inpcode"></label>
+            </div>
+          </td>
           <td v-if="mso.stat?.displayAdvancedSettings">
               <select 
                 v-if="getFormatDetectOptions(inp.menuSounds).length > 0"
@@ -56,18 +68,6 @@
                   {{opt.label}}
                 </option>
               </select>
-          </td>
-          <td>
-            <div class="custom-control custom-switch" v-if="inpcode.startsWith('h')">
-              <input 
-                type="checkbox" 
-                class="custom-control-input" 
-                :id="'uhd-'+inpcode" 
-                :checked="inp.uhd" 
-                @click="toggleInputUHD(inpcode)"
-              >
-              <label class="custom-control-label" :for="'uhd-'+inpcode"></label>
-            </div>
           </td>
         </tr>
       </tbody>

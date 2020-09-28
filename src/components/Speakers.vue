@@ -8,7 +8,7 @@
           <div class="col-auto">
             <div class="row">
               <div class="col-auto">
-                <dirac-button />
+                <dirac-button-group :home-button="false" />
               </div>
               <div class="col">
                 <div class="alert bm-status" :class="{'alert-text-muted': showCrossoverControls, 'alert-success': !showCrossoverControls}">
@@ -49,7 +49,7 @@
   import SpeakerGroupCrossoverControls from './SpeakerGroupCrossoverControls.vue';
   import SpeakerDiagram from './SpeakerDiagram.vue';
   import SpeakerMap from './SpeakerMap.vue';
-  import DiracButton from './DiracButton.vue';
+  import DiracButtonGroup from './DiracButtonGroup.vue';
 
   export default {
     name: 'Speakers',
@@ -116,7 +116,7 @@
     },
     components: {
       SpeakerDiagram,
-      DiracButton,
+      DiracButtonGroup,
       SpeakerGroupCrossoverControls,
       SpeakerMap
     }

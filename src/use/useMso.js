@@ -205,6 +205,18 @@ export default function useMso() {
     return patchMso({'op':'replace', 'path': '/night', 'value': nightValue});
   }
 
+  function setNightOn() {
+    return patchMso({'op':'replace', 'path': '/night', 'value': 'on'});
+  }
+
+  function setNightAuto() {
+    return patchMso({'op':'replace', 'path': '/night', 'value': 'auto'});
+  }
+
+  function setNightOff() {
+    return patchMso({'op':'replace', 'path': '/night', 'value': 'off'});
+  }
+
   function toggleDirac() {
 
     let diracActive;
@@ -225,12 +237,36 @@ export default function useMso() {
     return patchMso({'op':'replace', 'path': '/cal/diracactive', 'value': diracActive});
   }
 
+  function setDiracOn() {
+    return patchMso({'op':'replace', 'path': '/cal/diracactive', 'value': 'on'});
+  }
+
+  function setDiracBypass() {
+    return patchMso({'op':'replace', 'path': '/cal/diracactive', 'value': 'bypass'});
+  }
+
+  function setDiracOff() {
+    return patchMso({'op':'replace', 'path': '/cal/diracactive', 'value': 'off'});
+  }
+
   function toggleLoudness() {
     return patchMso({'op':'replace', 'path': '/loudness', 'value': mso.value.loudness === 'off' ? 'on' : 'off'});
   }
 
+  function setLoudnessOn() {
+    return patchMso({'op':'replace', 'path': '/loudness', 'value': 'on'});
+  }
+
+  function setLoudnessOff() {
+    return patchMso({'op':'replace', 'path': '/loudness', 'value': 'off'});
+  }
+
   function setNextDtsDialogEnh() {
     return patchMso({'op':'replace', 'path': '/dialogEnh', 'value': (mso.value.dialogEnh + 1) % 7});
+  }
+
+  function setDtsDialogEnh(level) {
+    return patchMso({'op':'replace', 'path': '/dialogEnh', 'value': parseInt(level)});
   }
 
   function toggleSpeakerGroup(spkCode) {
@@ -298,6 +334,14 @@ export default function useMso() {
     return patchMso({'op': 'replace', 'path': `/eq/tc`, value: !mso.value.eq.tc});
   }
 
+  function setToneControlOn() {
+    return patchMso({'op': 'replace', 'path': `/eq/tc`, value: true});
+  }
+
+  function setToneControlOff() {
+    return patchMso({'op': 'replace', 'path': `/eq/tc`, value: false});
+  }
+
   function setBassCornerFrequency(freq) {
     return patchMso({'op': 'replace', 'path': `/eq/bass/freq`, value: parseFloat(freq)});
   }
@@ -320,6 +364,14 @@ export default function useMso() {
 
   function toggleGlobalPEQ() {
     return patchMso({'op': 'replace', 'path': `/peq/peqsw`, value: !mso.value.peq.peqsw});
+  }
+
+  function setGlobalPEQOn() {
+    return patchMso({'op': 'replace', 'path': `/peq/peqsw`, value: true});
+  }
+
+  function setGlobalPEQOff() {
+    return patchMso({'op': 'replace', 'path': `/peq/peqsw`, value: false});
   }
 
   function setPEQSlot(bandNumber) {
@@ -731,13 +783,18 @@ export default function useMso() {
     setAuroMaticPreset, setAuroMaticStrength, setDefaultAuroMaticStrength,
     toggleReinforceBass,
     setNextNightMode, toggleDirac, toggleLoudness, setNextDtsDialogEnh,
+    setDiracOff, setDiracBypass, setDiracOn,
+    setNightOff, setNightAuto, setNightOn,
+    setLoudnessOff, setLoudnessOn,
+    setToneControlOff, setToneControlOn,
     toggleSpeakerGroup, setSpeakerSize, setCenterFreq,
     setMinVolume, setMaxVolume, setMaxOutputLevel, setLipsyncDelay, setDiracSlot,
     setUserDelay, setUserTrim,
     toggleSignalGenerator, setSignalGeneratorChannel, setSignalGeneratorSignalType,
     toggleToneControl, setBassCornerFrequency, setTrebleCornerFrequency, 
     setBassBoostCutLevel, setTrebleBoostCutLevel, setLoudnessCalibration,
-    toggleGlobalPEQ, setPEQSlot, setPEQCenterFrequency, setPEQGain, 
+    toggleGlobalPEQ, setGlobalPEQOff, setGlobalPEQOn,
+    setPEQSlot, setPEQCenterFrequency, setPEQGain, 
     setPEQQuality, setPEQFilterType, resetPEQ,
     setInputLabel, toggleInputVisible, setInputFormatDetectOption, toggleInputUHD, 
     setBluetoothDiscoverableTime, enableBluetoothDiscovery,
