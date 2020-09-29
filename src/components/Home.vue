@@ -86,8 +86,7 @@
             <span 
               class="vol-display" 
               :class="{'text-danger':mso.muted}" 
-              @mousedown="handleMute"
-              @touchstart.passive="handleMute"
+              v-press="handleMute"
             >
               {{mso.volume}} dB
             </span>
@@ -102,26 +101,18 @@
             <button 
               type="button" 
               class="btn btn-dark vol-btn" 
-              @mousedown="handleVolumeDownTouchStart"
-              @touchstart.passive="handleVolumeDownTouchStart"
-              @mouseout="handleVolumeTouchEnd"
-              @mouseup="handleVolumeTouchEnd"
-              @touchend="handleVolumeTouchEnd"
-              @touchcancel="handleVolumeTouchEnd"
-              @touchmove.passive="handleVolumeTouchEnd"
+              v-press="handleVolumeDownPress"
+              v-long-press="handleVolumeDownLongPress"
+              v-long-press-up="handleVolumeDownLongPressUp"
             >
               <font-awesome-icon  :class="{'text-danger':mso.muted}" size="4x" :icon="['fas', 'volume-down']" />
             </button>
             <button 
               type="button" 
               class="btn btn-dark vol-btn" 
-              @mousedown="handleVolumeUpTouchStart"
-              @touchstart.passive="handleVolumeUpTouchStart"
-              @mouseout="handleVolumeTouchEnd"
-              @mouseup="handleVolumeTouchEnd"
-              @touchend="handleVolumeTouchEnd"
-              @touchcancel="handleVolumeTouchEnd"
-              @touchmove.passive="handleVolumeTouchEnd"
+              v-press="handleVolumeUpPress"
+              v-long-press="handleVolumeUpLongPress"
+              v-long-press-up="handleVolumeUpLongPressUp"
             >
               <font-awesome-icon  :class="{'text-danger':mso.muted}" size="4x" :icon="['fas', 'volume-up']" />
             </button>
@@ -269,6 +260,8 @@ import useLocalStorage from '@/use/useLocalStorage.js';
 import useMso from '@/use/useMso.js';
 import useStream from '@/use/useStream.js';
 
+import { LongPress, LongPressUp, Press } from '@/directives/Press.js';
+
 import TwoStateButton from './TwoStateButton.vue';
 import ThreeStateButton from './ThreeStateButton.vue';
 import MultiStateButtonGroup from './MultiStateButtonGroup.vue';
@@ -317,48 +310,31 @@ export default {
       toggleMute();
     }
 
-    function handleVolumeUpTouchStart(e) {
-      e.preventDefault();
-      console.log('handleVolumeUpTouchStart')
-      clearTimeout(volumeDownDetectHoldingTimeout);
-      clearTimeout(volumeUpDetectHoldingTimeout);
+    function handleVolumeDownLongPress() {
       clearInterval(decrementVolumeInterval);
-      clearInterval(incrementVolumeInterval);
+      decrementVolumeInterval = setInterval(handleVolumeDownPress, 150);
+    } 
 
-      setVolume(mso.value.volume + 1);
-
-      volumeUpDetectHoldingTimeout = setTimeout(() => {
-        clearInterval(incrementVolumeInterval);
-        incrementVolumeInterval = setInterval(() => setVolume(mso.value.volume + 1), 100);
-      }, LONG_PRESS_THRESHOLD);
+    function handleVolumeDownLongPressUp() {
+      clearInterval(decrementVolumeInterval);
     }
 
-    function handleVolumeDownTouchStart(e) {
-      e.preventDefault();
-      console.log('handleVolumeDownTouchStart')
-      clearTimeout(volumeDownDetectHoldingTimeout);
-      clearTimeout(volumeUpDetectHoldingTimeout);
-      clearInterval(decrementVolumeInterval);
+    function handleVolumeUpLongPress () {
       clearInterval(incrementVolumeInterval);
+      incrementVolumeInterval = setInterval(handleVolumeUpPress, 150);
+    }
 
+    function handleVolumeUpLongPressUp() {
+      clearInterval(incrementVolumeInterval);
+    }
+
+    function handleVolumeDownPress() {
       setVolume(mso.value.volume - 1);
-
-      volumeDownDetectHoldingTimeout = setTimeout(() => {
-        clearInterval(decrementVolumeInterval);
-        decrementVolumeInterval = setInterval(() => setVolume(mso.value.volume - 1), 100);
-      }, LONG_PRESS_THRESHOLD);
     }
 
-    function handleVolumeTouchEnd(e) {
-      e.preventDefault();
-      console.log('handleVolumeTouchEnd')
-      clearTimeout(volumeDownDetectHoldingTimeout);
-      clearTimeout(volumeUpDetectHoldingTimeout);
-      clearInterval(decrementVolumeInterval);
-      clearInterval(incrementVolumeInterval);
+    function handleVolumeUpPress() {
+      setVolume(mso.value.volume + 1);
     }
-
-    const debouncedHandleVolumeTouchEnd = debounce(handleVolumeTouchEnd, 400);
 
     function toggleSettingsModal() {
       settingsModalIsOpen.value = !settingsModalIsOpen.value;
@@ -388,7 +364,8 @@ export default {
       ...useStream(),
       settingsModalIsOpen, toggleSettingsModal,
       settingsActiveTab, setSettingsActiveTab,
-      handleVolumeDownTouchStart, handleVolumeUpTouchStart, handleVolumeTouchEnd,
+      handleVolumeDownLongPress, handleVolumeDownLongPressUp, handleVolumeUpLongPress, handleVolumeUpLongPressUp,
+      handleVolumeDownPress, handleVolumeUpPress,
       handleMute, openSignalGeneratorSettings, openInputSettings, openSoundEnhancementSettings, SIGNAL_GENERATOR_TAB,
       setNightOff, setNightAuto, setNightOn,
       setLoudnessOff, setLoudnessOn,
@@ -406,6 +383,11 @@ export default {
     ThreeStateButton,
     MultiStateButtonGroup,
     IpSelect,
+  },
+  directives: {
+    LongPress,
+    LongPressUp,
+    Press
   }
 }
 </script>
