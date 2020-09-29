@@ -2,11 +2,11 @@
   <div class="transition-container">
     <h5>HDMI CEC</h5>
     <div class="mb-3">
-      <multi-state-button-group
-        :states="[{value: 0, label: 'CEC Off'}, {value: 1, label: 'CEC On'}]"
-        :state-value="mso?.CEC?.cecOnSw === 'on' ? 1 : 0"
-        @set-on="setCECOn"
-        @set-off="setCECOff"
+      <two-state-button 
+        :button-text="`CEC: ${mso?.CEC?.cecOnSw}`" 
+        :state-on="mso?.CEC?.cecOnSw === 'on'" 
+        :home-button="false"
+        @click="toggleCEC()"
       />
     </div>
     <table class="table table-sm table-responsive table-striped mb-3" v-if="mso.CEC?.cecOnSw === 'on'">

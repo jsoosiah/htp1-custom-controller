@@ -108,20 +108,20 @@
     </table>
 
     <div class="form-group">
-      <multi-state-button-group
-        :states="[{value: 0, label: 'Reinforce Bass Off'}, {value: 1, label: 'Reinforce Bass On'}]"
-        :state-value="mso.bassenhance === 'on' ? 1 : 0"
-        @set-on="setReinforceBassOn"
-        @set-off="setReinforceBassOff"
+      <two-state-button 
+        :button-text="`Reinforce Bass: ${mso.bassenhance}`" 
+        :state-on="mso.bassenhance === 'on'" 
+        :home-button="false"
+        @click="toggleReinforceBass()"
       />
       <small class="form-text text-muted">Adds subwoofer signal to large speakers{{!showCrossoverControls ? ' - unavailable with Dirac Bass Control' : ''}}</small>
     </div>
     <div class="form-group">
-      <multi-state-button-group
-        :states="[{value: 0, label: 'Wide Synth Off'}, {value: 1, label: 'Wide Synth On'}]"
-        :state-value="mso.upmix?.dts.ws ? 1 : 0"
-        @set-on="setUpmixWideSynthOn"
-        @set-off="setUpmixWideSynthOff"
+      <two-state-button 
+        :button-text="`Wide Synth: ${mso.upmix?.dts.ws ? 'on' : 'off'}`" 
+        :state-on="mso.upmix?.dts.ws" 
+        :home-button="false"
+        @click="toggleUpmixWideSynth()"
       />
       <small class="form-text text-muted">Synthesizes wide speakers when possible</small>
     </div>

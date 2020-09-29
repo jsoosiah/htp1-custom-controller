@@ -12,11 +12,10 @@
     />
     <div class="row justify-content-between">
       <div class="col-auto mb-3">
-        <multi-state-button-group
-          :states="[{value: 0, label: 'Parametric EQ Off'}, {value: 1, label: 'Parametric EQ On'}]"
-          :state-value="mso.peq?.peqsw ? 1 : 0"
-          @set-on="setGlobalPEQOn"
-          @set-off="setGlobalPEQOff"
+        <two-state-button 
+          :button-text="`Parametric Equalization: ${mso.peq?.peqsw ? 'on' : 'off'}`"
+          :state-on="mso.peq?.peqsw"
+          @click="toggleGlobalPEQ()"
         />
       </div>
       <div class="col-auto mb-3">

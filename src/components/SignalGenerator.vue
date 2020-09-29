@@ -3,12 +3,7 @@
     <div class="row mb-3">
       <div class="col">
         <h5>Signal Generator</h5>
-        <multi-state-button-group
-          :states="[{value: 0, label: 'Signal Generator Off'}, {value: 1, label: 'Signal Generator On'}]"
-          :state-value="mso.sgen?.sgensw === 'on' ? 1 : 0"
-          @set-on="setSignalGeneratorOn"
-          @set-off="setSignalGeneratorOff"
-        />
+        <two-state-button v-bind:button-text="`Signal Generator: ${mso.sgen?.sgensw}`" v-bind:state-on="mso.sgen?.sgensw === 'on'" @click="toggleSignalGenerator()" />
       </div>
     </div>
     <div class="row">

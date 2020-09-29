@@ -45,7 +45,7 @@
 
 <script>
 
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, defineAsyncComponent } from 'vue';
 
 import Speakers from './Speakers.vue';
 import Calibration from './Calibration.vue';
@@ -117,6 +117,15 @@ export default {
     return { props, setActiveTab, allTabs, closeModal, tabLoaded };
   },
   components: {
+    // Speakers: defineAsyncComponent(() => import('./Speakers.vue')),
+    // Calibration: defineAsyncComponent(() => import('./Calibration.vue')),
+    // SignalGenerator: defineAsyncComponent(() => import('./SignalGenerator.vue')),
+    // Peq: defineAsyncComponent(() => import('./Peq.vue')),
+    // ToneControl: defineAsyncComponent(() => import('./ToneControl.vue')),
+    // Inputs: defineAsyncComponent(() => import('./Inputs.vue')),
+    // SoundEnhancement: defineAsyncComponent(() => import('./SoundEnhancement.vue')),
+    // Connectivity: defineAsyncComponent(() => import('./Connectivity.vue')),
+    // System: defineAsyncComponent(() => import('./System.vue')),
     Speakers,
     Calibration,
     SignalGenerator,

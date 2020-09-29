@@ -17,7 +17,7 @@ export const LongPressUp = {
   beforeMount(el, binding, vnode) {
     if (typeof binding.value === 'function') {
     const mc = new Hammer(el);
-    mc.on('pressup panend', binding.value);
+    mc.on('pressup pan touchmove touchcancel touchend', binding.value);
     }
   }
 };

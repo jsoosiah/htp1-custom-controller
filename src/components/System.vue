@@ -12,18 +12,16 @@
 
     <h5>Power</h5>
 
-    <multi-state-button-group
-      :states="[{value: 0, label: 'Fast Start Off'}, {value: 1, label: 'Fast Start On'}]"
-      :state-value="mso.fastStart === 'on' ? 1 : 0"
-      @set-on="setFastStartOn"
-      @set-off="setFastStartOff"
+    <two-state-button 
+      :button-text="`Fast Start: ${mso.fastStart}`"
+      :state-on="mso.fastStart === 'on'"
+      @click="toggleFastStart()"
     />
-    <br /><br />
-    <multi-state-button-group
-      :states="[{value: 0, label: 'Video Pass Through Off'}, {value: 1, label: 'Video Pass Through On'}]"
-      :state-value="mso.fastStartPassThrough === 'on' ? 1 : 0"
-      @set-on="setFastStartPassThroughOn"
-      @set-off="setFastStartPassThroughOff"
+    &nbsp;
+    <two-state-button 
+      :button-text="`Video Pass Through: ${mso.fastStartPassThrough}`"
+      :state-on="mso.fastStartPassThrough === 'on'"
+      @click="toggleFastStartPassThrough()"
     />
 
     <div class="form-group">

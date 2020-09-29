@@ -103,7 +103,7 @@
               class="btn btn-dark vol-btn" 
               v-press="handleVolumeDownPress"
               v-long-press="handleVolumeDownLongPress"
-              v-long-press-up="handleVolumeDownLongPressUp"
+              v-long-press-up="handleVolumeLongPressUp"
             >
               <font-awesome-icon  :class="{'text-danger':mso.muted}" size="4x" :icon="['fas', 'volume-down']" />
             </button>
@@ -112,7 +112,7 @@
               class="btn btn-dark vol-btn" 
               v-press="handleVolumeUpPress"
               v-long-press="handleVolumeUpLongPress"
-              v-long-press-up="handleVolumeUpLongPressUp"
+              v-long-press-up="handleVolumeLongPressUp"
             >
               <font-awesome-icon  :class="{'text-danger':mso.muted}" size="4x" :icon="['fas', 'volume-up']" />
             </button>
@@ -253,7 +253,7 @@
 
 <script>
 
-import { ref, defineAsyncComponent, computed } from 'vue';
+import { ref, defineAsyncComponent, computed, onMounted } from 'vue';
 import { debounce } from 'lodash-es';
 
 import useLocalStorage from '@/use/useLocalStorage.js';
@@ -290,6 +290,17 @@ export default {
       setToneControlOff, setToneControlOn, setGlobalPEQOff, setGlobalPEQOn, setDtsDialogEnh
     } = useMso();
 
+    onMounted(() => {
+      if(window.addEventListener) {
+        // Handle window's `load` event.
+        window.addEventListener('load', function () {
+          // Wire up the `focus` and `blur` event handlers.
+          // window.addEventListener('focus', window.myApp.onFocus);
+          window.addEventListener('blur', handleVolumeLongPressUp);
+        });
+      }
+    });
+
     const experimental = computed(() => window.location.href.includes('experimental'));
 
     const settingsModalIsOpen = ref(false);
@@ -312,19 +323,16 @@ export default {
 
     function handleVolumeDownLongPress() {
       clearInterval(decrementVolumeInterval);
-      decrementVolumeInterval = setInterval(handleVolumeDownPress, 150);
+      decrementVolumeInterval = setInterval(handleVolumeDownPress, 100);
     } 
-
-    function handleVolumeDownLongPressUp() {
-      clearInterval(decrementVolumeInterval);
-    }
 
     function handleVolumeUpLongPress () {
       clearInterval(incrementVolumeInterval);
-      incrementVolumeInterval = setInterval(handleVolumeUpPress, 150);
+      incrementVolumeInterval = setInterval(handleVolumeUpPress, 100);
     }
 
-    function handleVolumeUpLongPressUp() {
+    function handleVolumeLongPressUp() {
+      clearInterval(decrementVolumeInterval);
       clearInterval(incrementVolumeInterval);
     }
 
@@ -364,7 +372,7 @@ export default {
       ...useStream(),
       settingsModalIsOpen, toggleSettingsModal,
       settingsActiveTab, setSettingsActiveTab,
-      handleVolumeDownLongPress, handleVolumeDownLongPressUp, handleVolumeUpLongPress, handleVolumeUpLongPressUp,
+      handleVolumeDownLongPress, handleVolumeUpLongPress, handleVolumeLongPressUp,
       handleVolumeDownPress, handleVolumeUpPress,
       handleMute, openSignalGeneratorSettings, openInputSettings, openSoundEnhancementSettings, SIGNAL_GENERATOR_TAB,
       setNightOff, setNightAuto, setNightOn,
