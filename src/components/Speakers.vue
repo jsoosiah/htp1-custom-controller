@@ -49,7 +49,7 @@
   import SpeakerGroupCrossoverControls from './SpeakerGroupCrossoverControls.vue';
   import SpeakerDiagram from './SpeakerDiagram.vue';
   import SpeakerMap from './SpeakerMap.vue';
-  import DiracButtonGroup from './DiracButtonGroup.vue';
+  import DiracButtonGroup from './buttons/DiracButtonGroup.vue';
 
   export default {
     name: 'Speakers',

@@ -332,8 +332,8 @@
   import useMso from '@/use/useMso.js';
   import useSpeakerGroups from '@/use/useSpeakerGroups.js';
 
-  import TwoStateButton from './TwoStateButton.vue';
-  import MultiStateButtonGroup from './MultiStateButtonGroup';
+  import TwoStateButton from './buttons/TwoStateButton.vue';
+  import MultiStateButtonGroup from './buttons/MultiStateButtonGroup';
   import MsoImporter from './MsoImporter.vue';
   import PeqChart from './PeqChart.vue';
 

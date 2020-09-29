@@ -131,7 +131,7 @@
 
   import useMso from '@/use/useMso.js';
   import useSpeakerGroups from '@/use/useSpeakerGroups.js';
-  import DiracButtonGroup from './DiracButtonGroup.vue';
+  import DiracButtonGroup from './buttons/DiracButtonGroup.vue';
 
   export default {
     name: 'Calibration',

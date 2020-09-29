@@ -273,8 +273,8 @@
   import useMso from '@/use/useMso.js';
   import useNetworkManager from '@/use/useNetworkManager.js';
 
-  import TwoStateButton from './TwoStateButton.vue';
-  import MultiStateButtonGroup from './MultiStateButtonGroup.vue';
+  import TwoStateButton from './buttons/TwoStateButton.vue';
+  import MultiStateButtonGroup from './buttons/MultiStateButtonGroup.vue';
   import DhcpSettings from './DhcpSettings.vue';
 
   const BLANK_IP_ADDRESS = {

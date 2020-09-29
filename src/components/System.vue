@@ -146,8 +146,8 @@
   import useImportExport from '@/use/useImportExport.js';
   import useMso from '@/use/useMso.js';
 
-  import TwoStateButton from './TwoStateButton.vue';
-  import MultiStateButtonGroup from './MultiStateButtonGroup.vue';
+  import TwoStateButton from './buttons/TwoStateButton.vue';
+  import MultiStateButtonGroup from './buttons/MultiStateButtonGroup.vue';
   import MsoImporter from './MsoImporter.vue';
 
   export default {

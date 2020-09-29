@@ -237,6 +237,8 @@ export default function useMso() {
 
   function toggleDirac() {
 
+    console.log('!!!!!!! toggleDirac')
+
     let diracActive;
 
     switch(mso.value.cal.diracactive) {
@@ -357,6 +359,7 @@ export default function useMso() {
   }
 
   function toggleToneControl() {
+    console.log('!!!!! toggleToneControl');
     return patchMso({'op': 'replace', 'path': `/eq/tc`, value: !mso.value.eq.tc});
   }
 

@@ -124,7 +124,7 @@
   import useMso from '@/use/useMso.js';
   import useInputs from '@/use/useInputs.js';
 
-  import TwoStateButton from './TwoStateButton.vue';
+  import TwoStateButton from './buttons/TwoStateButton.vue';
 
   export default {
     name: 'Inputs',

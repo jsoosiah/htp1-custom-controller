@@ -57,15 +57,15 @@ import SoundEnhancement from './SoundEnhancement.vue';
 import Connectivity from './Connectivity.vue';
 import System from './System.vue';
 
-import CalibrationIcon from './icon/CalibrationIcon';
-import PeqIcon from './icon/PeqIcon';
-import ToneControlIcon from './icon/ToneControlIcon';
-import InputsIcon from './icon/InputsIcon';
-import NetworkIcon from './icon/NetworkIcon';
-import SgenIcon from './icon/SgenIcon';
-import SpeakersIcon from './icon/SpeakersIcon';
-import SystemIcon from './icon/SystemIcon';
-import UpmixIcon from './icon/UpmixIcon';
+import CalibrationIcon from './icons/CalibrationIcon';
+import PeqIcon from './icons/PeqIcon';
+import ToneControlIcon from './icons/ToneControlIcon';
+import InputsIcon from './icons/InputsIcon';
+import NetworkIcon from './icons/NetworkIcon';
+import SgenIcon from './icons/SgenIcon';
+import SpeakersIcon from './icons/SpeakersIcon';
+import SystemIcon from './icons/SystemIcon';
+import UpmixIcon from './icons/UpmixIcon';
 
 export default {
   name: 'Settings',

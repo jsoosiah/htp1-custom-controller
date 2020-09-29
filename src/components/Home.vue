@@ -163,38 +163,36 @@
                 :button-text="`PEQ ${mso.peq?.peqsw ? 'on' : 'off'}`"
                 :state-on="mso.peq?.peqsw"
                 :home-button="true"
-                @click="toggleGlobalPEQ()"
+                @btn-click="toggleGlobalPEQ()"
+                :show-state-indicators="true"
               />
               <!-- Tone Control -->
               <two-state-button 
                 :button-text="`Tone Control ${mso.eq?.tc ? 'on' : 'off'}`"
                 :state-on="mso.eq?.tc"
                 :home-button="true"
-                @click="toggleToneControl()"
+                @btn-click="toggleToneControl()"
+                :show-state-indicators="true"
               />
               <!-- Loudness -->
               <two-state-button 
                 :button-text="`Loudness ${mso.loudness}`" 
                 :state-on="mso.loudness === 'on'" 
                 :home-button="true"
-                @click="toggleLoudness()"
+                @btn-click="toggleLoudness()"
+                :show-state-indicators="true"
               />
               <!-- Dialog Enhance --> 
-              <two-state-button 
-                :button-text="`${((((mso.status?.raw?.streamType>=33) && (mso.status?.raw?.streamType<=44) &&
-                                  ((mso.status?.raw?.streamInfoBytes[0] % 32) >= 16))) ? 'DTS ' : '')}
-                                  Dialog Enhance ${mso.dialogEnh == 0 ? 'off' : mso.dialogEnh  + ' dB'}` "
-                :state-on="mso.dialogEnh > 0"
-                :home-button="true"
-                @click="setNextDtsDialogEnh()"
-              />
+              <dialog-enhance-button :home-button="true" :show-state-indicators="true" />
+
               <!-- Night Mode -->
               <three-state-button 
                 :button-text="`Night ${mso.night}`"
                 :states="{'off': 0, 'on': 1, 'auto': 2}"
                 :state-value="mso.night"
                 :home-button="true"
-                @click="setNextNightMode()"
+                @btn-click="setNextNightMode()"
+                :show-state-indicators="true"
               />
           </div>
         </div>
@@ -262,11 +260,12 @@ import useStream from '@/use/useStream.js';
 
 import { LongPress, LongPressUp, Press } from '@/directives/Press.js';
 
-import TwoStateButton from './TwoStateButton.vue';
-import ThreeStateButton from './ThreeStateButton.vue';
-import MultiStateButtonGroup from './MultiStateButtonGroup.vue';
-import DiracButton from './DiracButton.vue';
-import DiracButtonGroup from './DiracButtonGroup.vue';
+import TwoStateButton from './buttons/TwoStateButton.vue';
+import ThreeStateButton from './buttons/ThreeStateButton.vue';
+import MultiStateButtonGroup from './buttons/MultiStateButtonGroup.vue';
+import DiracButton from './buttons/DiracButton.vue';
+import DialogEnhanceButton from './buttons/DialogEnhanceButton.vue';
+import DiracButtonGroup from './buttons/DiracButtonGroup.vue';
 import IpSelect from './IpSelect.vue';
 
 // ms length required to hold button before it is considered a long press
@@ -387,6 +386,7 @@ export default {
     Settings: defineAsyncComponent(() => import('./Settings.vue')),
     DiracButton,
     DiracButtonGroup,
+    DialogEnhanceButton,
     TwoStateButton,
     ThreeStateButton,
     MultiStateButtonGroup,

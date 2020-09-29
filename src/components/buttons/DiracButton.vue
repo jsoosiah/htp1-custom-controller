@@ -5,8 +5,9 @@
       ${ mso?.cal?.diracactive=='on' && mso?.cal?.slots[mso?.cal?.currentdiracslot].hasBCFilter ? ' BC' : '   '}`"
     :states="{'off': 0, 'on': 1, 'bypass': 2}"
     :state-value="mso?.cal?.diracactive"
-    @click="toggleDirac()"
+    @btn-click="toggleDirac()"
     :home-button="props.homeButton"
+    :show-state-indicators="props.homeButton"
     aria-label="Dirac status"
   />
   <three-state-button 
