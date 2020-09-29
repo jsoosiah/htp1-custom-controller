@@ -10,7 +10,7 @@
         </tr>
       </thead>
       <tbody class="import-patch">
-        <tr v-for="patch in msoImportPatch">
+        <tr v-for="patch in msoImportPatch" :key="patch">
           <td>
             <code>{{patch.op}}</code>
           </td>

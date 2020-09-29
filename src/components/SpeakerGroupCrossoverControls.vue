@@ -1,11 +1,11 @@
 <template>
   <table class="table table-sm table-striped table-responsive-sm">
-    <tbody v-for="speakerGroup in props.speakerGroups">
+    <tbody v-for="speakerGroup in props.speakerGroups" :key="speakerGroup.header">
       <tr></tr>
       <tr>
         <th colspan="3">{{speakerGroup.header}} <small class="text-muted" v-if="speakerGroup.subtitle">{{speakerGroup.subtitle}}</small></th>
       </tr>
-      <tr v-for="spk in speakerGroup.speakers">
+      <tr v-for="spk in speakerGroup.speakers" :key="spk.code">
         <td>
           <div class="custom-control custom-switch">
             <input 

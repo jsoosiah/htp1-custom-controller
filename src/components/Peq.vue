@@ -12,10 +12,11 @@
     />
     <div class="row justify-content-between">
       <div class="col-auto mb-3">
-        <two-state-button 
-          :button-text="`Parametric Equalization: ${mso.peq?.peqsw ? 'on' : 'off'}`"
-          :state-on="mso.peq?.peqsw"
-          @click="toggleGlobalPEQ()"
+        <multi-state-button-group
+          :states="[{value: 0, label: 'Parametric EQ Off'}, {value: 1, label: 'Parametric EQ On'}]"
+          :state-value="mso.peq?.peqsw ? 1 : 0"
+          @set-on="setGlobalPEQOn"
+          @set-off="setGlobalPEQOff"
         />
       </div>
       <div class="col-auto mb-3">
@@ -37,7 +38,7 @@
       <nav class="navbar nav-fill nav-pills bg-light navbar-light">
         <a 
           v-for="(slot, index) in mso.peq?.slots"
-          
+          :key="index"
           class="nav-link" 
           :class="{'active': mso.peq?.currentpeqslot === index, 'italic': bandHasModifications(index)}" 
           @click="setSelectedBand(index)" 
@@ -57,7 +58,7 @@
           </tr>
         </thead>
         <tbody :class="{'hiding':!tabLoaded, 'showing':tabLoaded}">
-          <tr v-for="(channame, chanIndex) in activeChannels">
+          <tr v-for="(channame, chanIndex) in activeChannels" :key="channame">
             <td>{{spkName(channame)}}</td>
             <td class="text-right">
               <input 
@@ -103,6 +104,7 @@
                 >
                   <option 
                     v-for="filterType in filterTypes" 
+                    :key="filterType.value"
                     :value="filterType.value"
                     :selected="filterType.value === mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].FilterType"
                   >
@@ -162,6 +164,7 @@
       <nav class="navbar nav-fill nav-pills bg-light navbar-light">
         <a 
           v-for="(channame, index) in activeChannels"
+          :key="channame"
           class="nav-link" 
           :class="{'active': selectedChannel === index, 'italic': channelHasModifications(channame)}" 
           @click="setSelectedChannel(index)" 
@@ -181,7 +184,7 @@
           </tr>
         </thead>
         <tbody :class="{'hiding':!tabLoaded, 'showing':tabLoaded}">
-          <tr v-for="(slot, index) in mso.peq?.slots">
+          <tr v-for="(slot, index) in mso.peq?.slots" :key="index">
             <td class="text-right">{{index + 1}}</td>
             <td class="text-right">
               <input 
@@ -223,6 +226,7 @@
                 >
                   <option 
                     v-for="filterType in filterTypes" 
+                    :key="filterType.value"
                     :value="filterType.value"
                     :selected="filterType.value === slot.channels[activeChannels[selectedChannel]].FilterType"
                   >
@@ -330,6 +334,7 @@
   import useSpeakerGroups from '@/use/useSpeakerGroups.js';
 
   import TwoStateButton from './TwoStateButton.vue';
+  import MultiStateButtonGroup from './MultiStateButtonGroup';
   import MsoImporter from './MsoImporter.vue';
   import PeqChart from './PeqChart.vue';
 
@@ -510,6 +515,7 @@
       };
     },
     components: {
+      MultiStateButtonGroup,
       TwoStateButton,
       MsoImporter,
       PeqChart,

@@ -1,10 +1,11 @@
 <template>
   <div class="transition-container">
     <h5>Tone Control</h5>
-    <two-state-button 
-      :button-text="`Tone Control: ${mso.eq?.tc ? 'on' : 'off'}`"
-      :state-on="mso.eq?.tc"
-      @click="toggleToneControl()"
+    <multi-state-button-group
+      :states="[{value: 0, label: 'Tone Control Off'}, {value: 1, label: 'Tone Control On'}]"
+      :state-value="mso.eq?.tc ? 1 : 0"
+      @set-on="setToneControlOn"
+      @set-off="setToneControlOff"
     />
 
     <div class="row mt-3" v-show="!mso.eq?.tc">
@@ -89,6 +90,7 @@
   import useSpeakerGroups from '@/use/useSpeakerGroups.js';
 
   import TwoStateButton from './TwoStateButton.vue';
+  import MultiStateButtonGroup from './MultiStateButtonGroup.vue';
   import MsoImporter from './MsoImporter.vue';
 
   export default {
@@ -234,6 +236,7 @@
       };
     },
     components: {
+      MultiStateButtonGroup,
       TwoStateButton,
       MsoImporter,
     }

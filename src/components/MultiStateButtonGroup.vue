@@ -1,6 +1,7 @@
 <template>
   <div class="btn-group" :class="{'btn': props.homeButton}">
     <button v-for="(state) in props.states"
+      :key="state.value"
       class="btn btn-sm" 
       :class="buttonClasses(state.value)"
       @click="setState(state.value)"
@@ -120,6 +121,19 @@
 
   .yellow-text-btn {
     color:yellow;
+  }
+
+  .btn-success {
+    /*margin: .03125rem;*/
+    /*outline: 1px solid rgba(0,0,0,.5);*/
+    /*border-left: .03125rem solid rgba(40,167,68,.5);*/
+    border-left: .03125rem solid rgba(0,0,0,.5);
+    border-right: .03125rem solid rgba(40,167,68,.5);
+  }
+
+  .btn-off {
+    border-left: .03125rem solid rgba(0,0,0,.5);
+    border-right: .03125rem solid rgba(0,0,0,.5);
   }
 
 </style>

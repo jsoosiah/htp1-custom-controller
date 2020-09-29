@@ -15,7 +15,15 @@
           </button>
         </div>
           <nav class="navbar nav-fill nav-pills bg-light navbar-light">
-            <a class="nav-link" :class="{'active': props.activeTab === key}" @click="setActiveTab(key)" href="javascript:void(0)" v-for="(tab, key) in allTabs"><component :is="tab.icon"></component> {{tab.label}}</a>
+            <a 
+              class="nav-link" 
+              :class="{'active': props.activeTab === key}" @click="setActiveTab(key)" 
+              href="javascript:void(0)" 
+              v-for="(tab, key) in allTabs"
+              :key="key"
+            >
+              <component :is="tab.icon"></component> {{tab.label}}
+            </a>
           </nav>
         <div class="modal-body text-left">
           <div :class="{'hiding':!tabLoaded, 'showing':tabLoaded}">

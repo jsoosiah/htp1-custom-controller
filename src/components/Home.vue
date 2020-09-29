@@ -87,7 +87,7 @@
               class="vol-display" 
               :class="{'text-danger':mso.muted}" 
               @mousedown="handleMute"
-              @touchstart="handleMute"
+              @touchstart.passive="handleMute"
             >
               {{mso.volume}} dB
             </span>
@@ -103,10 +103,11 @@
               type="button" 
               class="btn btn-dark vol-btn" 
               @mousedown="handleVolumeDownTouchStart"
-              @touchstart="handleVolumeDownTouchStart"
+              @touchstart.passive="handleVolumeDownTouchStart"
               @mouseup="handleVolumeTouchEnd"
               @touchend="handleVolumeTouchEnd"
               @touchcancel="handleVolumeTouchEnd"
+              @touchmove.passive="handleVolumeTouchEnd"
             >
               <font-awesome-icon  :class="{'text-danger':mso.muted}" size="4x" :icon="['fas', 'volume-down']" />
             </button>
@@ -114,10 +115,11 @@
               type="button" 
               class="btn btn-dark vol-btn" 
               @mousedown="handleVolumeUpTouchStart"
-              @touchstart="handleVolumeUpTouchStart"
+              @touchstart.passive="handleVolumeUpTouchStart"
               @mouseup="handleVolumeTouchEnd"
               @touchend="handleVolumeTouchEnd"
               @touchcancel="handleVolumeTouchEnd"
+              @touchmove.passive="handleVolumeTouchEnd"
             >
               <font-awesome-icon  :class="{'text-danger':mso.muted}" size="4x" :icon="['fas', 'volume-up']" />
             </button>
@@ -130,6 +132,7 @@
               <div class="inputs-container my-3">
                 <two-state-button 
                   v-for="(inp, key) in visibleInputs"
+                  :key="key"
                   :button-text="inp.label"
                   :state-on="key === mso.input"
                   :home-button="true"
@@ -145,6 +148,7 @@
               <div class="upmix-container my-3">
                 <two-state-button 
                   v-for="(upmix, key) in visibleUpmixers"
+                  :key="key"
                   :button-text="upmix.label"
                   :state-on="key === mso.upmix.select"
                   :home-button="true"
@@ -202,7 +206,7 @@
           </div>
         </div>
         <div class="row mt-2" v-if="experimental">
-          <div class="col-md-12 text-center">
+          <div class="col-md-12 text-center experimental">
             <h5>Modes (Experimental)</h5>
             
             <dirac-button-group :home-button="true" />
@@ -503,7 +507,9 @@ export default {
   }*/
 
   .experimental::v-deep(.home-btn) {
-    margin: 0;
+    margin: .03125rem;
+    outline: 1px solid black;
+    padding: 1rem;
   }
 
   .link {

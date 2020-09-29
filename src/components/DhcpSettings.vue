@@ -12,7 +12,7 @@
   </div>
   <table class="table table-sm table-responsive table-striped" v-if="!props.network.dhcp">
     <tbody>
-      <tr v-for="(addr, index) in props.network.addresses">
+      <tr v-for="(addr, index) in props.network.addresses" :key="index">
         <td>
           <div class="form-group">
             <label class="small" :for="`${props.id}-ip-addr-${index}`">IP Address</label>
@@ -81,7 +81,7 @@
         <td></td>
         <td></td>
       </tr>
-      <tr v-for="(dns, index) in props.network.dns">
+      <tr v-for="(dns, index) in props.network.dns" :key="index">
         <td>
           <div class="form-group">
             <label class="small" :for="`${props.id}-dns-${index}`">DNS Server {{ index + 1 }}</label>

@@ -11,16 +11,19 @@
     </div>
 
     <h5>Power</h5>
-    <two-state-button 
-      :button-text="`Fast Start: ${mso.fastStart}`"
-      :state-on="mso.fastStart === 'on'"
-      @click="toggleFastStart()"
+
+    <multi-state-button-group
+      :states="[{value: 0, label: 'Fast Start Off'}, {value: 1, label: 'Fast Start On'}]"
+      :state-value="mso.fastStart === 'on' ? 1 : 0"
+      @set-on="setFastStartOn"
+      @set-off="setFastStartOff"
     />
-  &nbsp;
-    <two-state-button 
-      :button-text="`Video Pass Through: ${mso.fastStartPassThrough}`"
-      :state-on="mso.fastStartPassThrough === 'on'"
-      @click="toggleFastStartPassThrough()"
+    <br /><br />
+    <multi-state-button-group
+      :states="[{value: 0, label: 'Video Pass Through Off'}, {value: 1, label: 'Video Pass Through On'}]"
+      :state-value="mso.fastStartPassThrough === 'on' ? 1 : 0"
+      @set-on="setFastStartPassThroughOn"
+      @set-off="setFastStartPassThroughOff"
     />
 
     <div class="form-group">
@@ -114,18 +117,6 @@
           Display Extended Audio Status
         </label>
       </div>
-      <div class="custom-control custom-switch">
-        <input 
-          type="checkbox" 
-          class="custom-control-input" 
-          id="display-adv-input" 
-          :checked="mso.stat?.displayAdvancedSettings" 
-          @click="toggleAdvancedInputSettings()"
-        >
-        <label class="custom-control-label" for="display-adv-input">
-          Advanced Input Settings
-        </label>
-      </div>
     </div>
 
     <template v-if="false">
@@ -158,6 +149,7 @@
   import useMso from '@/use/useMso.js';
 
   import TwoStateButton from './TwoStateButton.vue';
+  import MultiStateButtonGroup from './MultiStateButtonGroup.vue';
   import MsoImporter from './MsoImporter.vue';
 
   export default {
@@ -171,7 +163,8 @@
       const { 
         mso, setUnitName, setFrontPanelBrightness, toggleFastStart, toggleFastStartPassThrough, 
         setPowerOnVol, toggleVideoStatusHomePage, toggleExtendedAudioStatus, 
-        toggleAdvancedInputSettings, toggleSupportTools, importMsoPatchList
+        toggleAdvancedInputSettings, toggleSupportTools, importMsoPatchList,
+        setFastStartOn, setFastStartOff, setFastStartPassThroughOn, setFastStartPassThroughOff
       } = useMso();
 
       function downloadMsoAsJson(){
@@ -195,10 +188,12 @@
         mso, setUnitName, setFrontPanelBrightness, toggleFastStart, toggleFastStartPassThrough, 
         setPowerOnVol, toggleVideoStatusHomePage, toggleExtendedAudioStatus, toggleAdvancedInputSettings, 
         toggleSupportTools, importMsoPatchList, 
+        setFastStartOn, setFastStartOff, setFastStartPassThroughOn, setFastStartPassThroughOff,
         downloadMsoAsJson, importMsoFileSelected, importJson, msoImportPatch, importMso
       };
     },
     components: {
+      MultiStateButtonGroup,
       TwoStateButton,
       MsoImporter
     }

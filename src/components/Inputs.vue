@@ -1,6 +1,24 @@
 <template>
   <div class="transition-container">
-    <h5>Input Setup</h5>
+    <div class="row justify-content-between">
+      <div class="col-auto">
+        <h5>Input Setup</h5>
+      </div>
+      <div class="col-auto">
+        <div class="custom-control custom-switch">
+          <input 
+            type="checkbox" 
+            class="custom-control-input" 
+            id="display-adv-input" 
+            :checked="mso.stat?.displayAdvancedSettings" 
+            @click="toggleAdvancedInputSettings()"
+          >
+          <label class="custom-control-label" for="display-adv-input">
+            Show Advanced Input Settings
+          </label>
+        </div>
+      </div>
+    </div>
     <table class="table table-sm table-responsive-md table-striped">
       <thead>
         <tr>
@@ -14,6 +32,7 @@
       <tbody>
         <tr
           v-for="(inp, inpcode) in mso.inputs"
+          :key="inpcode"
         >
           <td>
             <two-state-button 
@@ -62,6 +81,7 @@
               >
                 <option 
                   v-for="opt in getFormatDetectOptions(inp.menuSounds)" 
+                  :key="opt.value"
                   :value="opt.value"
                   :selected="opt.value === inp.formatDetectOption"
                 >

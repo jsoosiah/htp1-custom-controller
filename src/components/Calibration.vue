@@ -64,6 +64,7 @@
         @click="setDiracTab(key)" 
         href="javascript:void(0)" 
         v-for="(slot, key) in mso.cal?.slots"
+        :key="key"
       >
         {{slot.name}}
       </a>
@@ -81,7 +82,7 @@
         </tr>
       </thead>
       <tbody :class="{'hiding':currentDiracTab === null, 'showing':currentDiracTab !== null}">
-        <tr v-for="channame in activeChannels">
+        <tr v-for="channame in activeChannels" :key="channame">
           <td>{{spkName(channame)}}</td>
           <td class="text-right" :title="currentDiracSlot?.channels[channame].caldelay">
             {{formatDecimal(currentDiracSlot?.channels[channame].caldelay)}}

@@ -2,11 +2,11 @@
   <div class="transition-container">
     <h5>HDMI CEC</h5>
     <div class="mb-3">
-      <two-state-button 
-        :button-text="`CEC: ${mso?.CEC?.cecOnSw}`" 
-        :state-on="mso?.CEC?.cecOnSw === 'on'" 
-        :home-button="false"
-        @click="toggleCEC()"
+      <multi-state-button-group
+        :states="[{value: 0, label: 'CEC Off'}, {value: 1, label: 'CEC On'}]"
+        :state-value="mso?.CEC?.cecOnSw === 'on' ? 1 : 0"
+        @set-on="setCECOn"
+        @set-off="setCECOff"
       />
     </div>
     <table class="table table-sm table-responsive table-striped mb-3" v-if="mso.CEC?.cecOnSw === 'on'">
@@ -26,6 +26,7 @@
               >
                 <option 
                   v-for="opt in altTVInputs" 
+                  :key="opt.value"
                   :value="opt.value"
                   :selected="opt.value === mso.stat.TVSoundSrcDefault"
                 >
@@ -171,6 +172,7 @@
           <select v-model="selnet" size="10" class="form-control" id="available-networks">
             <option
               v-for="net in nmstat.wifinets"
+              :key="net"
               :value="net"
             >
               {{net.ssid}}
@@ -207,7 +209,7 @@
         <div class="form-group col">
           <label for="configured-networks">Configured Networks</label>
           <select v-model="actnet" size="10" class="form-control" id="configured-networks">
-            <option v-for="net in configuredNetworks" :value="net">{{net.NAME}}</option>
+            <option v-for="net in configuredNetworks" :value="net" :key="net.NAME + net.UUID">{{net.NAME}}</option>
           </select>
         </div>
       </div>
@@ -272,6 +274,7 @@
   import useNetworkManager from '@/use/useNetworkManager.js';
 
   import TwoStateButton from './TwoStateButton.vue';
+  import MultiStateButtonGroup from './MultiStateButtonGroup.vue';
   import DhcpSettings from './DhcpSettings.vue';
 
   const BLANK_IP_ADDRESS = {
@@ -415,6 +418,7 @@
       };
     },
     components: {
+      MultiStateButtonGroup,
       TwoStateButton,
       DhcpSettings
     }

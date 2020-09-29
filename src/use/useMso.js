@@ -168,6 +168,14 @@ export default function useMso() {
     return patchMso({'op':'replace', 'path': `/upmix/dts/ws`, 'value': !mso.value.upmix.dts.ws});
   }
 
+  function setUpmixWideSynthOn() {
+    return patchMso({'op':'replace', 'path': `/upmix/dts/ws`, 'value': true});
+  }
+
+  function setUpmixWideSynthOff() {
+    return patchMso({'op':'replace', 'path': `/upmix/dts/ws`, 'value': false});
+  }
+
   function setAuroMaticPreset(preset) {
     return patchMso({'op':'replace', 'path': `/upmix/auro/preset`, 'value': parseInt(preset)});
   }
@@ -183,6 +191,16 @@ export default function useMso() {
   function toggleReinforceBass() {
     if (!diracBCEnabled.value) {
       return patchMso({'op':'replace', 'path': `/bassenhance`, 'value': mso.value.bassenhance === 'off' ? 'on' : 'off'});
+    }
+  }
+
+  function setReinforceBassOff() {
+    return patchMso({'op':'replace', 'path': `/bassenhance`, 'value': 'off'});
+  }
+
+  function setReinforceBassOn() {
+    if (!diracBCEnabled.value) {
+      return patchMso({'op':'replace', 'path': `/bassenhance`, 'value': 'on'});
     }
   }
 
@@ -322,6 +340,14 @@ export default function useMso() {
     return patchMso({'op': 'replace', 'path': `/sgen/sgensw`, value: mso.value.sgen.sgensw === 'off' ? 'on' : 'off'});
   }
 
+  function setSignalGeneratorOff() {
+    return patchMso({'op': 'replace', 'path': `/sgen/sgensw`, value: 'off'});
+  }
+
+  function setSignalGeneratorOn() {
+    return patchMso({'op': 'replace', 'path': `/sgen/sgensw`, value: 'on'});
+  }
+
   function setSignalGeneratorChannel(channel) {
     return patchMso({'op': 'replace', 'path': `/sgen/select`, value: channel});
   }
@@ -432,6 +458,14 @@ export default function useMso() {
     return patchMso({'op': 'replace', 'path': `/CEC/cecOnSw`, value: mso.value.CEC.cecOnSw === 'off' ? 'on' : 'off'});
   }
 
+  function setCECOn() {
+    return patchMso({'op': 'replace', 'path': `/CEC/cecOnSw`, value: 'on'});
+  }
+
+  function setCECOff() {
+    return patchMso({'op': 'replace', 'path': `/CEC/cecOnSw`, value: 'off'});
+  }
+
   function setTVSoundSrcDefault(inp) {
     return patchMso({'op': 'replace', 'path': `/stat/TVSoundSrcDefault`, value: inp});
   }
@@ -468,8 +502,20 @@ export default function useMso() {
     return patchMso({'op': 'replace', 'path': `/fastStartPassThrough`, value: mso.value.fastStartPassThrough === 'off' ? 'on' : 'off'});
   }
 
-  function disableFastStartPassThrough() {
+  function setFastStartPassThroughOff() {
     return patchMso({'op': 'replace', 'path': `/fastStartPassThrough`, value: 'off'});
+  }
+
+  function setFastStartPassThroughOn() {
+    return patchMso({'op': 'replace', 'path': `/fastStartPassThrough`, value: 'on'});
+  }
+
+  function setFastStartOn() {
+    return patchMso({'op': 'replace', 'path': `/fastStart`, value: 'on'});
+  }
+
+  function setFastStartOff() {
+    return patchMso({'op': 'replace', 'path': `/fastStart`, value: 'off'});
   }
 
   function setPowerOnVol(volumeLevel) {
@@ -584,7 +630,7 @@ export default function useMso() {
       }
 
       if (mso.value.fastStart === 'off') {
-          disableFastStartPassThrough();
+          setFastStartPassThroughOff();
       };
     }
   }
@@ -780,8 +826,9 @@ export default function useMso() {
     powerOff, powerOn,
     setVolume, toggleMute, setInput, setUpmix, 
     toggleUpmixHomevis, toggleUpmixCenterSpread, toggleUpmixWideSynth,
+    setUpmixWideSynthOff, setUpmixWideSynthOn,
     setAuroMaticPreset, setAuroMaticStrength, setDefaultAuroMaticStrength,
-    toggleReinforceBass,
+    toggleReinforceBass, setReinforceBassOn, setReinforceBassOff,
     setNextNightMode, toggleDirac, toggleLoudness, setNextDtsDialogEnh,
     setDiracOff, setDiracBypass, setDiracOn,
     setNightOff, setNightAuto, setNightOn,
@@ -790,7 +837,8 @@ export default function useMso() {
     toggleSpeakerGroup, setSpeakerSize, setCenterFreq,
     setMinVolume, setMaxVolume, setMaxOutputLevel, setLipsyncDelay, setDiracSlot,
     setUserDelay, setUserTrim,
-    toggleSignalGenerator, setSignalGeneratorChannel, setSignalGeneratorSignalType,
+    toggleSignalGenerator, setSignalGeneratorOff, setSignalGeneratorOn,
+    setSignalGeneratorChannel, setSignalGeneratorSignalType,
     toggleToneControl, setBassCornerFrequency, setTrebleCornerFrequency, 
     setBassBoostCutLevel, setTrebleBoostCutLevel, setLoudnessCalibration,
     toggleGlobalPEQ, setGlobalPEQOff, setGlobalPEQOn,
@@ -798,9 +846,12 @@ export default function useMso() {
     setPEQQuality, setPEQFilterType, resetPEQ,
     setInputLabel, toggleInputVisible, setInputFormatDetectOption, toggleInputUHD, 
     setBluetoothDiscoverableTime, enableBluetoothDiscovery,
-    toggleCEC, setTVSoundSrcDefault, toggleCECAllowPowerKey, toggleCECAllowVolKey, 
+    toggleCEC, setCECOff, setCECOn,
+    setTVSoundSrcDefault, toggleCECAllowPowerKey, toggleCECAllowVolKey, 
     toggleCECAllowSysAudioOff, toggleCECAllowInputChange, toggleCECAllowStandby,
-    setUnitName, toggleFastStart, toggleFastStartPassThrough, setPowerOnVol,
+    toggleFastStart, setFastStartOff, setFastStartOn,
+    toggleFastStartPassThrough, setFastStartPassThroughOff, setFastStartPassThroughOn,
+    setUnitName, setPowerOnVol,
     setFrontPanelBrightness, toggleVideoStatusHomePage, toggleExtendedAudioStatus,
     toggleAdvancedInputSettings, toggleSupportTools, importMsoPatchList,
     showCrossoverControls, currentDiracSlot, calToolConnected, activeChannels,

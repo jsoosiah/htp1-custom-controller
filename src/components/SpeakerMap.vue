@@ -1,7 +1,13 @@
 <template>
   <div style="position:relative">
     <img class="speaker-mapping" :class="{'speaker-mapping-enlarged': enlarged, 'speaker-mapping-standard': !enlarged}" @click="toggleEnlarged()" :src="require('@/assets/HTP-1_back.webp')" />
-    <span class="speaker-label" :class="{'speaker-label-enlarged': enlarged, 'speaker-label-standard': !enlarged}" v-for="(spk, i) in mso.speakers?.mapping" :style="{left: 3.25 + (100 * i/19) + '%'}">{{ speakerLabels[spk] }}</span>
+    <span 
+      class="speaker-label" 
+      :class="{'speaker-label-enlarged': enlarged, 'speaker-label-standard': !enlarged}" 
+      v-for="(spk, i) in mso.speakers?.mapping" 
+      :key="spk"
+      :style="{left: 3.25 + (100 * i/19) + '%'}"
+    >{{ speakerLabels[spk] }}</span>
   </div>
 </template>
 

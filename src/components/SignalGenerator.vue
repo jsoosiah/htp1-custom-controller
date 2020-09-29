@@ -3,7 +3,12 @@
     <div class="row mb-3">
       <div class="col">
         <h5>Signal Generator</h5>
-        <two-state-button v-bind:button-text="`Signal Generator: ${mso.sgen?.sgensw}`" v-bind:state-on="mso.sgen?.sgensw === 'on'" @click="toggleSignalGenerator()" />
+        <multi-state-button-group
+          :states="[{value: 0, label: 'Signal Generator Off'}, {value: 1, label: 'Signal Generator On'}]"
+          :state-value="mso.sgen?.sgensw === 'on' ? 1 : 0"
+          @set-on="setSignalGeneratorOn"
+          @set-off="setSignalGeneratorOff"
+        />
       </div>
     </div>
     <div class="row">
@@ -17,7 +22,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="channame in activeChannels">
+            <tr v-for="channame in activeChannels" :key="channame">
               <td>
                 <div class="form-check">
                   <input class="form-check-input" type="radio" name="channel" :id="`radio-${channame}`" :value="channame" :checked="mso.sgen?.select === channame" @click="setSignalGeneratorChannel(channame)">
@@ -40,7 +45,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="signal in signalOptions">
+            <tr v-for="signal in signalOptions" :key="signal.value">
               <td>
                 <div class="form-check">
                   <input class="form-check-input" type="radio" name="signal" :id="`radio-${signal.value}`" :value="signal.value" :checked="mso.sgen?.signalType === signal.value" @click="setSignalGeneratorSignalType(signal.value)">
@@ -65,12 +70,14 @@
   import useSpeakerGroups from '@/use/useSpeakerGroups.js';
 
   import TwoStateButton from './TwoStateButton.vue';
+  import MultiStateButtonGroup from './MultiStateButtonGroup.vue';
 
   export default {
     name: 'SignalGenerator',
     setup() {
 
-      const { mso, toggleSignalGenerator, setSignalGeneratorChannel, setSignalGeneratorSignalType } = useMso();
+      const { mso, toggleSignalGenerator, setSignalGeneratorChannel, setSignalGeneratorSignalType,
+      setSignalGeneratorOff, setSignalGeneratorOn } = useMso();
       const { getActiveChannels, spkName } = useSpeakerGroups();
 
       const signalOptions = [
@@ -87,11 +94,12 @@
 
       return { 
         mso, toggleSignalGenerator, setSignalGeneratorChannel, setSignalGeneratorSignalType, 
-        activeChannels, spkName, signalOptions 
+        activeChannels, spkName, signalOptions, setSignalGeneratorOff, setSignalGeneratorOn
       };
     },
     components: {
-      TwoStateButton
+      TwoStateButton,
+      MultiStateButtonGroup
     }
   }
 </script>
