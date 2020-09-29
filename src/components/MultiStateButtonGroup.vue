@@ -115,8 +115,8 @@
   }
 
   .btn-off {
-    color: #bbb;
-    background-color: #444;
+    color: #eee;
+    background-color: #bbb;
   }
 
   .yellow-text-btn {
@@ -132,8 +132,8 @@
   }
 
   .btn-off {
-    border-left: .03125rem solid rgba(0,0,0,.5);
-    border-right: .03125rem solid rgba(0,0,0,.5);
+    border-left: .03125rem solid rgba(0,0,0,.25);
+    border-right: .03125rem solid rgba(0,0,0,.25);
   }
 
 </style>
