@@ -26,12 +26,19 @@
             </a>
           </nav>
         <div class="modal-body text-left">
-          <div :class="{'hiding':!tabLoaded, 'showing':tabLoaded}">
-            <component 
-              :is="allTabs[props.activeTab].component" 
-              :key="allTabs[props.activeTab].component"
-            />
-          </div>
+          <transition mode="out-in" name="tabfade">
+            <keep-alive>
+              <suspense>
+                <component 
+                  :is="allTabs[props.activeTab].component" 
+                  :key="allTabs[props.activeTab].component"
+                />
+                <template #fallback>
+                  loading
+                </template>
+              </suspense>
+            </keep-alive>
+          </transition>
         </div>
       </div>
     </div>
@@ -47,15 +54,15 @@
 
 import { ref, onMounted, onUnmounted, defineAsyncComponent } from 'vue';
 
-import Speakers from './Speakers.vue';
-import Calibration from './Calibration.vue';
-import SignalGenerator from './SignalGenerator.vue';
-import Peq from './Peq.vue';
-import ToneControl from './ToneControl.vue';
-import Inputs from './Inputs.vue';
-import SoundEnhancement from './SoundEnhancement.vue';
-import Connectivity from './Connectivity.vue';
-import System from './System.vue';
+// import Speakers from './Speakers.vue';
+// import Calibration from './Calibration.vue';
+// import SignalGenerator from './SignalGenerator.vue';
+// import Peq from './Peq.vue';
+// import ToneControl from './ToneControl.vue';
+// import Inputs from './Inputs.vue';
+// import SoundEnhancement from './SoundEnhancement.vue';
+// import Connectivity from './Connectivity.vue';
+// import System from './System.vue';
 
 import CalibrationIcon from './icons/CalibrationIcon';
 import PeqIcon from './icons/PeqIcon';
@@ -117,24 +124,24 @@ export default {
     return { props, setActiveTab, allTabs, closeModal, tabLoaded };
   },
   components: {
-    // Speakers: defineAsyncComponent(() => import('./Speakers.vue')),
-    // Calibration: defineAsyncComponent(() => import('./Calibration.vue')),
-    // SignalGenerator: defineAsyncComponent(() => import('./SignalGenerator.vue')),
-    // Peq: defineAsyncComponent(() => import('./Peq.vue')),
-    // ToneControl: defineAsyncComponent(() => import('./ToneControl.vue')),
-    // Inputs: defineAsyncComponent(() => import('./Inputs.vue')),
-    // SoundEnhancement: defineAsyncComponent(() => import('./SoundEnhancement.vue')),
-    // Connectivity: defineAsyncComponent(() => import('./Connectivity.vue')),
-    // System: defineAsyncComponent(() => import('./System.vue')),
-    Speakers,
-    Calibration,
-    SignalGenerator,
-    Peq,
-    ToneControl,
-    Inputs,
-    SoundEnhancement,
-    Connectivity,
-    System,
+    Speakers: defineAsyncComponent(() => import('./Speakers.vue')),
+    Calibration: defineAsyncComponent(() => import('./Calibration.vue')),
+    SignalGenerator: defineAsyncComponent(() => import('./SignalGenerator.vue')),
+    Peq: defineAsyncComponent(() => import('./Peq.vue')),
+    ToneControl: defineAsyncComponent(() => import('./ToneControl.vue')),
+    Inputs: defineAsyncComponent(() => import('./Inputs.vue')),
+    SoundEnhancement: defineAsyncComponent(() => import('./SoundEnhancement.vue')),
+    Connectivity: defineAsyncComponent(() => import('./Connectivity.vue')),
+    System: defineAsyncComponent(() => import('./System.vue')),
+    // Speakers,
+    // Calibration,
+    // SignalGenerator,
+    // Peq,
+    // ToneControl,
+    // Inputs,
+    // SoundEnhancement,
+    // Connectivity,
+    // System,
     CalibrationIcon,
     PeqIcon,
     ToneControlIcon,
@@ -145,6 +152,7 @@ export default {
     SystemIcon,
     UpmixIcon,
   },
+  emits: ['active-tab-change', 'close']
 }
 </script>
 
@@ -204,25 +212,20 @@ export default {
     margin: 0.3rem 0rem;
   }
 
-  .component-fade-enter-active {
-    transition: opacity .15s ease;
+  .tabfade-enter-active,
+  .tabfade-leave-active {
+    transition: opacity 0s ease;
   }
-
-  .component-fade-leave-active {
-    transition: opacity .5s ease;
-  }
-
-  .component-fade-leave-to {
+  .tabfade-enter, .tabfade-leave-to
+  /* .component-fade-leave-active below version 2.1.8 */ {
     opacity: 0;
   }
 
-  .component-fade-enter-to {
-    opacity: 1;
-  }
 
   .transition-container {
     display: block;
     z-index: 9;
+    opacity: 1;
     /*position: fixed;*/
   }
 
