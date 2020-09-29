@@ -79,7 +79,8 @@
       }
 
       return { props, buttonClasses, setState };
-    }
+    },
+    emits: ['set-off', 'set-on', 'set-other']
   }
 </script>
 

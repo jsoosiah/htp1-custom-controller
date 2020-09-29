@@ -52,7 +52,8 @@
       }
 
       return { importMso };
-    }
+    },
+    emits: ['confirm-import']
   }
 </script>
 

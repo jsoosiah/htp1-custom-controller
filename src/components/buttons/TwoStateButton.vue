@@ -56,7 +56,8 @@
       }
 
       return { props, recentlyInteracted, clicked };
-    }
+    },
+    emits: ['btn-click']
   }
 </script>
 

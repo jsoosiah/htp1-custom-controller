@@ -141,6 +141,14 @@ export default function useMso() {
 
   // TODO enforce min/max volume
   function setVolume(volumeLevel) {
+    if (volumeLevel < mso.value.cal?.vpl) {
+      volumeLevel = mso.value.cal?.vpl;
+    }
+
+    if (volumeLevel > mso.value.cal?.vph) {
+      volumeLevel = mso.value.cal?.vph;
+    }
+    
     return patchMso({'op':'replace', 'path': '/volume', 'value': volumeLevel});
   }
 
@@ -236,8 +244,6 @@ export default function useMso() {
   }
 
   function toggleDirac() {
-
-    console.log('!!!!!!! toggleDirac')
 
     let diracActive;
 
@@ -359,7 +365,6 @@ export default function useMso() {
   }
 
   function toggleToneControl() {
-    console.log('!!!!! toggleToneControl');
     return patchMso({'op': 'replace', 'path': `/eq/tc`, value: !mso.value.eq.tc});
   }
 

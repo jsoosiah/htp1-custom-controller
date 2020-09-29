@@ -168,7 +168,8 @@
       }
 
       return { props, addIPAddress, removeIPAddress, addNameserver, removeNameserver, applyNetworkConfig };
-    }
+    },
+    emits: ['apply-network-config']
   }
 </script>
 
