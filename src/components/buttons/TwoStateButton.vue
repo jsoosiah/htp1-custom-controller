@@ -3,13 +3,14 @@
     <button 
       class="btn btn-sm" 
       :class="{[props.homeButton?'btn-light':'btn-success']: props.stateOn, [props.homeButton?'btn-dark':'btn-secondary']: !props.stateOn, 'home-btn': props.homeButton}"
+      :style="{'min-width': props.minWidth}"
       @click="clicked"
     >
       {{props.buttonText}}
     </button>
     <transition name="mfade">
-      <ol class="carousel-indicators" v-if="props.showStateIndicators" v-show="recentlyInteracted">
-        <li :class="{'active':!props.stateOn}"></li>
+      <ol class="carousel-indicators" v-if="props.showStateIndicators" v-show="props.recentlyInteracted || recentlyInteracted">
+        <li v-if="!props.singleIndicator" :class="{'active':!props.stateOn}"></li>
         <li :class="{'active-bright':props.stateOn}"></li>
       </ol>
     </transition>
@@ -36,6 +37,18 @@
         required: true,
       },
       showStateIndicators: {
+        type: Boolean,
+        default: false,
+      },
+      minWidth: {
+        type: String,
+        default: '6rem',
+      },
+      recentlyInteracted: {
+        type: Boolean,
+        default: false,
+      },
+      singleIndicator: {
         type: Boolean,
         default: false,
       }

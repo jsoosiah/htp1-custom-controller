@@ -9,6 +9,7 @@
     :home-button="props.homeButton"
     :show-state-indicators="props.homeButton"
     aria-label="Dirac status"
+    min-width="7.125rem"
   />
   <three-state-button 
     v-if = "mso?.cal?.slots[mso?.cal?.currentdiracslot].checksum === 31802"

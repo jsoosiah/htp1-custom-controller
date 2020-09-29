@@ -1,6 +1,10 @@
 <template>
   <div class="custom-btn-group">
-    <button class="btn btn-sm" :class="buttonClasses" @click="clicked">
+    <button 
+      class="btn btn-sm" 
+      :class="buttonClasses" @click="clicked"
+      :style="{'min-width': props.minWidth}"
+    >
       {{props.buttonText}}
     </button>
     <transition name="mfade">
@@ -42,6 +46,10 @@
       showStateIndicators: {
         type: Boolean,
         default: false,
+      },
+      minWidth: {
+        type: String,
+        default: '6rem',
       }
     },
     setup(props, { emit }) {

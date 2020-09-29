@@ -84,7 +84,7 @@
 
   .home-btn {
     min-height: 3rem;
-    min-width: 6rem;
+    min-width: 10.75rem;
     margin: 0.5rem;
     text-transform: uppercase;
   }

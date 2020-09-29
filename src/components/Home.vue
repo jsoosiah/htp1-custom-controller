@@ -129,7 +129,10 @@
                   :button-text="inp.label"
                   :state-on="key === mso.input"
                   :home-button="true"
-                  @click="setInput(key)"
+                  @btn-click="handleInputClicked(key)"
+                  :show-state-indicators="true"
+                  :single-indicator="true"
+                  :recently-interacted="inputRecentlyInteracted"
                 />
               </div>
           </div>
@@ -145,7 +148,10 @@
                   :button-text="upmix.label"
                   :state-on="key === mso.upmix.select"
                   :home-button="true"
-                  @click="setUpmix(key)" 
+                  @btn-click="handleUpmixClicked(key)" 
+                  :show-state-indicators="true"
+                  :single-indicator="true"
+                  :recently-interacted="upmixRecentlyInteracted"
                 />
               </div>
           </div>
@@ -173,6 +179,7 @@
                 :home-button="true"
                 @btn-click="toggleToneControl()"
                 :show-state-indicators="true"
+                min-width="10rem"
               />
               <!-- Loudness -->
               <two-state-button 
@@ -181,6 +188,7 @@
                 :home-button="true"
                 @btn-click="toggleLoudness()"
                 :show-state-indicators="true"
+                min-width="7.5rem"
               />
               <!-- Dialog Enhance --> 
               <dialog-enhance-button :home-button="true" :show-state-indicators="true" />
@@ -193,6 +201,7 @@
                 :home-button="true"
                 @btn-click="setNextNightMode()"
                 :show-state-indicators="true"
+                min-width="6.75rem"
               />
           </div>
         </div>
@@ -303,13 +312,12 @@ export default {
     const experimental = computed(() => window.location.href.includes('experimental'));
 
     const settingsModalIsOpen = ref(false);
-    // const holdingVolumeUp = ref(false);
-    // const holdingVolumeDown = ref(false);
 
-    // timeouts for detecting if the user held down
-    // long enough to trigger the long press state
-    let volumeUpDetectHoldingTimeout;
-    let volumeDownDetectHoldingTimeout;
+    const upmixRecentlyInteracted = ref(false);
+    let upmixRecentlyInteractedTimeout;
+    
+    const inputRecentlyInteracted = ref(false);
+    let inputRecentlyInteractedTimeout;
 
     // intervals for performing the actual volume adjustments
     let incrementVolumeInterval;
@@ -362,6 +370,24 @@ export default {
       settingsModalIsOpen.value = true;
     }
 
+    function handleInputClicked(inp) {
+      setInput(inp);
+      inputRecentlyInteracted.value = true;
+      clearTimeout(inputRecentlyInteractedTimeout);
+      inputRecentlyInteractedTimeout = setTimeout(() => {
+        inputRecentlyInteracted.value = false;
+      }, 3000);
+    }
+
+    function handleUpmixClicked(upmix) {
+      setUpmix(upmix)
+      upmixRecentlyInteracted.value = true;
+      clearTimeout(upmixRecentlyInteractedTimeout);
+      upmixRecentlyInteractedTimeout = setTimeout(() => {
+        upmixRecentlyInteracted.value = false;
+      }, 3000);
+    }
+
     return { 
       mso, setVolume, toggleMute,
       loading, calToolConnected, state,
@@ -369,6 +395,7 @@ export default {
       powerOn, setInput, setUpmix, powerOff, 
       setNextNightMode, toggleLoudness, setNextDtsDialogEnh, toggleToneControl, toggleGlobalPEQ,
       ...useStream(),
+      handleInputClicked, handleUpmixClicked, inputRecentlyInteracted, upmixRecentlyInteracted,
       settingsModalIsOpen, toggleSettingsModal,
       settingsActiveTab, setSettingsActiveTab,
       handleVolumeDownLongPress, handleVolumeUpLongPress, handleVolumeLongPressUp,
@@ -499,6 +526,12 @@ export default {
   .upmix-container::v-deep(.home-btn) {
     margin: 0;
   }*/
+
+  ::v-deep(.home-btn) {
+    /* margin: .03125rem; */
+    outline: 1px solid black;
+    /* padding: 1rem; */
+  }
 
   .experimental::v-deep(.home-btn) {
     margin: .03125rem;
