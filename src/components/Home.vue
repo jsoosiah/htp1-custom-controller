@@ -104,6 +104,7 @@
               class="btn btn-dark vol-btn" 
               @mousedown="handleVolumeDownTouchStart"
               @touchstart.passive="handleVolumeDownTouchStart"
+              @mousemove="handleVolumeTouchEnd"
               @mouseup="handleVolumeTouchEnd"
               @touchend="handleVolumeTouchEnd"
               @touchcancel="handleVolumeTouchEnd"
@@ -116,6 +117,7 @@
               class="btn btn-dark vol-btn" 
               @mousedown="handleVolumeUpTouchStart"
               @touchstart.passive="handleVolumeUpTouchStart"
+              @mousemove="handleVolumeTouchEnd"
               @mouseup="handleVolumeTouchEnd"
               @touchend="handleVolumeTouchEnd"
               @touchcancel="handleVolumeTouchEnd"
@@ -261,12 +263,12 @@
 <script>
 
 import { ref, defineAsyncComponent, computed } from 'vue';
+import { debounce } from 'lodash-es';
 
 import useLocalStorage from '@/use/useLocalStorage.js';
 import useMso from '@/use/useMso.js';
 import useStream from '@/use/useStream.js';
 
-// import Settings from './Settings.vue';
 import TwoStateButton from './TwoStateButton.vue';
 import ThreeStateButton from './ThreeStateButton.vue';
 import MultiStateButtonGroup from './MultiStateButtonGroup.vue';
@@ -355,6 +357,8 @@ export default {
       clearInterval(decrementVolumeInterval);
       clearInterval(incrementVolumeInterval);
     }
+
+    const debouncedHandleVolumeTouchEnd = debounce(handleVolumeTouchEnd, 400);
 
     function toggleSettingsModal() {
       settingsModalIsOpen.value = !settingsModalIsOpen.value;
