@@ -18,7 +18,10 @@ class WSClient {
 
     constructor() {
         // Default reconnect interval
-        this.reconnectInterval = 5000;
+        this.shortReconnectInterval = 1000;
+        this.longReconnectInterval = 5000;
+
+        this.reconnectsAttempted = 0;
 
         // Define whether it has ever reconnected
         this.reconnected = false;
@@ -42,10 +45,7 @@ class WSClient {
         // Setup the event handler for onopen
         this.instance.onopen = function (ev) {
 
-            // If it has ever reconnected lets say that
-            if (that.reconnected && that.debug) {
-                console.log('[WS]: Reconnected.');
-            }
+            this.reconnectsAttempted = 0;
 
             // Run the open function
             that.onopen(ev);
@@ -119,26 +119,17 @@ class WSClient {
         // Define that
         var that = this;
 
-        // Log reconnection
-        if (that.debug) {
-            console.log(`[WS]: Reconnecting in ${this.reconnectInterval / 1000} seconds.`);
-        }
-
         // Set reconnect timeout
         setTimeout(function() {
 
-            // Log reconnecting
-            if (that.debug) {
-                console.log("[WS]: Reconnecting...");
-            }
+            that.reconnectsAttempted += 1;
 
-            // Define has reconnected
-            that.reconnected = true;
+            console.log('WS: attempt reconnect');
 
             // Try and open the URL
             that.open(websocketurl.value);
 
-        }, this.reconnectInterval);
+        }, that.reconnectsAttempted < 6 ? this.shortReconnectInterval : this.longReconnectInterval);
     }
 }
 

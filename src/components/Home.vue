@@ -13,6 +13,9 @@
     <div class="fixed-top text-center" style="z-index: 9999999999999999" v-if="calToolConnected">
       <span class="sgen-on-warning">Dirac Calibration in Progress - Currently in Readonly Mode</span>
     </div>
+    <div class="fixed-top text-center" style="z-index: 9999999999999999" v-if="currentlyRecordingSlot">
+      <a @click="openMacrosSettings" class="sgen-on-warning">Currently Recording - {{currentlyRecordingSlot}}</a>
+    </div>
     <div v-if="state !== 'OPEN'" class="connecting-overlay">
       <ip-select />
     </div>
@@ -42,12 +45,15 @@
           </div>
           <div class="col text-right">
             <transition name="mfade">
-              <div class="transition-container-fixed" v-if="settingsModalIsOpen">
-                <settings 
-                  @close="toggleSettingsModal()" 
-                  @active-tab-change="setSettingsActiveTab"
-                  :active-tab="settingsActiveTab"
-                />
+              <div class="transition-container-fixed" v-show="settingsModalIsOpen">
+                <keep-alive>
+                  <settings 
+                    v-if="settingsModalIsOpen"
+                    @close="toggleSettingsModal()" 
+                    @active-tab-change="setSettingsActiveTab"
+                    :active-tab="settingsActiveTab"
+                  />
+                </keep-alive>
               </div>
             </transition>
 
@@ -280,9 +286,10 @@ import IpSelect from './IpSelect.vue';
 // ms length required to hold button before it is considered a long press
 const LONG_PRESS_THRESHOLD = 400; 
 
-const SOUND_ENHANCEMENTS_TAB = 6;
-const INPUTS_TAB = 5;
 const SIGNAL_GENERATOR_TAB = 2;
+const INPUTS_TAB = 5;
+const SOUND_ENHANCEMENTS_TAB = 6;
+const MACROS_TAB = 8;
 
 export default {
   setup() {
@@ -295,7 +302,8 @@ export default {
       visibleInputs, visibleUpmixers, powerOn, setInput, setUpmix, powerOff, 
       setNextNightMode, toggleLoudness, setNextDtsDialogEnh, toggleToneControl, toggleGlobalPEQ,
       setNightOff, setNightAuto, setNightOn, setLoudnessOff, setLoudnessOn, 
-      setToneControlOff, setToneControlOn, setGlobalPEQOff, setGlobalPEQOn, setDtsDialogEnh
+      setToneControlOff, setToneControlOn, setGlobalPEQOff, setGlobalPEQOn, setDtsDialogEnh,
+      currentlyRecordingSlot
     } = useMso();
 
     onMounted(() => {
@@ -360,6 +368,11 @@ export default {
       settingsModalIsOpen.value = true;
     }
 
+    function openMacrosSettings() {
+      setSettingsActiveTab(MACROS_TAB);
+      settingsModalIsOpen.value = true;
+    }
+
     function openInputSettings() {
       setSettingsActiveTab(INPUTS_TAB);
       settingsModalIsOpen.value = true;
@@ -400,12 +413,10 @@ export default {
       settingsActiveTab, setSettingsActiveTab,
       handleVolumeDownLongPress, handleVolumeUpLongPress, handleVolumeLongPressUp,
       handleVolumeDownPress, handleVolumeUpPress,
-      handleMute, openSignalGeneratorSettings, openInputSettings, openSoundEnhancementSettings, SIGNAL_GENERATOR_TAB,
-      setNightOff, setNightAuto, setNightOn,
-      setLoudnessOff, setLoudnessOn,
-      setToneControlOff, setToneControlOn,
-      setGlobalPEQOff, setGlobalPEQOn,
-      setDtsDialogEnh,
+      handleMute, openSignalGeneratorSettings, openInputSettings, openSoundEnhancementSettings, 
+      openMacrosSettings, SIGNAL_GENERATOR_TAB,
+      setNightOff, setNightAuto, setNightOn, setLoudnessOff, setLoudnessOn, setToneControlOff, setToneControlOn, setGlobalPEQOff, setGlobalPEQOn,setDtsDialogEnh,
+      currentlyRecordingSlot,
       experimental
     };
   },

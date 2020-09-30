@@ -93,7 +93,7 @@
   import MsoImporter from './MsoImporter.vue';
 
   export default {
-    name: 'Eq',
+    name: 'ToneControl',
     setup() {
 
       const { importJson, exportJsonToFile, importJsonFileToSelected } = useImportExport();

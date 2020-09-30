@@ -34,6 +34,10 @@ const commandsAwaitingResponse = ref([]);
 
 const loading = ref(false);
 
+// if recording is currently enabled for a slot,
+// it will be stored here and a notice will be shown
+const currentlyRecordingSlot = ref(null);
+
 const { data, state, send, close } = useWebSocket();
 
 const { getActiveChannels } = useSpeakerGroups();
@@ -112,8 +116,6 @@ watch(
     } else {
       loading.value = false;
     }
-
-    
   }
 );
 
@@ -244,20 +246,25 @@ function sendCommands() {
   console.log('sendCommands', commandsToSend, commandsAwaitingResponse)
   if (commandsToSend.value.length > 0) {
     console.log('changemso', commandsToSend.value.length, commandsToSend.value[0]);
-    send('changemso ' + JSON.stringify(commandsToSend.value));
+    // send('changemso ' + JSON.stringify(commandsToSend.value));
+    changemso(commandsToSend.value)
     commandsToSend.value = [];
   }
 }
 
+function changemso(commands) {
+  send('changemso ' + JSON.stringify(commands));
+}
+
 // send commands 250 ms after user interaction stopped
 const debouncedSendCommands = debounce(sendCommands, 250, {
-  // use a max wait time of 500 ms, so the user does see
-  // their interactions cause changes every 500 ms at maximum
+  // use a max wait time of 300 ms, so the user does see
+  // their interactions cause changes every 300 ms at maximum
   // if the user rapidly adjusts volume from -50 dB to 0 dB,
   // this allows the volume to gradually increase around every 
   // 3 dB, instead of only suddenly updating the volume to 0 dB
   // at the end
-  maxWait: 500,
+  maxWait: 300,
   leading: true,
   trailing: true
 });
@@ -802,9 +809,29 @@ function toggleSupportTools() {
   return patchMso({'op': 'replace', 'path': `/stat/enableSupportTools`, value: !mso.value.stat.enableSupportTools});
 }
 
+function saveRecordedCommands(slot, commands) {
+  if (!mso.value.svronly) {
+    return false;
+  }
+
+  // patchMso({'op': 'replace', 'path': `/svronly/${slot}`, value: [...mso.value.svronly[slot], ...commands]});
+  changemso([{'op': 'replace', 'path': `/svronly/${slot}`, value: commands}]);
+  send('getmso');
+  return true;
+}
+
 // danger
 function importMsoPatchList(patchList) {
   commandsToSend.value = patchList;
+}
+
+// other state mutators
+function setRecordingStarted(slot) {
+  currentlyRecordingSlot.value = slot;
+}
+
+function setRecordingStopped() {
+  currentlyRecordingSlot.value = null;
 }
 
 /**
@@ -847,8 +874,11 @@ export default function useMso() {
     setUnitName, setPowerOnVol,
     setFrontPanelBrightness, toggleVideoStatusHomePage, toggleExtendedAudioStatus,
     toggleAdvancedInputSettings, toggleSupportTools, importMsoPatchList,
+    saveRecordedCommands,
     showCrossoverControls, currentDiracSlot, calToolConnected, activeChannels,
+    currentlyRecordingSlot, setRecordingStarted, setRecordingStopped,
     state, loading,
+    parseMSO, data,
     commandsToSend, commandsReceived, commandsAwaitingResponse // debug
   };
 }

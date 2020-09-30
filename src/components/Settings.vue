@@ -73,6 +73,7 @@ import SgenIcon from './icons/SgenIcon';
 import SpeakersIcon from './icons/SpeakersIcon';
 import SystemIcon from './icons/SystemIcon';
 import UpmixIcon from './icons/UpmixIcon';
+import MacrosIcon from './icons/MacrosIcon';
 
 export default {
   name: 'Settings',
@@ -103,6 +104,7 @@ export default {
       {'label': 'Inputs', 'component': 'inputs', icon: 'inputs-icon' },
       {'label': 'Sound Enhancement', 'component': 'sound-enhancement', icon: 'upmix-icon' },
       {'label': 'Connectivity', 'component': 'connectivity', icon: 'network-icon' },
+      {'label': 'Macros', 'component': 'macros', icon: 'macros-icon'},
       {'label': 'System', 'component': 'system', icon: 'system-icon' },
     ]);
 
@@ -132,6 +134,7 @@ export default {
     Inputs: defineAsyncComponent(() => import('./Inputs.vue')),
     SoundEnhancement: defineAsyncComponent(() => import('./SoundEnhancement.vue')),
     Connectivity: defineAsyncComponent(() => import('./Connectivity.vue')),
+    Macros: defineAsyncComponent(() => import('./Macros.vue')),
     System: defineAsyncComponent(() => import('./System.vue')),
     // Speakers,
     // Calibration,
@@ -151,6 +154,7 @@ export default {
     SpeakersIcon,
     SystemIcon,
     UpmixIcon,
+    MacrosIcon
   },
   emits: ['active-tab-change', 'close']
 }
