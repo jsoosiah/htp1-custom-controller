@@ -4,7 +4,7 @@
 
 <script>
   export default {
-    name: 'CalibrationIcon'
+    name: 'PeqIcon'
   }
 </script>
 

@@ -360,6 +360,11 @@ export default {
     }
 
     function toggleSettingsModal() {
+      if (settingsModalIsOpen.value) {
+        document.body.classList.remove('modal-open');
+      } else {
+        document.body.classList.add('modal-open');
+      }
       settingsModalIsOpen.value = !settingsModalIsOpen.value;
     }
 

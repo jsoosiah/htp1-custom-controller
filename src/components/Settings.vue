@@ -52,7 +52,7 @@
 
 <script>
 
-import { ref, onMounted, onUnmounted, defineAsyncComponent } from 'vue';
+import { ref, defineAsyncComponent } from 'vue';
 
 // import Speakers from './Speakers.vue';
 // import Calibration from './Calibration.vue';
@@ -74,6 +74,7 @@ import SpeakersIcon from './icons/SpeakersIcon';
 import SystemIcon from './icons/SystemIcon';
 import UpmixIcon from './icons/UpmixIcon';
 import MacrosIcon from './icons/MacrosIcon';
+import AboutIcon from './icons/AboutIcon';
 
 export default {
   name: 'Settings',
@@ -84,14 +85,6 @@ export default {
     },
   },
   setup(props, { emit }) {
-
-    onMounted(() => {
-      document.body.classList.add('modal-open');
-    });
-
-    onUnmounted(() => {
-      document.body.classList.remove('modal-open');
-    });
 
     const tabLoaded = ref(true);
 
@@ -106,6 +99,7 @@ export default {
       {'label': 'Connectivity', 'component': 'connectivity', icon: 'network-icon' },
       {'label': 'Macros', 'component': 'macros', icon: 'macros-icon'},
       {'label': 'System', 'component': 'system', icon: 'system-icon' },
+      {'label': 'About', 'component': 'about', icon: 'about-icon' },
     ]);
 
     async function setActiveTab(tab) {
@@ -115,8 +109,6 @@ export default {
         emit('active-tab-change', tab);
         tabLoaded.value = true;
       }, 100)
-      
-      
     }
 
     function closeModal() {
@@ -136,6 +128,7 @@ export default {
     Connectivity: defineAsyncComponent(() => import('./Connectivity.vue')),
     Macros: defineAsyncComponent(() => import('./Macros.vue')),
     System: defineAsyncComponent(() => import('./System.vue')),
+    About: defineAsyncComponent(() => import('./About.vue')),
     // Speakers,
     // Calibration,
     // SignalGenerator,
@@ -154,7 +147,8 @@ export default {
     SpeakersIcon,
     SystemIcon,
     UpmixIcon,
-    MacrosIcon
+    MacrosIcon,
+    AboutIcon,
   },
   emits: ['active-tab-change', 'close']
 }
