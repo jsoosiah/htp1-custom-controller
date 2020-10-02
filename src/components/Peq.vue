@@ -323,7 +323,6 @@
       </div>
     </div>
   </div>
-  {{importBandRef?.value}}
 </template>
 
 <script>
