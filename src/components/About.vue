@@ -5,11 +5,11 @@
       <tbody>
         <tr>
           <th>System Software Version</th>
-          <td><code>{{mso.versions.swVer}}</code></td>
+          <td><code>{{mso.versions?.swVer}}</code></td>
         </tr>
         <tr>
           <th>System Build Date and Time</th>
-          <td><code>{{mso.versions.GuiNodeRed}}</code></td>
+          <td><code>{{mso.versions?.GuiNodeRed}}</code></td>
         </tr>
       </tbody>
     </table>
@@ -23,29 +23,29 @@
         </tr>
         <tr>
           <th>Decoder Sample Rate</th>
-          <td><code>{{mso.status.DECSampleRate}}</code></td>
+          <td><code>{{mso.status?.DECSampleRate}}</code></td>
         </tr>
         <tr>
           <th>Encoder Sample Rate</th>
-          <td><code>{{mso.status.ENCSampleRate}}</code></td>
+          <td><code>{{mso.status?.ENCSampleRate}}</code></td>
         </tr>
         <tr>
           <th>Video Status</th>
-          <td><code>{{mso.videostat.VideoResolution}} {{mso.videostat.VideoColorSpace}} 
-            {{mso.videostat.VideoMode}} {{mso.videostat.HDRstatus}} {{mso.videostat.VideoBitDepth}} 
-            {{mso.videostat.Video3D}}</code></td>
+          <td><code>{{mso.videostat?.VideoResolution}} {{mso.videostat?.VideoColorSpace}} 
+            {{mso.videostat?.VideoMode}} {{mso.videostat?.HDRstatus}} {{mso.videostat?.VideoBitDepth}} 
+            {{mso.videostat?.Video3D}}</code></td>
         </tr>
         <tr>
           <th>TV Sound Source</th>
-          <td><code>{{mso.stat.TVSoundSrc}}</code></td>
+          <td><code>{{mso.stat?.TVSoundSrc}}</code></td>
         </tr>
         <tr>
           <th>eARC Link Status</th>
-          <td><code>{{mso.stat.earcLinkStatus}}</code></td>
+          <td><code>{{mso.stat?.earcLinkStatus}}</code></td>
         </tr>
         <tr>
           <th>CEC Status</th>
-          <td><code>{{mso.stat.CECStatus}}</code></td>
+          <td><code>{{mso.stat?.CECStatus}}</code></td>
         </tr>
       </tbody>
     </table>
@@ -55,39 +55,39 @@
       <tbody>
         <tr>
           <th>System Software</th>
-          <td><code>{{mso.versions.swVer}}</code></td>
+          <td><code>{{mso.versions?.swVer}}</code></td>
         </tr>
         <tr>
           <th>Node RED GUI</th>
-          <td><code>{{mso.versions.GuiNodeRed}}</code></td>
+          <td><code>{{mso.versions?.GuiNodeRed}}</code></td>
         </tr>
         <tr>
           <th>avController</th>
-          <td><code>{{mso.versions.avController}}</code></td>
+          <td><code>{{mso.versions?.avController}}</code></td>
         </tr>
         <tr>
           <th>APM Module</th>
-          <td><code>{{mso.versions.apm100}}</code></td>
+          <td><code>{{mso.versions?.apm100}}</code></td>
         </tr>
         <tr>
           <th>HDMI Module</th>
-          <td><code>{{mso.versions.hdmiVer}}</code></td>
+          <td><code>{{mso.versions?.hdmiVer}}</code></td>
         </tr>
         <tr>
           <th>Backplane Firmware</th>
-          <td><code>{{mso.versions.backplane}}</code></td>
+          <td><code>{{mso.versions?.backplane}}</code></td>
         </tr>
         <tr>
           <th>Hardware</th>
-          <td><code>{{mso.versions.hardware}}</code></td>
+          <td><code>{{mso.versions?.hardware}}</code></td>
         </tr>
         <tr>
           <th>Serial Number</th>
-          <td><code>{{mso.versions.SerialNumber}}</code></td>
+          <td><code>{{mso.versions?.SerialNumber}}</code></td>
         </tr>
         <tr>
           <th>rootfs Version</th>
-          <td><code>{{mso.versions.rootfsVer}}</code></td>
+          <td><code>{{mso.versions?.rootfsVer}}</code></td>
         </tr>
       </tbody>
     </table>

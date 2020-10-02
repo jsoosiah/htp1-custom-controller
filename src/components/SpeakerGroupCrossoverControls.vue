@@ -14,17 +14,18 @@
               :id="'check-'+spk.code" 
               :checked="mso.speakers?.groups[spk.code]?.present" 
               @change="toggleSpeakerGroup(spk.code)"
-              :disabled="!enableSpeakerToggle(spk.code).enabled"
+              :disabled="!allSpeakerToggles[spk.code].enabled"
             />
             <label 
               :class="{'custom-control-label':spk.code !== 'lr', 'hidden-switch-label': spk.code === 'lr'}" 
               :for="'check-'+spk.code"
               :id="'tooltip-container-' + spk.code"
+              v-tooltip="allSpeakerToggles[spk.code]"
             >
               {{spk.label}} 
             <font-awesome-icon 
               :icon="['fas', 'question-circle']"
-              v-if="!enableSpeakerToggle(spk.code).enabled && enableSpeakerToggle(spk.code).message"
+              v-if="!allSpeakerToggles[spk.code].enabled && allSpeakerToggles[spk.code].message"
             /></label>
           </div>
         </td>
@@ -59,8 +60,7 @@
 <script>
 
   import { watchEffect, computed, onMounted } from 'vue';
-  import tippy from 'tippy.js';
-  import 'tippy.js/dist/tippy.css'; // optional for styling
+  import { Tooltip } from '@/directives/Tooltip.js';
 
   import useMso from '@/use/useMso.js';
 
@@ -73,32 +73,6 @@
 
       const { mso, showCrossoverControls, toggleSpeakerGroup, 
         setSpeakerSize, setCenterFreq, activeChannels } = useMso();
-
-      // track tippy instances so old ones can be destroyed
-      const tippies = {};
-
-      onMounted(() => {
-        watchEffect(
-          () => {
-            for (const group of props.speakerGroups) {
-              for (const speaker of group.speakers) {
-                const validation = enableSpeakerToggle(speaker.code);
-
-                if (tippies[speaker.code]) {
-                  tippies[speaker.code][0].destroy();
-                }
-
-                if (!validation.enabled && validation.message) {
-                  tippies[speaker.code] = tippy(`#tooltip-container-${speaker.code}`, {
-                    content: validation.message,
-                    placement: 'right'
-                  });
-                }
-              }
-            }
-          }
-        )
-      });
 
       // rule states the conditions for which the toggle should be enabled
       // all rules in the array will be combined with AND
@@ -150,6 +124,19 @@
               {rule: groups.lrtf.present || groups.lrhf.present, message: 'L/R Top Front or L/R Front Height must be enabled before L/R Top Rear.'}
             ]
           };
+      });
+
+      const allSpeakerToggles = computed(() => {
+
+        const result = {};
+
+        for (const group of props.speakerGroups) {
+          for (const speaker of group.speakers) {
+            result[speaker.code] = enableSpeakerToggle(speaker.code);
+          }
+        }
+
+        return result;
       });
 
       function enableSpeakerToggle(spkCode) {
@@ -209,8 +196,11 @@
       return { 
         mso, showCrossoverControls, toggleSpeakerGroup, setSpeakerSize, setCenterFreq,
         showCrossoverControlsForSpeaker, showCenterFreqControlsForSpeaker, showDolby,
-        props, enableSpeakerToggle
+        props, allSpeakerToggles
       };
+    },
+    directives: {
+      Tooltip
     }
   }
 </script>

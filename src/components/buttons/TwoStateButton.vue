@@ -124,4 +124,13 @@
     opacity: 0;
   }
 
+  button.btn:focus {
+    outline:none;
+    box-shadow: none;
+  }
+
+  .btn-dark:focus {
+    background-color: #343a40;
+  }
+
 </style>

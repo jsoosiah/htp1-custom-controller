@@ -9,6 +9,8 @@ const settingsActiveTab = ref(localStorage.getItem('settingsActiveTab') ? parseI
 // EQ group by setting - 0 to group by channel, 1 to group by band
 const eqGroupBy = ref(localStorage.getItem('eqGroupBy') ? parseInt(localStorage.getItem('eqGroupBy')) : 0);
 
+const maxWaitTimeToSendToMso = ref(localStorage.getItem('maxWaitTimeToSendToMso') ? parseInt(localStorage.getItem('maxWaitTimeToSendToMso')) : 600);
+
 export default function useLocalStorage() {
 
   function setWebsocketIp(url) {
@@ -26,12 +28,19 @@ export default function useLocalStorage() {
     localStorage.setItem('eqGroupBy', newEqGroupBy);
   }
 
+  function setMaxWaitTimeToSendToMso(newMaxWaitTime) {
+    maxWaitTimeToSendToMso.value = newMaxWaitTime;
+    localStorage.setItem('maxWaitTimeToSendToMso', newMaxWaitTime);
+  }
+
   return {
     websocketIp,
     setWebsocketIp,
     eqGroupBy,
     setEqGroupBy,
     settingsActiveTab,
-    setSettingsActiveTab
+    setSettingsActiveTab,
+    maxWaitTimeToSendToMso,
+    setMaxWaitTimeToSendToMso,
   };
 }

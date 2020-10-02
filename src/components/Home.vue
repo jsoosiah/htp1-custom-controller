@@ -336,27 +336,42 @@ export default {
       toggleMute();
     }
 
-    function handleVolumeDownLongPress() {
-      clearInterval(decrementVolumeInterval);
-      decrementVolumeInterval = setInterval(handleVolumeDownPress, 100);
-    } 
-
-    function handleVolumeUpLongPress () {
-      clearInterval(incrementVolumeInterval);
-      incrementVolumeInterval = setInterval(handleVolumeUpPress, 100);
+    function incrementVolume() {
+      setVolume(mso.value.volume + 1);
     }
 
-    function handleVolumeLongPressUp() {
-      clearInterval(decrementVolumeInterval);
-      clearInterval(incrementVolumeInterval);
-    }
-
-    function handleVolumeDownPress() {
+    function decrementVolume() {
       setVolume(mso.value.volume - 1);
     }
 
+    function handleVolumeDownPress() {
+      console.log('handleVolumeDownPress');
+      decrementVolume();
+    }
+
     function handleVolumeUpPress() {
-      setVolume(mso.value.volume + 1);
+      console.log('handleVolumeUpPress');
+      incrementVolume();
+    }
+
+    function handleVolumeDownLongPress() {
+      console.log('handleVolumeDownLongPress');
+      clearInterval(decrementVolumeInterval);
+      clearInterval(incrementVolumeInterval);
+      decrementVolumeInterval = setInterval(decrementVolume, 100);
+    } 
+
+    function handleVolumeUpLongPress () {
+      console.log('handleVolumeUpLongPress');
+      clearInterval(decrementVolumeInterval);
+      clearInterval(incrementVolumeInterval);
+      incrementVolumeInterval = setInterval(incrementVolume, 100);
+    }
+
+    function handleVolumeLongPressUp() {
+      console.log('handleVolumeLongPressUp');
+      clearInterval(decrementVolumeInterval);
+      clearInterval(incrementVolumeInterval);
     }
 
     function toggleSettingsModal() {
@@ -491,8 +506,9 @@ export default {
     color:white;
   }
 
-  .vol-btn {
-    background: none;
+  .vol-btn, .vol-btn:focus, .vol-btn:active {
+    background-color: rgba(0,0,0,0) !important;
+    box-shadow: none !important;
     outline:none;
     border:none;
     width:6rem;
@@ -557,6 +573,11 @@ export default {
 
   .link {
     cursor: pointer;
+  }
+
+  button.btn:focus {
+    outline:none;
+    box-shadow: none;
   }
 
 </style>

@@ -3,7 +3,7 @@ import { applyPatch, deepClone, compare } from 'fast-json-patch/index.mjs';
 import { debounce, get } from 'lodash-es';
 
 import useWebSocket from './useWebSocket.js';
-import useLoading from './useLoading.js';
+import useLocalStorage from './useLocalStorage.js';
 import useSpeakerGroups from './useSpeakerGroups.js';
 
 // map upmix codes to labels,
@@ -41,6 +41,8 @@ const currentlyRecordingSlot = ref(null);
 const { data, state, send, close } = useWebSocket();
 
 const { getActiveChannels } = useSpeakerGroups();
+
+const { maxWaitTimeToSendToMso } = useLocalStorage();
 
 // watchers ------------------------------------------
 
@@ -110,7 +112,7 @@ watch(
   newCommandsAwaitingResponse => {
     console.log('watch commandsAwaitingResponse', newCommandsAwaitingResponse.length)
     if (newCommandsAwaitingResponse.length > 0) {
-      debouncedSendCommands();
+      debouncedSendCommands.value();
       // sendCommands();
       loading.value = true;
     } else {
@@ -256,17 +258,25 @@ function changemso(commands) {
   send('changemso ' + JSON.stringify(commands));
 }
 
-// send commands 250 ms after user interaction stopped
-const debouncedSendCommands = debounce(sendCommands, 250, {
-  // use a max wait time of 300 ms, so the user does see
-  // their interactions cause changes every 300 ms at maximum
-  // if the user rapidly adjusts volume from -50 dB to 0 dB,
-  // this allows the volume to gradually increase around every 
-  // 3 dB, instead of only suddenly updating the volume to 0 dB
-  // at the end
-  maxWait: 300,
-  leading: true,
-  trailing: true
+// // send commands 250 ms after user interaction stopped
+// const debouncedSendCommands = debounce(sendCommands, 250, {
+//   // use a max wait time of 300 ms, so the user does see
+//   // their interactions cause changes every 300 ms at maximum
+//   // if the user rapidly adjusts volume from -50 dB to 0 dB,
+//   // this allows the volume to gradually increase around every 
+//   // 3 dB, instead of only suddenly updating the volume to 0 dB
+//   // at the end
+//   maxWait: 100,
+//   leading: true,
+//   trailing: true
+// });
+
+const debouncedSendCommands = computed(() => {
+  return debounce(sendCommands, 250, {
+    maxWait: maxWaitTimeToSendToMso.value,
+    leading: true,
+    trailing: true,
+  });
 });
 
 function receiveCommands() {

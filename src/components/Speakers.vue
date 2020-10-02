@@ -3,7 +3,7 @@
     <div class="row">
       <h5>Speaker Selection</h5>
       <div class="alert alert-info small alert-box" role="alert">
-        <p>If current Dirac Filter Slot has Bass Control and Dirac is On, speaker size selections are not available. Speaker sizes can be changed if Dirac is off or in bypass mode.</p>
+        <p>If the current Dirac Filter Slot has Bass Control and Dirac is On, speaker size and crossover controls are unavailable and must be configured using the Dirac software. Speaker sizes and crossovers can be changed if Dirac is off or in bypass mode.</p>
         <div class="row">
           <div class="col-auto">
             <div class="row">

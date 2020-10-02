@@ -11,7 +11,6 @@
     </div>
 
     <h5>Power</h5>
-
     <two-state-button 
       :button-text="`Fast Start: ${mso.fastStart}`"
       :state-on="mso.fastStart === 'on'"
@@ -133,6 +132,27 @@
       </div>
     </template>
 
+    <template v-if="debug">
+      <h5>Debug Settings</h5>
+      <div class="form-group">
+        <label for="inputPassword3" class="col-form-label col-form-label-sm">Max wait time to send MSO commands</label>
+          <div class="input-group input-group-sm numeric-input">
+            <input 
+              type="number" 
+              class="form-control" 
+              aria-label="Minimum volume" 
+              aria-describedby="basic-addon2" 
+              :value="maxWaitTimeToSendToMso" 
+              @change="({ type, target }) => setMaxWaitTimeToSendToMso(target.value)" 
+              min="0" 
+            />
+            <div class="input-group-append">
+              <span class="input-group-text" id="basic-addon2">ms</span>
+            </div>
+          </div>
+      </div>
+    </template>
+
     <h5>About this Custom Interface</h5>
     <p>See <a target="_blank" href="https://github.com/jsoosiah/htp1-custom-controller">https://github.com/jsoosiah/htp1-custom-controller</a>.</p>
   </div>
@@ -143,6 +163,7 @@
   import { ref, computed } from 'vue';
   import { compare } from 'fast-json-patch/index.mjs';
 
+  import useLocalStorage from '@/use/useLocalStorage.js';
   import useImportExport from '@/use/useImportExport.js';
   import useMso from '@/use/useMso.js';
 
@@ -157,6 +178,8 @@
       const { importJson,
               exportJsonToFile,
               importJsonFileToSelected } = useImportExport();
+
+      const { maxWaitTimeToSendToMso, setMaxWaitTimeToSendToMso } = useLocalStorage();
 
       const { 
         mso, setUnitName, setFrontPanelBrightness, toggleFastStart, toggleFastStartPassThrough, 
@@ -185,7 +208,7 @@
       return { 
         mso, setUnitName, setFrontPanelBrightness, toggleFastStart, toggleFastStartPassThrough, 
         setPowerOnVol, toggleVideoStatusHomePage, toggleExtendedAudioStatus, toggleAdvancedInputSettings, 
-        toggleSupportTools, importMsoPatchList, 
+        toggleSupportTools, importMsoPatchList, maxWaitTimeToSendToMso, setMaxWaitTimeToSendToMso,
         setFastStartOn, setFastStartOff, setFastStartPassThroughOn, setFastStartPassThroughOff,
         downloadMsoAsJson, importMsoFileSelected, importJson, msoImportPatch, importMso
       };
@@ -194,6 +217,9 @@
       MultiStateButtonGroup,
       TwoStateButton,
       MsoImporter
+    },
+    computed: {
+      debug: () => window.location.href.includes('debug')
     }
   }
 </script>
