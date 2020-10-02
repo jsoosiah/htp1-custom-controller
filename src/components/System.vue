@@ -145,6 +145,7 @@
               :value="maxWaitTimeToSendToMso" 
               @change="({ type, target }) => setMaxWaitTimeToSendToMso(target.value)" 
               min="0" 
+              disabled
             />
             <div class="input-group-append">
               <span class="input-group-text" id="basic-addon2">ms</span>

@@ -682,15 +682,48 @@ function setPEQSlot(bandNumber) {
 }
 
 function setPEQCenterFrequency(channel, slot, centerFreq) {
-  return patchMso({'op': 'replace', 'path': `/peq/slots/${slot}/channels/${channel}/Fc`, value: parseFloat(centerFreq)});
+
+  let centerFreqValue = parseFloat(centerFreq);
+
+  if (isNaN(centerFreqValue)) {
+    centerFreqValue = 100.0;
+  } else if (centerFreqValue < 15.0) {
+    centerFreqValue = 15.0;
+  } else if (centerFreqValue > 20000.0) {
+    centerFreqValue = 20000.0;
+  }
+
+  return patchMso({'op': 'replace', 'path': `/peq/slots/${slot}/channels/${channel}/Fc`, value: centerFreqValue});
 }
 
 function setPEQGain(channel, slot, gain) {
-  return patchMso({'op': 'replace', 'path': `/peq/slots/${slot}/channels/${channel}/gaindB`, value: parseFloat(gain)});
+
+  let gainValue = parseFloat(gain);
+
+  if (isNaN(gainValue)) {
+    gainValue = 0.0;
+  } else if (gainValue < -20.0) {
+    gainValue = -20.0;
+  } else if (gainValue > 20.0) {
+    gainValue = 20.0;
+  }
+
+  return patchMso({'op': 'replace', 'path': `/peq/slots/${slot}/channels/${channel}/gaindB`, value: gainValue});
 }
 
 function setPEQQuality(channel, slot, q) {
-  return patchMso({'op': 'replace', 'path': `/peq/slots/${slot}/channels/${channel}/Q`, value: parseFloat(q)});
+
+  let qValue = parseFloat(q);
+
+  if (isNaN(qValue)) {
+    qValue = 1.0;
+  } else if (qValue < 0.1) {
+    qValue = 0.1;
+  } else if (qValue > 10.0) {
+    qValue = 10.0;
+  }
+
+  return patchMso({'op': 'replace', 'path': `/peq/slots/${slot}/channels/${channel}/Q`, value: qValue});
 }
 
 function setPEQFilterType(channel, slot, filterType) {

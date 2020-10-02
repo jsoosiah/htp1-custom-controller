@@ -64,7 +64,7 @@
                 type="number" 
                 class="form-control form-control-sm text-right" 
                 :value="mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].Fc" 
-                @change="({ type, target }) => setPEQCenterFrequency(activeChannels[chanIndex], mso.peq?.currentpeqslot, target.value)" 
+                @change="({ type, target }) => { clearAllImports(); setPEQCenterFrequency(activeChannels[chanIndex], mso.peq?.currentpeqslot, target.value) }" 
                 min="15" 
                 max="20000" 
                 step=".1"
@@ -76,7 +76,7 @@
                 type="number" 
                 class="form-control form-control-sm text-right" 
                 :value="mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].gaindB" 
-                @change="({ type, target }) => setPEQGain(activeChannels[chanIndex], mso.peq?.currentpeqslot, target.value)" 
+                @change="({ type, target }) => { clearAllImports(); setPEQGain(activeChannels[chanIndex], mso.peq?.currentpeqslot, target.value) }" 
                 min="-20" 
                 max="20" 
                 step=".1"
@@ -88,7 +88,7 @@
                 type="number" 
                 class="form-control form-control-sm text-right" 
                 :value="mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].Q" 
-                @change="({ type, target }) => setPEQQuality(activeChannels[chanIndex], mso.peq?.currentpeqslot, target.value)" 
+                @change="({ type, target }) => { clearAllImports(); setPEQQuality(activeChannels[chanIndex], mso.peq?.currentpeqslot, target.value) }" 
                 min=".1" 
                 max="10" 
                 step=".1"
@@ -98,7 +98,7 @@
             <td class="text-right">
                 <select 
                   class="form-control form-control-sm" 
-                  @change="({ type, target }) => setPEQFilterType(activeChannels[chanIndex], mso.peq?.currentpeqslot, target.value)"
+                  @change="({ type, target }) => { clearAllImports(); setPEQFilterType(activeChannels[chanIndex], mso.peq?.currentpeqslot, target.value) }"
                   @focus="setSelectedChannel(chanIndex, true)"
                 >
                   <option 
@@ -132,15 +132,16 @@
           <div class="form-group">
             <label for="import=file">Import Band PEQ Configuration File to Band {{mso.peq?.currentpeqslot + 1}}</label>
             <input 
+              ref="importBandRef"
               type="file" 
               class="form-control-file" 
               id="import=file" 
-              @change="singleImportFileSelected"
+              @change="bandImportFileSelected"
             />
           </div>
           <mso-importer 
-            v-if="singleImportJson" 
-            @confirm-import="importMsoPatchList(bandImportPatch)"
+            v-if="bandImportJson" 
+            @confirm-import="confirmImport(bandImportPatch)"
             :mso-import-patch="bandImportPatch"
           />
         </div>
@@ -190,7 +191,7 @@
                 type="number" 
                 class="form-control form-control-sm text-right" 
                 :value="slot.channels[activeChannels[selectedChannel]].Fc" 
-                @change="({ type, target }) => setPEQCenterFrequency(activeChannels[selectedChannel], index, target.value)" 
+                @change="({ type, target }) => { clearAllImports(); setPEQCenterFrequency(activeChannels[selectedChannel], index, target.value) }" 
                 min="15" 
                 max="20000" 
                 step=".1"
@@ -201,7 +202,7 @@
                 type="number" 
                 class="form-control form-control-sm text-right" 
                 :value="slot.channels[activeChannels[selectedChannel]].gaindB" 
-                @change="({ type, target }) => setPEQGain(activeChannels[selectedChannel], index, target.value)" 
+                @change="({ type, target }) => { clearAllImports(); setPEQGain(activeChannels[selectedChannel], index, target.value) }" 
                 min="-20" 
                 max="20" 
                 step=".1"
@@ -212,7 +213,7 @@
                 type="number" 
                 class="form-control form-control-sm text-right" 
                 :value="slot.channels[activeChannels[selectedChannel]].Q" 
-                @change="({ type, target }) => setPEQQuality(activeChannels[selectedChannel], index, target.value)" 
+                @change="({ type, target }) => { clearAllImports(); setPEQQuality(activeChannels[selectedChannel], index, target.value) }" 
                 min=".1" 
                 max="10" 
                 step=".1"
@@ -221,7 +222,7 @@
             <td class="text-right">
                 <select 
                   class="form-control form-control-sm" 
-                  @change="({ type, target }) => setPEQFilterType(activeChannels[selectedChannel], index, target.value)"
+                  @change="({ type, target }) => { clearAllImports(); setPEQFilterType(activeChannels[selectedChannel], index, target.value) }"
                 >
                   <option 
                     v-for="filterType in filterTypes" 
@@ -254,15 +255,16 @@
           <div class="form-group">
             <label for="import=file">Import Channel PEQ Configuration File to Channel {{spkName(activeChannels[selectedChannel])}}</label>
             <input 
+              ref="importChannelRef"
               type="file" 
               class="form-control-file" 
               id="import=file" 
-              @change="singleImportFileSelected"
+              @change="channelImportFileSelected"
             />
           </div>
           <mso-importer 
-            v-if="singleImportJson" 
-            @confirm-import="importMsoPatchList(channelImportPatch)"
+            v-if="channelImportJson" 
+            @confirm-import="confirmImport(channelImportPatch)"
             :mso-import-patch="channelImportPatch"
           />
         </div>
@@ -296,6 +298,7 @@
         <div class="form-group">
           <label for="import=file">Import Full Configuration File</label>
           <input 
+            ref="importFullRef"
             type="file" 
             class="form-control-file" 
             id="import=file" 
@@ -304,7 +307,7 @@
         </div>
         <mso-importer 
           v-if="fullImportJson" 
-          @confirm-import="importMsoPatchList(fullImportPatch)"
+          @confirm-import="confirmImport(fullImportPatch)"
           :mso-import-patch="fullImportPatch"
         />
       </div>
@@ -320,6 +323,7 @@
       </div>
     </div>
   </div>
+  {{importBandRef?.value}}
 </template>
 
 <script>
@@ -341,16 +345,19 @@
     name: 'Eq',
     setup() {
 
-      // const singleImportExport = useImportExport();
-      // const fullImportExport = useImportExport();
-      const { importJson: singleImportJson, importJsonFileToSelected: singleImportJsonFileToSelected, exportJsonToFile } = useImportExport();
-      const { importJson: fullImportJson, importJsonFileToSelected: fullImportJsonFileToSelected } = useImportExport();
+      const { importJson: channelImportJson, importJsonFileToSelected: channelImportJsonFileToSelected } = useImportExport();
+      const { importJson: bandImportJson, importJsonFileToSelected: bandImportJsonFileToSelected } = useImportExport();
+      const { importJson: fullImportJson, importJsonFileToSelected: fullImportJsonFileToSelected, exportJsonToFile } = useImportExport();
       
       const { eqGroupBy, setEqGroupBy } = useLocalStorage();
-      const { mso, setPEQSlot, resetPEQ } = useMso();
+      const { mso, setPEQSlot, resetPEQ, importMsoPatchList } = useMso();
       const { getActiveChannels, spkName } = useSpeakerGroups();
 
       const tabLoaded = ref(true);
+
+      const importChannelRef = ref(null);
+      const importBandRef = ref(null);
+      const importFullRef = ref(null);
 
       const activeChannels = computed(() => {
         return getActiveChannels(mso.value.speakers?.groups);
@@ -421,9 +428,14 @@
         exportJsonToFile(singleChannelPeqs, `peq-channel-${channame}`);
       }
 
-      function singleImportFileSelected(e) {
+      function channelImportFileSelected(e) {
         const file = e.target.files[0];
-        singleImportJsonFileToSelected(file);
+        channelImportJsonFileToSelected(file);
+      }
+
+      function bandImportFileSelected(e) {
+        const file = e.target.files[0];
+        bandImportJsonFileToSelected(file);
       }
 
       function fullImportFileSelected(e) {
@@ -431,13 +443,30 @@
         fullImportJsonFileToSelected(file);
       }
 
+      function clearAllImports() {
+        if (importChannelRef.value?.value) {
+          importChannelRef.value.value = null;
+          channelImportJson.value = null;
+        }
+
+        if (importBandRef.value?.value) {
+          importBandRef.value.value = null;
+          bandImportJson.value = null;
+        }
+        
+        importFullRef.value.value = null;
+        fullImportJson.value = null;
+      }
+
       function resetPEQsForBand(band) {
+        clearAllImports();
         for (const channame of activeChannels.value) {
           resetPEQ(channame, band);
         }
       }
 
       function resetPEQsForChannel(channel) {
+        clearAllImports();
         for (let band = 0; band < 16; band++) {
           resetPEQ(channel, band);
         }
@@ -445,6 +474,7 @@
 
       function resetAllPEQs() {
         if (confirm('All PEQs will be reset for all channels.')) {
+          clearAllImports();
           for (let band = 0; band < 16; band++) {
             for (const channame of activeChannels.value) {
               resetPEQ(channame, band);
@@ -455,15 +485,17 @@
 
       // TODO validate
       const channelImportPatch = computed(() => {
-
-        if (!singleImportJson.value || eqGroupBy === 1) {
+        if (!channelImportJson.value || eqGroupBy.value === 1) {
           return [];
         }
 
         const fixedImportJson = [];
 
+        console.log('channelImportPatch', eqGroupBy);
+
         // rewrite the channel name to the selected channel
-        for (const slot of singleImportJson.value) {
+        for (const slot of channelImportJson.value) {
+          console.log(slot, Object.entries(slot.channels))
           for (const [key, channel] of Object.entries(slot.channels)) {
             fixedImportJson.push({channels: {
               [activeChannels.value[selectedChannel.value]]: channel
@@ -481,21 +513,30 @@
 
       // TODO validate
       const bandImportPatch = computed(() => {
-        if (!singleImportJson.value || eqGroupBy === 0) {
+        if (!bandImportJson.value || eqGroupBy.value === 0) {
           return [];
         }
 
         // fix relative paths
-        return compare(mso.value.peq?.slots[mso.value?.peq.currentpeqslot].channels, singleImportJson.value)
+        return compare(mso.value.peq?.slots[mso.value?.peq.currentpeqslot].channels, bandImportJson.value)
           .map(patch => ({...patch, path: `/peq/slots/${mso.value?.peq.currentpeqslot}/channels${patch.path}`}));
       });
 
       // TODO validate
       const fullImportPatch = computed(() => {
+
+        if (!fullImportPatch.value) {
+          return [];
+        }
+
         // fix relative paths
         return compare(mso.value.peq?.slots, fullImportJson.value)
           .map(patch => ({...patch, path: `/peq/slots${patch.path}`}));
       });
+
+      function confirmImport(patchList) {
+        importMsoPatchList(patchList);
+      }
 
       const filterTypes = [
         { label: 'PEQ', value: 0 },
@@ -507,8 +548,9 @@
         ...useMso(), activeChannels, spkName, selectedChannel, setSelectedChannel, 
         bandHasModifications, channelHasModifications, filterTypes, tabLoaded, setSelectedBand, 
         downloadSingleChannelConfig, downloadSingleBandConfig, downloadFullConfig, 
-        singleImportFileSelected, fullImportFileSelected, 
-        singleImportJson, fullImportJson, bandImportPatch, channelImportPatch, fullImportPatch,
+        channelImportFileSelected, bandImportFileSelected, fullImportFileSelected, 
+        channelImportJson, bandImportJson, fullImportJson, bandImportPatch, channelImportPatch, fullImportPatch, 
+        confirmImport, clearAllImports, importBandRef, importChannelRef, importFullRef,
         resetPEQsForBand, resetPEQsForChannel, resetAllPEQs,
         eqGroupBy, setGroupBy
       };

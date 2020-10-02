@@ -283,8 +283,8 @@ import DialogEnhanceButton from './buttons/DialogEnhanceButton.vue';
 import DiracButtonGroup from './buttons/DiracButtonGroup.vue';
 import IpSelect from './IpSelect.vue';
 
-// ms length required to hold button before it is considered a long press
-const LONG_PRESS_THRESHOLD = 400; 
+// ms per dB
+const LONG_PRESS_VOLUME_ADJUST_SPEED = 125; 
 
 const SIGNAL_GENERATOR_TAB = 2;
 const INPUTS_TAB = 5;
@@ -358,14 +358,14 @@ export default {
       console.log('handleVolumeDownLongPress');
       clearInterval(decrementVolumeInterval);
       clearInterval(incrementVolumeInterval);
-      decrementVolumeInterval = setInterval(decrementVolume, 100);
+      decrementVolumeInterval = setInterval(decrementVolume, LONG_PRESS_VOLUME_ADJUST_SPEED);
     } 
 
     function handleVolumeUpLongPress () {
       console.log('handleVolumeUpLongPress');
       clearInterval(decrementVolumeInterval);
       clearInterval(incrementVolumeInterval);
-      incrementVolumeInterval = setInterval(incrementVolume, 100);
+      incrementVolumeInterval = setInterval(incrementVolume, LONG_PRESS_VOLUME_ADJUST_SPEED);
     }
 
     function handleVolumeLongPressUp() {
