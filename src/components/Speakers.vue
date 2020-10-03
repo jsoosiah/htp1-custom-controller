@@ -34,7 +34,7 @@
     <div class="row speaker-map-container">
       <h5>Speaker Map <small class="text-muted">Click image to zoom</small></h5>
       <div class="alert alert-info small" role="alert">
-        <p>Depending on the combination of selected speakers, the physical labels on the back panel may not match the actual speaker mapping. The correct mapping is shown below. If the speakers are not enabled, no sound will be produced.</p>
+        <p>Depending on the combination of selected speakers, the physical labels on the back panel may not match the actual speaker mapping. The correct mapping is shown below. If the speakers are not enabled, no sound will be produced. Enabled speaker channels are highlighted in green.</p>
       </div>
       <SpeakerMap />
     </div>

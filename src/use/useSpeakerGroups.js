@@ -1,3 +1,4 @@
+// group to single channel
 const bmg = {
   "lr": ["lf", "rf"],
   "c": ["c"],
@@ -14,6 +15,35 @@ const bmg = {
   "lrtr": ["ltr", "rtr"],
   "lrhf": ["lfh", "rfh"],
   "lrhr": ["lhb", "rhb"],
+};
+
+// single channel to group, for speaker map display only
+// note that LF and RF become L and R; LHB and RHB become LRH, RRH
+const reverseBmg = {
+  "l": "lr",
+  "r": "lr",
+  "c": "c",
+  "ls": "lrs",
+  "rs": "lrs",
+  "lb": "lrb",
+  "rb": "lrb",
+  "sub1": "sub1",
+  "sub2": "sub2",
+  "sub3": "sub3",
+  "sub4": "sub4",
+  "sub5": "sub5",
+  "lw": "lrw",
+  "rw": "lrw",
+  "ltf": "lrtf",
+  "rtf": "lrtf",
+  "ltm": "lrtm",
+  "rtm": "lrtm",
+  "ltr": "lrtr",
+  "rtr": "lrtr",
+  "lfh": "lrhf",
+  "rfh": "lrhf",
+  "lrh": "lrhr",
+  "rrh": "lrhr"
 };
 
 const bmgNames = {
@@ -79,5 +109,5 @@ export default function useSpeakerGroups() {
     return (translated);
   };
 
-  return { bmg, bmgNames, spkName, spgToSp, getActiveChannels };
+  return { bmg, reverseBmg, bmgNames, spkName, spgToSp, getActiveChannels };
 }

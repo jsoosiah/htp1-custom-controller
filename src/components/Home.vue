@@ -34,8 +34,8 @@
     <template v-else>
       <!-- Input Label, Menu Buttons -->
       <div class="container">
-        <div class="row mt-2">
-          <div class="col text-left">
+        <div class="row justify-content-between mt-2">
+          <div class="col-auto">
             <a 
               class="current-input-label"
               @click="openSettingsToTab(INPUTS_TAB)"
@@ -43,7 +43,7 @@
               {{mso.inputs && mso.inputs[mso.input].label}}
             </a>
           </div>
-          <div class="col text-right">
+          <div class="col-auto">
             <transition name="mfade">
               <div class="transition-container-fixed" v-show="settingsModalIsOpen">
                 <keep-alive>
@@ -481,7 +481,8 @@ export default {
   }
 
   .current-input-label {
-    font-size:2.3rem;
+    font-size:min(2.3rem, 9vw);
+    /* font-size: 1vw; */
     color:inherit;
     cursor: pointer;
   }

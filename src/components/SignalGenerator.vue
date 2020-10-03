@@ -12,17 +12,20 @@
           <thead>
             <tr>
               <th>
-                Channel Select
+                Channel Select {{showCrossoverControls}}
               </th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="channame in activeChannels" :key="channame">
+            <tr v-for="channame in visibleChannels" :key="channame">
               <td>
                 <div class="form-check">
                   <input class="form-check-input" type="radio" name="channel" :id="`radio-${channame}`" :value="channame" :checked="mso.sgen?.select === channame" @click="setSignalGeneratorChannel(channame)">
                   <label class="form-check-label" :for="`radio-${channame}`">
-                    {{spkName(channame)}}
+                    {{translatedSpkName(channame)}} <br/>
+                    <small v-if="visibleChannels.length !== activeChannels.length && channame === 'sub1'" class="text-muted">
+                      Individual subwoofer channels are unavailable when Dirac Bass Control is enabled.
+                    </small>
                   </label>
                 </div>
               </td>
@@ -72,7 +75,7 @@
     setup() {
 
       const { mso, toggleSignalGenerator, setSignalGeneratorChannel, setSignalGeneratorSignalType,
-      setSignalGeneratorOff, setSignalGeneratorOn } = useMso();
+      setSignalGeneratorOff, setSignalGeneratorOn, showCrossoverControls } = useMso();
       const { getActiveChannels, spkName } = useSpeakerGroups();
 
       const signalOptions = [
@@ -83,13 +86,40 @@
         {'label': 'Right input as signal', 'value': 'right'},
       ];
 
+      const lf = new Intl.ListFormat('en');
+
       const activeChannels = computed(() => {
         return getActiveChannels(mso.value.speakers?.groups);
       });
 
+      const visibleChannels = computed(() => {
+        console.log('visible', visibleChannels)
+        return activeChannels.value.filter(
+          channame => showCrossoverControls.value || (channame != 'sub2' && channame != 'sub3' && channame != 'sub4' && channame != 'sub5')
+        );
+      });
+
+      function translatedSpkName(channame) {
+        if (!showCrossoverControls.value && channame === 'sub1') {
+          // let subLabel = 'Subwoofer 1';
+          let subs = ['Subwoofer 1'];
+          for (const channame of activeChannels.value) {
+            // console.log('channame', channame)
+            if (channame.startsWith('sub')) {
+              const subNumber = channame[channame.length - 1];
+              if (subNumber > 1) {
+                subs.push(subNumber);
+              }
+            }
+          }
+          return lf.format(subs);
+        }
+        return spkName(channame);
+      }
+
       return { 
         mso, toggleSignalGenerator, setSignalGeneratorChannel, setSignalGeneratorSignalType, 
-        activeChannels, spkName, signalOptions, setSignalGeneratorOff, setSignalGeneratorOn
+        activeChannels, visibleChannels, translatedSpkName, signalOptions, setSignalGeneratorOff, setSignalGeneratorOn, showCrossoverControls
       };
     },
     components: {

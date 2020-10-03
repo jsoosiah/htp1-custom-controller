@@ -181,6 +181,11 @@
           </div>
           <div id="collapseTwo" class="collapse" :class="{'show': opened[3]}" aria-labelledby="headingTwo" data-parent="#accordionExample">
             <div class="card-body">
+              <div class="alert alert-info small alert-box" role="alert">
+                The user guide has more information. <a
+                  :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`" target="_blank">Click
+                  here to access a PDF copy of the user guide</a>.
+              </div>
               <p>
                 The controls for the signal generators are found here.
               </p>
@@ -242,6 +247,11 @@
           </div>
           <div id="collapseThree" class="collapse" :class="{'show': opened[4]}" aria-labelledby="headingThree" data-parent="#accordionExample">
             <div class="card-body">
+              <div class="alert alert-info small alert-box" role="alert">
+                The user guide has more information. <a
+                  :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`" target="_blank">Click
+                  here to access a PDF copy of the user guide</a>.
+              </div>
               <p>The controls for the parametric equalizers are found here.</p>
               <ul>
                 <li><b>Parmetric</b><b> EQ</b>: The system allows for up to 16
@@ -270,6 +280,11 @@
           </div>
           <div id="collapseTwo" class="collapse" :class="{'show': opened[5]}" aria-labelledby="headingTwo" data-parent="#accordionExample">
             <div class="card-body">
+              <div class="alert alert-info small alert-box" role="alert">
+                The user guide has more information. <a
+                  :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`" target="_blank">Click
+                  here to access a PDF copy of the user guide</a>.
+              </div>
               <p>
                 The controls for tone controls and loudness compensation are found here.
               </p>
@@ -503,6 +518,11 @@
           </div>
           <div id="collapseThree" class="collapse" :class="{'show': opened[10]}" aria-labelledby="headingThree" data-parent="#accordionExample">
             <div class="card-body">
+              <div class="alert alert-info small alert-box" role="alert">
+                The user guide has more information. <a
+                  :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`" target="_blank">Click
+                  here to access a PDF copy of the user guide</a>.
+              </div>
               <p>In addition to a few system level controls, this page also
                 displays some helpful information like the IP address and the
                 current output video resolution.<br>

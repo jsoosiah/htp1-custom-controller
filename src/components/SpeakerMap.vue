@@ -3,11 +3,13 @@
     <img class="speaker-mapping" :class="{'speaker-mapping-enlarged': enlarged, 'speaker-mapping-standard': !enlarged}" @click="toggleEnlarged()" :src="require('@/assets/HTP-1_back.webp')" />
     <span 
       class="speaker-label" 
-      :class="{'speaker-label-enlarged': enlarged, 'speaker-label-standard': !enlarged}" 
+      :class="{'speaker-label-enlarged': enlarged, 
+      'speaker-label-standard': !enlarged, 
+      'hot': mso.speakers?.groups[reverseBmg[speakerLabels[spk?.trim()].toLowerCase()]].present !== false}" 
       v-for="(spk, i) in mso.speakers?.mapping" 
       :key="spk"
       :style="{left: 3.25 + (100 * i/19) + '%'}"
-    >{{ speakerLabels[spk] }}</span>
+    >{{ speakerLabels[spk?.trim()] }}</span>
   </div>
 </template>
 
@@ -16,11 +18,15 @@
   import { ref } from 'vue';
 
   import useMso from '@/use/useMso.js';
+  import useSpeakerGroups from '@/use/useSpeakerGroups.js';
 
   export default {
     name: 'SpeakerMap',
     setup() {
+      
       const { mso } = useMso();
+      const { reverseBmg } = useSpeakerGroups();
+
       const enlarged = ref(false);
 
       function toggleEnlarged() {
@@ -54,7 +60,16 @@
         'Right Wide': 'RW'
       };
 
-      return { mso, enlarged, toggleEnlarged, speakerLabels };
+    console.log(reverseBmg);
+
+      for (let i = 0; i < mso.value.speakers?.mapping.length; i++) {
+        let spk = mso.value.speakers?.mapping[i];
+        console.log('mapping',i, spk,speakerLabels[spk?.trim()].toLowerCase(), reverseBmg[speakerLabels[spk?.trim()].toLowerCase()])
+      }
+
+//{{speakerLabels[spk?.trim()].toLowerCase()}} {{reverseBmg[speakerLabels[spk?.trim()].toLowerCase()]
+
+      return { mso, reverseBmg, enlarged, toggleEnlarged, speakerLabels };
     }
   }
 </script>
@@ -79,8 +94,12 @@
     position: absolute;
     bottom:20%;
     left:0;
-    color:lawngreen;
     font-weight: 600;
+    color:#bbb;
+  }
+
+  .hot {
+    color:lawngreen;
   }
 
   .speaker-label-standard {
