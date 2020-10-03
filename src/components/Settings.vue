@@ -216,5 +216,29 @@ export default {
     /*position: fixed;*/
   }
 
+  @media(min-width: 576px) {
+    .modal-xl {
+      max-width: none;
+      width: auto;
+      margin: 0.5rem;
+    }
+  }
+
+  @media (min-width: 992px) {
+    .modal-lg, .modal-xl {
+        max-width: 800px;
+        margin-left:auto;
+        margin-right:auto;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .modal-xl {
+        max-width: 1140px;
+        margin-left:auto;
+        margin-right:auto;
+    }
+  }
+
 
 </style>

@@ -61,17 +61,6 @@
               </div>
             </div>
         </div>
-        <div class="col-lg">
-            <div class="form-group">
-              <label for="inputPassword3" class="col-form-label col-form-label-sm ">Loudness Calibration</label>
-                <div class="input-group input-group-sm numeric-input">
-                  <input type="number" class="form-control" aria-label="Minimum volume" aria-describedby="basic-addon2" :value="mso.loudnessCal" @change="({ type, target }) => setLoudnessCalibration(target.value)" min="50" max="90">
-                  <div class="input-group-append">
-                    <span class="input-group-text" id="basic-addon2">dB</span>
-                  </div>
-                </div>
-            </div>
-        </div>
       </div>
     </div>
     <h5>Loudness Compensation</h5>

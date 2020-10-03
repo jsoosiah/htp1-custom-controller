@@ -19,12 +19,14 @@
         </div>
       </div>
     </div>
-    <table class="table table-sm table-responsive-md table-striped">
+    <table class="table table-sm table-responsive-lg table-striped">
       <thead>
         <tr>
           <th>Input</th>
           <th>Label</th>
           <th>Visible on Home Page</th>
+          <th>Default Upmix</th>
+          <th>Volume Trim (dB)</th>
           <th>UHD Capable</th>
           <th v-if="mso.stat?.displayAdvancedSettings">PCM Detect Sensitivity</th>
         </tr>
@@ -62,6 +64,33 @@
             </div>
           </td>
           <td>
+            <select 
+              class="form-control form-control-sm"
+              @change="({ type, target }) => setInputDefaultUpmix(inpcode, target.value)"
+            >
+              <option :value="null">Last Used</option>
+              <option
+                v-for="upmix in allUpmixers" :key="upmix.value"
+                :value="upmix.value"
+                :selected="upmix.value === inp.defaultUpmix"
+              >
+                {{upmix.label}}
+              </option>
+            </select>
+          </td>
+          <td>
+            <input 
+              type="number" 
+              class="form-control form-control-sm text-right" 
+              aria-label="Volume Offset" 
+              :value="inp.gain" 
+              @change="({ type, target }) => setInputVolumeTrim(inpcode, target.value)"
+              min="-12" 
+              max="12" 
+              size="3"
+            />
+          </td>
+          <td>
             <div class="custom-control custom-switch" v-if="inpcode.startsWith('h')">
               <input 
                 type="checkbox" 
@@ -95,7 +124,7 @@
     <h5>Bluetooth Settings</h5>
     <div class="form-group">
       <label for="inputEmail3" class="col-form-label">Discoverable Timeout (0=Always Discoverable)</label>
-      <div class="input-group numeric-input">
+      <div class="input-group bluetooth-input">
         <input 
           type="number" 
           class="form-control" 
@@ -165,7 +194,11 @@
     min-width: 6rem;
   }
 
-  div.numeric-input {
+  .numeric-input .form-control {
+    min-width: auto;
+  }
+
+  div.bluetooth-input {
     width: 10rem;
   }
 </style>

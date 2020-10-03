@@ -218,6 +218,22 @@ function applyProductRules() {
     if (mso.value.fastStart === 'off') {
         setFastStartPassThroughOff();
     };
+
+    // initialize custom attributes if not present
+    if (!mso.value.sgen.select2) {
+      _setSignalGeneratorChannel2();
+    }
+
+    for (let inputKey in mso.value.inputs) {
+      if (mso.value.inputs) {
+        if (!mso.value.inputs[inputKey].hasOwnProperty('defaultUpmix')) {
+          _setInputDefaultUpmix(inputKey);
+        }
+        if (!mso.value.inputs[inputKey].hasOwnProperty('gain')) {
+          _setInputVolumeTrim(inputKey);
+        }
+      }
+    }
   }
 }
 
@@ -393,9 +409,19 @@ const activeChannels = computed(() => {
 function powerOff() {
   // TODO show a bootstrap modal instead
   if (confirm("The power will be turned off.")) {
-    commandsToSend.value = [
-      {'op':'replace', 'path': '/powerIsOn', 'value': false}
-    ];
+    const commands = [];
+
+    // set default upmix for current input if necessary
+    const defaultUpmix = mso.value.inputs[mso.value.input].defaultUpmix;
+    if (defaultUpmix && mso.value?.upmix.select !== defaultUpmix) {
+      commands.push(
+        {'op':'replace', 'path': '/upmix/select', 'value': defaultUpmix}
+      );
+    }
+
+    commands.push({'op':'replace', 'path': '/powerIsOn', 'value': false});
+
+    commandsToSend.value = commands;
   }
 
   return true;
@@ -629,11 +655,21 @@ function setSignalGeneratorChannel(channel) {
   return patchMso({'op': 'replace', 'path': `/sgen/select`, value: channel});
 }
 
-// Warning: this uses a custom MSO attribute
-function setSignalGeneratorChannel2(channel) {
+function _setSignalGeneratorChannel2(channel, op) {
+  if (!op) {
+    op = mso.value.sgen?.select2 ? 'replace' : 'add';
+  }
 
-  const op = mso.value.sgen?.select2 ? 'replace' : 'add';
+  if (!channel) {
+    channel = 'rf';
+  }
+  
   return patchMso({'op': op, 'path': `/sgen/select2`, value: channel});
+}
+
+// Warning: custom attribute
+function setSignalGeneratorChannel2(channel) {
+  return _setSignalGeneratorChannel2(channel, 'replace');
 }
 
 function setSignalGeneratorSignalType(signalType) {
@@ -757,6 +793,44 @@ function toggleInputVisible(input) {
 
 function setInputFormatDetectOption(input, formatDetectOption) {
   return patchMso({'op': 'replace', 'path': `/inputs/${input}/formatDetectOption`, value: formatDetectOption});
+}
+
+// Warning: custom attribute
+function _setInputDefaultUpmix(input, defaultUpmix, op) {
+  if (!op) {
+    op = mso.value.inputs[input].hasOwnProperty('defaultUpmix') ? 'replace' : 'add';
+  }
+
+  if (!allUpmixers.value[defaultUpmix]) {
+    defaultUpmix = null;
+  }
+
+  return patchMso({'op': op, 'path': `/inputs/${input}/defaultUpmix`, value: defaultUpmix});
+}
+
+function setInputDefaultUpmix(input, defaultUpmix) {
+  return _setInputDefaultUpmix(input, defaultUpmix, 'replace');
+}
+
+function _setInputVolumeTrim(input, trim, op) {
+  if (!op) {
+    op = mso.value.inputs[input].hasOwnProperty('gain') ? 'replace' : 'add';
+  }
+  
+  let trimValue = parseInt(trim);
+  if (isNaN(trimValue)) {
+    trimValue = 0;
+  } else if (trimValue > 12) {
+    trimValue  = 12;
+  } else if (trimValue < -12) {
+    trimValue = -12;
+  }
+  return patchMso({'op': 'replace', 'path': `/inputs/${input}/gain`, value: trimValue});
+}
+
+// Warning: custom attribute
+function setInputVolumeTrim(input, trim) {
+  return _setInputVolumeTrim(input, trim, 'replace');
 }
 
 function toggleInputUHD(input) {
@@ -915,6 +989,7 @@ export default function useMso() {
     setPEQSlot, setPEQCenterFrequency, setPEQGain, 
     setPEQQuality, setPEQFilterType, resetPEQ,
     setInputLabel, toggleInputVisible, setInputFormatDetectOption, toggleInputUHD, 
+    setInputDefaultUpmix, setInputVolumeTrim,
     setBluetoothDiscoverableTime, enableBluetoothDiscovery,
     toggleCEC, setCECOff, setCECOn,
     setTVSoundSrcDefault, toggleCECAllowPowerKey, toggleCECAllowVolKey, 
