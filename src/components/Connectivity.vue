@@ -388,6 +388,7 @@
       // perform initial network scan
       // and continue scanning every 5 seconds
       onMounted(() => {
+        console.log('Connectivity onMounted');
         scan();
         scanInterval = setInterval(scan, 5000);
       });
@@ -395,6 +396,7 @@
       // clear scan interval if 
       // navigating away from this page
       onUnmounted(() => {
+        console.log('Connectivity onUnmounted');
         clearInterval(scanInterval);
       });
 

@@ -629,6 +629,13 @@ function setSignalGeneratorChannel(channel) {
   return patchMso({'op': 'replace', 'path': `/sgen/select`, value: channel});
 }
 
+// Warning: this uses a custom MSO attribute
+function setSignalGeneratorChannel2(channel) {
+
+  const op = mso.value.sgen?.select2 ? 'replace' : 'add';
+  return patchMso({'op': op, 'path': `/sgen/select2`, value: channel});
+}
+
 function setSignalGeneratorSignalType(signalType) {
   return patchMso({'op': 'replace', 'path': `/sgen/signalType`, value: signalType});
 }
@@ -901,7 +908,7 @@ export default function useMso() {
     setMinVolume, setMaxVolume, setMaxOutputLevel, setLipsyncDelay, setDiracSlot,
     setUserDelay, setUserTrim,
     toggleSignalGenerator, setSignalGeneratorOff, setSignalGeneratorOn,
-    setSignalGeneratorChannel, setSignalGeneratorSignalType,
+    setSignalGeneratorChannel, setSignalGeneratorChannel2, setSignalGeneratorSignalType,
     toggleToneControl, setBassCornerFrequency, setTrebleCornerFrequency, 
     setBassBoostCutLevel, setTrebleBoostCutLevel, setLoudnessCalibration,
     toggleGlobalPEQ, setGlobalPEQOff, setGlobalPEQOn,

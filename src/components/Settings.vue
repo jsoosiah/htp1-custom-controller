@@ -26,8 +26,8 @@
             </a>
           </nav>
         <div class="modal-body text-left">
-          <transition mode="out-in" name="tabfade">
-            <keep-alive>
+          
+            <keep-alive v-if="allTabs[props.activeTab].keepAlive !== false">
               <suspense>
                 <component 
                   :is="allTabs[props.activeTab].component" 
@@ -38,7 +38,11 @@
                 </template>
               </suspense>
             </keep-alive>
-          </transition>
+            <component 
+              v-if="allTabs[props.activeTab].keepAlive === false"
+              :is="allTabs[props.activeTab].component" 
+              :key="allTabs[props.activeTab].component"
+            />
         </div>
       </div>
     </div>
@@ -87,7 +91,7 @@ export default {
       {'label': 'Tone Control', 'component': 'tone-control', icon: 'tone-control-icon' },
       {'label': 'Inputs', 'component': 'inputs', icon: 'inputs-icon' },
       {'label': 'Sound Enhancement', 'component': 'sound-enhancement', icon: 'upmix-icon' },
-      {'label': 'Connectivity', 'component': 'connectivity', icon: 'network-icon' },
+      {'label': 'Connectivity', 'component': 'connectivity', icon: 'network-icon', keepAlive: false },
       {'label': 'Macros', 'component': 'macros', icon: 'macros-icon'},
       {'label': 'System', 'component': 'system', icon: 'system-icon' },
       {'label': 'About', 'component': 'about', icon: 'about-icon' },
@@ -122,15 +126,6 @@ export default {
     System: defineAsyncComponent(() => import('./System.vue')),
     About: defineAsyncComponent(() => import('./About.vue')),
     Help: defineAsyncComponent(() => import('./Help.vue')),
-    // Speakers,
-    // Calibration,
-    // SignalGenerator,
-    // Peq,
-    // ToneControl,
-    // Inputs,
-    // SoundEnhancement,
-    // Connectivity,
-    // System,
     CalibrationIcon,
     PeqIcon,
     ToneControlIcon,

@@ -7,34 +7,8 @@
       </div>
     </div>
     <div class="row">
-      <div class="col">
-        <table class="table table-sm table-striped">
-          <thead>
-            <tr>
-              <th>
-                Channel Select {{showCrossoverControls}}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="channame in visibleChannels" :key="channame">
-              <td>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="channel" :id="`radio-${channame}`" :value="channame" :checked="mso.sgen?.select === channame" @click="setSignalGeneratorChannel(channame)">
-                  <label class="form-check-label" :for="`radio-${channame}`">
-                    {{translatedSpkName(channame)}} <br/>
-                    <small v-if="visibleChannels.length !== activeChannels.length && channame === 'sub1'" class="text-muted">
-                      Individual subwoofer channels are unavailable when Dirac Bass Control is enabled.
-                    </small>
-                  </label>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="col">
-        <table class="table table-sm table-striped">
+      <div class="col-auto">
+        <table class="table table-sm table-striped table-responsive">
           <thead>
             <tr>
               <th>
@@ -47,8 +21,97 @@
               <td>
                 <div class="form-check">
                   <input class="form-check-input" type="radio" name="signal" :id="`radio-${signal.value}`" :value="signal.value" :checked="mso.sgen?.signalType === signal.value" @click="setSignalGeneratorSignalType(signal.value)">
-                  <label class="form-check-label" :for="`radio-${signal.value}`">
+                  <label 
+                    class="form-check-label" 
+                    :for="`radio-${signal.value}`"
+                    v-tooltip="{
+                      enabled: !(signal.value === 'right'),
+                      message: 'This requires DSP changes and is not yet functional.'
+                    }"
+                    :id="`signal-type-${signal.value}`"
+                  >
                     {{signal.label}}
+                    <font-awesome-icon 
+                      :icon="['fas', 'exclamation-circle']"
+                      v-if="signal.value === 'right'"
+                    />
+                  </label>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-auto">
+        <table class="table table-sm table-striped table-responsive">
+          <thead>
+            <tr>
+              <th>
+                Channel Select {{mso.sgen?.signalType === 'right' ? ' - for left input' : ''}}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="channame in visibleChannels" :key="channame">
+              <td>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="channel" :id="`radio-${channame}`" :value="channame" :checked="mso.sgen?.select === channame" @click="setSignalGeneratorChannel(channame)">
+                  <label 
+                    class="form-check-label" 
+                    :for="`radio-${channame}`"
+                    v-tooltip="{
+                      enabled: !(visibleChannels.length !== activeChannels.length && channame === 'sub1'),
+                      message: 'Individual subwoofer channels are unavailable when Dirac Bass Control is enabled.'
+                    }"
+                    :id="`tooltip-container-left-${channame}`"
+                  >
+                    {{translatedSpkName(channame)}} 
+                    <font-awesome-icon 
+                      :icon="['fas', 'question-circle']"
+                      v-if="visibleChannels.length !== activeChannels.length && channame === 'sub1'"
+                    />
+                  </label>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-auto" v-if="mso.sgen?.signalType === 'right'">
+        <table class="table table-sm table-striped table-responsive">
+          <thead>
+            <tr>
+              <th>
+                Channel Select - for right input
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="channame in visibleChannels" :key="channame">
+              <td>
+                <div class="form-check">
+                  <input 
+                    class="form-check-input" 
+                    type="radio" 
+                    name="channel2" 
+                    :id="`radio2-${channame}`" 
+                    :value="channame" 
+                    :checked="mso.sgen?.select2 === channame" 
+                    @click="setSignalGeneratorChannel2(channame)">
+                  <label 
+                    class="form-check-label" 
+                    :for="`radio2-${channame}`"
+                    v-tooltip="{
+                      enabled: !(visibleChannels.length !== activeChannels.length && channame === 'sub1'),
+                      message: 'Individual subwoofer channels are unavailable when Dirac Bass Control is enabled.'
+                    }"
+                    :id="`tooltip-container-right-${channame}`"
+                  >
+                    {{translatedSpkName(channame)}} 
+                    <font-awesome-icon 
+                      :icon="['fas', 'question-circle']"
+                      v-if="visibleChannels.length !== activeChannels.length && channame === 'sub1'"
+                    />
                   </label>
                 </div>
               </td>
@@ -67,6 +130,8 @@
   import useMso from '@/use/useMso.js';
   import useSpeakerGroups from '@/use/useSpeakerGroups.js';
 
+  import { Tooltip } from '@/directives/Tooltip.js';
+
   import TwoStateButton from './buttons/TwoStateButton.vue';
   import MultiStateButtonGroup from './buttons/MultiStateButtonGroup.vue';
 
@@ -74,7 +139,7 @@
     name: 'SignalGenerator',
     setup() {
 
-      const { mso, toggleSignalGenerator, setSignalGeneratorChannel, setSignalGeneratorSignalType,
+      const { mso, toggleSignalGenerator, setSignalGeneratorChannel, setSignalGeneratorChannel2, setSignalGeneratorSignalType,
       setSignalGeneratorOff, setSignalGeneratorOn, showCrossoverControls } = useMso();
       const { getActiveChannels, spkName } = useSpeakerGroups();
 
@@ -83,7 +148,7 @@
         {'label': 'Louder reference noise', 'value': 'dolby'},
         {'label': 'Polarity pulse', 'value': 'pulse'},
         {'label': 'Left input as signal', 'value': 'left'},
-        {'label': 'Right input as signal', 'value': 'right'},
+        {'label': 'Left and right input as signal', 'value': 'right'},
       ];
 
       const lf = new Intl.ListFormat('en');
@@ -101,10 +166,8 @@
 
       function translatedSpkName(channame) {
         if (!showCrossoverControls.value && channame === 'sub1') {
-          // let subLabel = 'Subwoofer 1';
           let subs = ['Subwoofer 1'];
           for (const channame of activeChannels.value) {
-            // console.log('channame', channame)
             if (channame.startsWith('sub')) {
               const subNumber = channame[channame.length - 1];
               if (subNumber > 1) {
@@ -118,13 +181,16 @@
       }
 
       return { 
-        mso, toggleSignalGenerator, setSignalGeneratorChannel, setSignalGeneratorSignalType, 
+        mso, toggleSignalGenerator, setSignalGeneratorChannel, setSignalGeneratorChannel2, setSignalGeneratorSignalType, 
         activeChannels, visibleChannels, translatedSpkName, signalOptions, setSignalGeneratorOff, setSignalGeneratorOn, showCrossoverControls
       };
     },
     components: {
       TwoStateButton,
       MultiStateButtonGroup
+    },
+    directives: {
+      Tooltip
     }
   }
 </script>

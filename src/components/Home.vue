@@ -318,6 +318,11 @@ export default {
           // window.addEventListener('focus', window.myApp.onFocus);
           window.addEventListener('blur', handleVolumeLongPressUp);
         });
+
+        window.onerror = function(msg, url, linenumber) {
+            alert('Error message: '+msg+'\nURL: '+url+'\nLine Number: '+linenumber);
+            return true;
+        }
       }
     });
 

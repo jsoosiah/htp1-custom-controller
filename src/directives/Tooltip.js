@@ -5,15 +5,19 @@ const tippies = {};
 
 function updateTippies(el, binding) {
 
-  if (tippies[el.id]) {
-    tippies[el.id].destroy();
-  }
+  console.log('updateTippies', el.id);
 
-  if (!binding.value.enabled && binding.value.message) {
-    tippies[el.id] = tippy(el, {
-      content: binding.value.message,
-      placement: 'right'
-    });
+  if (el.id) {
+    if (tippies[el.id]) {
+      tippies[el.id].destroy();
+    }
+  
+    if (!binding.value.enabled && binding.value.message) {
+      tippies[el.id] = tippy(el, {
+        content: binding.value.message,
+        placement: 'right'
+      });
+    }
   }
 }
 
