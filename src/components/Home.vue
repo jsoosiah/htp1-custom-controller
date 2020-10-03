@@ -5,7 +5,7 @@
       </div>
     </div>
     <div class="fixed-top text-center" style="z-index: 9999999999999999" v-if="mso?.sgen?.sgensw === 'on'">
-      <a class="sgen-on-warning" @click="openSignalGeneratorSettings">
+      <a class="sgen-on-warning" @click="openSettingsToTab(SIGNAL_GENERATOR_TAB)">
         Signal Generator On 
         <span v-if="!(settingsModalIsOpen && settingsActiveTab === SIGNAL_GENERATOR_TAB)"><br/>(Click to Open Signal Generator Settings)</span>
       </a>
@@ -14,7 +14,7 @@
       <span class="sgen-on-warning">Dirac Calibration in Progress - Currently in Readonly Mode</span>
     </div>
     <div class="fixed-top text-center" style="z-index: 9999999999999999" v-if="currentlyRecordingSlot">
-      <a @click="openMacrosSettings" class="sgen-on-warning">Currently Recording - {{currentlyRecordingSlot}}</a>
+      <a @click="openSettingsToTab(MACROS_TAB)" class="sgen-on-warning">Currently Recording - {{currentlyRecordingSlot}}</a>
     </div>
     <div v-if="state !== 'OPEN'" class="connecting-overlay">
       <ip-select />
@@ -38,7 +38,7 @@
           <div class="col text-left">
             <a 
               class="current-input-label"
-              @click="openInputSettings"
+              @click="openSettingsToTab(INPUTS_TAB)"
             >
               {{mso.inputs && mso.inputs[mso.input].label}}
             </a>
@@ -60,6 +60,9 @@
             <button class="btn btn-dark rounded-circle menu-btn" @click="toggleSettingsModal()">
               <font-awesome-icon size="lg" :icon="['fas', 'cog']" />
             </button>
+            <button class="btn btn-dark rounded-circle menu-btn" @click="openSettingsToTab(HELP_TAB)">
+              <font-awesome-icon size="lg" :icon="['fas', 'question-circle']" />
+            </button>
             <button class="btn btn-dark rounded-circle menu-btn" @click="powerOff()">
               <font-awesome-icon size="lg" :icon="['fas', 'power-off']" />
             </button>
@@ -68,13 +71,13 @@
         <!-- Program Format, Blank, Listening Format   -->
         <div class="row mt-2">
           <div class="col text-left">
-            <h5>Program Format: {{mso.status?.DECProgramFormat}}</h5>
+            <h5>Program Format: {{mso.status?.DECProgramFormat}} <small v-if="mso.stat?.displayAudioStat">{{mso.status?.DECSampleRate}}</small></h5>
             <div>
               {{mso.status?.DECSourceProgram}}
             </div>
           </div>
           <div class="col text-right">
-            <h5>Listening Format: {{mso.status?.ENCListeningFormat}}</h5>
+            <h5>Listening Format: {{mso.status?.ENCListeningFormat}} <small v-if="mso.stat?.displayAudioStat">{{mso.status?.ENCSampleRate}}</small></h5>
             <!-- Surround Mode -->
             <!--             <h5>Surround Mode</h5>      -->
             <!--             <div>{{mso.status?.SurroundMode}}</div>   -->
@@ -127,7 +130,7 @@
         <!-- Input Select -->
         <div class="row mt-2">
           <div class="col-md-12 text-center" :class="{'experimental': experimental}">
-              <h5><span class="link" @click="openInputSettings">Input Select</span></h5>
+              <h5><span class="link" @click="openSettingsToTab(INPUTS_TAB)">Input Select</span></h5>
               <div class="inputs-container my-3">
                 <two-state-button 
                   v-for="(inp, key) in visibleInputs"
@@ -146,7 +149,7 @@
         <!-- Upmix Select -->
         <div class="row mt-2" v-if="mso.stat.systemAudio">
           <div class="col-md-12 text-center" :class="{'experimental': experimental}">
-              <h5><span class="link" @click="openSoundEnhancementSettings">Upmix Select</span></h5>
+              <h5><span class="link" @click="openSettingsToTab(SOUND_ENHANCEMENTS_TAB)">Upmix Select</span></h5>
               <div class="upmix-container my-3">
                 <two-state-button 
                   v-for="(upmix, key) in visibleUpmixers"
@@ -290,6 +293,7 @@ const SIGNAL_GENERATOR_TAB = 2;
 const INPUTS_TAB = 5;
 const SOUND_ENHANCEMENTS_TAB = 6;
 const MACROS_TAB = 8;
+const HELP_TAB = 11;
 
 export default {
   setup() {
@@ -374,33 +378,27 @@ export default {
       clearInterval(incrementVolumeInterval);
     }
 
+    function openSettingsModal() {
+      document.body.classList.add('modal-open');
+      settingsModalIsOpen.value = true;
+    }
+
+    function closeSettingsModal() {
+      document.body.classList.remove('modal-open');
+      settingsModalIsOpen.value = false;
+    }
+
     function toggleSettingsModal() {
-      if (settingsModalIsOpen.value) {
-        document.body.classList.remove('modal-open');
+      if (!settingsModalIsOpen.value) {
+        openSettingsModal();
       } else {
-        document.body.classList.add('modal-open');
+        closeSettingsModal();
       }
-      settingsModalIsOpen.value = !settingsModalIsOpen.value;
     }
 
-    function openSignalGeneratorSettings() {
-      setSettingsActiveTab(SIGNAL_GENERATOR_TAB);
-      settingsModalIsOpen.value = true;
-    }
-
-    function openMacrosSettings() {
-      setSettingsActiveTab(MACROS_TAB);
-      settingsModalIsOpen.value = true;
-    }
-
-    function openInputSettings() {
-      setSettingsActiveTab(INPUTS_TAB);
-      settingsModalIsOpen.value = true;
-    }
-
-    function openSoundEnhancementSettings() {
-      setSettingsActiveTab(SOUND_ENHANCEMENTS_TAB);
-      settingsModalIsOpen.value = true;
+    function openSettingsToTab(selectedTab) {
+      setSettingsActiveTab(selectedTab);
+      openSettingsModal();
     }
 
     function handleInputClicked(inp) {
@@ -432,9 +430,8 @@ export default {
       settingsModalIsOpen, toggleSettingsModal,
       settingsActiveTab, setSettingsActiveTab,
       handleVolumeDownLongPress, handleVolumeUpLongPress, handleVolumeLongPressUp,
-      handleVolumeDownPress, handleVolumeUpPress,
-      handleMute, openSignalGeneratorSettings, openInputSettings, openSoundEnhancementSettings, 
-      openMacrosSettings, SIGNAL_GENERATOR_TAB,
+      handleVolumeDownPress, handleVolumeUpPress, handleMute, 
+      SIGNAL_GENERATOR_TAB, INPUTS_TAB, SOUND_ENHANCEMENTS_TAB, MACROS_TAB, HELP_TAB, openSettingsToTab,
       setNightOff, setNightAuto, setNightOn, setLoudnessOff, setLoudnessOn, setToneControlOff, setToneControlOn, setGlobalPEQOff, setGlobalPEQOn,setDtsDialogEnh,
       currentlyRecordingSlot,
       experimental

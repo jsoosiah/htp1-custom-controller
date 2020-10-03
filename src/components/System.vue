@@ -111,7 +111,7 @@
           @click="toggleExtendedAudioStatus()"
         >
         <label class="custom-control-label" for="display-audio">
-          Display Extended Audio Status
+          Display Extended Audio Status on Home Page
         </label>
       </div>
     </div>

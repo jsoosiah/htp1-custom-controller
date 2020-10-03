@@ -54,16 +54,6 @@
 
 import { ref, defineAsyncComponent } from 'vue';
 
-// import Speakers from './Speakers.vue';
-// import Calibration from './Calibration.vue';
-// import SignalGenerator from './SignalGenerator.vue';
-// import Peq from './Peq.vue';
-// import ToneControl from './ToneControl.vue';
-// import Inputs from './Inputs.vue';
-// import SoundEnhancement from './SoundEnhancement.vue';
-// import Connectivity from './Connectivity.vue';
-// import System from './System.vue';
-
 import CalibrationIcon from './icons/CalibrationIcon';
 import PeqIcon from './icons/PeqIcon';
 import ToneControlIcon from './icons/ToneControlIcon';
@@ -75,6 +65,7 @@ import SystemIcon from './icons/SystemIcon';
 import UpmixIcon from './icons/UpmixIcon';
 import MacrosIcon from './icons/MacrosIcon';
 import AboutIcon from './icons/AboutIcon';
+import HelpIcon from './icons/HelpIcon';
 
 export default {
   name: 'Settings',
@@ -100,6 +91,7 @@ export default {
       {'label': 'Macros', 'component': 'macros', icon: 'macros-icon'},
       {'label': 'System', 'component': 'system', icon: 'system-icon' },
       {'label': 'About', 'component': 'about', icon: 'about-icon' },
+      {'label': 'Help', 'component': 'help', icon: 'help-icon' },
     ]);
 
     async function setActiveTab(tab) {
@@ -129,6 +121,7 @@ export default {
     Macros: defineAsyncComponent(() => import('./Macros.vue')),
     System: defineAsyncComponent(() => import('./System.vue')),
     About: defineAsyncComponent(() => import('./About.vue')),
+    Help: defineAsyncComponent(() => import('./Help.vue')),
     // Speakers,
     // Calibration,
     // SignalGenerator,
@@ -149,6 +142,7 @@ export default {
     UpmixIcon,
     MacrosIcon,
     AboutIcon,
+    HelpIcon,
   },
   emits: ['active-tab-change', 'close']
 }
