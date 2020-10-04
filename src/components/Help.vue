@@ -257,7 +257,7 @@
                 <li><b>Parmetric</b><b> EQ</b>: The system allows for up to 16
                   bands of parametric EQ, individually adjustable on each
                   channel. These settings are typically used to tweak the
-                  response of the room.&nbsp;</li>
+                  response of the room.</li>
                 <li>The tone and PEQ features are automatically disabled when a
                   Dirac calibration is run. These filters are used to
                   adjust a room that is already calibrated. There is discussion
@@ -481,7 +481,7 @@
                   information. Then "apply" the network settings.</li>
                 <li>When WiFi is enabled the system scans to find available
                   networks. These are displayed on the left. Choose
-                  a network, enter the password, and click on "CONFIGURE".&nbsp;
+                  a network, enter the password, and click on "CONFIGURE".
                   After a brief delay the network should appear in the list of
                   configured networks on the right.</li>
               </ul>
@@ -503,7 +503,8 @@
                 <li>Select one of the 8 slots to record your actions.</li>
                 <li>Click the Recording button to start recording, and then perform the actions you wish to record, using either the remote or the web interface.</li>
                 <li>Your actions will be recorded on the Macros page. You may delete any undesirable entries, or drag rows to rearrange the order of entries.</li>
-                <li>When you are finished, click the save button to save your recordings to the slot that you selected. Click the button you selected on the remote to play back your recordings.</li>
+                <li>When you are finished, click the save button to save your recordings to the slot that you selected.</li>
+                <li>Click the button you selected on the remote to play back your recordings.</li>
               </ul>
             </div>
           </div>
@@ -528,11 +529,11 @@
                 current output video resolution.<br>
               </p>
               <ul>
-                <li>The unit name is displayed by to the outside world.&nbsp;
+                <li>The unit name is displayed by to the outside world.
                   Examples include:</li>
                 <ul>
                   <li>The Dirac calibration tool.</li>
-                  <li>Blue tooth devices.</li>
+                  <li>Bluetooth devices.</li>
                   <li>Roon player.<br>
                   </li>
                 </ul>

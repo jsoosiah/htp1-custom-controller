@@ -676,6 +676,30 @@ function setSignalGeneratorSignalType(signalType) {
   return patchMso({'op': 'replace', 'path': `/sgen/signalType`, value: signalType});
 }
 
+function setSineFrequency(freq) {
+  let freqValue = parseInt(freq);
+  if (isNaN(freqValue)) {
+    freqValue = 440;
+  } else if (freqValue < 10) {
+    freqValue = 10;
+  } else if (freqValue > 20000) {
+    freqValue = 20000;
+  }
+  return patchMso({'op': 'replace', 'path': `/sgen/sinehz`, value: freqValue});
+}
+
+function setSineAmplitude(gain) {
+  let gainValue = parseFloat(gain);
+  if (isNaN(gainValue)) {
+    gainValue = -20;
+  } else if (gainValue < -140) {
+    gainValue = -140;
+  } else if (gainValue > 0) {
+    gainValue = 0;
+  }
+  return patchMso({'op': 'replace', 'path': `/sgen/sinedb`, value: gainValue});
+}
+
 function toggleToneControl() {
   return patchMso({'op': 'replace', 'path': `/eq/tc`, value: !mso.value.eq.tc});
 }
@@ -983,6 +1007,7 @@ export default function useMso() {
     setUserDelay, setUserTrim,
     toggleSignalGenerator, setSignalGeneratorOff, setSignalGeneratorOn,
     setSignalGeneratorChannel, setSignalGeneratorChannel2, setSignalGeneratorSignalType,
+    setSineFrequency, setSineAmplitude,
     toggleToneControl, setBassCornerFrequency, setTrebleCornerFrequency, 
     setBassBoostCutLevel, setTrebleBoostCutLevel, setLoudnessCalibration,
     toggleGlobalPEQ, setGlobalPEQOff, setGlobalPEQOn,

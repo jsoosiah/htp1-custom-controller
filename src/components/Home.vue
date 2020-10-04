@@ -486,10 +486,16 @@ export default {
   }
 
   .current-input-label {
-    font-size:min(2.3rem, 9vw);
-    /* font-size: 1vw; */
+    line-height: 1;
+    font-size: 2rem;
     color:inherit;
     cursor: pointer;
+  }
+
+  @media(min-width: 576px) {
+    .current-input-label {
+      font-size: 2.75rem;
+    }
   }
 
   .current-input-label:hover {

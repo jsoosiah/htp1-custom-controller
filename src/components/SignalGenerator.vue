@@ -41,6 +41,44 @@
             </tr>
           </tbody>
         </table>
+        <div v-if="mso.sgen?.signalType === 'sine'">
+          <div class="form-group">
+            <label for="inputEmail3" class="col-form-label col-form-label-sm">Frequency</label>
+            <div class="input-group input-group-sm numeric-input">
+              <input 
+                type="number" 
+                class="form-control" 
+                aria-label="Frequency" 
+                aria-describedby="basic-addon2" 
+                :value="mso.sgen?.sinehz" 
+                @change="({ type, target }) => setSineFrequency(target.value)" 
+                min="10" 
+                max="20000"
+                step="10">
+              <div class="input-group-append">
+                <span class="input-group-text" id="basic-addon2">Hz</span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="inputEmail3" class="col-form-label col-form-label-sm">Amplitude</label>
+            <div class="input-group input-group-sm numeric-input">
+              <input 
+                type="number" 
+                class="form-control" 
+                aria-label="Amplitude" 
+                aria-describedby="basic-addon2" 
+                :value="mso.sgen?.sinedb" 
+                @change="({ type, target }) => setSineAmplitude(target.value)" 
+                min="-140" 
+                max="0"
+                step="5">
+              <div class="input-group-append">
+                <span class="input-group-text" id="basic-addon2">dBFS (peak)</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="col-auto">
         <table class="table table-sm table-striped table-responsive">
@@ -139,14 +177,16 @@
     name: 'SignalGenerator',
     setup() {
 
-      const { mso, toggleSignalGenerator, setSignalGeneratorChannel, setSignalGeneratorChannel2, setSignalGeneratorSignalType,
-      setSignalGeneratorOff, setSignalGeneratorOn, showCrossoverControls } = useMso();
+      const { mso, toggleSignalGenerator, setSignalGeneratorChannel, setSignalGeneratorChannel2, 
+        setSignalGeneratorSignalType, setSignalGeneratorOff, setSignalGeneratorOn, 
+        showCrossoverControls, setSineFrequency, setSineAmplitude } = useMso();
       const { getActiveChannels, spkName } = useSpeakerGroups();
 
       const signalOptions = [
         {'label': '"THX-like" band limited noise', 'value': 'thx'},
         {'label': 'Louder reference noise', 'value': 'dolby'},
         {'label': 'Polarity pulse', 'value': 'pulse'},
+        {'label': 'Sinewave', 'value': 'sine'},
         {'label': 'Left input as signal', 'value': 'left'},
         {'label': 'Left and right input as signal', 'value': 'right'},
       ];
@@ -182,7 +222,8 @@
 
       return { 
         mso, toggleSignalGenerator, setSignalGeneratorChannel, setSignalGeneratorChannel2, setSignalGeneratorSignalType, 
-        activeChannels, visibleChannels, translatedSpkName, signalOptions, setSignalGeneratorOff, setSignalGeneratorOn, showCrossoverControls
+        activeChannels, visibleChannels, translatedSpkName, signalOptions, setSignalGeneratorOff, setSignalGeneratorOn, showCrossoverControls,
+        setSineFrequency, setSineAmplitude
       };
     },
     components: {
@@ -200,7 +241,11 @@
     font-size:80%;
   }
 
-  .col {
+  .col-auto, .col {
     padding-left: 0;
+  }
+
+  .numeric-input {
+    width: 9.5rem;
   }
 </style>
