@@ -135,8 +135,6 @@ watch(
 // helper functions for watchers ---------------------------
 function applyProductRules() {
 
-  console.log('applyProductRules')
-
   const groups = ['c', 'lrs', 'lrb', 'lrw', 'lrtf', 'lrtm', 'lrtr', 'lrhf', 'lrhr', 'sub1', 'sub2', 'sub3', 'sub4', 'sub5'];
   const spg = mso.value.speakers?.groups;
 
@@ -639,6 +637,68 @@ function setUserTrim(channel, trim) {
   return patchMso({'op': 'replace', 'path': `/cal/slots/${mso.value.cal.currentdiracslot}/channels/${channel}/trim`, value: parseFloat(trim)});
 }
 
+function setMuteChannelOn(channel) {
+  // save existing user trim so it can be restored on unmute
+  const preMuteTrim = patchMso({'op': 'add', 'path': `/cal/slots/${mso.value.cal.currentdiracslot}/channels/${channel}/preMuteTrim`, 
+    value: currentDiracSlot.value.channels[channel].trim});
+  // set mute flag to true
+  const mute =  patchMso({'op': 'add', 'path': `/cal/slots/${mso.value.cal.currentdiracslot}/channels/${channel}/mute`, value: true});
+  // apply -100 trim to achieve mute effect
+  const trim = setUserTrim(channel, -100);
+
+  return preMuteTrim && mute && trim;
+}
+
+function setMuteChannelOff(channel) {
+  if (currentDiracSlot.value.channels[channel].mute === true) {
+    // restore user trim 
+    const trim = setUserTrim(channel, currentDiracSlot.value.channels[channel].preMuteTrim);
+    // remove mute flag
+    const mute =  patchMso({'op': 'remove', 'path': `/cal/slots/${mso.value.cal.currentdiracslot}/channels/${channel}/mute`});
+    // remove saved user trim
+    const preMuteTrim =  patchMso({'op': 'remove', 'path': `/cal/slots/${mso.value.cal.currentdiracslot}/channels/${channel}/preMuteTrim`});
+
+    return trim && mute && preMuteTrim;
+  }
+
+  return false;
+}
+
+function toggleMuteChannel(channel) {
+  if (currentDiracSlot.value.channels[channel].mute) {
+    return setMuteChannelOff(channel);
+  }
+
+  return setMuteChannelOn(channel);
+}
+
+function setMuteAllChannelsOn() {
+  let result = true;
+  for (let channel in currentDiracSlot.value.channels) {
+    result = result && setMuteChannelOn(channel);
+  }
+
+  return result;
+}
+
+function setMuteAllChannelsOff() {
+  let result = true;
+  for (let channel in currentDiracSlot.value.channels) {
+    result = result && setMuteChannelOff(channel);
+  }
+
+  return result;
+}
+
+function toggleAllMuteChannels() {
+  let result = true;
+  for (let channel in currentDiracSlot.value.channels) {
+    result = result && toggleMuteChannel(channel);
+  }
+
+  return result;
+}
+
 function toggleSignalGenerator() {
   return patchMso({'op': 'replace', 'path': `/sgen/sgensw`, value: mso.value.sgen.sgensw === 'off' ? 'on' : 'off'});
 }
@@ -1004,7 +1064,8 @@ export default function useMso() {
     setToneControlOff, setToneControlOn,
     toggleSpeakerGroup, setSpeakerSize, setCenterFreq,
     setMinVolume, setMaxVolume, setMaxOutputLevel, setLipsyncDelay, setDiracSlot,
-    setUserDelay, setUserTrim,
+    setUserDelay, setUserTrim, toggleMuteChannel,
+    setMuteAllChannelsOff, setMuteAllChannelsOn, toggleAllMuteChannels,
     toggleSignalGenerator, setSignalGeneratorOff, setSignalGeneratorOn,
     setSignalGeneratorChannel, setSignalGeneratorChannel2, setSignalGeneratorSignalType,
     setSineFrequency, setSineAmplitude,

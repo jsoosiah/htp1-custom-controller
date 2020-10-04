@@ -2,7 +2,7 @@
   <div class="custom-btn-group">
     <button 
       class="btn btn-sm" 
-      :class="{[props.homeButton?'btn-light':'btn-success']: props.stateOn, [props.homeButton?'btn-dark':'btn-secondary']: !props.stateOn, 'home-btn': props.homeButton}"
+      :class="{[props.homeButton?'btn-light':props.muteButton?'btn-danger':'btn-success']: props.stateOn, [props.homeButton?'btn-dark':'btn-secondary']: !props.stateOn, 'home-btn': props.homeButton}"
       :style="{'min-width': props.minWidth}"
       @click="clicked"
     >
@@ -29,6 +29,10 @@
         required: true
       },
       homeButton: {
+        type: Boolean,
+        default: false
+      },
+      muteButton: {
         type: Boolean,
         default: false
       },

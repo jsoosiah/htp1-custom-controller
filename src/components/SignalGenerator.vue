@@ -26,7 +26,7 @@
                     :for="`radio-${signal.value}`"
                     v-tooltip="{
                       enabled: !(signal.value === 'right'),
-                      message: 'This requires DSP changes and is not yet functional.'
+                      message: 'Not yet functional.'
                     }"
                     :id="`signal-type-${signal.value}`"
                   >

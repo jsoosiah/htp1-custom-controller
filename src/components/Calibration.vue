@@ -54,8 +54,24 @@
     <div class="alert alert-info small" role="alert">
       * denotes Dirac Live Room Correction filters with Bass Control.
     </div>
-    <div class="mb-3">
-      <dirac-button-group :home-button="false" />
+    <div class="row justify-content-between mb-3">
+      <div class="col-auto">
+        <dirac-button-group :home-button="false" />
+      </div>
+      <div class="col-auto">
+        <div class="custom-control custom-switch">
+          <input 
+            type="checkbox" 
+            class="custom-control-input" 
+            id="display-adv-input" 
+            :checked="showChannelMuteControls" 
+            @click="toggleShowChannelMuteControls()"
+          >
+          <label class="custom-control-label" for="display-adv-input">
+            Show Advanced Settings
+          </label>
+        </div>
+      </div>
     </div>
     <nav class="navbar nav-fill nav-pills bg-light navbar-light">
       <a 
@@ -79,10 +95,20 @@
           <th class="text-right">Dirac Calibration Trim (dB)</th>
           <th class="text-right">User Trim (dB)</th>
           <th class="text-right">Total Trim (dB)</th>
+          <th 
+            v-if="showChannelMuteControls"
+            class="text-right"
+          >
+            Mute Channel
+          </th>
         </tr>
       </thead>
       <tbody :class="{'hiding':currentDiracTab === null, 'showing':currentDiracTab !== null}">
-        <tr v-for="channame in activeChannels" :key="channame">
+        <tr 
+          v-for="channame in activeChannels" 
+          :key="channame"
+          :class="{'table-danger': currentDiracSlot?.channels[channame].mute === true}"
+        >
           <td>{{spkName(channame)}}</td>
           <td class="text-right" :title="currentDiracSlot?.channels[channame].caldelay">
             {{formatDecimal(currentDiracSlot?.channels[channame].caldelay)}}
@@ -109,19 +135,55 @@
             <input 
               type="number" 
               class="form-control form-control-sm text-right" 
-              :value="currentDiracSlot?.channels[channame].trim" 
+              :value="currentDiracSlot?.channels[channame].mute === true ? currentDiracSlot?.channels[channame].preMuteTrim : currentDiracSlot?.channels[channame].trim" 
               @change="({ type, target }) => setUserTrim(channame, target.value)" 
+              :disabled="currentDiracSlot?.channels[channame].mute === true"
               min="-12" 
               max="12" 
               step=".5"
             >
           </td>
           <td class="text-right" :title="currentDiracSlot?.channels[channame].caltrim + currentDiracSlot?.channels[channame].trim">
-            {{formatDecimal(currentDiracSlot?.channels[channame].caltrim + currentDiracSlot?.channels[channame].trim)}}
+            {{formatDecimal(currentDiracSlot?.channels[channame].caltrim + (currentDiracSlot?.channels[channame].mute === true ? currentDiracSlot?.channels[channame].preMuteTrim : currentDiracSlot?.channels[channame].trim))}}
+          </td>
+          <td class="text-right" v-if="showChannelMuteControls">
+            <two-state-button 
+              :button-text="`Mute: ${currentDiracSlot?.channels[channame].mute ? 'on' : 'off'}`" 
+              :state-on="currentDiracSlot?.channels[channame].mute === true" 
+              :mute-button="true"
+              @btn-click="toggleMuteChannel(channame)"
+              
+            />
           </td>
         </tr>
       </tbody>
     </table>
+    <div class="row" v-if="showChannelMuteControls">
+      <div class="col-auto">
+        <button 
+          class="btn btn-sm btn-danger mb-3"
+          @click="setMuteAllChannelsOn()"
+        >
+          Mute All Channels
+        </button>
+      </div>
+      <div class="col-auto">
+        <button 
+          class="btn btn-sm btn-primary mb-3"
+          @click="setMuteAllChannelsOff()"
+        >
+          Unmute All Channels
+        </button>
+      </div>
+      <div class="col-auto">
+        <button 
+          class="btn btn-sm btn-info mb-3"
+          @click="toggleAllMuteChannels()"
+        >
+          Invert Mute on All Channels
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -130,8 +192,10 @@
   import { computed, watch, ref } from 'vue';
 
   import useMso from '@/use/useMso.js';
+  import useLocalStorage from '@/use/useLocalStorage.js';
   import useSpeakerGroups from '@/use/useSpeakerGroups.js';
   import DiracButtonGroup from './buttons/DiracButtonGroup.vue';
+  import TwoStateButton from './buttons/TwoStateButton.vue';
 
   export default {
     name: 'Calibration',
@@ -140,9 +204,11 @@
       const { 
         mso, setDiracSlot, setUserTrim, setUserDelay, 
         setMinVolume, setMaxVolume, setMaxOutputLevel, setLipsyncDelay,
-        currentDiracSlot, activeChannels
+        currentDiracSlot, activeChannels, toggleMuteChannel,
+        setMuteAllChannelsOff, setMuteAllChannelsOn, toggleAllMuteChannels,
       } = useMso();
       const { spkName } = useSpeakerGroups();
+      const { showChannelMuteControls, toggleShowChannelMuteControls } = useLocalStorage();
 
       const currentDiracTab = ref(mso.value.cal?.currentdiracslot);
 
@@ -166,11 +232,14 @@
       return {
         mso, setDiracSlot, setUserTrim, setUserDelay, 
         setMinVolume, setMaxVolume, setMaxOutputLevel, setLipsyncDelay, currentDiracSlot,
-        activeChannels, spkName, formatDecimal, currentDiracTab, setDiracTab 
+        activeChannels, spkName, formatDecimal, currentDiracTab, setDiracTab,
+        showChannelMuteControls, toggleShowChannelMuteControls, toggleMuteChannel,
+        setMuteAllChannelsOff, setMuteAllChannelsOn, toggleAllMuteChannels,
       };
     },
     components: {
       DiracButtonGroup,
+      TwoStateButton,
     }
   }
 </script>

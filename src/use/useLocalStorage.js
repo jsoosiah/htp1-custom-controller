@@ -9,6 +9,9 @@ const settingsActiveTab = ref(localStorage.getItem('settingsActiveTab') ? parseI
 // EQ group by setting - 0 to group by channel, 1 to group by band
 const eqGroupBy = ref(localStorage.getItem('eqGroupBy') ? parseInt(localStorage.getItem('eqGroupBy')) : 0);
 
+// Show channel mute controls on Calibration tab
+const showChannelMuteControls = ref(localStorage.getItem('showChannelMuteControls') ? localStorage.getItem('showChannelMuteControls') : false);
+
 const maxWaitTimeToSendToMso = ref(375);
 
 export default function useLocalStorage() {
@@ -33,6 +36,11 @@ export default function useLocalStorage() {
     localStorage.setItem('maxWaitTimeToSendToMso', newMaxWaitTime);
   }
 
+  function toggleShowChannelMuteControls() {
+    showChannelMuteControls.value = !showChannelMuteControls.value;
+    localStorage.setItem('showChannelMuteControls', showChannelMuteControls.value);
+  }
+
   return {
     websocketIp,
     setWebsocketIp,
@@ -42,5 +50,7 @@ export default function useLocalStorage() {
     setSettingsActiveTab,
     maxWaitTimeToSendToMso,
     setMaxWaitTimeToSendToMso,
+    showChannelMuteControls,
+    toggleShowChannelMuteControls,
   };
 }

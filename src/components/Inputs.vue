@@ -25,8 +25,8 @@
           <th>Input</th>
           <th>Label</th>
           <th>Visible on Home Page</th>
-          <th>Default Upmix</th>
-          <th>Volume Trim (dB)</th>
+          <th>Default Sound Mode</th>
+          <th>Input Trim (dB)</th>
           <th>UHD Capable</th>
           <th v-if="mso.stat?.displayAdvancedSettings">PCM Detect Sensitivity</th>
         </tr>
