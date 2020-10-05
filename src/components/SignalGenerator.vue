@@ -25,7 +25,7 @@
                     class="form-check-label" 
                     :for="`radio-${signal.value}`"
                     v-tooltip="{
-                      enabled: !(signal.value === 'right'),
+                      enabled: !(signal.value === 'right' || signal.value === 'pink'),
                       message: 'Not yet functional.'
                     }"
                     :id="`signal-type-${signal.value}`"
@@ -33,7 +33,7 @@
                     {{signal.label}}
                     <font-awesome-icon 
                       :icon="['fas', 'exclamation-circle']"
-                      v-if="signal.value === 'right'"
+                      v-if="signal.value === 'right' || signal.value === 'pink'"
                     />
                   </label>
                 </div>
@@ -184,6 +184,7 @@
 
       const signalOptions = [
         {'label': '"THX-like" band limited noise', 'value': 'thx'},
+        {'label': 'Full bandwidth pink noise', 'value': 'pink'},
         {'label': 'Louder reference noise', 'value': 'dolby'},
         {'label': 'Polarity pulse', 'value': 'pulse'},
         {'label': 'Sinewave', 'value': 'sine'},

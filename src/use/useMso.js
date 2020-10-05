@@ -232,6 +232,10 @@ function applyProductRules() {
         }
       }
     }
+
+    if (!mso.value.loudnessCurve) {
+      _setLoudnessCurve();
+    }
   }
 }
 
@@ -652,7 +656,12 @@ function setMuteChannelOn(channel) {
 function setMuteChannelOff(channel) {
   if (currentDiracSlot.value.channels[channel].mute === true) {
     // restore user trim 
-    const trim = setUserTrim(channel, currentDiracSlot.value.channels[channel].preMuteTrim);
+    if (currentDiracSlot.value.channels[channel].preMuteTrim) {
+      const trim = setUserTrim(channel, currentDiracSlot.value.channels[channel].preMuteTrim);
+    } else {
+      const trim = setUserTrim(channel, 0);
+    }
+    
     // remove mute flag
     const mute =  patchMso({'op': 'remove', 'path': `/cal/slots/${mso.value.cal.currentdiracslot}/channels/${channel}/mute`});
     // remove saved user trim
@@ -790,6 +799,23 @@ function setTrebleBoostCutLevel(level) {
 
 function setLoudnessCalibration(loudness) {
   return patchMso({'op': 'replace', 'path': `/loudnessCal`, value: parseFloat(loudness)});
+}
+
+// warning: custom attribute
+function _setLoudnessCurve(op, curve) {
+  if (!op) {
+    op = mso.value.loudnessCurve ? 'replace' : 'add';
+  }
+
+  if (curve !== 'iso' && curve !== 'vintage') {
+    curve = 'iso';
+  }
+
+  return patchMso({'op': op, 'path': `/loudnessCurve`, value: 'iso'});
+}
+
+function setLoudnessCurve(curve) {
+  return _setLoudnessCurve('replace', curve);
 }
 
 function toggleGlobalPEQ() {

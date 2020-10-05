@@ -80,7 +80,41 @@
 
     <div class="container">
       <div class="row">
-        <div class="col-lg">
+        <div class="col-auto">
+          <table class="table table-sm table-striped table-responsive">
+            <thead>
+              <tr>
+                <th>
+                  Loudness Curve Select
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="curve in loudnessOptions" :key="curve.value">
+                <td>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="curve" :id="`radio-${curve.value}`" :value="curve.value" :checked="mso.loudnessCurve === curve.value" @click="setSignalGeneratorSignalType(curve.value)">
+                    <label 
+                      class="form-check-label" 
+                      :for="`radio-${curve.value}`"
+                      v-tooltip="{
+                        enabled: !(true),
+                        message: 'Not yet functional.'
+                      }"
+                      :id="`curve-type-${curve.value}`"
+                    >
+                      {{curve.label}}
+                      <font-awesome-icon 
+                        :icon="['fas', 'exclamation-circle']"
+                      />
+                    </label>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="col-auto">
             <div class="form-group">
               <label for="inputPassword3" class="col-form-label col-form-label-sm ">Loudness Calibration</label>
                 <div class="input-group input-group-sm numeric-input">
@@ -98,18 +132,29 @@
 
 <script>
   import useMso from '@/use/useMso.js';
-
+  
+  import { Tooltip } from '@/directives/Tooltip.js';
+  
   import TwoStateButton from './buttons/TwoStateButton.vue';
 
   export default {
     name: 'ToneControl',
     setup() {
+
+      const loudnessOptions = [
+        {'label': 'ISO 226:2003', 'value': 'iso'},
+        {'label': 'Vintage', 'value': 'vintage'},
+      ];
+
       return {
-        ...useMso()
+        ...useMso(), loudnessOptions
       };
     },
     components: {
       TwoStateButton,
+    },
+    directives: {
+      Tooltip,
     }
   }
 </script>
@@ -138,7 +183,9 @@
   }
 
   th {
-    font-size:80%;
+    font-size:87.5%;
+    font-weight: normal;
+    border-top: 0px;
   }
 
   .table .form-control {
@@ -148,7 +195,7 @@
   }
 
   .table-sm td {
-    padding:0 0.3rem;
+    /* padding:0 0.3rem; */
   }
 
   .col-lg {
