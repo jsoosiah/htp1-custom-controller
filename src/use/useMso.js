@@ -642,24 +642,29 @@ function setUserTrim(channel, trim) {
 }
 
 function setMuteChannelOn(channel) {
-  // save existing user trim so it can be restored on unmute
-  const preMuteTrim = patchMso({'op': 'add', 'path': `/cal/slots/${mso.value.cal.currentdiracslot}/channels/${channel}/preMuteTrim`, 
-    value: currentDiracSlot.value.channels[channel].trim});
-  // set mute flag to true
-  const mute =  patchMso({'op': 'add', 'path': `/cal/slots/${mso.value.cal.currentdiracslot}/channels/${channel}/mute`, value: true});
-  // apply -100 trim to achieve mute effect
-  const trim = setUserTrim(channel, -100);
+  if (currentDiracSlot.value.channels[channel].mute === undefined) {
+    // save existing user trim so it can be restored on unmute
+    const preMuteTrim = patchMso({'op': 'add', 'path': `/cal/slots/${mso.value.cal.currentdiracslot}/channels/${channel}/preMuteTrim`, 
+      value: currentDiracSlot.value.channels[channel].trim});
+    // set mute flag to true
+    const mute =  patchMso({'op': 'add', 'path': `/cal/slots/${mso.value.cal.currentdiracslot}/channels/${channel}/mute`, value: true});
+    // apply -100 trim to achieve mute effect
+    const trim = setUserTrim(channel, -100);
 
-  return preMuteTrim && mute && trim;
+    return preMuteTrim && mute && trim;
+  }
+
+  return false;
 }
 
 function setMuteChannelOff(channel) {
   if (currentDiracSlot.value.channels[channel].mute === true) {
     // restore user trim 
+    let trim;
     if (currentDiracSlot.value.channels[channel].preMuteTrim) {
-      const trim = setUserTrim(channel, currentDiracSlot.value.channels[channel].preMuteTrim);
+      trim = setUserTrim(channel, currentDiracSlot.value.channels[channel].preMuteTrim);
     } else {
-      const trim = setUserTrim(channel, 0);
+      trim = setUserTrim(channel, 0);
     }
     
     // remove mute flag
@@ -684,7 +689,7 @@ function toggleMuteChannel(channel) {
 function setMuteAllChannelsOn() {
   let result = true;
   for (let channel in currentDiracSlot.value.channels) {
-    result = result && setMuteChannelOn(channel);
+    result = setMuteChannelOn(channel) && result;
   }
 
   return result;
@@ -693,7 +698,7 @@ function setMuteAllChannelsOn() {
 function setMuteAllChannelsOff() {
   let result = true;
   for (let channel in currentDiracSlot.value.channels) {
-    result = result && setMuteChannelOff(channel);
+    result = setMuteChannelOff(channel) && result;
   }
 
   return result;
@@ -702,7 +707,7 @@ function setMuteAllChannelsOff() {
 function toggleAllMuteChannels() {
   let result = true;
   for (let channel in currentDiracSlot.value.channels) {
-    result = result && toggleMuteChannel(channel);
+    result = toggleMuteChannel(channel) && result;
   }
 
   return result;
