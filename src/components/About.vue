@@ -5,11 +5,26 @@
       <tbody>
         <tr>
           <th>System Software Version</th>
-          <td><code>{{mso.versions?.swVer}}</code></td>
+          <td><code>{{mso.versions?.swVer}}</code> (<a :href="`http://${websocketIp}/current_release_notes`" target="_blank">Current Release Notes</a>)</td>
         </tr>
         <tr>
           <th>System Build Date and Time</th>
           <td><code>{{mso.versions?.GuiNodeRed}}</code></td>
+        </tr>
+        <tr>
+          <th>History and Updates</th>
+          <td>
+            <template v-if="mso.stat?.newupdate === 'updateavailable'">
+              <mark class="update-mark">
+                <a :href="`http://${websocketIp}/history.html`" target="_blank">Update is Available - See History Page</a>
+              </mark>
+            </template>
+            <template v-else>
+              <a :href="`http://${websocketIp}/history.html`" target="_blank">
+                See History Page
+              </a>
+            </template>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -91,16 +106,19 @@
         </tr>
       </tbody>
     </table>
+    <h5>About this Custom Interface</h5>
+    <p>See <a target="_blank" href="https://github.com/jsoosiah/htp1-custom-controller">https://github.com/jsoosiah/htp1-custom-controller</a>.</p>
   </div>
 </template>
 
 <script>
 import useMso from "@/use/useMso.js";
+import useLocalStorage from "@/use/useLocalStorage.js";
 
 export default {
   name: "About",
   setup() {
-    return { ...useMso() };
+    return { ...useMso(), ...useLocalStorage() };
   },
 };
 </script>
@@ -124,6 +142,11 @@ td {
 code {
   color: inherit;
   /* font-family: inherit; */
+}
+
+mark {
+  background-color: yellow;
+  font-weight: bold;
 }
 
 </style>

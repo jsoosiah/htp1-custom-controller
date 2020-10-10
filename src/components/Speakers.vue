@@ -2,7 +2,7 @@
   <div class="container">
     <div class="row">
       <h5>Speaker Selection</h5>
-      <div class="alert alert-info small alert-box" role="alert">
+      <div class="alert alert-info alert-dismissible small alert-box" role="alert">
         <p>If the current Dirac Filter Slot has Bass Control and Dirac is On, speaker size and crossover controls are unavailable and must be configured using the Dirac software. Speaker sizes and crossovers can be changed if Dirac is off or in bypass mode.</p>
         <div class="row">
           <div class="col-auto">
@@ -21,6 +21,9 @@
           </div>
           <div class="col-auto"></div>
         </div>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
       </div>
     </div>
     <div class="row">
@@ -33,8 +36,11 @@
     </div>
     <div class="row speaker-map-container">
       <h5>Speaker Map <small class="text-muted">Click image to zoom</small></h5>
-      <div class="alert alert-info small" role="alert">
+      <div class="alert alert-info alert-dismissible small" role="alert">
         <p>Depending on the combination of selected speakers, the physical labels on the back panel may not match the actual speaker mapping. The correct mapping is shown below. If the speakers are not enabled, no sound will be produced. Enabled speaker channels are highlighted in green.</p>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
       </div>
       <SpeakerMap />
     </div>

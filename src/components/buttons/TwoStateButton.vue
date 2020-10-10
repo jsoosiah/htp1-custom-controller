@@ -2,7 +2,11 @@
   <div class="custom-btn-group">
     <button 
       class="btn btn-sm" 
-      :class="{[props.homeButton?'btn-light':props.muteButton?'btn-danger':'btn-success']: props.stateOn, [props.homeButton?'btn-dark':'btn-secondary']: !props.stateOn, 'home-btn': props.homeButton}"
+      :class="{[props.homeButton?'btn-light':props.muteButton?'btn-danger':'btn-success']: props.stateOn, 
+        [props.homeButton?'btn-dark':'btn-secondary']: !props.stateOn && !props.stateLoading, 
+        
+        'btn-progress-bar-animated': props.stateLoading,
+        'home-btn': props.homeButton}"
       :style="{'min-width': props.minWidth}"
       @click="clicked"
     >
@@ -27,6 +31,10 @@
       stateOn: {
         type: Boolean,
         required: true
+      },
+      stateLoading: {
+        type: Boolean,
+        default: false,
       },
       homeButton: {
         type: Boolean,
@@ -136,5 +144,26 @@
   .btn-dark:focus {
     background-color: #343a40;
   }
+
+  .btn-progress-bar-animated {
+    background-color: #6c757d;
+    color:#dedad6;
+    background-image: 
+      repeating-linear-gradient(
+        -45deg, 
+        transparent, 
+        transparent .75rem,
+        rgba(0,0,0,.15) .75rem,
+        rgba(0,0,0,.15) 1.5rem
+      );
+    background-size: 200% 200%;
+    animation: barberpole 10s linear infinite;
+  }
+
+@keyframes barberpole {
+  100% {
+    background-position: 100% 100%;
+  }
+}
 
 </style>

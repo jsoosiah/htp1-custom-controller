@@ -292,38 +292,38 @@
                 break;
               case 1: // LS
                 if (gain >= 0) {
-                  norm = 1 / (1 + Math.SQRT2 * K + K * K);
-                  a0 = (1 + Math.sqrt(2*V) * K + V * K * K) * norm;
+                  norm = 1 / (1 + 1 / q * K + K * K);
+                  a0 = (1 + Math.sqrt(V) / q * K + V * K * K) * norm;
                   a1 = 2 * (V * K * K - 1) * norm;
-                  a2 = (1 - Math.sqrt(2*V) * K + V * K * K) * norm;
+                  a2 = (1 - Math.sqrt(V) / q * K + V * K * K) * norm;
                   b1 = 2 * (K * K - 1) * norm;
-                  b2 = (1 - Math.SQRT2 * K + K * K) * norm;
+                  b2 = (1 - 1 / q * K + K * K) * norm;
                 }
                 else {  
-                  norm = 1 / (1 + Math.sqrt(2*V) * K + V * K * K);
-                  a0 = (1 + Math.SQRT2 * K + K * K) * norm;
+                  norm = 1 / (1 + Math.sqrt(V) / q * K + V * K * K);
+                  a0 = (1 + 1 / q * K + K * K) * norm;
                   a1 = 2 * (K * K - 1) * norm;
-                  a2 = (1 - Math.SQRT2 * K + K * K) * norm;
+                  a2 = (1 - 1 / q * K + K * K) * norm;
                   b1 = 2 * (V * K * K - 1) * norm;
-                  b2 = (1 - Math.sqrt(2*V) * K + V * K * K) * norm;
+                  b2 = (1 - Math.sqrt(V) / q * K + V * K * K) * norm;
                 }
                 break;
               case 2: // HS
                 if (gain >= 0) {
-                    norm = 1 / (1 + Math.SQRT2 * K + K * K);
-                    a0 = (V + Math.sqrt(2*V) * K + K * K) * norm;
+                    norm = 1 / (1 + 1 / q * K + K * K);
+                    a0 = (V + Math.sqrt(V) / q * K + K * K) * norm;
                     a1 = 2 * (K * K - V) * norm;
-                    a2 = (V - Math.sqrt(2*V) * K + K * K) * norm;
+                    a2 = (V - Math.sqrt(V) / q * K + K * K) * norm;
                     b1 = 2 * (K * K - 1) * norm;
-                    b2 = (1 - Math.SQRT2 * K + K * K) * norm;
+                    b2 = (1 - 1 / q * K + K * K) * norm;
                 }
                 else {  
-                    norm = 1 / (V + Math.sqrt(2*V) * K + K * K);
-                    a0 = (1 + Math.SQRT2 * K + K * K) * norm;
+                    norm = 1 / (V + Math.sqrt(V) / q * K + K * K);
+                    a0 = (1 + 1 / q * K + K * K) * norm;
                     a1 = 2 * (K * K - 1) * norm;
-                    a2 = (1 - Math.SQRT2 * K + K * K) * norm;
+                    a2 = (1 - 1 / q * K + K * K) * norm;
                     b1 = 2 * (K * K - V) * norm;
-                    b2 = (V - Math.sqrt(2*V) * K + K * K) * norm;
+                    b2 = (V - Math.sqrt(V) / q * K + K * K) * norm;
                 } 
                 break;
             }

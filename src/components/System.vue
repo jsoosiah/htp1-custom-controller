@@ -153,9 +153,6 @@
           </div>
       </div>
     </template>
-
-    <h5>About this Custom Interface</h5>
-    <p>See <a target="_blank" href="https://github.com/jsoosiah/htp1-custom-controller">https://github.com/jsoosiah/htp1-custom-controller</a>.</p>
   </div>
 </template>
 

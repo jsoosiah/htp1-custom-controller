@@ -1,5 +1,5 @@
 <template>
-  <Home />
+  <router-view />
 </template>
 
 <script>
@@ -12,21 +12,3 @@ export default {
   }
 }
 </script>
-
-<style>
-  body {
-    color:#dedad6;
-    background-color: black;
-  }
-
-  .hiding {
-    transition: opacity 0.1s ease;
-    opacity: 0;
-  }
-
-  .showing {
-    transition: opacity 0.1s ease;
-    opacity: 1;
-  }
-  
-</style>

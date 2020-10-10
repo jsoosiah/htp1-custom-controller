@@ -79,7 +79,7 @@
       // if the toggle is disabled, message is displayed to the user as the reason 
       const speakerGroupValidations = computed(() => {
 
-        const groups = mso.value.speakers.groups;
+        const groups = mso.value.speakers?.groups;
 
         return {
           'lr': [
@@ -146,9 +146,9 @@
           message: ''
         };
 
-        const groups = mso.value.speakers.groups;
+        const groups = mso.value.speakers?.groups;
 
-        if (!groups[spkCode].present) {
+        if (groups && !groups[spkCode].present) {
           // if 16 channels are already set, disable toggles that are off to prevent adding more speakers
 
           let limit = 16;

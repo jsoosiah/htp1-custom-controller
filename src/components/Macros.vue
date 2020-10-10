@@ -2,16 +2,20 @@
   <div class="transition-container">
     <h5>Record Macros</h5>
     <div class="accordion" id="accordionExample">
-      <macro-editor 
-        :commandKey="key" 
-        :key="key"
-        v-for="key in commandKeys" 
-      />
+      <template v-if="mso.svronly">
+        <macro-editor 
+          :commandKey="key" 
+          :key="key"
+          v-for="key in commandKeys" 
+        />
+      </template>
     </div>
   </div>
 </template>
 
 <script>
+
+  import useMso from '@/use/useMso.js';
 
   import MacroEditor from './MacroEditor.vue';
 
@@ -30,7 +34,8 @@
       ];
 
       return {
-        commandKeys
+        commandKeys,
+        ...useMso()
       };
     },
     components: {

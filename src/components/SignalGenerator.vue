@@ -24,17 +24,8 @@
                   <label 
                     class="form-check-label" 
                     :for="`radio-${signal.value}`"
-                    v-tooltip="{
-                      enabled: !(signal.value === 'right' || signal.value === 'pink'),
-                      message: 'Not yet functional.'
-                    }"
-                    :id="`signal-type-${signal.value}`"
                   >
                     {{signal.label}}
-                    <font-awesome-icon 
-                      :icon="['fas', 'exclamation-circle']"
-                      v-if="signal.value === 'right' || signal.value === 'pink'"
-                    />
                   </label>
                 </div>
               </td>
@@ -85,7 +76,7 @@
           <thead>
             <tr>
               <th>
-                Channel Select {{mso.sgen?.signalType === 'right' ? ' - for left input' : ''}}
+                Channel Select {{mso.sgen?.signalType === 'both' ? ' - for left input' : ''}}
               </th>
             </tr>
           </thead>
@@ -97,14 +88,14 @@
                   <label 
                     class="form-check-label" 
                     :for="`radio-${channame}`"
-                    v-tooltip="{
-                      enabled: !(visibleChannels.length !== activeChannels.length && channame === 'sub1'),
-                      message: 'Individual subwoofer channels are unavailable when Dirac Bass Control is enabled.'
-                    }"
-                    :id="`tooltip-container-left-${channame}`"
                   >
                     {{translatedSpkName(channame)}} 
                     <font-awesome-icon 
+                      v-tooltip="{
+                        enabled: !(visibleChannels.length !== activeChannels.length && channame === 'sub1'),
+                        message: 'Individual subwoofer channels are unavailable when Dirac Bass Control is enabled.'
+                      }"
+                      :id="`tooltip-container-left-${channame}`"
                       :icon="['fas', 'question-circle']"
                       v-if="visibleChannels.length !== activeChannels.length && channame === 'sub1'"
                     />
@@ -115,7 +106,7 @@
           </tbody>
         </table>
       </div>
-      <div class="col-auto" v-if="mso.sgen?.signalType === 'right'">
+      <div class="col-auto" v-if="mso.sgen?.signalType === 'both'">
         <table class="table table-sm table-striped table-responsive">
           <thead>
             <tr>
@@ -139,14 +130,14 @@
                   <label 
                     class="form-check-label" 
                     :for="`radio2-${channame}`"
-                    v-tooltip="{
-                      enabled: !(visibleChannels.length !== activeChannels.length && channame === 'sub1'),
-                      message: 'Individual subwoofer channels are unavailable when Dirac Bass Control is enabled.'
-                    }"
-                    :id="`tooltip-container-right-${channame}`"
                   >
                     {{translatedSpkName(channame)}} 
                     <font-awesome-icon 
+                      v-tooltip="{
+                        enabled: !(visibleChannels.length !== activeChannels.length && channame === 'sub1'),
+                        message: 'Individual subwoofer channels are unavailable when Dirac Bass Control is enabled.'
+                      }"
+                      :id="`tooltip-container-right-${channame}`"
                       :icon="['fas', 'question-circle']"
                       v-if="visibleChannels.length !== activeChannels.length && channame === 'sub1'"
                     />
@@ -189,7 +180,8 @@
         {'label': 'Polarity pulse', 'value': 'pulse'},
         {'label': 'Sinewave', 'value': 'sine'},
         {'label': 'Left input as signal', 'value': 'left'},
-        {'label': 'Left and right input as signal', 'value': 'right'},
+        {'label': 'Right input as signal', 'value': 'right'},
+        {'label': 'Left and right input as signal', 'value': 'both'},
       ];
 
       const lf = new Intl.ListFormat('en');

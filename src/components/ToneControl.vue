@@ -9,8 +9,11 @@
 
     <div class="row mt-3" v-show="!mso.eq?.tc">
       <div class="col">
-        <div class="alert alert-warning small" role="alert">
+        <div class="alert alert-warning alert-dismissible small" role="alert">
           Tone controls are currently turned off. The following tone control settings may be modified, but they will not have any effect until tone controls are turned on.
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
         </div>
       </div>
     </div>
@@ -72,8 +75,11 @@
     />
     <div class="row mt-3" v-show="mso.loudness !== 'on'">
       <div class="col">
-        <div class="alert alert-warning small" role="alert">
+        <div class="alert alert-warning alert-dismissible small" role="alert">
           Loudness compensation is currently turned off. The following loudness compensation settings may be modified, but they will not have any effect until loudness compensation is turned on.
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
         </div>
       </div>
     </div>
@@ -93,20 +99,12 @@
               <tr v-for="curve in loudnessOptions" :key="curve.value">
                 <td>
                   <div class="form-check">
-                    <input class="form-check-input" type="radio" name="curve" :id="`radio-${curve.value}`" :value="curve.value" :checked="mso.loudnessCurve === curve.value" @click="setSignalGeneratorSignalType(curve.value)">
+                    <input class="form-check-input" type="radio" name="curve" :id="`radio-${curve.value}`" :value="curve.value" :checked="mso.loudnessCurve === curve.value" @click="setLoudnessCurve(curve.value)">
                     <label 
                       class="form-check-label" 
                       :for="`radio-${curve.value}`"
-                      v-tooltip="{
-                        enabled: !(true),
-                        message: 'Not yet functional.'
-                      }"
-                      :id="`curve-type-${curve.value}`"
                     >
                       {{curve.label}}
-                      <font-awesome-icon 
-                        :icon="['fas', 'exclamation-circle']"
-                      />
                     </label>
                   </div>
                 </td>

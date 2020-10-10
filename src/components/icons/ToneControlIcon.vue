@@ -1,6 +1,6 @@
 <template>
 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-   viewBox="0 50 640 512" style="enable-background:new 0 0 512 512;" xml:space="preserve">
+   height="24" width="24" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve">
 <g>
   <g>
     <g>
@@ -12,36 +12,6 @@
         S173.675,469.333,256,469.333S405.333,402.347,405.333,320c0-33.493-11.221-64.32-29.909-89.259L271.083,335.083z"/>
     </g>
   </g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
 </g>
 </svg>
 

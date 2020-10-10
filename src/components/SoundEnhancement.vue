@@ -11,21 +11,13 @@
       </thead>
       <tbody>
         <tr v-for="upmix in allUpmixers" :key="upmix.value">
-          <th>
-            <div class="form-check">
-              <input 
-                class="form-check-input" 
-                type="radio" 
-                name="upmix" 
-                :id="`radio-${upmix.value}`" 
-                :value="upmix.value" 
-                :checked="mso.upmix.select === upmix.value" 
-                @click="setUpmix(upmix.value)">
-              <label class="form-check-label" :for="`radio-${upmix.value}`">
-                {{(upmix.label)}}
-              </label>
-            </div>
-          </th>
+          <td>
+            <two-state-button 
+              :button-text="upmix.label"
+              :state-on="mso.upmix.select === upmix.value"
+              @click="setUpmix(upmix.value)"
+            />
+          </td>
           <td>
             <div class="custom-control custom-switch">
               <input 

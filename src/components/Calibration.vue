@@ -51,8 +51,11 @@
       
     </div>
     <h5>Dirac Room Correction Filters <small class="text-muted">up to 6 sets or slots available</small></h5>
-    <div class="alert alert-info small" role="alert">
+    <div class="alert alert-info alert-dismissible small" role="alert">
       * denotes Dirac Live Room Correction filters with Bass Control.
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">×</span>
+      </button>
     </div>
     <div class="row justify-content-between mb-3">
       <div class="col-auto">

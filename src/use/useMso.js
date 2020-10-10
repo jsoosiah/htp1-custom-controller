@@ -454,6 +454,17 @@ function toggleMute() {
 }
 
 function setInput(inpid) {
+  // caution: test erase video resolution from local MSO only
+  // it should be corrected once the new input has been selected
+  // only do this when switching to HDMI
+  if (inpid.startsWith('h') && mso.value.input.startsWith('h')) {
+    mso.value.videostat.VideoResolution = '-----';
+    mso.value.videostat.VideoColorSpace = '---';
+    mso.value.videostat.VideoMode = '--';
+    mso.value.videostat.HDRstatus = '--';
+    mso.value.videostat.VideoBitDepth = '--';
+    mso.value.videostat.Video3D = '--';
+  }
   return patchMso({'op':'replace', 'path': '/input', 'value': inpid});
 }
 
@@ -811,12 +822,12 @@ function _setLoudnessCurve(op, curve) {
   if (!op) {
     op = mso.value.loudnessCurve ? 'replace' : 'add';
   }
-
+  
   if (curve !== 'iso' && curve !== 'vintage') {
     curve = 'iso';
   }
 
-  return patchMso({'op': op, 'path': `/loudnessCurve`, value: 'iso'});
+  return patchMso({'op': op, 'path': `/loudnessCurve`, value: curve});
 }
 
 function setLoudnessCurve(curve) {
@@ -1101,7 +1112,7 @@ export default function useMso() {
     setSignalGeneratorChannel, setSignalGeneratorChannel2, setSignalGeneratorSignalType,
     setSineFrequency, setSineAmplitude,
     toggleToneControl, setBassCornerFrequency, setTrebleCornerFrequency, 
-    setBassBoostCutLevel, setTrebleBoostCutLevel, setLoudnessCalibration,
+    setBassBoostCutLevel, setTrebleBoostCutLevel, setLoudnessCalibration, setLoudnessCurve,
     toggleGlobalPEQ, setGlobalPEQOff, setGlobalPEQOn,
     setPEQSlot, setPEQCenterFrequency, setPEQGain, 
     setPEQQuality, setPEQFilterType, resetPEQ,

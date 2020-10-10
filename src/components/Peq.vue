@@ -1,8 +1,11 @@
 <template>
   <div class="transition-container">
     <h5>Parametric Equalization Filters <small class="text-muted">up to 16 bands are available</small></h5>
-    <div class="alert alert-info small" role="alert">
+    <div class="alert alert-info alert-dismissible small" role="alert">
       Note that a gain of 0dB is equivalent to bypassing the filter; * denotes channels or bands that have been modified and have active PEQ filters.
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">×</span>
+      </button>
     </div>
     <peq-chart 
       :peq-slots="mso.peq?.slots || []"
@@ -27,8 +30,11 @@
     </div>
     <div class="row" v-show="!mso.peq?.peqsw">
       <div class="col">
-        <div class="alert alert-warning small" role="alert">
+        <div class="alert alert-warning alert-dismissible small" role="alert">
           Parametric equalization is currently turned off. The following PEQ settings may be modified, but they will not have any effect until PEQ is turned on.
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
         </div>
       </div>
     </div>
