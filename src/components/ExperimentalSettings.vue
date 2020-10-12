@@ -1,39 +1,43 @@
 <template>
   <div class="container">
     <div class="background-light"></div>
-    <!--
-    <nav aria-label="breadcrumb" class="small">
-      <ol class="breadcrumb">
-        <li 
-          v-for="match in $route.matched"
-          class="breadcrumb-item"
-          :key="match.path"
-        >
-          <router-link
-            :to="match.path"
-          >
-            {{match.meta.label}}
-          </router-link>
-        </li>
-      </ol>
-    </nav>
-    -->
-    <nav class="navbar nav-fill nav-pills bg-light navbar-light mb-3">
-      <router-link 
-        class="nav-link" 
-        :class="{'active': `/experimental/settings/${tab.path}` === $route.path}" 
-        v-for="(tab) in settingsRoutes"
-        :key="tab.path"
-        :to="tab.path"
-      >
-        <component :is="tab.meta.icon"></component> {{tab.meta.label}}
-      </router-link>
-    </nav>
-    <router-view v-slot="{ Component }">
-      <transition name="mfade" mode="out-in">
-        <component :is="Component" />
-      </transition>
-    </router-view>
+     <div class="row">
+      <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse nav-pills">
+        <div class="sidebar-sticky">
+          <ul class="nav flex-column">
+            <li 
+              class="nav-item"
+              v-for="(tab) in settingsRoutes"
+              :key="tab.path"
+            >
+              <router-link 
+                class="nav-link" 
+                :class="{'active': `/experimental/settings/${tab.path}` === $route.path}" 
+                :to="tab.path"
+              >
+                <component :is="tab.meta.icon"></component> {{tab.meta.label}}
+              </router-link>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" @click="powerOff">
+                <power-icon /> Power Off
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+      <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+        <router-view v-slot="{ Component, route }">
+          <keep-alive v-if="route.meta.keepAlive !== false">
+            <component :is="Component" />
+          </keep-alive>
+          <component 
+            v-if="route.meta.keepAlive === false"
+            :is="Component" 
+          />
+        </router-view>
+      </main>
+    </div>
   </div>
 </template>
 
@@ -42,6 +46,8 @@
 import { ref } from 'vue';
 
 import { settingsRoutes } from '@/router.js';
+
+import useMso from '@/use/useMso.js';
 
 import CalibrationIcon from './icons/CalibrationIcon';
 import PeqIcon from './icons/PeqIcon';
@@ -55,11 +61,15 @@ import UpmixIcon from './icons/UpmixIcon';
 import MacrosIcon from './icons/MacrosIcon';
 import AboutIcon from './icons/AboutIcon';
 import HelpIcon from './icons/HelpIcon';
+import PowerIcon from './icons/PowerIcon';
 
 export default {
   name: 'ExperimentalSettings',
   setup() {
-    return { settingsRoutes };
+
+    const { powerOff } = useMso();
+
+    return { settingsRoutes, powerOff };
   },
   components: {
     CalibrationIcon,
@@ -74,6 +84,7 @@ export default {
     MacrosIcon,
     AboutIcon,
     HelpIcon,
+    PowerIcon,
   }
 }
 </script>
@@ -105,8 +116,18 @@ export default {
     z-index: 0;
   }
 
-  .navbar .active svg {
+  .sidebar .active svg {
     fill: white;
+  }
+
+  .sidebar svg {
+    /* fill: gray; */
+    fill:#007bff;
+  }
+
+  .sidebar a {
+    /* fill: gray; */
+    color:#007bff;
   }
 
   .nav-link {
@@ -117,7 +138,7 @@ export default {
     border-radius: 0;
   }
 
-  .navbar {
+  .sidebar {
     padding: 0;
   }
 
