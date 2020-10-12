@@ -5,6 +5,15 @@
       <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse nav-pills">
         <div class="sidebar-sticky">
           <ul class="nav flex-column">
+            <li class="nav-item">
+              <router-link 
+                class="nav-link"
+                to="/experimental"
+              >
+                <home-icon />
+                Home
+              </router-link>
+            </li>
             <li 
               class="nav-item"
               v-for="(tab) in settingsRoutes"
@@ -49,6 +58,7 @@ import { settingsRoutes } from '@/router.js';
 
 import useMso from '@/use/useMso.js';
 
+import HomeIcon from './icons/HomeIcon';
 import CalibrationIcon from './icons/CalibrationIcon';
 import PeqIcon from './icons/PeqIcon';
 import ToneControlIcon from './icons/ToneControlIcon';
@@ -59,6 +69,7 @@ import SpeakersIcon from './icons/SpeakersIcon';
 import SystemIcon from './icons/SystemIcon';
 import UpmixIcon from './icons/UpmixIcon';
 import MacrosIcon from './icons/MacrosIcon';
+import PersonalizeIcon from './icons/PersonalizeIcon';
 import AboutIcon from './icons/AboutIcon';
 import HelpIcon from './icons/HelpIcon';
 import PowerIcon from './icons/PowerIcon';
@@ -72,6 +83,7 @@ export default {
     return { settingsRoutes, powerOff };
   },
   components: {
+    HomeIcon,
     CalibrationIcon,
     PeqIcon,
     ToneControlIcon,
@@ -82,6 +94,7 @@ export default {
     SystemIcon,
     UpmixIcon,
     MacrosIcon,
+    PersonalizeIcon,
     AboutIcon,
     HelpIcon,
     PowerIcon,

@@ -36,19 +36,48 @@
     <div class="container" style="z-index:1">
       <nav class="navbar px-0" style="z-index:1">
         <ul class="navbar-nav mr-auto">
-          <li class="nav-item px-0">
+          <!-- Hamburger menu --> 
+          <li 
+            class="nav-item shortcut-icon px-0"
+            :class="[$route.path !== '/experimental' ? ['d-xl-none', 'd-lg-none', 'd-md-none'] : '' ]"
+          > <!-- class="d-xl-none d-lg-none d-md-none" -->
+            <button 
+              class="navbar-toggler" 
+              type="button" 
+              data-toggle="collapse" 
+              data-target="#navbarSupportedContent" 
+              aria-controls="navbarSupportedContent" 
+              aria-expanded="false" 
+              aria-label="Toggle navigation"
+              @click="toggleShowMobileMenu"
+            >
+              <span class="navbar-toggler-icon"></span>
+            </button>
+          </li>
+          <!-- Status while on settings page --> 
+          <li 
+            class="small text-muted"
+            :class="[$route.path === '/experimental' ? 'd-none' : ['d-none', 'd-md-block'] ]"
+          >
             <router-link 
-              class="nav-link px-0"
+            class="settings-status"
               to="/experimental"
             >
-              <home-icon />
-              Home
+              {{mso.volume}} dB &middot; {{mso.inputs && mso.inputs[mso.input].label}} &middot; {{mso.upmix && upmixLabels[mso.upmix.select]}}
             </router-link>
           </li>
         </ul>
-        <!-- Shortcut icons + hamburger --> 
+        <!-- Shortcut icons --> 
         <div>
           <ul class="navbar-nav ml-auto shortcut-nav">
+            <li class="nav-item shortcut-icon" v-if="mso.personalize?.shortcuts.home">
+              <router-link 
+                class="nav-link"
+                to="/experimental"
+              >
+                <home-icon />
+              </router-link>
+            </li>
             <li class="nav-item shortcut-icon" v-for="route in filteredSettingsRoutes" :key="route.path">
               <router-link
                 class="nav-link"
@@ -58,24 +87,10 @@
                 <component :is="route.meta.icon" /> 
               </router-link>
             </li>
-            <li class="nav-item shortcut-icon">
+            <li class="nav-item shortcut-icon" v-if="mso.personalize?.shortcuts.power">
               <a class="nav-link" @click="powerOff">
                 <power-icon />
               </a>
-            </li>
-            <li class="nav-item shortcut-icon pr-0"> <!-- class="d-xl-none d-lg-none d-md-none" -->
-              <button 
-                class="navbar-toggler" 
-                type="button" 
-                data-toggle="collapse" 
-                data-target="#navbarSupportedContent" 
-                aria-controls="navbarSupportedContent" 
-                aria-expanded="false" 
-                aria-label="Toggle navigation"
-                @click="toggleShowMobileMenu"
-              >
-                <span class="navbar-toggler-icon"></span>
-              </button>
             </li>
           </ul>
         </div>
@@ -83,6 +98,16 @@
         <!-- Full navigation --> 
         <div class="collapse navbar-collapse" :class="{show: showMobileMenu}" id="navbarSupportedContent">
           <ul class="navbar-nav ml-auto nav-pills" :class="{'full-nav': $route.path !== '/experimental'}">
+            <li class="nav-item">
+              <router-link 
+                class="nav-link"
+                :class="{'home-active': $route.path === '/experimental'}"
+                to="/experimental"
+              >
+                <home-icon />
+                Home
+              </router-link>
+            </li>
             <li class="nav-item" v-for="route in settingsRoutes" :key="route.path">
               <router-link
                 class="nav-link"
@@ -129,6 +154,7 @@ import InputsIcon from './components/icons/InputsIcon';
 import NetworkIcon from './components/icons/NetworkIcon';
 import SgenIcon from './components/icons/SgenIcon';
 import SpeakersIcon from './components/icons/SpeakersIcon';
+import PersonalizeIcon from './components/icons/PersonalizeIcon';
 import SystemIcon from './components/icons/SystemIcon';
 import UpmixIcon from './components/icons/UpmixIcon';
 import MacrosIcon from './components/icons/MacrosIcon';
@@ -152,12 +178,14 @@ export default {
     SystemIcon,
     UpmixIcon,
     MacrosIcon,
+    PersonalizeIcon,
     AboutIcon,
     HelpIcon,
     PowerIcon,
   },
   setup() {
 
+    const { mso } = useMso();
     const route = useRoute();
 
     const showMobileMenu = ref(false);
@@ -177,7 +205,7 @@ export default {
 
     const filteredSettingsRoutes = computed(() => 
       settingsRoutes.filter(route => 
-        route.path === 'calibration' || route.path === 'peq' || route.path === 'tone-control' || route.path === 'about'
+        mso.value.personalize && mso.value.personalize.shortcuts[route.path]
       )
     );
 
@@ -371,6 +399,18 @@ export default {
   .full-nav a.active {
     /* fill: gray; */
     color:white;
+  }
+
+  .settings-status:hover {
+    text-decoration: none;
+  }
+
+  a.home-active {
+    color:white;
+  }
+
+  a.home-active svg {
+    fill: white;
   }
 
 </style>
