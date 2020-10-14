@@ -1,10 +1,27 @@
 <template>
   <div>
-    
-      <!-- Input Label, Menu Buttons -->
       <div class="container">
+        <!-- Input Label, Menu Buttons -->
+        <div class="row justify-content-between">
+          <div class="col-auto">
+            <router-link class="settings-link current-input-label" :to="`${$route.path}/settings/inputs`">
+              {{mso.inputs && mso.inputs[mso.input].label}}
+            </router-link>
+          </div>
+          <div class="col-auto text-right" v-if="mso.stat?.displayVideoStat">
+            <h6>{{mso.videostat.VideoResolution}}<br/>
+              <small>
+                {{mso.videostat.VideoColorSpace}}
+                {{mso.videostat.VideoMode}}
+                {{mso.videostat.HDRstatus}}
+                {{mso.videostat.VideoBitDepth}} 
+                {{mso.videostat.Video3D}}
+              </small>
+            </h6>
+          </div>
+        </div>
         <!-- Program Format, Blank, Listening Format   -->
-        <div class="row">
+        <div class="row mt-2">
           <div class="col text-left">
             <h5>Program Format: {{mso.status?.DECProgramFormat}} <small v-if="mso.stat?.displayAudioStat">{{mso.status?.DECSampleRate}}</small></h5>
             <div>
@@ -13,9 +30,6 @@
           </div>
           <div class="col text-right">
             <h5>Listening Format: {{mso.status?.ENCListeningFormat}} <small v-if="mso.stat?.displayAudioStat">{{mso.status?.ENCSampleRate}}</small></h5>
-            <!-- Surround Mode -->
-            <!--             <h5>Surround Mode</h5>      -->
-            <!--             <div>{{mso.status?.SurroundMode}}</div>   -->
             <div>
                 {{mso.status?.SurroundMode}}
             </div>
@@ -65,7 +79,7 @@
         <!-- Input Select -->
         <div class="row mt-2">
           <div class="col-md-12 text-center">
-              <h5><span class="link" @click="openSettingsToTab(INPUTS_TAB)">Input Select</span></h5>
+              <h5><router-link  class="settings-link" :to="`${$route.path}/settings/inputs`">Input Select</router-link></h5>
               <div class="inputs-container my-3">
                 <two-state-button 
                   v-for="(inp, key) in visibleInputs"
@@ -85,7 +99,7 @@
         <!-- Upmix Select -->
         <div class="row mt-2" v-if="mso.stat.systemAudio">
           <div class="col-md-12 text-center">
-              <h5><span class="link" @click="openSettingsToTab(SOUND_ENHANCEMENTS_TAB)">Upmix Select</span></h5>
+              <h5><router-link class="settings-link" :to="`${$route.path}/settings/sound-enhancement`">Upmix Select</router-link></h5>
               <div class="upmix-container my-3">
                 <two-state-button 
                   v-for="(upmix, key) in visibleUpmixers"
@@ -102,15 +116,17 @@
           </div>
         </div>
         <!-- Modes -->
-        <div class="row mt-2">
+        <div class="row mt-2" v-if="mso.personalize?.modes && Object.keys(mso.personalize.modes).length > 0">
           <div class="col-md-12 text-center">
               <h5>Modes</h5>
               <!-- Dirac -->
               <dirac-button 
+                v-if="mso.personalize?.modes.dirac"
                 :home-button="true"
               />
               <!-- PEQ -->
               <two-state-button 
+                v-if="mso.personalize?.modes.peq"
                 :button-text="`PEQ ${mso.peq?.peqsw ? 'on' : 'off'}`"
                 :state-on="mso.peq?.peqsw"
                 :home-button="true"
@@ -119,6 +135,7 @@
               />
               <!-- Tone Control -->
               <two-state-button 
+                v-if="mso.personalize?.modes.tone"
                 :button-text="`Tone Control ${mso.eq?.tc ? 'on' : 'off'}`"
                 :state-on="mso.eq?.tc"
                 :home-button="true"
@@ -128,6 +145,7 @@
               />
               <!-- Loudness -->
               <two-state-button 
+                v-if="mso.personalize?.modes.loudness"
                 :button-text="`Loudness ${mso.loudness}`" 
                 :state-on="mso.loudness === 'on'" 
                 :home-button="true"
@@ -136,10 +154,15 @@
                 min-width="7.5rem"
               />
               <!-- Dialog Enhance --> 
-              <dialog-enhance-button :home-button="true" :show-state-indicators="true" />
+              <dialog-enhance-button 
+                v-if="mso.personalize?.modes.dialogenh"
+                :home-button="true" 
+                :show-state-indicators="true" 
+              />
 
               <!-- Night Mode -->
               <three-state-button 
+                v-if="mso.personalize?.modes.night"
                 :button-text="`Night ${mso.night}`"
                 :states="{'off': 0, 'on': 1, 'auto': 2}"
                 :state-value="mso.night"
@@ -149,14 +172,6 @@
                 min-width="6.75rem"
               />
           </div>
-        </div>
-        <!-- Video Status -->
-        <div v-if="mso.stat.displayVideoStat" class="row ml-2 mt-2"  >
-            <div class="col-md-12 text-center">
-                video status: {{mso.videostat.VideoResolution}} {{mso.videostat.VideoColorSpace}} 
-                {{mso.videostat.VideoMode}} {{mso.videostat.HDRstatus}} {{mso.videostat.VideoBitDepth}} 
-                {{mso.videostat.Video3D}}
-            </div>
         </div>
       </div>
   </div>
@@ -360,7 +375,11 @@ export default {
     }
   }
 
-  .current-input-label:hover {
+  .settings-link {
+    color:#dedad6;
+  }
+
+  .settings-link:hover {
     text-decoration: none;
   }
 
@@ -388,13 +407,6 @@ export default {
     max-height:4rem;
     max-width:8rem;
     display: block;
-  }
-
-
-
-  .mfade-enter-active,
-  .mfade-leave-active {
-    transition: opacity .1s ease;
   }
 
   .mfade-enter-from,
@@ -444,7 +456,7 @@ export default {
 
   .mfade-enter-active,
   .mfade-leave-active {
-    transition: opacity .1s ease;
+    /* transition: opacity .1s ease; */
     z-index: 0;
   }
 
