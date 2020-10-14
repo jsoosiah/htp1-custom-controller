@@ -1,10 +1,9 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
-import Home from './components/Home.vue';
 
-const ExperimentalApp = () => import('./ExperimentalApp.vue');
+const AppLayout = () => import('./components/AppLayout.vue');
 
-const ExperimentalHome = () => import('./components/ExperimentalHome.vue');
-const ExperimentalSettings = () => import('./components/ExperimentalSettings.vue');
+const Home = () => import('./components/Home.vue');
+const Settings = () => import('./components/Settings.vue');
 
 const Speakers = () => import('./components/Speakers.vue');
 const Calibration = () => import('./components/Calibration.vue');
@@ -39,24 +38,26 @@ const settingsRoutes = [
 export default createRouter({
   history: createWebHashHistory(),
   routes: [
-    { path: '/', component: Home },
-    { path: '/experimental', 
-      component: ExperimentalApp, 
+    { path: '/', 
+      component: AppLayout, 
       meta: { label: 'Home' }, 
       children: [
         { 
           path: '', 
-          component: ExperimentalHome,
+          component: Home,
         },
         { 
           path: 'settings', 
-          component: ExperimentalSettings, 
+          component: Settings, 
           children: settingsRoutes,
-          redirect: '/experimental/settings/speakers'
+          redirect: '/settings/speakers'
         },
       ] 
     },
-    // settings
+    {
+      path: '/:pathMatch(.*)*',
+      redirect: '/',
+    }
   ]
 });
 

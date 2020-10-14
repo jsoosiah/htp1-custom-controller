@@ -13,7 +13,7 @@
     <span class="sgen-on-warning">Dirac Calibration in Progress - Currently in Readonly Mode</span>
   </div>
   <div class="fixed-top mx-auto" style="z-index: 9999999999999999" v-if="currentlyRecordingSlot">
-    <router-link to="/experimental/settings/macros" class="sgen-on-warning">
+    <router-link to="/settings/macros" class="sgen-on-warning">
       Currently Recording - {{currentlyRecordingSlot}} <font-awesome-icon  :icon="['fas', 'external-link-alt']" />
     </router-link>
   </div>
@@ -40,12 +40,12 @@
           <!-- If desktop mode home screen, hamburger button goes directly to settings --> 
           <li 
             class="nav-item shortcut-icon px-0"
-            :class="[$route.path !== '/experimental' ? ['d-xl-none', 'd-lg-none', 'd-md-none'] : '' ]"
+            :class="[$route.path !== '/' ? ['d-xl-none', 'd-lg-none', 'd-md-none'] : '' ]"
             v-if="!isMobileMode"
           > <!-- class="d-xl-none d-lg-none d-md-none" -->
             <router-link 
               class="settings-status"
-              :to="`/experimental/settings/${settingsRoutes[0].path}`"
+              :to="`/settings/${settingsRoutes[0].path}`"
             >
               <font-awesome-icon size="lg" :icon="['fas', 'cog']" /> Settings
             </router-link>
@@ -53,11 +53,11 @@
           <!-- If desktop mode settings, show status and click to go home --> 
           <li 
             class="small text-muted"
-            :class="[$route.path === '/experimental' ? 'd-none' : ['d-none', 'd-md-block'] ]"
+            :class="[$route.path === '/' ? 'd-none' : ['d-none', 'd-md-block'] ]"
           >
             <router-link 
             class="settings-status"
-              to="/experimental"
+              to="/"
             >
               {{mso.volume}} dB &middot; {{mso.inputs && mso.inputs[mso.input].label}} &middot; {{mso.upmix && upmixLabels[mso.upmix.select]}}
             </router-link>
@@ -66,7 +66,7 @@
           <!-- Hamburger menu --> 
           <li 
             class="nav-item shortcut-icon px-0"
-            :class="[$route.path !== '/experimental' ? ['d-xl-none', 'd-lg-none', 'd-md-none'] : '' ]"
+            :class="[$route.path !== '/' ? ['d-xl-none', 'd-lg-none', 'd-md-none'] : '' ]"
             v-if="isMobileMode"
           > <!-- class="d-xl-none d-lg-none d-md-none" -->
             <button 
@@ -89,7 +89,7 @@
             <li class="nav-item shortcut-icon" v-if="mso.personalize?.shortcuts.home">
               <router-link 
                 class="nav-link"
-                to="/experimental"
+                to="/"
               >
                 <home-icon />
               </router-link>
@@ -97,8 +97,8 @@
             <li class="nav-item shortcut-icon" v-for="route in filteredSettingsRoutes" :key="route.path">
               <router-link
                 class="nav-link"
-                :class="{'active': $route.path === `/experimental/settings/${route.path}`}"
-                :to="`/experimental/settings/${route.path}`"
+                :class="{'active': $route.path === `/settings/${route.path}`}"
+                :to="`/settings/${route.path}`"
               >
                 <component :is="route.meta.icon" /> 
               </router-link>
@@ -113,12 +113,12 @@
 
         <!-- Full navigation --> 
         <div class="collapse navbar-collapse" :class="{show: showMobileMenu}" id="navbarSupportedContent">
-          <ul class="navbar-nav ml-auto nav-pills" :class="{'full-nav': $route.path !== '/experimental'}">
+          <ul class="navbar-nav ml-auto nav-pills" :class="{'full-nav': $route.path !== '/'}">
             <li class="nav-item">
               <router-link 
                 class="nav-link"
-                :class="{'home-active': $route.path === '/experimental'}"
-                to="/experimental"
+                :class="{'home-active': $route.path === '/'}"
+                to="/"
               >
                 <home-icon />
                 Home
@@ -127,8 +127,8 @@
             <li class="nav-item" v-for="route in settingsRoutes" :key="route.path">
               <router-link
                 class="nav-link"
-                :class="{'active': $route.path === `/experimental/settings/${route.path}`}"
-                :to="`/experimental/settings/${route.path}`"
+                :class="{'active': $route.path === `/settings/${route.path}`}"
+                :to="`/settings/${route.path}`"
               >
                 <component :is="route.meta.icon" /> {{route.meta.label}}
               </router-link>
@@ -159,30 +159,28 @@ import { settingsRoutes } from '@/router.js';
 
 import useMso from '@/use/useMso.js';
 
-import ExperimentalHome from './components/ExperimentalHome.vue';
-import IpSelect from './components/IpSelect.vue';
+import IpSelect from './IpSelect.vue';
 
-import HomeIcon from './components/icons/HomeIcon';
-import CalibrationIcon from './components/icons/CalibrationIcon';
-import PeqIcon from './components/icons/PeqIcon';
-import ToneControlIcon from './components/icons/ToneControlIcon';
-import InputsIcon from './components/icons/InputsIcon';
-import NetworkIcon from './components/icons/NetworkIcon';
-import SgenIcon from './components/icons/SgenIcon';
-import SpeakersIcon from './components/icons/SpeakersIcon';
-import PersonalizeIcon from './components/icons/PersonalizeIcon';
-import SystemIcon from './components/icons/SystemIcon';
-import UpmixIcon from './components/icons/UpmixIcon';
-import MacrosIcon from './components/icons/MacrosIcon';
-import AboutIcon from './components/icons/AboutIcon';
-import HelpIcon from './components/icons/HelpIcon';
-import PowerIcon from './components/icons/PowerIcon';
+import HomeIcon from './icons/HomeIcon';
+import CalibrationIcon from './icons/CalibrationIcon';
+import PeqIcon from './icons/PeqIcon';
+import ToneControlIcon from './icons/ToneControlIcon';
+import InputsIcon from './icons/InputsIcon';
+import NetworkIcon from './icons/NetworkIcon';
+import SgenIcon from './icons/SgenIcon';
+import SpeakersIcon from './icons/SpeakersIcon';
+import PersonalizeIcon from './icons/PersonalizeIcon';
+import SystemIcon from './icons/SystemIcon';
+import UpmixIcon from './icons/UpmixIcon';
+import MacrosIcon from './icons/MacrosIcon';
+import AboutIcon from './icons/AboutIcon';
+import HelpIcon from './icons/HelpIcon';
+import PowerIcon from './icons/PowerIcon';
 
 export default {
-  name: 'ExperimentalApp',
+  name: 'App',
   components: {
     HomeIcon,
-    ExperimentalHome,
     IpSelect,
     CalibrationIcon,
     PeqIcon,

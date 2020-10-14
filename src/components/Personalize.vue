@@ -116,7 +116,7 @@
       <div class="col-auto">
         <h6>Preview</h6>
         <div class="home-preview pt-2">
-          <experimental-home />
+          <home />
         </div>
       </div>
     </div>
@@ -130,7 +130,7 @@
 
   import { settingsRoutes } from '@/router.js';
 
-  import ExperimentalHome from './ExperimentalHome.vue';
+  import Home from './Home.vue';
   import TwoStateButton from './buttons/TwoStateButton.vue';
 
   export default {
@@ -149,7 +149,7 @@
       return { ...useMso(), ...useInputs(), modes, settingsRoutes };
     },
     components: {
-      ExperimentalHome,
+      Home,
       TwoStateButton,
     }
   }

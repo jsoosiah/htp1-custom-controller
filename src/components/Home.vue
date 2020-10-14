@@ -1,72 +1,23 @@
 <template>
-    <div v-if="loading" class="loading-indicator">
-      <div class="spinner-border text-primary" role="status">
-        <span class="sr-only">Loading...</span>
-      </div>
-    </div>
-    <div class="fixed-top mx-auto" style="z-index: 9999999999999999" v-if="mso?.sgen?.sgensw === 'on'">
-      <a class="sgen-on-warning" @click="openSettingsToTab(SIGNAL_GENERATOR_TAB)">
-        Signal Generator On <font-awesome-icon  :icon="['fas', 'external-link-alt']" />
-      </a>
-    </div>
-    <div class="fixed-top mx-auto" style="z-index: 9999999999999999" v-if="calToolConnected">
-      <span class="sgen-on-warning">Dirac Calibration in Progress - Currently in Readonly Mode</span>
-    </div>
-    <div class="fixed-top mx-auto" style="z-index: 9999999999999999" v-if="currentlyRecordingSlot">
-      <a @click="openSettingsToTab(MACROS_TAB)" class="sgen-on-warning">
-        Currently Recording - {{currentlyRecordingSlot}} <font-awesome-icon  :icon="['fas', 'external-link-alt']" />
-      </a>
-    </div>
-    <div v-if="state !== 'OPEN'" class="connecting-overlay">
-      <ip-select />
-    </div>
-    <template v-if="!mso?.powerIsOn">
+  <div>
       <div class="container">
-        <div class="row mt-5">
-          <div class="col-md-12 text-center">
-            <p>Unit is in standby mode. Click below to power on.</p>
-            <button class="btn btn-dark rounded-circle menu-btn" @click="powerOn()">
-              <font-awesome-icon size="lg" :icon="['fas', 'power-off']" />
-            </button>
-          </div>
-        </div>
-      </div>
-    </template>
-    <template v-else>
-      <!-- Input Label, Menu Buttons -->
-      <div class="container">
-        <div class="row justify-content-between mt-2">
+        <!-- Input Label, Menu Buttons -->
+        <div class="row justify-content-between">
           <div class="col-auto">
-            <a 
-              class="current-input-label"
-              @click="openSettingsToTab(INPUTS_TAB)"
-            >
+            <router-link class="settings-link current-input-label" :to="`/settings/inputs`">
               {{mso.inputs && mso.inputs[mso.input].label}}
-            </a>
+            </router-link>
           </div>
-          <div class="col-auto">
-            <transition name="mfade">
-              <div class="transition-container-fixed" v-show="settingsModalIsOpen">
-                <keep-alive>
-                  <settings 
-                    v-if="settingsModalIsOpen"
-                    @close="toggleSettingsModal()" 
-                    @active-tab-change="setSettingsActiveTab"
-                    :active-tab="settingsActiveTab"
-                  />
-                </keep-alive>
-              </div>
-            </transition>
-
-            <button class="btn btn-dark rounded-circle menu-btn" @click="toggleSettingsModal()">
-              <font-awesome-icon size="lg" :icon="['fas', 'cog']" />
-            </button>
-            <button class="btn btn-dark rounded-circle menu-btn" @click="openSettingsToTab(HELP_TAB)">
-              <font-awesome-icon size="lg" :icon="['fas', 'question-circle']" />
-            </button>
-            <button class="btn btn-dark rounded-circle menu-btn" @click="powerOff()">
-              <font-awesome-icon size="lg" :icon="['fas', 'power-off']" />
-            </button>
+          <div class="col-auto text-right" v-if="mso.stat?.displayVideoStat">
+            <h6>{{mso.videostat.VideoResolution}}<br/>
+              <small>
+                {{mso.videostat.VideoColorSpace}}
+                {{mso.videostat.VideoMode}}
+                {{mso.videostat.HDRstatus}}
+                {{mso.videostat.VideoBitDepth}} 
+                {{mso.videostat.Video3D}}
+              </small>
+            </h6>
           </div>
         </div>
         <!-- Program Format, Blank, Listening Format   -->
@@ -79,9 +30,6 @@
           </div>
           <div class="col text-right">
             <h5>Listening Format: {{mso.status?.ENCListeningFormat}} <small v-if="mso.stat?.displayAudioStat">{{mso.status?.ENCSampleRate}}</small></h5>
-            <!-- Surround Mode -->
-            <!--             <h5>Surround Mode</h5>      -->
-            <!--             <div>{{mso.status?.SurroundMode}}</div>   -->
             <div>
                 {{mso.status?.SurroundMode}}
             </div>
@@ -131,7 +79,7 @@
         <!-- Input Select -->
         <div class="row mt-2">
           <div class="col-md-12 text-center">
-              <h5><span class="link" @click="openSettingsToTab(INPUTS_TAB)">Input Select</span></h5>
+              <h5><router-link  class="settings-link" :to="`/settings/inputs`">Input Select</router-link></h5>
               <div class="inputs-container my-3">
                 <two-state-button 
                   v-for="(inp, key) in visibleInputs"
@@ -151,7 +99,7 @@
         <!-- Upmix Select -->
         <div class="row mt-2" v-if="mso.stat.systemAudio">
           <div class="col-md-12 text-center">
-              <h5><span class="link" @click="openSettingsToTab(SOUND_ENHANCEMENTS_TAB)">Upmix Select</span></h5>
+              <h5><router-link class="settings-link" :to="`/settings/sound-enhancement`">Upmix Select</router-link></h5>
               <div class="upmix-container my-3">
                 <two-state-button 
                   v-for="(upmix, key) in visibleUpmixers"
@@ -168,15 +116,17 @@
           </div>
         </div>
         <!-- Modes -->
-        <div class="row mt-2">
+        <div class="row mt-2" v-if="mso.personalize?.modes && Object.keys(mso.personalize.modes).length > 0">
           <div class="col-md-12 text-center">
               <h5>Modes</h5>
               <!-- Dirac -->
               <dirac-button 
+                v-if="mso.personalize?.modes.dirac"
                 :home-button="true"
               />
               <!-- PEQ -->
               <two-state-button 
+                v-if="mso.personalize?.modes.peq"
                 :button-text="`PEQ ${mso.peq?.peqsw ? 'on' : 'off'}`"
                 :state-on="mso.peq?.peqsw"
                 :home-button="true"
@@ -185,6 +135,7 @@
               />
               <!-- Tone Control -->
               <two-state-button 
+                v-if="mso.personalize?.modes.tone"
                 :button-text="`Tone Control ${mso.eq?.tc ? 'on' : 'off'}`"
                 :state-on="mso.eq?.tc"
                 :home-button="true"
@@ -194,6 +145,7 @@
               />
               <!-- Loudness -->
               <two-state-button 
+                v-if="mso.personalize?.modes.loudness"
                 :button-text="`Loudness ${mso.loudness}`" 
                 :state-on="mso.loudness === 'on'" 
                 :home-button="true"
@@ -202,10 +154,15 @@
                 min-width="7.5rem"
               />
               <!-- Dialog Enhance --> 
-              <dialog-enhance-button :home-button="true" :show-state-indicators="true" />
+              <dialog-enhance-button 
+                v-if="mso.personalize?.modes.dialogenh"
+                :home-button="true" 
+                :show-state-indicators="true" 
+              />
 
               <!-- Night Mode -->
               <three-state-button 
+                v-if="mso.personalize?.modes.night"
                 :button-text="`Night ${mso.night}`"
                 :states="{'off': 0, 'on': 1, 'auto': 2}"
                 :state-value="mso.night"
@@ -216,17 +173,8 @@
               />
           </div>
         </div>
-        <!-- Video Status -->
-        <div v-if="mso.stat.displayVideoStat" class="row ml-2 mt-2"  >
-            <div class="col-md-12 text-center">
-                video status: {{mso.videostat.VideoResolution}} {{mso.videostat.VideoColorSpace}} 
-                {{mso.videostat.VideoMode}} {{mso.videostat.HDRstatus}} {{mso.videostat.VideoBitDepth}} 
-                {{mso.videostat.Video3D}}
-            </div>
-        </div>
       </div>
-    </template>
-
+  </div>
 </template>
 
 <script>
@@ -269,7 +217,7 @@ export default {
       setNextNightMode, toggleLoudness, setNextDtsDialogEnh, toggleToneControl, toggleGlobalPEQ,
       setNightOff, setNightAuto, setNightOn, setLoudnessOff, setLoudnessOn, 
       setToneControlOff, setToneControlOn, setGlobalPEQOff, setGlobalPEQOn, setDtsDialogEnh,
-      currentlyRecordingSlot, commandsAwaitingResponse,
+      currentlyRecordingSlot
     } = useMso();
 
     onMounted(() => {
@@ -297,6 +245,8 @@ export default {
     
     const inputRecentlyInteracted = ref(false);
     let inputRecentlyInteractedTimeout;
+
+    const showMobileMenu = ref(false);
 
     // intervals for performing the actual volume adjustments
     let incrementVolumeInterval;
@@ -345,29 +295,6 @@ export default {
       clearInterval(incrementVolumeInterval);
     }
 
-    function openSettingsModal() {
-      document.body.classList.add('modal-open');
-      settingsModalIsOpen.value = true;
-    }
-
-    function closeSettingsModal() {
-      document.body.classList.remove('modal-open');
-      settingsModalIsOpen.value = false;
-    }
-
-    function toggleSettingsModal() {
-      if (!settingsModalIsOpen.value) {
-        openSettingsModal();
-      } else {
-        closeSettingsModal();
-      }
-    }
-
-    function openSettingsToTab(selectedTab) {
-      setSettingsActiveTab(selectedTab);
-      openSettingsModal();
-    }
-
     function handleInputClicked(inp) {
       setInput(inp);
       inputRecentlyInteracted.value = true;
@@ -406,14 +333,11 @@ export default {
       setNextNightMode, toggleLoudness, setNextDtsDialogEnh, toggleToneControl, toggleGlobalPEQ,
       ...useStream(),
       handleInputClicked, handleUpmixClicked, inputRecentlyInteracted, upmixRecentlyInteracted,
-      settingsModalIsOpen, toggleSettingsModal,
-      settingsActiveTab, setSettingsActiveTab,
       handleVolumeDownLongPress, handleVolumeUpLongPress, handleVolumeLongPressUp,
       handleVolumeDownPress, handleVolumeUpPress, handleMute, 
-      SIGNAL_GENERATOR_TAB, INPUTS_TAB, SOUND_ENHANCEMENTS_TAB, MACROS_TAB, HELP_TAB, openSettingsToTab,
       setNightOff, setNightAuto, setNightOn, setLoudnessOff, setLoudnessOn, setToneControlOff, setToneControlOn, setGlobalPEQOff, setGlobalPEQOn,setDtsDialogEnh,
       currentlyRecordingSlot,
-      inputSelectedAndLoading, inputLoaded,
+      inputLoaded, inputSelectedAndLoading,
       experimental
     };
   },
@@ -438,28 +362,6 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
-  .connecting-overlay {
-    width:100%;
-    height:100%;
-    background: rgba(0,0,0,0.5);
-    z-index: 9999;
-    position:fixed;
-  }
-
-  .loading-indicator {
-    position:fixed;
-    /*opacity: 50%;*/
-    z-index: 9999999999999999;
-    text-align: right;
-    vertical-align: text-bottom;
-    bottom:0;
-    right:0;
-    margin:1rem;
-    width:2rem;
-    height:2rem;
-    /*color:white;*/
-  }
-
   .current-input-label {
     line-height: 1;
     font-size: 2rem;
@@ -473,14 +375,12 @@ export default {
     }
   }
 
-  .current-input-label:hover {
-    text-decoration: none;
+  .settings-link {
+    color:#dedad6;
   }
 
-  .menu-btn {
-    min-height:3.5rem;
-    min-width: 3.5rem;
-    margin-left: 1rem;
+  .settings-link:hover {
+    text-decoration: none;
   }
 
   .vol-display {
@@ -507,24 +407,6 @@ export default {
     max-height:4rem;
     max-width:8rem;
     display: block;
-  }
-
-  .sgen-on-warning {
-    text-transform: uppercase;
-    font-weight: bold;
-    color: magenta;
-    background: rgba(0,0,0,0.75);
-    padding:0.25rem 0.5rem;
-    cursor: pointer;
-  }
-
-  .sgen-on-warning:hover {
-    text-decoration: none;
-  }
-
-  .mfade-enter-active,
-  .mfade-leave-active {
-    transition: opacity .1s ease;
   }
 
   .mfade-enter-from,
@@ -560,22 +442,29 @@ export default {
 
   div.container {
     color:#dedad6;
+    /* background-color: black; */
+  }
+
+  div.background-dark {
     background-color: black;
+    width:100vw;
+    height:100vh;
+    position:fixed;
+    top:0;
+    z-index: -1;
   }
 
-  .hiding {
-    transition: opacity 0.1s ease;
+  .mfade-enter-active,
+  .mfade-leave-active {
+    /* transition: opacity .1s ease; */
+    z-index: 0;
+  }
+
+  .mfade-enter-from,
+  .mfade-leave-to {
     opacity: 0;
+    z-index: 0;
   }
 
-  .showing {
-    transition: opacity 0.1s ease;
-    opacity: 1;
-  }
-
-  .fixed-top {
-    /* max-width: 400px; */
-    text-align:center;
-  }
 
 </style>

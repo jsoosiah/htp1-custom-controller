@@ -1,63 +1,64 @@
 <template>
-  <!-- Modal -->
-  <div 
-    class="modal fade show" 
-    id="settingsModal" 
-    tabindex="-1" 
-    aria-labelledby="settingsModalLabel"
-  >
-    <div class="modal-dialog modal-xl">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title" id="settingsModalLabel"><font-awesome-icon size="lg" :icon="['fas', 'cog']" /> System Configuration</h4>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="closeModal()">
-            <span aria-hidden="true">&times;</span>
-          </button>
+  <div class="container">
+    <div class="background-light"></div>
+     <div class="row">
+      <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse nav-pills">
+        <div class="sidebar-sticky">
+          <ul class="nav flex-column">
+            <li class="nav-item">
+              <router-link 
+                class="nav-link"
+                to="/"
+              >
+                <home-icon />
+                Home
+              </router-link>
+            </li>
+            <li 
+              class="nav-item"
+              v-for="(tab) in settingsRoutes"
+              :key="tab.path"
+            >
+              <router-link 
+                class="nav-link" 
+                :class="{'active': `/settings/${tab.path}` === $route.path}" 
+                :to="tab.path"
+              >
+                <component :is="tab.meta.icon"></component> {{tab.meta.label}}
+              </router-link>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" @click="powerOff" href="javascript:void(0)">
+                <power-icon /> Power Off
+              </a>
+            </li>
+          </ul>
         </div>
-        <nav class="navbar nav-fill nav-pills bg-light navbar-light">
-          <a 
-            class="nav-link" 
-            :class="{'active': props.activeTab === key}" @click="setActiveTab(key)" 
-            href="javascript:void(0)" 
-            v-for="(tab, key) in allTabs"
-            :key="key"
-          >
-            <component :is="tab.icon"></component> {{tab.label}}
-          </a>
-        </nav>
-        <div class="modal-body text-left">
-          
-            <keep-alive v-if="allTabs[props.activeTab].keepAlive !== false">
-              <suspense>
-                <component 
-                  :is="allTabs[props.activeTab].component" 
-                  :key="allTabs[props.activeTab].component"
-                />
-                <template #fallback>
-                  loading
-                </template>
-              </suspense>
-            </keep-alive>
-            <component 
-              v-if="allTabs[props.activeTab].keepAlive === false"
-              :is="allTabs[props.activeTab].component" 
-              :key="allTabs[props.activeTab].component"
-            />
-        </div>
-      </div>
+      </nav>
+      <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+        <router-view v-slot="{ Component, route }">
+          <keep-alive v-if="route.meta.keepAlive !== false">
+            <component :is="Component" />
+          </keep-alive>
+          <component 
+            v-if="route.meta.keepAlive === false"
+            :is="Component" 
+          />
+        </router-view>
+      </main>
     </div>
-  </div>
-  <div 
-    class="modal-backdrop fade show" 
-    @click="closeModal()"
-  >
   </div>
 </template>
 
 <script>
 
-import { ref, defineAsyncComponent } from 'vue';
+import { ref } from 'vue';
 
+import { settingsRoutes } from '@/router.js';
+
+import useMso from '@/use/useMso.js';
+
+import HomeIcon from './icons/HomeIcon';
 import CalibrationIcon from './icons/CalibrationIcon';
 import PeqIcon from './icons/PeqIcon';
 import ToneControlIcon from './icons/ToneControlIcon';
@@ -68,64 +69,21 @@ import SpeakersIcon from './icons/SpeakersIcon';
 import SystemIcon from './icons/SystemIcon';
 import UpmixIcon from './icons/UpmixIcon';
 import MacrosIcon from './icons/MacrosIcon';
+import PersonalizeIcon from './icons/PersonalizeIcon';
 import AboutIcon from './icons/AboutIcon';
 import HelpIcon from './icons/HelpIcon';
+import PowerIcon from './icons/PowerIcon';
 
 export default {
   name: 'Settings',
-  props: {
-    activeTab: {
-      type: Number,
-      required: true,
-    },
-  },
-  setup(props, { emit }) {
+  setup() {
 
-    const tabLoaded = ref(true);
+    const { powerOff } = useMso();
 
-    const allTabs = ref([
-      {'label': 'Speakers', 'component': 'speakers', icon: 'speakers-icon' },
-      {'label': 'Calibration', 'component': 'calibration', icon: 'calibration-icon' },
-      {'label': 'Signal Generator', 'component': 'signal-generator', icon: 'sgen-icon' },
-      {'label': 'PEQ', 'component': 'peq', icon: 'peq-icon' },
-      {'label': 'Tone Control', 'component': 'tone-control', icon: 'tone-control-icon' },
-      {'label': 'Inputs', 'component': 'inputs', icon: 'inputs-icon' },
-      {'label': 'Sound Enhancement', 'component': 'sound-enhancement', icon: 'upmix-icon' },
-      {'label': 'Connectivity', 'component': 'connectivity', icon: 'network-icon', keepAlive: false },
-      {'label': 'Macros', 'component': 'macros', icon: 'macros-icon'},
-      {'label': 'System', 'component': 'system', icon: 'system-icon' },
-      {'label': 'About', 'component': 'about', icon: 'about-icon' },
-      {'label': 'Help', 'component': 'help', icon: 'help-icon' },
-    ]);
-
-    async function setActiveTab(tab) {
-      tabLoaded.value = false;
-      
-      setTimeout(() => {
-        emit('active-tab-change', tab);
-        tabLoaded.value = true;
-      }, 100)
-    }
-
-    function closeModal() {
-      emit('close');
-    }
-
-    return { props, setActiveTab, allTabs, closeModal, tabLoaded };
+    return { settingsRoutes, powerOff };
   },
   components: {
-    Speakers: defineAsyncComponent(() => import('./Speakers.vue')),
-    Calibration: defineAsyncComponent(() => import('./Calibration.vue')),
-    SignalGenerator: defineAsyncComponent(() => import('./SignalGenerator.vue')),
-    Peq: defineAsyncComponent(() => import('./Peq.vue')),
-    ToneControl: defineAsyncComponent(() => import('./ToneControl.vue')),
-    Inputs: defineAsyncComponent(() => import('./Inputs.vue')),
-    SoundEnhancement: defineAsyncComponent(() => import('./SoundEnhancement.vue')),
-    Connectivity: defineAsyncComponent(() => import('./Connectivity.vue')),
-    Macros: defineAsyncComponent(() => import('./Macros.vue')),
-    System: defineAsyncComponent(() => import('./System.vue')),
-    About: defineAsyncComponent(() => import('./About.vue')),
-    Help: defineAsyncComponent(() => import('./Help.vue')),
+    HomeIcon,
     CalibrationIcon,
     PeqIcon,
     ToneControlIcon,
@@ -136,20 +94,64 @@ export default {
     SystemIcon,
     UpmixIcon,
     MacrosIcon,
+    PersonalizeIcon,
     AboutIcon,
     HelpIcon,
-  },
-  emits: ['active-tab-change', 'close']
+    PowerIcon,
+  }
 }
 </script>
 
 <style scoped>
-
-  .modal-title {
-    line-height: 1;
+  div.container {
+    /* background-color: white; */
   }
 
-  .navbar {
+  div.background-light {
+    background-color: white;
+    width:100vw;
+    height:100vh;
+    position:fixed;
+    top:0;
+    left:0;
+    z-index: -1;
+  }
+
+  .mfade-enter-active,
+  .mfade-leave-active {
+    /* transition: opacity .1s ease; */
+    z-index: 0;
+  }
+
+  .mfade-enter-from,
+  .mfade-leave-to {
+    opacity: 0;
+    z-index: 0;
+  }
+
+  .sidebar .active svg {
+    fill: white;
+  }
+
+  .sidebar svg {
+    /* fill: gray; */
+    fill:#007bff;
+  }
+
+  .sidebar a {
+    /* fill: gray; */
+    color:#007bff;
+  }
+
+  .nav-link {
+    text-transform: uppercase;
+    font-size: .8rem;
+    font-weight: 600;
+    padding:0.5rem 0.675rem;
+    border-radius: 0;
+  }
+
+  .sidebar {
     padding: 0;
   }
 
@@ -165,80 +167,5 @@ export default {
   ::v-deep(.numeric-input) input {
     text-align: right;
   }
-
-  div {
-    color: #212529;
-  }
-
-  .modal {
-    display: block;
-  }
-
-  .nav-link {
-    text-transform: uppercase;
-    font-size: .8rem;
-    font-weight: 600;
-    padding:0.5rem 0.675rem;
-    border-radius: 0;
-  }
-
-  .material-icons {
-    font-size: 18px;
-  }
-
-  svg {
-    fill: #007bff;
-    height: 18px;
-  }
-
-  .active svg {
-    fill: white;
-  }
-
-  .modal-title svg {
-    margin: 0.3rem 0rem;
-  }
-
-  .tabfade-enter-active,
-  .tabfade-leave-active {
-    transition: opacity 0s ease;
-  }
-  .tabfade-enter, .tabfade-leave-to
-  /* .component-fade-leave-active below version 2.1.8 */ {
-    opacity: 0;
-  }
-
-
-  .transition-container {
-    display: block;
-    z-index: 9;
-    opacity: 1;
-    /*position: fixed;*/
-  }
-
-  @media(min-width: 576px) {
-    .modal-xl {
-      max-width: none;
-      width: auto;
-      margin: 0.5rem;
-    }
-  }
-
-  @media (min-width: 992px) {
-    .modal-lg, .modal-xl {
-        max-width: 800px;
-        margin-left:auto;
-        margin-right:auto;
-    }
-  }
-
-  @media (min-width: 1200px) {
-    .modal-xl {
-        max-width: 1140px;
-        margin-left:auto;
-        margin-right:auto;
-    }
-  }
-
 
 </style>
