@@ -34,12 +34,40 @@
   </template>
   <template v-else>
     <div class="container" style="z-index:1">
-      <nav class="navbar px-0" style="z-index:1">
+      <nav class="navbar px-0 pt-0" style="z-index:1">
         <ul class="navbar-nav mr-auto">
+          <!-- If desktop mode -->
+          <!-- If desktop mode home screen, hamburger button goes directly to settings --> 
+          <li 
+            class="nav-item shortcut-icon px-0"
+            :class="[$route.path !== '/experimental' ? ['d-xl-none', 'd-lg-none', 'd-md-none'] : '' ]"
+            v-if="!isMobileMode"
+          > <!-- class="d-xl-none d-lg-none d-md-none" -->
+            <router-link 
+              class="settings-status"
+              :to="`/experimental/settings/${settingsRoutes[0].path}`"
+            >
+              <font-awesome-icon size="lg" :icon="['fas', 'cog']" /> Settings
+            </router-link>
+          </li>
+          <!-- If desktop mode settings, show status and click to go home --> 
+          <li 
+            class="small text-muted"
+            :class="[$route.path === '/experimental' ? 'd-none' : ['d-none', 'd-md-block'] ]"
+          >
+            <router-link 
+            class="settings-status"
+              to="/experimental"
+            >
+              {{mso.volume}} dB &middot; {{mso.inputs && mso.inputs[mso.input].label}} &middot; {{mso.upmix && upmixLabels[mso.upmix.select]}}
+            </router-link>
+          </li>
+          <!-- If mobile mode, always show hamburger button menu --> 
           <!-- Hamburger menu --> 
           <li 
             class="nav-item shortcut-icon px-0"
             :class="[$route.path !== '/experimental' ? ['d-xl-none', 'd-lg-none', 'd-md-none'] : '' ]"
+            v-if="isMobileMode"
           > <!-- class="d-xl-none d-lg-none d-md-none" -->
             <button 
               class="navbar-toggler" 
@@ -53,18 +81,6 @@
             >
               <span class="navbar-toggler-icon"></span>
             </button>
-          </li>
-          <!-- Status while on settings page --> 
-          <li 
-            class="small text-muted"
-            :class="[$route.path === '/experimental' ? 'd-none' : ['d-none', 'd-md-block'] ]"
-          >
-            <router-link 
-            class="settings-status"
-              to="/experimental"
-            >
-              {{mso.volume}} dB &middot; {{mso.inputs && mso.inputs[mso.input].label}} &middot; {{mso.upmix && upmixLabels[mso.upmix.select]}}
-            </router-link>
           </li>
         </ul>
         <!-- Shortcut icons --> 
@@ -136,7 +152,7 @@
 
 <script>
 
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { settingsRoutes } from '@/router.js';
@@ -189,6 +205,20 @@ export default {
     const route = useRoute();
 
     const showMobileMenu = ref(false);
+    const windowWidth = ref(0);
+
+    onMounted(() => {
+      updateWindowWidth();
+      window.addEventListener('resize', updateWindowWidth);
+    });
+
+    onUnmounted(() => {
+      window.removeEventListener('resize', updateWindowWidth);
+    });
+
+    const isMobileMode = computed(() => {
+      return windowWidth.value <= 768; // break point px width for mobile
+    });
 
     watch(
       () => route.path,
@@ -198,6 +228,10 @@ export default {
         }, 100);
       }
     );
+
+    function updateWindowWidth() {
+      windowWidth.value = window.innerWidth;
+    }
 
     function toggleShowMobileMenu() {
       showMobileMenu.value = !showMobileMenu.value;
@@ -209,7 +243,7 @@ export default {
       )
     );
 
-    return { settingsRoutes, filteredSettingsRoutes, showMobileMenu, toggleShowMobileMenu, ...useMso() };
+    return { settingsRoutes, filteredSettingsRoutes, showMobileMenu, toggleShowMobileMenu, isMobileMode, ...useMso() };
   }
 }
 </script>
@@ -248,16 +282,6 @@ export default {
 
   .navbar .active {
     color: black;
-  }
-
-  .hiding {
-    transition: opacity 0.1s ease;
-    opacity: 0;
-  }
-
-  .showing {
-    transition: opacity 0.1s ease;
-    opacity: 1;
   }
 
   .connecting-overlay {
@@ -376,10 +400,6 @@ export default {
 
   .shortcut-icon {
     padding: 0rem .5rem;
-  }
-
-  .show {
-    transition: all .5s ease-in-out;
   }
 
   .full-nav .active svg {
