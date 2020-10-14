@@ -18,6 +18,19 @@ const upmixLabels = {
   'stereo': 'Stereo'
 }
 
+const defaultPersonalizeShortcuts = {
+  'about': true,
+  'help': true,
+  'power': true,
+};
+
+const defaultPersonalizeModes = {
+  'dirac': true,
+  'loudness': true,
+  'dialogenh': true,
+  'night': true,
+};
+
 // local MSO state, used to display values on the interface
 const mso = ref({});
 
@@ -239,7 +252,15 @@ function applyProductRules() {
 
     if (!mso.value.personalize) {
       initializePersonalize();
-    }
+    } else {
+      if (!mso.value.personalize.shortcuts) {
+        initializeShortcuts();
+      }
+
+      if (!mso.value.personalize.modes) {
+        initializeModes();
+      }
+    } 
   }
 }
 
@@ -1068,12 +1089,17 @@ function toggleSupportTools() {
 
 function initializePersonalize() {
   return patchMso({'op': 'add', 'path': '/personalize', value: {
-    shortcuts: {
-      'about': true,
-      'help': true,
-      'power': true,
-    }
+    shortcuts: defaultPersonalizeShortcuts,
+    modes: defaultPersonalizeModes
   }});
+}
+
+function initializeShortcuts() {
+  return patchMso({'op': 'add', 'path': '/personalize/shortcuts', value: defaultPersonalizeShortcuts});
+}
+
+function initializeModes() {
+  return patchMso({'op': 'add', 'path': '/personalize/modes', value: defaultPersonalizeModes});
 }
 
 function toggleShortcut(item) {
@@ -1081,6 +1107,17 @@ function toggleShortcut(item) {
   const path = `/personalize/shortcuts/${item}`;
 
   if (mso.value.personalize.shortcuts[item]) {
+    return patchMso({'op': 'remove', 'path': path});
+  } else {
+    return patchMso({'op': 'add', 'path': path, value: true});
+  }
+}
+
+function toggleShowMode(mode) {
+
+  const path = `/personalize/modes/${mode}`;
+
+  if (mso.value.personalize.modes[mode]) {
     return patchMso({'op': 'remove', 'path': path});
   } else {
     return patchMso({'op': 'add', 'path': path, value: true});
@@ -1156,7 +1193,7 @@ export default function useMso() {
     setFrontPanelBrightness, toggleVideoStatusHomePage, toggleExtendedAudioStatus,
     toggleAdvancedInputSettings, toggleSupportTools, importMsoPatchList,
     saveRecordedCommands,
-    toggleShortcut,
+    toggleShortcut, toggleShowMode,
     showCrossoverControls, currentDiracSlot, calToolConnected, activeChannels,
     currentlyRecordingSlot, setRecordingStarted, setRecordingStopped,
     state, loading,
