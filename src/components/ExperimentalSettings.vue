@@ -28,7 +28,7 @@
               </router-link>
             </li>
             <li class="nav-item">
-              <a class="nav-link" @click="powerOff">
+              <a class="nav-link" @click="powerOff" href="javascript:void(0)">
                 <power-icon /> Power Off
               </a>
             </li>
@@ -119,7 +119,7 @@ export default {
 
   .mfade-enter-active,
   .mfade-leave-active {
-    transition: opacity .1s ease;
+    /* transition: opacity .1s ease; */
     z-index: 0;
   }
 
