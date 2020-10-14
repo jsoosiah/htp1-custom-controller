@@ -92,10 +92,10 @@
       <thead>
         <tr>
           <th>Channel</th>
-          <th class="text-right">Dirac Calibration Delay (ms)</th>
+          <th class="text-right">Dirac Calibration<br/>Delay (ms)</th>
           <th class="text-right">User Delay (ms)</th>
           <th class="text-right">Total Delay (ms)</th>
-          <th class="text-right">Dirac Calibration Trim (dB)</th>
+          <th class="text-right">Dirac Calibration<br/>Trim (dB)</th>
           <th class="text-right">User Trim (dB)</th>
           <th class="text-right">Total Trim (dB)</th>
           <th 
