@@ -2,60 +2,74 @@
   <div>
       <div class="container">
         <!-- Input Label, Menu Buttons -->
-        <div class="row justify-content-between">
+        <div class="row justify-content-between" v-if="!isMobileMode">
           <div class="col-auto">
             <router-link class="settings-link current-input-label" :to="`/settings/inputs`">
               {{mso.inputs && mso.inputs[mso.input].label}}
             </router-link>
           </div>
-          <div class="col-auto text-right" v-if="mso.stat?.displayVideoStat">
-            <h6>{{mso.videostat.VideoResolution}}<br/>
-              <small>
-                {{mso.videostat.VideoColorSpace}}
-                {{mso.videostat.VideoMode}}
-                {{mso.videostat.HDRstatus}}
-                {{mso.videostat.VideoBitDepth}} 
-                {{mso.videostat.Video3D}}
-              </small>
-            </h6>
-          </div>
         </div>
         <!-- Program Format, Blank, Listening Format   -->
         <div class="row mt-2">
-          <div class="col text-left">
-            <h5>Program Format: {{mso.status?.DECProgramFormat}} <small v-if="mso.stat?.displayAudioStat">{{mso.status?.DECSampleRate}}</small></h5>
-            <div>
-              {{mso.status?.DECSourceProgram}}
+          <div class="col-md text-left">
+            <div class="card">
+              <div class="card-body">
+                <div class="row align-items-center">
+                  <div class="col-auto icon-col">
+                    <img class="fillheight"  v-if="streamTypeIcon(mso.status)" :src="require(`@/assets/${streamTypeIcon(mso.status)}`)+'#svgView(preserveAspectRatio(xMidYMid))'">
+                  </div>
+                  <div class="col">
+                    <h6 class="card-title text-muted">Program Format</h6>
+                    <h6 class="card-text">{{mso.status?.DECProgramFormat}} <small>{{mso.status?.DECSourceProgram}} <span v-if="mso.stat?.displayAudioStat">{{mso.status?.DECSampleRate}}</span></small></h6>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="col text-right">
-            <h5>Listening Format: {{mso.status?.ENCListeningFormat}} <small v-if="mso.stat?.displayAudioStat">{{mso.status?.ENCSampleRate}}</small></h5>
-            <div>
-                {{mso.status?.SurroundMode}}
+          <div class="col-md" v-if="mso.stat?.displayVideoStat">
+            <div class="card">
+              <div class="card-body">
+                <div class="row align-items-center">
+                  <div class="col-auto icon-col text-center">
+                    <font-awesome-icon  class="text-muted" size="2x" :icon="['fas', 'tv']" />
+                  </div>
+                  <div class="col">
+                    <h6 class="card-title text-muted">Video</h6>
+                    
+                      <h6 class="card-text">{{mso.videostat.VideoResolution}}
+                        <small>
+                          {{mso.videostat.VideoColorSpace}}
+                          {{mso.videostat.VideoMode}}
+                          {{mso.videostat.HDRstatus}}
+                          {{mso.videostat.VideoBitDepth}}
+                          {{mso.videostat.Video3D}}
+                        </small>
+                      </h6>
+                    
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md text-left">
+            <div class="card">
+              <div class="card-body">
+                <div class="row align-items-center">
+                  <div class="col-auto icon-col">
+                    <img class="fillheight" v-if="upmixerIcon(mso.status)" :src="require(`@/assets/${upmixerIcon(mso.status)}`)+'#svgView(preserveAspectRatio(xMidYMid))'">
+                  </div>
+                  <div class="col">
+                    <h6 class="card-title text-muted">Listening Format</h6>
+                    <h6 class="card-text">{{mso.status?.ENCListeningFormat}} <small>{{mso.status?.SurroundMode}} <span v-if="mso.stat?.displayAudioStat">{{mso.status?.ENCSampleRate}}</span></small></h6>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
         <!-- Program Format Logo, Volumn Text, Listening Format Logo -->
-        <div class="row mt-2">
-          <div class="col text-left">
-            <img v-if="streamTypeIcon(mso.status)" class="fillheight" :src="require(`@/assets/${streamTypeIcon(mso.status)}`)+'#svgView(preserveAspectRatio(xMinYMin))'">
-          </div>
-          <div class="col-auto text-center">
-            <span 
-              class="vol-display" 
-              :class="{'text-danger':mso.muted}" 
-              v-press="handleMute"
-            >
-              {{mso.volume}} dB
-            </span>
-          </div>
-          <div class="col text-right">
-            <img v-if="upmixerIcon(mso.status)" class="fillheight float-right" :src="require(`@/assets/${upmixerIcon(mso.status)}`)+'#svgView(preserveAspectRatio(xMaxYMax))'">
-          </div>
-        </div>
-        <!-- Volume Buttons -->
-        <div class="row mt-2">
-          <div class="col-md-12 text-center">
+        <div class="row mt-2 justify-content-center">
+          <div class="col-auto text-left" :class="{'px-0': isMobileMode}">
             <button 
               type="button" 
               class="btn btn-dark vol-btn" 
@@ -65,6 +79,17 @@
             >
               <font-awesome-icon  :class="{'text-danger':mso.muted}" size="4x" :icon="['fas', 'volume-down']" />
             </button>
+          </div>
+          <div class="col-auto text-center" :class="{'px-0': isMobileMode}">
+            <span 
+              class="vol-display" 
+              :class="{'text-danger':mso.muted}" 
+              v-press="handleMute"
+            >
+              {{mso.volume}} dB
+            </span>
+          </div>
+          <div class="col-auto text-right pr-0">
             <button 
               type="button" 
               class="btn btn-dark vol-btn" 
@@ -74,6 +99,13 @@
             >
               <font-awesome-icon  :class="{'text-danger':mso.muted}" size="4x" :icon="['fas', 'volume-up']" />
             </button>
+          </div>
+        </div>
+        <!-- Volume Buttons -->
+        <div class="row mt-2">
+          <div class="col-md-12 text-center">
+
+
           </div>
         </div>
         <!-- Input Select -->
@@ -185,6 +217,7 @@ import { debounce } from 'lodash-es';
 import useLocalStorage from '@/use/useLocalStorage.js';
 import useMso from '@/use/useMso.js';
 import useStream from '@/use/useStream.js';
+import useResponsive from '@/use/useResponsive.js';
 
 import { LongPress, LongPressUp, Press } from '@/directives/Press.js';
 
@@ -209,6 +242,7 @@ export default {
   setup() {
 
     const { settingsActiveTab, setSettingsActiveTab } = useLocalStorage();
+    const { isMobileMode } = useResponsive();
 
     const { 
       mso, setVolume, toggleMute,
@@ -338,7 +372,7 @@ export default {
       setNightOff, setNightAuto, setNightOn, setLoudnessOff, setLoudnessOn, setToneControlOff, setToneControlOn, setGlobalPEQOff, setGlobalPEQOn,setDtsDialogEnh,
       currentlyRecordingSlot,
       inputLoaded, inputSelectedAndLoading,
-      experimental
+      experimental, isMobileMode
     };
   },
   components: {
@@ -388,6 +422,7 @@ export default {
     font-size:3rem;
     cursor: pointer;
     color:white;
+    line-height: 1.9;
   }
 
   .vol-btn, .vol-btn:focus, .vol-btn:active {
@@ -397,16 +432,23 @@ export default {
     border:none;
     width:6rem;
     height:6rem;
-    margin:1rem;
+    /* margin:1rem; */
   }
 
   .yellow-text-btn {
     color:yellow;
   }
   .fillheight {
-    max-height:4rem;
-    max-width:8rem;
+    max-height:3.25rem;
+    width:5rem;
     display: block;
+    opacity: .9;
+  }
+
+  .icon-col {
+    width: 6.25rem;
+    padding-right:0;
+    /* padding-left:0; */
   }
 
   .mfade-enter-from,
@@ -466,5 +508,12 @@ export default {
     z-index: 0;
   }
 
+  .card {
+    background-color: rgba(255,255,255,.0);
+    border: rgba(255,255,255,.11) 1px solid;
+    border-radius: 8px;
+    margin-bottom:1rem;
+    min-height:5.5rem;
+  }
 
 </style>

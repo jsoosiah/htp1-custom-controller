@@ -22,7 +22,7 @@
   </div>
   <template v-if="!mso?.powerIsOn">
     <div class="container">
-      <div class="row mt-5">
+      <div class="row pt-5">
         <div class="col-md-12 text-center">
           <p class="standby-msg">Unit is in standby mode. Click below to power on.</p>
           <button class="btn btn-dark rounded-circle menu-btn" @click="powerOn()">
@@ -35,7 +35,7 @@
   <template v-else>
     <div class="container" style="z-index:1">
       <nav class="navbar px-0 pt-0" style="z-index:1">
-        <ul class="navbar-nav mr-auto">
+        <ul class="navbar-nav mr-auto" :class="{'shortcut-nav': isMobileMode}">
           <!-- If desktop mode -->
           <!-- If desktop mode home screen, hamburger button goes directly to settings --> 
           <li 
@@ -81,6 +81,14 @@
             >
               <span class="navbar-toggler-icon"></span>
             </button>
+          </li>
+          <li class="small text-muted shortcut-icon" v-if="isMobileMode">
+            <router-link 
+            class="settings-status"
+              to="/"
+            >
+              {{mso.volume}} dB &middot; {{mso.inputs && mso.inputs[mso.input].label}} &middot; {{mso.upmix && upmixLabels[mso.upmix.select]}}
+            </router-link>
           </li>
         </ul>
         <!-- Shortcut icons --> 
@@ -158,6 +166,8 @@ import { useRoute } from 'vue-router';
 import { settingsRoutes } from '@/router.js';
 
 import useMso from '@/use/useMso.js';
+import useWebSocket from '@/use/useWebSocket.js';
+import useResponsive from '@/use/useResponsive.js';
 
 import IpSelect from './IpSelect.vue';
 
@@ -200,22 +210,23 @@ export default {
   setup() {
 
     const { mso } = useMso();
+    const { findServers, websocketIp } = useWebSocket();
+    const { windowWidth, isMobileMode } = useResponsive();
     const route = useRoute();
 
     const showMobileMenu = ref(false);
-    const windowWidth = ref(0);
-
+    
     onMounted(() => {
       updateWindowWidth();
       window.addEventListener('resize', updateWindowWidth);
+
+      if (!websocketIp.value) {
+        findServers(80, '192.168.1.', 1, 255, 20, 4000);
+      }
     });
 
     onUnmounted(() => {
       window.removeEventListener('resize', updateWindowWidth);
-    });
-
-    const isMobileMode = computed(() => {
-      return windowWidth.value <= 768; // break point px width for mobile
     });
 
     watch(
@@ -390,6 +401,7 @@ export default {
 
   .shortcut-nav {
     flex-direction: row;
+    align-items: center;
   }
 
   .nav-item {

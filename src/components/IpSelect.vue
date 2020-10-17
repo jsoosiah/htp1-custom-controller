@@ -20,11 +20,24 @@
         </div>
         <div class="modal-body text-left">
           <template v-if="websocketIp">
-            <p>Connection to {{ websocketIp }} was lost. Reconnect will be attempted automatically. Or, please update the IP address below.</p>
+            <p>
+              Connection to {{ websocketIp }} was lost. Reconnect will be attempted automatically.
+              <span class="spinner-border text-primary" role="status">
+                <span class="sr-only">Loading...</span>
+              </span>
+            </p>
+            <p>
+              Or, please update the IP address below if it has changed.
+            </p>
           </template>
           <template v-else>
-            
-            <p>Please enter the local IP address for your HTP-1.</p>
+            <p>
+             Now scanning the network for your HTP-1...
+              <span class="spinner-border text-primary" role="status">
+                <span class="sr-only">Loading...</span>
+              </span>
+            </p>
+            <p>Or, please enter the local IP address for your HTP-1 below.</p>
           </template>
 
           <div class="form-group">

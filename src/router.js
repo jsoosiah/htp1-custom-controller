@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory } from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router';
 
 const AppLayout = () => import('./components/AppLayout.vue');
 
@@ -36,7 +36,7 @@ const settingsRoutes = [
 ];
 
 export default createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(),
   routes: [
     { path: '/', 
       component: AppLayout, 
@@ -52,7 +52,7 @@ export default createRouter({
           children: settingsRoutes,
           redirect: '/settings/speakers'
         },
-      ] 
+      ]
     },
     {
       path: '/:pathMatch(.*)*',

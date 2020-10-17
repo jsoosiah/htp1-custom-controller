@@ -132,7 +132,7 @@ export default function useStream() {
             case SysPlaybackMode_Auro3D:
                 return 'auro-codec.svg';
             case SysPlaybackMode_AuroMatic:
-                return 'auromatic.svg';
+                return 'auromatic-cropped.svg';
         default:
                 return '';
         }

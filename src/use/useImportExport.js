@@ -36,7 +36,8 @@ export default function useImportExport() {
 }
 
 function currentDateStr() {
-  const m = new Date();
-  return m.getUTCFullYear() +""+ (m.getUTCMonth()+1) +""+ m.getUTCDate() + "-" 
-  + m.getUTCHours() + "" + m.getUTCMinutes() + "" + m.getUTCSeconds();
+  const now = new Date();
+  const offsetMs = now.getTimezoneOffset() * 60 * 1000;
+  const dateLocal = new Date(now.getTime() - offsetMs);
+  return dateLocal.toISOString().slice(0, 19).replace(/-|:/g, "").replace("T", "-");
 }

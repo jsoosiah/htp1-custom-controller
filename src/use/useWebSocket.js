@@ -13,6 +13,60 @@ const websocketurl = computed(() => {
     return websocketIp.value ? `ws://${websocketIp.value}/ws/controller` : null;
 });
 
+function findServers(port, ipBase, ipLow, ipHigh, maxInFlight, timeout, cb) {
+    var ipCurrent = +ipLow, numInFlight = 0, servers = [];
+    let exitFlag = false;
+    ipHigh = +ipHigh;
+
+    function tryOne(ip) {
+        ++numInFlight;
+        var address = "ws://" + ipBase + ip +'/ws/controller';
+        var socket = new WebSocket(address);
+        var timer = setTimeout(function() {
+            console.log(address + " timeout");
+            var s = socket;
+            socket = null;
+            s.close();
+            --numInFlight;
+            next();
+        }, timeout);
+        socket.onopen = function() {
+            if (socket) {
+                console.log(address + " success");
+                clearTimeout(timer);
+                // servers.push(socket.url);
+                setWebsocketIp(ipBase + ip);
+                exitFlag = true;
+                return;
+                // --numInFlight;
+                // next();
+            }
+        };
+        socket.onerror = function(err) {
+            if (socket) {
+                console.log(address + " error");
+                clearTimeout(timer);
+                --numInFlight;
+                next();
+            }
+        }
+    }
+
+    function next() {
+        while ((ipCurrent <= ipHigh && numInFlight < maxInFlight) && !exitFlag) {
+            tryOne(ipCurrent++);
+        }
+        // if we get here and there are no requests in flight, then
+        // we must be done
+        if (numInFlight === 0) {
+            console.log(servers);
+            cb(servers);
+        }
+    }
+
+    next();
+}
+
 // Define WSClient instance, a WebSocket with auto reconnect - https://stackoverflow.com/questions/49629881/reconnecting-a-websocket-without-creating-a-new-instance
 class WSClient {
 
@@ -192,6 +246,7 @@ export default function useWebSocket() {
         send,
         websocketIp,
         websocketurl,
-        setWebsocketIp
+        setWebsocketIp,
+        findServers,
     };
 }
