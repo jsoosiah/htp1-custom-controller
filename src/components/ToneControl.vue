@@ -9,12 +9,9 @@
 
     <div class="row mt-3" v-show="!mso.eq?.tc">
       <div class="col">
-        <div class="alert alert-warning alert-dismissible small" role="alert">
+        <dismissable-alert alertKey="tone-control-off" class="alert-warning">
           Tone controls are currently turned off. The following tone control settings may be modified, but they will not have any effect until tone controls are turned on.
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">×</span>
-          </button>
-        </div>
+        </dismissable-alert>
       </div>
     </div>
 
@@ -75,12 +72,9 @@
     />
     <div class="row mt-3" v-show="mso.loudness !== 'on'">
       <div class="col">
-        <div class="alert alert-warning alert-dismissible small" role="alert">
+        <dismissable-alert alertKey="loudness-off" class="alert-warning">
           Loudness compensation is currently turned off. The following loudness compensation settings may be modified, but they will not have any effect until loudness compensation is turned on.
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">×</span>
-          </button>
-        </div>
+        </dismissable-alert>
       </div>
     </div>
 
@@ -130,10 +124,8 @@
 
 <script>
   import useMso from '@/use/useMso.js';
-  
-  import { Tooltip } from '@/directives/Tooltip.js';
-  
   import TwoStateButton from './buttons/TwoStateButton.vue';
+  import DismissableAlert from './buttons/DismissableAlert.vue';
 
   export default {
     name: 'ToneControl',
@@ -150,10 +142,8 @@
     },
     components: {
       TwoStateButton,
+      DismissableAlert,
     },
-    directives: {
-      Tooltip,
-    }
   }
 </script>
 

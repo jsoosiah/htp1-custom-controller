@@ -184,12 +184,9 @@
     </template>
     <template v-else>
       <h5>Dirac Room Correction Filters <small class="text-muted">up to 6 sets or slots available</small></h5>
-      <div class="alert alert-info alert-dismissible small" role="alert">
+      <dismissable-alert alertKey="calibration-dlbc">
         * denotes Dirac Live Room Correction filters with Bass Control.
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">×</span>
-        </button>
-      </div>
+      </dismissable-alert>
       <div class="row justify-content-between mb-3">
         <div class="col-auto">
           <dirac-button-group :home-button="false" />
@@ -335,6 +332,7 @@
   
   import DiracButtonGroup from './buttons/DiracButtonGroup.vue';
   import TwoStateButton from './buttons/TwoStateButton.vue';
+  import DismissableAlert from './buttons/DismissableAlert.vue';
 
   export default {
     name: 'Calibration',
@@ -380,6 +378,7 @@
     components: {
       DiracButtonGroup,
       TwoStateButton,
+      DismissableAlert
     }
   }
 </script>

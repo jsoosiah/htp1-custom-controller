@@ -34,7 +34,7 @@
   </template>
   <template v-else>
     <div class="container" style="z-index:1">
-      <nav class="navbar px-0 pt-0" style="z-index:1">
+      <nav class="navbar p-0" style="z-index:1">
         <ul class="navbar-nav mr-auto" :class="{'shortcut-nav': isMobileMode}">
           <!-- If desktop mode -->
           <!-- If desktop mode home screen, hamburger button goes directly to settings --> 

@@ -22,19 +22,8 @@
   export default {
     name: 'Macros',
     setup(props, { emit }) {
-      const commandKeys = [
-        'cmda',
-        'cmdb',
-        'cmdc',
-        'cmdd',
-        'preset1',
-        'preset2',
-        'preset3',
-        'preset4'
-      ];
 
       return {
-        commandKeys,
         ...useMso()
       };
     },

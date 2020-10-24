@@ -1,12 +1,9 @@
 <template>
   <div class="transition-container">
     <h5>Parametric Equalization Filters <small class="text-muted">up to 16 bands are available</small></h5>
-    <div class="alert alert-info alert-dismissible small" role="alert">
+    <dismissable-alert alertKey="peq-bypass">
       Note that a gain of 0dB is equivalent to bypassing the filter; * denotes channels or bands that have been modified and have active PEQ filters.
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">×</span>
-      </button>
-    </div>
+    </dismissable-alert>
     <peq-chart 
       :peq-slots="mso.peq?.slots || []"
       :active-channels="activeChannels"
@@ -30,12 +27,9 @@
     </div>
     <div class="row" v-show="!mso.peq?.peqsw">
       <div class="col">
-        <div class="alert alert-warning alert-dismissible small" role="alert">
+        <dismissable-alert alertKey="peq-off" class="alert-warning">
           Parametric equalization is currently turned off. The following PEQ settings may be modified, but they will not have any effect until PEQ is turned on.
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">×</span>
-          </button>
-        </div>
+        </dismissable-alert>
       </div>
     </div>
     <!-- group by band --> 
@@ -345,6 +339,7 @@
   import MultiStateButtonGroup from './buttons/MultiStateButtonGroup';
   import MsoImporter from './MsoImporter.vue';
   import PeqChart from './PeqChart.vue';
+  import DismissableAlert from './buttons/DismissableAlert.vue';
 
   export default {
     name: 'Eq',
@@ -565,6 +560,7 @@
       TwoStateButton,
       MsoImporter,
       PeqChart,
+      DismissableAlert
     }
   }
 </script>

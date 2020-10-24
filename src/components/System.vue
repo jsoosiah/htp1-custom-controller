@@ -88,34 +88,6 @@
         />
       </div>
     </div>
-    <h5>Advanced</h5>
-    <div class="mb-3">
-      <div class="custom-control custom-switch">
-        <input 
-          type="checkbox" 
-          class="custom-control-input" 
-          id="display-video" 
-          :checked="mso.stat?.displayVideoStat" 
-          @click="toggleVideoStatusHomePage()"
-        >
-        <label class="custom-control-label" for="display-video">
-          Display Video Status on Home Page
-        </label>
-      </div>
-      <div class="custom-control custom-switch">
-        <input 
-          type="checkbox" 
-          class="custom-control-input" 
-          id="display-audio" 
-          :checked="mso.stat?.displayAudioStat" 
-          @click="toggleExtendedAudioStatus()"
-        >
-        <label class="custom-control-label" for="display-audio">
-          Display Extended Audio Status on Home Page
-        </label>
-      </div>
-    </div>
-
     <template v-if="false">
       <h5>Support</h5>
       <div class="custom-control custom-switch">

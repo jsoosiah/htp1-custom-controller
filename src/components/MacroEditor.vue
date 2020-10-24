@@ -10,7 +10,10 @@
           </h2>
         </div>
         <div class="col-auto">
-          <small class="text-muted">({{currentCommands.length}} commands)</small>
+          <small class="text-muted">{{mso.svronly.macroNames[props.commandKey]}}</small>
+        </div>
+        <div class="col-auto">
+          <small class="text-muted">{{currentCommands.length}} commands</small>
         </div>
         <div class="col-auto">
           <div v-if="touched">
@@ -23,6 +26,17 @@
 
     <div id="collapseOne" class="collapse" :class="{'show': show || currentlyRecordingSlot === props.commandKey}">
       <div class="card-body">
+        <div class="form-group">
+          <label :for="`macro-name-${props.commandKey}`">Macro Name</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            :id="`macro-name-${props.commandKey}`" 
+            :placeholder="props.commandKey"
+            :value="mso.svronly.macroNames[props.commandKey]"
+            @change="({ type, target }) => setMacroName(props.commandKey, target.value)"
+          >
+        </div>
         <two-state-button 
           :button-text="`Recording: ${currentlyRecordingSlot === props.commandKey ? 'On' : 'Off'}`"
           :state-on="currentlyRecordingSlot === props.commandKey"
@@ -30,14 +44,14 @@
         />
         <div class="my-3">
           <div class="container"  v-if="currentCommands.length > 0">
-            <draggable class="dragArea list-group w-full" :list="currentCommands" @change="setTouched">
+            <draggable class="dragArea list-group w-full" :list="currentCommands" @change="setTouched" handle=".handle">
               <div class="row" v-for="(command, index) in currentCommands" :key="command">
-                <div class="col-auto"><font-awesome-icon size="lg" :icon="['fas', 'grip-lines']" :style="{ color: '#343a40' }" /></div>
-                <div class="col"><code>{{index + 1}}</code></div>
-                <div class="col"><code>{{command.op}}</code></div>
-                <div class="col"><code>{{command.path}}</code></div>
-                <div class="col"><code>{{command.value}}</code></div>
-                <div class="col-auto">
+                <div class="col-1 handle"><font-awesome-icon size="lg" :icon="['fas', 'grip-lines']" :style="{ color: '#343a40' }" /></div>
+                <div class="col-1"><code>{{index + 1}}</code></div>
+                <div class="col-2"><code>{{command.op}}</code></div>
+                <div class="col-4"><code>{{command.path}}</code></div>
+                <div class="col-3"><code>{{command.value}}</code></div>
+                <div class="col-1">
                   <button 
                     class="btn btn-sm btn-danger"
                     @click="removeRecordedCommand(index)"
@@ -78,7 +92,8 @@
     setup(props) {
 
       const { mso, data, parseMSO, 
-        currentlyRecordingSlot, setRecordingStarted, setRecordingStopped, saveRecordedCommands } = useMso();
+        currentlyRecordingSlot, setRecordingStarted, setRecordingStopped, saveRecordedCommands,
+        setMacroName } = useMso();
 
       const show = ref(false);
       const touched = ref(false);
@@ -161,7 +176,8 @@
       }
 
       return { mso, data, props, toggleRecording, removeRecordedCommand, show, toggleShow,
-      currentlyRecordingSlot, currentCommands, unsavedChanges, saveRecordedCommands, touched, save, setTouched };
+      currentlyRecordingSlot, currentCommands, unsavedChanges, saveRecordedCommands, touched, save, setTouched,
+      setMacroName };
     },
     components: {
       TwoStateButton,

@@ -1,18 +1,18 @@
 <template>
   <div>
       <div class="container">
-        <!-- Input Label, Menu Buttons -->
-        <div class="row justify-content-between" v-if="!isMobileMode">
+        <!-- Input Label -->
+        <div class="row justify-content-between mb-3" v-if="!isMobileMode">
           <div class="col-auto">
             <router-link class="settings-link current-input-label" :to="`/settings/inputs`">
               {{mso.inputs && mso.inputs[mso.input].label}}
             </router-link>
           </div>
         </div>
-        <!-- Program Format, Blank, Listening Format   -->
-        <div class="row mt-2">
-          <div class="col-md text-left">
-            <div class="card">
+        <!-- Program Format, Video, Listening Format   -->
+        <div class="row">
+          <div class="col-md">
+            <div class="card" :class="{'desktop-card': !isMobileMode, 'mobile-card': isMobileMode}">
               <div class="card-body">
                 <div class="row align-items-center">
                   <div class="col-auto icon-col">
@@ -27,7 +27,7 @@
             </div>
           </div>
           <div class="col-md" v-if="mso.stat?.displayVideoStat">
-            <div class="card">
+            <div class="card" :class="{'desktop-card': !isMobileMode, 'mobile-card': isMobileMode}">
               <div class="card-body">
                 <div class="row align-items-center">
                   <div class="col-auto icon-col text-center">
@@ -51,8 +51,8 @@
               </div>
             </div>
           </div>
-          <div class="col-md text-left">
-            <div class="card">
+          <div class="col-md">
+            <div class="card" :class="{'desktop-card': !isMobileMode, 'mobile-card': isMobileMode}">
               <div class="card-body">
                 <div class="row align-items-center">
                   <div class="col-auto icon-col">
@@ -148,61 +148,100 @@
           </div>
         </div>
         <!-- Modes -->
-        <div class="row mt-2" v-if="mso.personalize?.modes && Object.keys(mso.personalize.modes).length > 0">
+        <div class="row mt-2" v-if="mso.personalize?.modes && Object.keys(mso.personalize?.modes).length > 0">
           <div class="col-md-12 text-center">
               <h5>Modes</h5>
-              <!-- Dirac -->
-              <dirac-button 
-                v-if="mso.personalize?.modes.dirac"
-                :home-button="true"
-              />
-              <!-- PEQ -->
-              <two-state-button 
-                v-if="mso.personalize?.modes.peq"
-                :button-text="`PEQ ${mso.peq?.peqsw ? 'on' : 'off'}`"
-                :state-on="mso.peq?.peqsw"
-                :home-button="true"
-                @btn-click="toggleGlobalPEQ()"
-                :show-state-indicators="true"
-              />
-              <!-- Tone Control -->
-              <two-state-button 
-                v-if="mso.personalize?.modes.tone"
-                :button-text="`Tone Control ${mso.eq?.tc ? 'on' : 'off'}`"
-                :state-on="mso.eq?.tc"
-                :home-button="true"
-                @btn-click="toggleToneControl()"
-                :show-state-indicators="true"
-                min-width="10rem"
-              />
-              <!-- Loudness -->
-              <two-state-button 
-                v-if="mso.personalize?.modes.loudness"
-                :button-text="`Loudness ${mso.loudness}`" 
-                :state-on="mso.loudness === 'on'" 
-                :home-button="true"
-                @btn-click="toggleLoudness()"
-                :show-state-indicators="true"
-                min-width="7.5rem"
-              />
-              <!-- Dialog Enhance --> 
-              <dialog-enhance-button 
-                v-if="mso.personalize?.modes.dialogenh"
-                :home-button="true" 
-                :show-state-indicators="true" 
-              />
+              <div class="my-3">
+                <!-- Dirac -->
+                <dirac-button 
+                  v-if="mso.personalize?.modes.dirac"
+                  :home-button="true"
+                />
+                <!-- PEQ -->
+                <two-state-button 
+                  v-if="mso.personalize?.modes.peq"
+                  :button-text="`PEQ ${mso.peq?.peqsw ? 'on' : 'off'}`"
+                  :state-on="mso.peq?.peqsw"
+                  :home-button="true"
+                  @btn-click="toggleGlobalPEQ()"
+                  :show-state-indicators="true"
+                />
+                <!-- Tone Control -->
+                <two-state-button 
+                  v-if="mso.personalize?.modes.tone"
+                  :button-text="`Tone Control ${mso.eq?.tc ? 'on' : 'off'}`"
+                  :state-on="mso.eq?.tc"
+                  :home-button="true"
+                  @btn-click="toggleToneControl()"
+                  :show-state-indicators="true"
+                  min-width="10rem"
+                />
+                <!-- Loudness -->
+                <two-state-button 
+                  v-if="mso.personalize?.modes.loudness"
+                  :button-text="`Loudness ${mso.loudness}`" 
+                  :state-on="mso.loudness === 'on'" 
+                  :home-button="true"
+                  @btn-click="toggleLoudness()"
+                  :show-state-indicators="true"
+                  min-width="7.5rem"
+                />
+                <!-- Dialog Enhance --> 
+                <dialog-enhance-button 
+                  v-if="mso.personalize?.modes.dialogenh"
+                  :home-button="true" 
+                  :show-state-indicators="true" 
+                />
 
-              <!-- Night Mode -->
-              <three-state-button 
-                v-if="mso.personalize?.modes.night"
-                :button-text="`Night ${mso.night}`"
-                :states="{'off': 0, 'on': 1, 'auto': 2}"
-                :state-value="mso.night"
-                :home-button="true"
-                @btn-click="setNextNightMode()"
-                :show-state-indicators="true"
-                min-width="6.75rem"
-              />
+                <!-- Night Mode -->
+                <three-state-button 
+                  v-if="mso.personalize?.modes.night"
+                  :button-text="`Night ${mso.night}`"
+                  :states="{'off': 0, 'on': 1, 'auto': 2}"
+                  :state-value="mso.night"
+                  :home-button="true"
+                  @btn-click="setNextNightMode()"
+                  :show-state-indicators="true"
+                  min-width="6.75rem"
+                />
+              </div>
+          </div>
+        </div>
+
+        <!-- Dirac Slots -->
+        <div class="row mt-2" v-if="mso.personalize?.diracSlots && Object.keys(mso.personalize.diracSlots).length > 0">
+          <div class="col-md-12 text-center">
+              <h5><router-link class="settings-link" :to="`/settings/calibration`">Dirac Slot Select</router-link></h5>
+              <div class="diracslot-container my-3">
+                <two-state-button 
+                  v-for="(slot, key) in visibleDiracSlots"
+                  :key="key"
+                  :button-text="slot.name"
+                  :state-on="parseInt(key) === mso.cal?.currentdiracslot"
+                  :home-button="true"
+                  @btn-click="handleDiracSlotClicked(key)" 
+                  :show-state-indicators="true"
+                  :single-indicator="true"
+                  :recently-interacted="diracSlotRecentlyInteracted"
+                />
+              </div>
+          </div>
+        </div>
+
+        <!-- Macros --> 
+        <div class="row mt-2" v-if="mso.personalize?.macros && Object.keys(mso.personalize.macros).length > 0">
+          <div class="col-md-12 text-center">
+              <h5><router-link class="settings-link" :to="`/settings/calibration`">Macros</router-link></h5>
+              <div class="diracslot-container my-3">
+                <two-state-button 
+                  v-for="(macro, key) in visibleMacros"
+                  :key="key"
+                  :button-text="mso.svronly?.macroNames[key]"
+                  :state-on="macroIsActive(macro)"
+                  :home-button="true"
+                  @btn-click="executeMacro(macro)" 
+                />
+              </div>
           </div>
         </div>
       </div>
@@ -213,6 +252,7 @@
 
 import { ref, defineAsyncComponent, computed, onMounted } from 'vue';
 import { debounce } from 'lodash-es';
+import { applyPatch, deepClone, compare } from 'fast-json-patch/index.mjs';
 
 import useLocalStorage from '@/use/useLocalStorage.js';
 import useMso from '@/use/useMso.js';
@@ -247,11 +287,11 @@ export default {
     const { 
       mso, setVolume, toggleMute,
       loading, calToolConnected, state,
-      visibleInputs, visibleUpmixers, powerOn, setInput, setUpmix, powerOff, 
+      visibleInputs, visibleUpmixers, visibleDiracSlots, powerOn, setInput, setUpmix, powerOff, 
       setNextNightMode, toggleLoudness, setNextDtsDialogEnh, toggleToneControl, toggleGlobalPEQ,
-      setNightOff, setNightAuto, setNightOn, setLoudnessOff, setLoudnessOn, 
+      setNightOff, setNightAuto, setNightOn, setLoudnessOff, setLoudnessOn, setDiracSlot,
       setToneControlOff, setToneControlOn, setGlobalPEQOff, setGlobalPEQOn, setDtsDialogEnh,
-      currentlyRecordingSlot
+      currentlyRecordingSlot, visibleMacros, executeMacro
     } = useMso();
 
     onMounted(() => {
@@ -279,6 +319,9 @@ export default {
     
     const inputRecentlyInteracted = ref(false);
     let inputRecentlyInteractedTimeout;
+
+    const diracSlotRecentlyInteracted = ref(false);
+    let diracSlotRecentlyInteractedTimeout;
 
     const showMobileMenu = ref(false);
 
@@ -347,6 +390,23 @@ export default {
       }, 3000);
     }
 
+    function handleDiracSlotClicked(slot) {
+      setDiracSlot(slot);
+      diracSlotRecentlyInteracted.value = true;
+      clearTimeout(diracSlotRecentlyInteractedTimeout);
+      diracSlotRecentlyInteractedTimeout = setTimeout(() => {
+        diracSlotRecentlyInteracted.value = false;
+      }, 3000);
+    }
+
+    function macroIsActive(macro) {
+      const msoCopy = deepClone(mso.value);
+      
+      applyPatch(msoCopy, deepClone(macro));
+      const result = compare(mso.value, msoCopy).length === 0;
+      return result;
+    }
+
     function inputSelectedAndLoading(inp) {
       return inp === mso.value.input && inputLoading(inp);
     }
@@ -362,11 +422,12 @@ export default {
     return { 
       mso, setVolume, toggleMute,
       loading, calToolConnected, state,
-      visibleInputs, visibleUpmixers,
+      visibleInputs, visibleUpmixers, visibleDiracSlots, visibleMacros, macroIsActive, executeMacro,
       powerOn, setInput, setUpmix, powerOff, 
       setNextNightMode, toggleLoudness, setNextDtsDialogEnh, toggleToneControl, toggleGlobalPEQ,
       ...useStream(),
-      handleInputClicked, handleUpmixClicked, inputRecentlyInteracted, upmixRecentlyInteracted,
+      handleInputClicked, handleUpmixClicked, inputRecentlyInteracted, upmixRecentlyInteracted, 
+      handleDiracSlotClicked, diracSlotRecentlyInteracted,
       handleVolumeDownLongPress, handleVolumeUpLongPress, handleVolumeLongPressUp,
       handleVolumeDownPress, handleVolumeUpPress, handleMute, 
       setNightOff, setNightAuto, setNightOn, setLoudnessOff, setLoudnessOn, setToneControlOff, setToneControlOn, setGlobalPEQOff, setGlobalPEQOn,setDtsDialogEnh,
@@ -510,10 +571,20 @@ export default {
 
   .card {
     background-color: rgba(255,255,255,.0);
+    min-height:5.5rem;
+  }
+
+  .desktop-card {
     border: rgba(255,255,255,.11) 1px solid;
     border-radius: 8px;
     margin-bottom:1rem;
-    min-height:5.5rem;
   }
+
+  .mobile-card {
+    border-bottom: rgba(255,255,255,.11) 1px solid;
+    border-radius: 0;
+  }
+
+
 
 </style>

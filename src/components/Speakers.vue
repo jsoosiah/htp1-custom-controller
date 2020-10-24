@@ -2,29 +2,21 @@
   <div class="container">
     <div class="row">
       <h5>Speaker Selection</h5>
-      <div class="alert alert-info alert-dismissible small alert-box" role="alert">
+      <dismissable-alert alertKey="speaker-bm">
         <p>If the current Dirac Filter Slot has Bass Control and Dirac is On, speaker size and crossover controls are unavailable and must be configured using the Dirac software. Speaker sizes and crossovers can be changed if Dirac is off or in bypass mode.</p>
-        <div class="row">
-          <div class="col-auto">
-            <div class="row">
-              <div class="col-auto">
-                <dirac-button-group :home-button="false" />
-              </div>
-              <div class="col">
-                <div class="alert bm-status" :class="{'alert-text-muted': showCrossoverControls, 'alert-success': !showCrossoverControls}">
-                  Dirac Live Bass Control is {{ showCrossoverControls ? 'off' : 'on' }}</div>
-              </div>
-              <div class="col">
-                <div class="alert bm-status" :class="{'alert-text-muted': !showCrossoverControls, 'alert-success': showCrossoverControls}">HTP-1 Bass Management is {{ showCrossoverControls ? 'on' : 'off' }}</div>
-              </div>
+        <div class="row alert-row">
+          <div class="col-lg-6">
+            <div :class="{'mb-3': !isLg}">
+              <dirac-button-group :home-button="false" />
             </div>
           </div>
-          <div class="col-auto"></div>
+          <div class="col-lg-6">
+            <div class="alert alert-secondary">
+              <h6>Current bass manager: <img class="bm-icon" :src="require(`@/assets/${showCrossoverControls?'monolith-logo-small.svg':'dirac3.png'}`)+'#svgView(preserveAspectRatio(xMidYMid))'"> <span class="bm-status">{{showCrossoverControls ? 'HTP-1' : 'Dirac'}}</span></h6>
+            </div>
+          </div>
         </div>
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">×</span>
-        </button>
-      </div>
+      </dismissable-alert>
     </div>
     <div class="row">
       <div class="col-lg">
@@ -36,12 +28,9 @@
     </div>
     <div class="row speaker-map-container">
       <h5>Speaker Map <small class="text-muted">Click image to zoom</small></h5>
-      <div class="alert alert-info alert-dismissible small" role="alert">
-        <p>Depending on the combination of selected speakers, the physical labels on the back panel may not match the actual speaker mapping. The correct mapping is shown below. If the speakers are not enabled, no sound will be produced. Enabled speaker channels are highlighted in green.</p>
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">×</span>
-        </button>
-      </div>
+      <dismissable-alert key="speaker-labels">
+        Depending on the combination of selected speakers, the physical labels on the back panel may not match the actual speaker mapping. The correct mapping is shown below. If the speakers are not enabled, no sound will be produced. Enabled speaker channels are highlighted in green.
+      </dismissable-alert>
       <SpeakerMap />
     </div>
   </div>
@@ -52,16 +41,20 @@
   import { computed } from 'vue';
 
   import useMso from '@/use/useMso.js';
+  import useResponsive from '@/use/useResponsive.js';
+
   import SpeakerGroupCrossoverControls from './SpeakerGroupCrossoverControls.vue';
   import SpeakerDiagram from './SpeakerDiagram.vue';
   import SpeakerMap from './SpeakerMap.vue';
   import DiracButtonGroup from './buttons/DiracButtonGroup.vue';
+  import DismissableAlert from './buttons/DismissableAlert.vue';
 
   export default {
     name: 'Speakers',
     setup(props, { emit }) {
 
       const { mso, showCrossoverControls, activeChannels } = useMso();
+      const { isLg } = useResponsive();
 
       const mainSpeakers = [
         {'label': 'Left / Right', code: 'lr'},
@@ -117,14 +110,15 @@
 
       return { 
         mso, showCrossoverControls, mainSpeakers, surroundSpeakers, upperSpeakers, 
-        diagramSpeakerVisibility, speakerGroups, activeChannels
+        diagramSpeakerVisibility, speakerGroups, activeChannels, isLg
       };
     },
     components: {
       SpeakerDiagram,
       DiracButtonGroup,
       SpeakerGroupCrossoverControls,
-      SpeakerMap
+      SpeakerMap,
+      DismissableAlert,
     }
   }
 </script>
@@ -162,6 +156,12 @@
 
   .bm-status {
     min-width: 15rem;
+    margin-bottom:0;
+  }
+
+  .bm-status-mobile {
+    min-width: 15rem;
+    margin-bottom:1rem;
   }
 
   .col-lg {
@@ -170,5 +170,30 @@
 
   .speaker-map-container {
     overflow: auto;
+  }
+
+  .alert-row {
+    align-items: baseline;
+  }
+
+  .bm-status {
+    /* line-height: 1; */
+    font-weight:bold;
+    text-transform: uppercase;
+    /* font-size: 1.25rem; */
+  }
+
+  .bm-icon {
+    max-height:2rem;
+    max-width:2rem;
+    margin:-.125rem .25rem 0 .5rem;
+  }
+
+  .alert-secondary {
+    margin-bottom:0;
+  }
+
+  .alert-secondary h6 {
+    margin-bottom: 0;
   }
 </style>

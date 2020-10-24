@@ -31,6 +31,17 @@ const defaultPersonalizeModes = {
   'night': true,
 };
 
+const commandKeys = [
+  'cmda',
+  'cmdb',
+  'cmdc',
+  'cmdd',
+  'preset1',
+  'preset2',
+  'preset3',
+  'preset4'
+];
+
 // local MSO state, used to display values on the interface
 const mso = ref({});
 
@@ -260,7 +271,23 @@ function applyProductRules() {
       if (!mso.value.personalize.modes) {
         initializeModes();
       }
-    } 
+
+      if (!mso.value.personalize.diracSlots) {
+        initializeDiracSlots();
+      }
+
+      if (!mso.value.personalize.macros) {
+        initializeShowMacros();
+      }
+
+      if (!mso.value.personalize.dismissedAlerts) {
+        initializeDismissedAlerts();
+      }
+    }
+
+    if (!mso.value.svronly.macroNames) {
+      initializeMacroNames();
+    }
   }
 }
 
@@ -393,6 +420,27 @@ const visibleUpmixers = computed(() => {
     }
   }
 
+  return filtered;
+});
+
+const visibleDiracSlots = computed(() => {
+  const filtered = {};
+  if (mso.value.personalize?.diracSlots) {
+    for (let slotIndex in mso.value.personalize?.diracSlots) {
+      filtered[slotIndex] = mso.value.cal?.slots[slotIndex];
+    }
+  }
+  return filtered;
+});
+
+const visibleMacros = computed(() => {
+  const filtered = {};
+  if (mso.value.personalize?.macros) {
+    for (let key in mso.value.personalize?.macros) {
+      filtered[key] = mso.value.svronly[key];
+    }
+  }
+  console.log('visibleMacros', visibleMacros)
   return filtered;
 });
 
@@ -669,7 +717,7 @@ function setLipsyncDelay(lipsyncDelay) {
 }
 
 function setDiracSlot(slotNumber) {
-  return patchMso({'op': 'replace', 'path': '/cal/currentdiracslot', value: slotNumber});
+  return patchMso({'op': 'replace', 'path': '/cal/currentdiracslot', value: parseInt(slotNumber)});
 }
 
 function setUserDelay(channel, delay) {
@@ -1102,6 +1150,26 @@ function initializeModes() {
   return patchMso({'op': 'add', 'path': '/personalize/modes', value: defaultPersonalizeModes});
 }
 
+function initializeDiracSlots() {
+  return patchMso({'op': 'add', 'path': '/personalize/diracSlots', value: {}});
+}
+
+function initializeShowMacros() {
+  return patchMso({'op': 'add', 'path': '/personalize/macros', value: {}});
+}
+
+function initializeDismissedAlerts() {
+  return patchMso({'op': 'add', 'path': '/personalize/dismissedAlerts', value: {}});
+}
+
+function dismissAlert(alertKey) {
+  return patchMso({'op': 'add', 'path': `/personalize/dismissedAlerts/${alertKey}`, value: true});
+}
+
+function resetDismissedAlerts() {
+  return patchMso({'op': 'replace', 'path': `/personalize/dismissedAlerts`, value: {}});
+}
+
 function toggleShortcut(item) {
 
   const path = `/personalize/shortcuts/${item}`;
@@ -1122,6 +1190,52 @@ function toggleShowMode(mode) {
   } else {
     return patchMso({'op': 'add', 'path': path, value: true});
   }
+}
+
+function toggleShowDiracSlot(slot) {
+  const path = `/personalize/diracSlots/${slot}`;
+
+  if (mso.value.personalize.diracSlots[slot]) {
+    return patchMso({'op': 'remove', 'path': path});
+  } else {
+    return patchMso({'op': 'add', 'path': path, value: true});
+  }
+}
+
+function toggleShowMacro(key) {
+  const path = `/personalize/macros/${key}`;
+
+  if (mso.value.personalize.macros[key]) {
+    return patchMso({'op': 'remove', 'path': path});
+  } else {
+    return patchMso({'op': 'add', 'path': path, value: true});
+  }
+}
+
+function executeMacro(macro) {
+  let result = true;
+  for (const cmd of macro) {
+    result = patchMso(cmd) && result;
+  }
+
+  return result;
+}
+
+function initializeMacroNames() {
+  return patchMso({'op': 'add', 'path': '/svronly/macroNames', value: {
+    'cmda': 'CMD A',
+    'cmdb': 'CMD B',
+    'cmdc': 'CMD C',
+    'cmdd': 'CMD D',
+    'preset1': 'Preset 1',
+    'preset2': 'Preset 2',
+    'preset3': 'Preset 3',
+    'preset4': 'Preset 4',
+  }});
+}
+
+function setMacroName(macroKey, name) {
+  return patchMso({'op': 'replace', 'path': `/svronly/macroNames/${macroKey}`, value: name});
 }
 
 function saveRecordedCommands(slot, commands) {
@@ -1157,7 +1271,8 @@ function setRecordingStopped() {
 export default function useMso() {
 
   return { 
-    mso, visibleInputs, visibleUpmixers, allUpmixers, upmixLabels,
+    mso, visibleInputs, visibleUpmixers, visibleDiracSlots, 
+    visibleMacros, allUpmixers, upmixLabels,
     powerOff, powerOn,
     setVolume, toggleMute, setInput, setUpmix, 
     toggleUpmixHomevis, toggleUpmixCenterSpread, toggleUpmixWideSynth,
@@ -1193,9 +1308,11 @@ export default function useMso() {
     setFrontPanelBrightness, toggleVideoStatusHomePage, toggleExtendedAudioStatus,
     toggleAdvancedInputSettings, toggleSupportTools, importMsoPatchList,
     saveRecordedCommands,
-    toggleShortcut, toggleShowMode,
+    toggleShortcut, toggleShowMode, toggleShowDiracSlot, toggleShowMacro,
+    setMacroName, commandKeys, executeMacro,
     showCrossoverControls, currentDiracSlot, calToolConnected, activeChannels,
     currentlyRecordingSlot, setRecordingStarted, setRecordingStopped,
+    dismissAlert, resetDismissedAlerts,
     state, loading,
     parseMSO, data,
     commandsToSend, commandsReceived, commandsAwaitingResponse // debug

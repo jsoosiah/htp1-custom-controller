@@ -118,6 +118,7 @@ export default function useStream() {
             case SysPlaybackMode_mono:
             case SysPlaybackMode_multiChMono:
             case SysPlaybackMode_direct:
+                return 'direct.svg'
             case SysPlaybackMode_Native:
                 return '';
             case SysPlaybackMode_stereo:

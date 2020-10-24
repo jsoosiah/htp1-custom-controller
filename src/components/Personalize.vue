@@ -3,7 +3,7 @@
     <h5>Personalize Interface</h5>
     <div class="row">
       <div class="col">
-        <h6>Status Display</h6>
+        <h6>Home Page Status Display</h6>
         <div class="mb-3">
           <div class="custom-control custom-switch">
             <input 
@@ -30,33 +30,6 @@
             </label>
           </div>
         </div>
-        <h6>Modes</h6>
-        <table class="table table-sm table-responsive table-striped">
-          <thead>
-            <tr>
-              <th>Show Button</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="mode in modes"
-              :key="mode.code"
-            >
-              <td>
-                <div class="custom-control custom-switch">
-                  <input 
-                    type="checkbox" 
-                    class="custom-control-input" 
-                    :id="'showmode-'+mode.code" 
-                    :checked="mso.personalize?.modes[mode.code]" 
-                    @click="toggleShowMode(mode.code)"
-                  >
-                  <label class="custom-control-label" :for="'showmode-'+mode.code">{{ mode.label }}</label>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
         <h6>Shortcuts</h6>
         <table class="table table-sm table-responsive table-striped">
           <thead>
@@ -112,6 +85,97 @@
             </tr>
           </tbody>
         </table>
+        <h6>Home Page Modes</h6>
+        <table class="table table-sm table-responsive table-striped">
+          <thead>
+            <tr>
+              <th>Show Button</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="mode in modes"
+              :key="mode.code"
+            >
+              <td>
+                <div class="custom-control custom-switch">
+                  <input 
+                    type="checkbox" 
+                    class="custom-control-input" 
+                    :id="'showmode-'+mode.code" 
+                    :checked="mso.personalize?.modes[mode.code]" 
+                    @click="toggleShowMode(mode.code)"
+                  >
+                  <label class="custom-control-label" :for="'showmode-'+mode.code">{{ mode.label }}</label>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <h6>Home Page Dirac Slots</h6>
+        <table class="table table-sm table-responsive table-striped">
+          <thead>
+            <tr>
+              <th>Show Button</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="(slot, key) in mso.cal?.slots"
+              :key="key"
+            >
+              <td>
+                <div class="custom-control custom-switch">
+                  <input 
+                    type="checkbox" 
+                    class="custom-control-input" 
+                    :id="'showdiracslot-'+key" 
+                    :checked="mso.personalize?.diracSlots[key]" 
+                    @click="toggleShowDiracSlot(key)"
+                  >
+                  <label class="custom-control-label" :for="'showdiracslot-'+key">{{ slot.name }}</label>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h6>Home Page Macros</h6>
+        <table class="table table-sm table-responsive table-striped" v-if="mso.svronly">
+          <thead>
+            <tr>
+              <th>Show Button</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="key in commandKeys"
+              :key="key"
+            >
+              <td>
+                <div class="custom-control custom-switch">
+                  <input 
+                    type="checkbox" 
+                    class="custom-control-input" 
+                    :id="'showmacro-'+key" 
+                    :checked="mso.personalize?.macros[key]" 
+                    @click="toggleShowMacro(key)"
+                  >
+                  <label class="custom-control-label" :for="'showmacro-'+key">{{ mso.svronly.macroNames[key] }}</label>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h6>Notices</h6>
+        <button 
+          class="btn btn-sm btn-primary mb-3"
+          @click="resetDismissedAlerts"
+        >
+          Restore All Dismissed Notices
+        </button>
+
       </div>
       <div class="col-auto">
         <h6>Preview</h6>
@@ -173,7 +237,7 @@
   }
 
   div.home-preview {
-    max-width: 400px;
+    max-width: 27rem;
     background-color: black;
   }
 </style>
