@@ -45,7 +45,7 @@
           > <!-- class="d-xl-none d-lg-none d-md-none" -->
             <router-link 
               class="settings-status"
-              :to="`/settings/${settingsRoutes[0].path}`"
+              :to="`/settings/${settingsRoutes[1].path}`"
             >
               <font-awesome-icon size="lg" :icon="['fas', 'cog']" /> Settings
             </router-link>
@@ -108,7 +108,7 @@
                 :class="{'active': $route.path === `/settings/${route.path}`}"
                 :to="`/settings/${route.path}`"
               >
-                <component :is="route.meta.icon" /> 
+                <component v-if="route.meta?.icon" :is="route.meta?.icon" /> 
               </router-link>
             </li>
             <li class="nav-item shortcut-icon" v-if="mso.personalize?.shortcuts.power">
@@ -138,7 +138,7 @@
                 :class="{'active': $route.path === `/settings/${route.path}`}"
                 :to="`/settings/${route.path}`"
               >
-                <component :is="route.meta.icon" /> {{route.meta.label}}
+                <component v-if="route.meta?.icon" :is="route.meta?.icon" /> {{route.meta?.label}}
               </router-link>
             </li>
             <li class="nav-item">
@@ -175,12 +175,14 @@ import HomeIcon from './icons/HomeIcon';
 import CalibrationIcon from './icons/CalibrationIcon';
 import PeqIcon from './icons/PeqIcon';
 import ToneControlIcon from './icons/ToneControlIcon';
+import LoudnessIcon from './icons/LoudnessIcon';
 import InputsIcon from './icons/InputsIcon';
 import NetworkIcon from './icons/NetworkIcon';
 import SgenIcon from './icons/SgenIcon';
 import SpeakersIcon from './icons/SpeakersIcon';
 import PersonalizeIcon from './icons/PersonalizeIcon';
 import SystemIcon from './icons/SystemIcon';
+import ConfigsIcon from './icons/ConfigsIcon';
 import UpmixIcon from './icons/UpmixIcon';
 import MacrosIcon from './icons/MacrosIcon';
 import AboutIcon from './icons/AboutIcon';
@@ -195,6 +197,7 @@ export default {
     CalibrationIcon,
     PeqIcon,
     ToneControlIcon,
+    LoudnessIcon,
     InputsIcon,
     NetworkIcon,
     SgenIcon,
@@ -206,6 +209,7 @@ export default {
     AboutIcon,
     HelpIcon,
     PowerIcon,
+    ConfigsIcon,
   },
   setup() {
 

@@ -1,114 +1,5 @@
 <template>
   <div class="transition-container">
-    <h5>HDMI CEC</h5>
-    <div class="mb-3">
-      <two-state-button 
-        :button-text="`CEC: ${mso?.CEC?.cecOnSw}`" 
-        :state-on="mso?.CEC?.cecOnSw === 'on'" 
-        :home-button="false"
-        @click="toggleCEC()"
-      />
-    </div>
-    <table class="table table-sm table-responsive table-striped mb-3" v-if="mso.CEC?.cecOnSw === 'on'">
-      <thead>
-        <th>
-          CEC Options
-        </th>
-      </thead>
-      <tbody>
-        <tr>
-          <td>
-            <div class="form-group">
-              <label for="inputEmail3" class="col-form-label ">Alternate TV Input</label>
-              <select 
-                class="form-control form-control-sm" 
-                @change="({ type, target }) => setTVSoundSrcDefault(target.value)"
-              >
-                <option 
-                  v-for="opt in altTVInputs" 
-                  :key="opt.value"
-                  :value="opt.value"
-                  :selected="opt.value === mso.stat.TVSoundSrcDefault"
-                >
-                  {{opt.label}}
-                </option>
-              </select>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <div class="custom-control custom-switch">
-              <input 
-                type="checkbox" 
-                class="custom-control-input" 
-                id="cec-pwrk" 
-                :checked="mso.CEC?.allowpwrk" 
-                @click="toggleCECAllowPowerKey()"
-              >
-              <label class="custom-control-label" for="cec-pwrk">Allow power keys</label>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <div class="custom-control custom-switch">
-              <input 
-                type="checkbox" 
-                class="custom-control-input" 
-                id="cec-volk" 
-                :checked="mso.CEC?.allowvolk" 
-                @click="toggleCECAllowVolKey()"
-              >
-              <label class="custom-control-label" for="cec-volk">Allow volume/mute keys</label>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <div class="custom-control custom-switch">
-              <input 
-                type="checkbox" 
-                class="custom-control-input" 
-                id="cec-saf" 
-                :checked="mso.CEC?.allowsaf" 
-                @click="toggleCECAllowSysAudioOff()"
-              >
-              <label class="custom-control-label" for="cec-saf">Allow system audio off</label>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <div class="custom-control custom-switch">
-              <input 
-                type="checkbox" 
-                class="custom-control-input" 
-                id="cec-inp" 
-                :checked="mso.CEC?.allowinp" 
-                @click="toggleCECAllowInputChange()"
-              >
-              <label class="custom-control-label" for="cec-inp">Allow input changes</label>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <div class="custom-control custom-switch">
-              <input 
-                type="checkbox" 
-                class="custom-control-input" 
-                id="cec-stdb" 
-                :checked="mso.CEC?.allowstdb" 
-                @click="toggleCECAllowStandby()"
-              >
-              <label class="custom-control-label" for="cec-stdb">Allow standby</label>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    
       <h5>Ethernet</h5>
       <template v-if="nmstat.eth0detail">
         <h6>Current Settings</h6>
@@ -436,22 +327,10 @@
         clearInterval(scanInterval);
       });
 
-      const altTVInputs = [
-        {label: 'None', value: 'none'},
-        {label: 'Analog1', value: 'a1'},
-        {label: 'Analog2', value: 'a2'},
-        {label: 'COAX1', value: 'spdif1'},
-        {label: 'COAX2', value: 'spdif2'},
-        {label: 'COAX3', value: 'spdif3'},
-        {label: 'Optical1', value: 'optical1'},
-        {label: 'Optical2', value: 'optical2'},
-        {label: 'Optical3', value: 'optical3'},
-      ];
-
       return { 
         ...useMso(), nmstat, scan, applyNetworkConfig, BLANK_IP_ADDRESS,
         int2ip, ip2int, cidr2mask, mask2cidr, wificonfig, getConDetails,
-        altTVInputs, network, password, showpass, selnet, actnet, 
+        network, password, showpass, selnet, actnet, 
         configuredNetworks, wificonnect, wifidisconnect, wififorget
       };
     },

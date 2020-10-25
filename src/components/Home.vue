@@ -131,7 +131,7 @@
         <!-- Upmix Select -->
         <div class="row mt-2" v-if="mso.stat.systemAudio">
           <div class="col-md-12 text-center">
-              <h5><router-link class="settings-link" :to="`/settings/sound-enhancement`">Upmix Select</router-link></h5>
+              <h5><router-link class="settings-link" :to="`/settings/upmix`">Upmix Select</router-link></h5>
               <div class="upmix-container my-3">
                 <two-state-button 
                   v-for="(upmix, key) in visibleUpmixers"

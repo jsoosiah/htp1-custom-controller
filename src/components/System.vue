@@ -10,27 +10,101 @@
       </div>
     </div>
 
-    <h5>Power</h5>
-    <two-state-button 
-      :button-text="`Fast Start: ${mso.fastStart}`"
-      :state-on="mso.fastStart === 'on'"
-      @click="toggleFastStart()"
-    />
-    &nbsp;
-    <two-state-button 
-      :button-text="`Video Pass Through: ${mso.fastStartPassThrough}`"
-      :state-on="mso.fastStartPassThrough === 'on'"
-      @click="toggleFastStartPassThrough()"
-    />
-
-    <div class="form-group">
-      <label for="power-on-volume" class="col-form-label col-form-label-sm ">Power On Volume</label>
-      <div class="input-group input-group-sm numeric-input">
-        <input type="number" class="form-control" aria-label="Power On Volume" aria-describedby="basic-addon2" :value="mso.powerOnVol" @change="({ type, target }) => setPowerOnVol(target.value)" min="-100" max="0">
-        <div class="input-group-append">
-          <span class="input-group-text" id="basic-addon2">dB</span>
+    <h5>Output Settings</h5>
+      <div class="row mb-3">
+        <div class="col-lg-auto">
+          <div class="form-group">
+            <label for="inputEmail3" class="col-form-label col-form-label-sm">Min. volume</label>
+            <div class="input-group input-group-sm numeric-input">
+              <input type="number" class="form-control" aria-label="Minimum volume" aria-describedby="basic-addon2" :value="mso.cal?.vpl" @change="({ type, target }) => setMinVolume(target.value)" min="-100" max ="-60">
+              <div class="input-group-append">
+                <span class="input-group-text" id="basic-addon2">dB</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-auto">
+            <div class="form-group">
+              <label for="inputEmail3" class="col-form-label col-form-label-sm">Max. volume</label>
+              <div class="input-group input-group-sm numeric-input">
+                <input type="number" class="form-control" aria-label="Minimum volume" aria-describedby="basic-addon2" :value="mso.cal?.vph" @change="({ type, target }) => setMaxVolume(target.value)" min="-59" max ="22">
+                <div class="input-group-append">
+                  <span class="input-group-text" id="basic-addon2">dB</span>
+                </div>
+              </div>
+            </div>
+        </div>
+        <div class="col-lg-auto">
+            <div class="form-group">
+              <label for="inputEmail3" class="col-form-label col-form-label-sm">Max. output level</label>
+              <div class="input-group input-group-sm numeric-input">
+                <input type="number" class="form-control" aria-label="Minimum volume" aria-describedby="basic-addon2" :value="mso.cal?.ampsense" @change="({ type, target }) => setMaxOutputLevel(target.value)" min="0.1" max="4" step="0.1">
+                <div class="input-group-append">
+                  <span class="input-group-text" id="basic-addon2">Vrms</span>
+                </div>
+              </div>
+            </div>
+        </div>
+        <div class="col-lg-auto">
+            <div class="form-group">
+              <label for="inputPassword3" class="col-form-label col-form-label-sm">Lipsync delay</label>
+                <div class="input-group input-group-sm numeric-input">
+                  <input type="number" class="form-control" aria-label="Minimum volume" aria-describedby="basic-addon2" :value="mso.cal?.lipsync" @change="({ type, target }) => setLipsyncDelay(target.value)" min="0" max="200">
+                  <div class="input-group-append">
+                    <span class="input-group-text" id="basic-addon2">ms</span>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+      <div class="col-md-auto">
+        <div class="form-group">
+          <two-state-button 
+            :button-text="`Reinforce Bass: ${mso.bassenhance}`" 
+            :state-on="mso.bassenhance === 'on'" 
+            :home-button="false"
+            @click="toggleReinforceBass()"
+          />
+          <small class="form-text text-muted">Adds subwoofer signal to large speakers{{!showCrossoverControls ? ' - unavailable with Dirac Bass Control' : ''}}</small>
         </div>
       </div>
+    </div>
+
+    <h5>Power</h5>
+    <div class="row">
+      <div class="col-md-auto mb-3">
+
+      
+        <two-state-button 
+          :button-text="`Fast Start: ${mso.fastStart}`"
+          :state-on="mso.fastStart === 'on'"
+          @click="toggleFastStart()"
+        />
+      </div>
+      <div class="col-md-auto mb-3">
+        <two-state-button 
+          :button-text="`Video Pass Through: ${mso.fastStartPassThrough}`"
+          :state-on="mso.fastStartPassThrough === 'on'"
+          @click="toggleFastStartPassThrough()"
+        />
+      </div>
+    </div>
+
+
+    <div class="row">
+      <div class="col-md-auto">
+        <div class="form-group">
+          <label for="power-on-volume" class="col-form-label col-form-label-sm ">Power On Volume</label>
+          <div class="input-group input-group-sm numeric-input">
+            <input type="number" class="form-control" aria-label="Power On Volume" aria-describedby="basic-addon2" :value="mso.powerOnVol" @change="({ type, target }) => setPowerOnVol(target.value)" min="-100" max="0">
+            <div class="input-group-append">
+              <span class="input-group-text" id="basic-addon2">dB</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <h5>Display</h5>
@@ -53,78 +127,6 @@
         </div>
       </div>
     </div>
-
-    <h5>Import/Export Configuration</h5>
-    <h6>Export</h6>
-    <div class="row">
-      <div class="col-auto">
-        <label>Export Preview</label>
-        <pre class="pre-scrollable bg-light p-2">{{mso}}</pre>
-        <button 
-          class="btn btn-sm btn-primary mb-3"
-          @click="downloadMsoAsJson()"
-        >
-          Export Current Configuration to File
-        </button>
-        <h6>Import</h6>
-        <form>
-          <div class="form-group">
-            <label for="import=file">Select Import Configuration File</label>
-            <input 
-              type="file" 
-              class="form-control-file" 
-              id="import=file" 
-              @change="importMsoFileSelected"
-            />
-          </div>
-        </form>
-        
-        <pre class="pre-scrollable bg-light p-2" v-if="false">{{ importJson }}</pre>
-        
-        <mso-importer 
-          v-if="importJson" 
-          @confirm-import="importMso"
-          :mso-import-patch="msoImportPatch"
-        />
-      </div>
-    </div>
-    <template v-if="false">
-      <h5>Support</h5>
-      <div class="custom-control custom-switch">
-        <input 
-          type="checkbox" 
-          class="custom-control-input" 
-          id="enable-support-tools" 
-          :checked="mso.stat?.enableSupportTools" 
-          @click="toggleSupportTools()"
-        >
-        <label class="custom-control-label" for="enable-support-tools">
-          Enable Support Tools
-        </label>
-      </div>
-    </template>
-
-    <template v-if="debug">
-      <h5>Debug Settings</h5>
-      <div class="form-group">
-        <label for="inputPassword3" class="col-form-label col-form-label-sm">Max wait time to send MSO commands</label>
-          <div class="input-group input-group-sm numeric-input">
-            <input 
-              type="number" 
-              class="form-control" 
-              aria-label="Minimum volume" 
-              aria-describedby="basic-addon2" 
-              :value="maxWaitTimeToSendToMso" 
-              @change="({ type, target }) => setMaxWaitTimeToSendToMso(target.value)" 
-              min="0" 
-              disabled
-            />
-            <div class="input-group-append">
-              <span class="input-group-text" id="basic-addon2">ms</span>
-            </div>
-          </div>
-      </div>
-    </template>
   </div>
 </template>
 
@@ -151,12 +153,7 @@
 
       const { maxWaitTimeToSendToMso, setMaxWaitTimeToSendToMso } = useLocalStorage();
 
-      const { 
-        mso, setUnitName, setFrontPanelBrightness, toggleFastStart, toggleFastStartPassThrough, 
-        setPowerOnVol, toggleVideoStatusHomePage, toggleExtendedAudioStatus, 
-        toggleAdvancedInputSettings, toggleSupportTools, importMsoPatchList,
-        setFastStartOn, setFastStartOff, setFastStartPassThroughOn, setFastStartPassThroughOff
-      } = useMso();
+      const { mso } = useMso();
 
       function downloadMsoAsJson(){
         exportJsonToFile(mso.value, 'config');
@@ -176,10 +173,7 @@
       }
 
       return { 
-        mso, setUnitName, setFrontPanelBrightness, toggleFastStart, toggleFastStartPassThrough, 
-        setPowerOnVol, toggleVideoStatusHomePage, toggleExtendedAudioStatus, toggleAdvancedInputSettings, 
-        toggleSupportTools, importMsoPatchList, maxWaitTimeToSendToMso, setMaxWaitTimeToSendToMso,
-        setFastStartOn, setFastStartOff, setFastStartPassThroughOn, setFastStartPassThroughOff,
+        ...useMso(),
         downloadMsoAsJson, importMsoFileSelected, importJson, msoImportPatch, importMso
       };
     },

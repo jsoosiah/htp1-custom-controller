@@ -107,7 +107,23 @@
       </tbody>
     </table>
     <h5>About this Custom Interface</h5>
-    <p>See <a target="_blank" href="https://github.com/jsoosiah/htp1-custom-controller">https://github.com/jsoosiah/htp1-custom-controller</a>.</p>
+    <table class="table table-sm table-striped table-responsive">
+      <tbody>
+        <tr>
+          <th>GitHub</th>
+          <td><a target="_blank" href="https://github.com/jsoosiah/htp1-custom-controller">Source Code</a></td>
+        </tr>
+        <tr>
+          <th>AVS Forum</th>
+          <td><a target="_blank" href="https://www.avsforum.com/threads/the-official-monoprice-monolith-htp-1-owners-thread.3112176/">Discussion</a></td>
+        </tr>
+        <tr>
+          <th>PayPal</th>
+          <td><a target="_blank" href="https://www.paypal.com/donate?hosted_button_id=RYBMWSE6SH6WC">Donate</a></td>
+        </tr>
+      </tbody>
+    </table>
+    
   </div>
 </template>
 

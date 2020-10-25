@@ -63,62 +63,6 @@
         </div>
       </div>
     </div>
-    <h5>Loudness Compensation</h5>
-    <two-state-button 
-      :button-text="`Loudness Compensation: ${mso.loudness}`" 
-      :state-on="mso.loudness === 'on'" 
-      @btn-click="toggleLoudness()"
-      min-width="7.5rem"
-    />
-    <div class="row mt-3" v-show="mso.loudness !== 'on'">
-      <div class="col">
-        <dismissable-alert alertKey="loudness-off" class="alert-warning">
-          Loudness compensation is currently turned off. The following loudness compensation settings may be modified, but they will not have any effect until loudness compensation is turned on.
-        </dismissable-alert>
-      </div>
-    </div>
-
-    <div class="container">
-      <div class="row">
-        <div class="col-auto">
-          <table class="table table-sm table-striped table-responsive">
-            <thead>
-              <tr>
-                <th>
-                  Loudness Curve Select
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="curve in loudnessOptions" :key="curve.value">
-                <td>
-                  <div class="form-check">
-                    <input class="form-check-input" type="radio" name="curve" :id="`radio-${curve.value}`" :value="curve.value" :checked="mso.loudnessCurve === curve.value" @click="setLoudnessCurve(curve.value)">
-                    <label 
-                      class="form-check-label" 
-                      :for="`radio-${curve.value}`"
-                    >
-                      {{curve.label}}
-                    </label>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="col-auto">
-            <div class="form-group">
-              <label for="inputPassword3" class="col-form-label col-form-label-sm ">Loudness Calibration</label>
-                <div class="input-group input-group-sm numeric-input">
-                  <input type="number" class="form-control" aria-label="Minimum volume" aria-describedby="basic-addon2" :value="mso.loudnessCal" @change="({ type, target }) => setLoudnessCalibration(target.value)" min="50" max="90">
-                  <div class="input-group-append">
-                    <span class="input-group-text" id="basic-addon2">dB</span>
-                  </div>
-                </div>
-            </div>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 

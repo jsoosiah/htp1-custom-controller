@@ -19,13 +19,19 @@
               v-for="(tab) in settingsRoutes"
               :key="tab.path"
             >
-              <router-link 
-                class="nav-link" 
-                :class="{'active': `/settings/${tab.path}` === $route.path}" 
-                :to="tab.path"
-              >
-                <component :is="tab.meta.icon"></component> {{tab.meta.label}}
-              </router-link>
+              <template v-if="tab.meta?.icon">
+                <router-link 
+                  class="nav-link" 
+                  :class="{'active': `/settings/${tab.path}` === $route.path}" 
+                  :to="tab.path"
+                >
+                  <component :is="tab.meta?.icon"></component> {{tab.meta?.label}}
+                </router-link>
+              </template>
+              <template v-else>
+                <hr />
+              </template>
+              
             </li>
             <li class="nav-item">
               <a class="nav-link" @click="powerOff" href="javascript:void(0)">
@@ -62,11 +68,13 @@ import HomeIcon from './icons/HomeIcon';
 import CalibrationIcon from './icons/CalibrationIcon';
 import PeqIcon from './icons/PeqIcon';
 import ToneControlIcon from './icons/ToneControlIcon';
+import LoudnessIcon from './icons/LoudnessIcon';
 import InputsIcon from './icons/InputsIcon';
 import NetworkIcon from './icons/NetworkIcon';
 import SgenIcon from './icons/SgenIcon';
 import SpeakersIcon from './icons/SpeakersIcon';
 import SystemIcon from './icons/SystemIcon';
+import ConfigsIcon from './icons/ConfigsIcon';
 import UpmixIcon from './icons/UpmixIcon';
 import MacrosIcon from './icons/MacrosIcon';
 import PersonalizeIcon from './icons/PersonalizeIcon';
@@ -87,6 +95,7 @@ export default {
     CalibrationIcon,
     PeqIcon,
     ToneControlIcon,
+    LoudnessIcon,
     InputsIcon,
     NetworkIcon,
     SgenIcon,
@@ -98,6 +107,7 @@ export default {
     AboutIcon,
     HelpIcon,
     PowerIcon,
+    ConfigsIcon,
   }
 }
 </script>
@@ -131,11 +141,15 @@ export default {
 
   .sidebar .active svg {
     fill: white;
+    /* stroke: white; */
   }
 
   .sidebar svg {
     /* fill: gray; */
     fill:#007bff;
+    /* stroke:#007bff; */
+    /* max-width: 1.5rem; */
+    /* max-height: 1.5rem; */
   }
 
   .sidebar a {

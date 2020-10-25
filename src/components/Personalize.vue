@@ -53,7 +53,7 @@
               </td>
             </tr>
             <tr
-              v-for="route in settingsRoutes"
+              v-for="route in customizableSettingsRoutes"
               :key="route.path"
             >
               <td>
@@ -189,6 +189,8 @@
 
 <script>
 
+  import { computed } from 'vue';
+
   import useMso from '@/use/useMso.js';
   import useInputs from '@/use/useInputs.js';
 
@@ -210,7 +212,11 @@
         {code: 'night', label: 'Night'},
       ];
 
-      return { ...useMso(), ...useInputs(), modes, settingsRoutes };
+      const customizableSettingsRoutes = computed(() => {
+        return settingsRoutes.filter(route => route.meta?.label);
+      });
+
+      return { ...useMso(), ...useInputs(), modes, customizableSettingsRoutes };
     },
     components: {
       Home,

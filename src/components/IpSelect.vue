@@ -7,8 +7,8 @@
     aria-labelledby="settingsModalLabel"
   >
     <div class="modal-dialog modal-xl">
-      <div class="modal-content">
-        <div class="modal-header">
+      <div class="modal-content bg-dark">
+        <div class="modal-header text-white">
           <h4 class="modal-title">
             <template v-if="websocketIp">
               Please Wait
@@ -18,7 +18,7 @@
             </template>
           </h4>
         </div>
-        <div class="modal-body text-left">
+        <div class="modal-body text-left text-white">
           <template v-if="websocketIp">
             <p>
               Connection to {{ websocketIp }} was lost. Reconnect will be attempted automatically.
@@ -41,16 +41,16 @@
           </template>
 
           <div class="form-group">
-            <label for="select-ip">IP address</label>
+            <label for="select-ip" class="text-white">IP address</label>
             <input 
               type="text" 
-              class="form-control form-control-sm" 
+              class="form-control form-control-sm text-white bg-dark" 
               id="select-ip" 
               aria-describedby="ip-help"
               placeholder="e.g., 192.168.1.13" 
               v-model="ipAddressText"
             >
-            <small id="ip-help" class="form-text text-muted">Your entry will be remembered on this device.</small>
+            <small id="ip-help" class="form-text">Your entry will be remembered on this device.</small>
           </div>
           <div class="row justify-content-end">
             <div class="col-auto">
@@ -99,5 +99,23 @@
 
   .modal {
     display: block;
+  }
+
+  .modal-header {
+    border-bottom:1px solid #212529;
+  }
+
+  .text-white {
+    color:#dedad6 !important;
+    /* background-color: #212529; */
+  }
+
+  input#select-ip.form-control.bg-dark {
+    background-color: #212529 !important;
+    border-color:rgba(255,255,255,.25);
+  }
+
+  small {
+    color: rgba(255,255,255,.5) !important;
   }
 </style>
