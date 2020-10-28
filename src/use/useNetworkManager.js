@@ -3,16 +3,16 @@ import useWebSocket from './useWebSocket.js';
 import { applyPatch } from 'fast-json-patch/index.mjs';
 import { debounce } from 'lodash-es';
 
+import useMso from './useMso.js';
+
 // local nmstat state, used to display values on the interface
 const nmstat = ref({});
 
 const condetails = ref({});
 
-// loading indicator, when commands have been 
-// sent to MSO and a response is being awaited
-const loading = ref(true);
-
 const { data, state, send, close } = useWebSocket();
+
+const { loading } = useMso();
 
 /**
 * Composition function which exposes the nmstat state, as well 
@@ -34,10 +34,12 @@ export default function useNetworkManager() {
   }
 
   function wificonnect(conid) {
+    loading.value = true;
     send(`netapply {"action":"connect", "conid":"${conid}" }`);
   }
 
   function wifidisconnect(conid) {
+    loading.value = true;
     send(`netapply {"action":"disconnect", "conid":"${conid}" }`);
   }
 
@@ -49,8 +51,9 @@ export default function useNetworkManager() {
     send(`netapply {"action":"getcondetail", "conid":"${conid}" }`);
   }
 
-  function wifipower(enable) {
-    send(`netapply {"action":"radio", "enable":${enable} }`);
+  function wifipower() {
+    loading.value = true;
+    send(`netapply {"action":"radio", "enable":${!nmstat.value?.radioenabled} }`);
   }
 
   function reseteth0() {
@@ -125,7 +128,7 @@ export default function useNetworkManager() {
         console.log('error', arg);
       }
 
-      loading.value = false;
+      // loading.value = false;
     },
     { lazy: true }
   );

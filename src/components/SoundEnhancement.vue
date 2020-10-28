@@ -15,6 +15,7 @@
             <two-state-button 
               :button-text="upmix.label"
               :state-on="mso.upmix.select === upmix.value"
+              min-width="9rem"
               @click="setUpmix(upmix.value)"
             />
           </td>
@@ -103,6 +104,7 @@
         :button-text="`Wide Synth: ${mso.upmix?.dts.ws ? 'on' : 'off'}`" 
         :state-on="mso.upmix?.dts.ws" 
         :home-button="false"
+        min-width="9rem"
         @click="toggleUpmixWideSynth()"
       />
       <small class="form-text text-muted">Synthesizes wide speakers when possible</small>

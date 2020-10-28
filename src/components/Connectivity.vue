@@ -45,26 +45,26 @@
       <!-- TODO toggle wifi -->
       <div class="mb-3">
         <two-state-button 
-          :button-text="`CEC: ${mso?.CEC?.cecOnSw}`" 
-          :state-on="mso?.CEC?.cecOnSw === 'on'" 
+          :button-text="`Wi-Fi: ${nmstat?.radioenabled === true ? 'On' : 'Off'}`" 
+          :state-on="nmstat?.radioenabled === true" 
           :home-button="false"
-          @click="toggleCEC()"
+          @click="wifipower"
         />
       </div>
 
       <div class="form-group">
-        <label for="inputEmail3" class="col-form-label col-form-label-sm ">AuroMatic Preset</label>
+        <label for="inputEmail3" class="col-form-label col-form-label-sm ">Country Code for Wireless Regulatory Settings {{mso.crda}}</label>
         <select 
           class="form-control form-control-sm" 
-          @change="({ type, target }) => setAuroMaticPreset(target.value)"
+          @change="({ type, target }) => setWifiCountryCode(target.value)"
         >
           <option 
-            v-for="opt in auroPresets" 
-            :key="opt.value"
-            :value="opt.value"
-            :selected="opt.value === mso.upmix?.auro.preset"
+            v-for="(name, code) in isoCountries" 
+            :key="code"
+            :value="code"
+            :selected="code === mso.crda"
           >
-            {{opt.label}}
+            {{code}}: {{name}}
           </option>
         </select>
       </div>
@@ -139,8 +139,8 @@
             </select>
           </div>
         </div>
-        <div class="row justify-content-end">
-          <div class="col-auto-md">
+        <div class="row justify-content-end mb-3">
+          <div class="col-auto">
             <button 
               :disabled="!actnet.UUID"
               class="btn btn-disabled btn-sm btn-danger"
@@ -198,6 +198,7 @@
   import { reactive, ref, computed, watch, onMounted, onUnmounted } from 'vue';
 
   import useMso from '@/use/useMso.js';
+  import useCountryCodes from '@/use/useCountryCodes.js';
   import useNetworkManager from '@/use/useNetworkManager.js';
 
   import TwoStateButton from './buttons/TwoStateButton.vue';
@@ -216,8 +217,8 @@
 
       const { 
         state, nmstat, condetails, scan, applyNetworkConfig, wificonfig, 
-        wificonnect, wifidisconnect, wififorget, getConDetails,
-        int2ip, ip2int, cidr2mask, mask2cidr
+        wificonnect, wifidisconnect, wififorget, wifipower, getConDetails,
+        int2ip, ip2int, cidr2mask, mask2cidr, networkLoading: loading
       } = useNetworkManager();
 
       // local form state
@@ -328,8 +329,8 @@
       });
 
       return { 
-        ...useMso(), nmstat, scan, applyNetworkConfig, BLANK_IP_ADDRESS,
-        int2ip, ip2int, cidr2mask, mask2cidr, wificonfig, getConDetails,
+        ...useMso(), ...useCountryCodes(), nmstat, scan, applyNetworkConfig, BLANK_IP_ADDRESS,
+        int2ip, ip2int, cidr2mask, mask2cidr, wificonfig, wifipower, getConDetails,
         network, password, showpass, selnet, actnet, 
         configuredNetworks, wificonnect, wifidisconnect, wififorget
       };

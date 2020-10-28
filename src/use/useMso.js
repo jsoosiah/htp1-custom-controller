@@ -241,6 +241,10 @@ function applyProductRules() {
         setFastStartPassThroughOff();
     };
 
+    if (!mso.value.crda) {
+      initializeWifiCountryCode();
+    }
+
     // initialize custom attributes if not present
     if (!mso.value.sgen.select2) {
       _setSignalGeneratorChannel2();
@@ -261,6 +265,7 @@ function applyProductRules() {
       _setLoudnessCurve();
     }
 
+    // personalization settings
     if (!mso.value.personalize) {
       initializePersonalize();
     } else {
@@ -1135,6 +1140,14 @@ function toggleSupportTools() {
   return patchMso({'op': 'replace', 'path': `/stat/enableSupportTools`, value: !mso.value.stat.enableSupportTools});
 }
 
+function initializeWifiCountryCode() {
+  return patchMso({'op': 'add', 'path': '/crda', value: 'US'});
+}
+
+function setWifiCountryCode(countryCode) {
+  return patchMso({'op': 'replace', 'path': '/crda', value: countryCode});
+}
+
 function initializePersonalize() {
   return patchMso({'op': 'add', 'path': '/personalize', value: {
     shortcuts: defaultPersonalizeShortcuts,
@@ -1310,6 +1323,7 @@ export default function useMso() {
     saveRecordedCommands,
     toggleShortcut, toggleShowMode, toggleShowDiracSlot, toggleShowMacro,
     setMacroName, commandKeys, executeMacro,
+    setWifiCountryCode,
     showCrossoverControls, currentDiracSlot, calToolConnected, activeChannels,
     currentlyRecordingSlot, setRecordingStarted, setRecordingStopped,
     dismissAlert, resetDismissedAlerts,

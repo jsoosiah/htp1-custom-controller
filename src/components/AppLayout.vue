@@ -4,15 +4,15 @@
       <span class="sr-only">Loading...</span>
     </div>
   </div>
-  <div class="fixed-top mx-auto" style="z-index: 9999999999999999" v-if="mso?.sgen?.sgensw === 'on'">
-    <a class="sgen-on-warning" @click="openSettingsToTab(SIGNAL_GENERATOR_TAB)">
+  <div class="fixed-top mx-auto" v-if="mso?.sgen?.sgensw === 'on'">
+    <router-link class="sgen-on-warning" to="/settings/signal-generator">
       Signal Generator On <font-awesome-icon  :icon="['fas', 'external-link-alt']" />
-    </a>
+    </router-link>
   </div>
-  <div class="fixed-top mx-auto" style="z-index: 9999999999999999" v-if="calToolConnected">
+  <div class="fixed-top mx-auto" v-if="calToolConnected">
     <span class="sgen-on-warning">Dirac Calibration in Progress - Currently in Readonly Mode</span>
   </div>
-  <div class="fixed-top mx-auto" style="z-index: 9999999999999999" v-if="currentlyRecordingSlot">
+  <div class="fixed-top mx-auto" v-if="currentlyRecordingSlot">
     <router-link to="/settings/macros" class="sgen-on-warning">
       Currently Recording - {{currentlyRecordingSlot}} <font-awesome-icon  :icon="['fas', 'external-link-alt']" />
     </router-link>
@@ -369,7 +369,9 @@ export default {
   }
 
   .fixed-top {
-    /* max-width: 400px; */
+    max-width: 14rem;
+    /* width:auto; */
+    /* background: rgba(255,0,0,.5); */
     text-align:center;
   }
 
