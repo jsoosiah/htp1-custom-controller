@@ -33,6 +33,16 @@
     </div>
   </template>
   <template v-else>
+    <div 
+      v-if="showPowerDialog" 
+      class="connecting-overlay"
+      @click.self="toggleShowPowerDialog"
+    >
+      <power-dialog
+        @click.self="toggleShowPowerDialog"
+        @cancel="toggleShowPowerDialog"
+      />
+    </div>
     <div class="container" style="z-index:1">
       <nav class="navbar p-0" style="z-index:1">
         <ul class="navbar-nav mr-auto" :class="{'shortcut-nav': isMobileMode}">
@@ -92,7 +102,7 @@
           </li>
         </ul>
         <!-- Shortcut icons --> 
-        <div>
+        <nav class="navbar navbar-expand-lg">
           <ul class="navbar-nav ml-auto shortcut-nav">
             <li class="nav-item shortcut-icon" v-if="mso.personalize?.shortcuts.home">
               <router-link 
@@ -111,13 +121,18 @@
                 <component v-if="route.meta?.icon" :is="route.meta?.icon" /> 
               </router-link>
             </li>
-            <li class="nav-item shortcut-icon" v-if="mso.personalize?.shortcuts.power">
-              <a class="nav-link" @click="powerOff">
+            <li class="nav-item shortcut-icon dropdown" v-if="mso.personalize?.shortcuts.power">
+              <a class="nav-link" @click="toggleShowPowerDialog">
                 <power-icon />
               </a>
+              <power-dialog
+                v-show="showPowerDialog"
+                @click.self="toggleShowPowerDialog"
+                @cancel="toggleShowPowerDialog"
+              />
             </li>
           </ul>
-        </div>
+        </nav>
 
         <!-- Full navigation --> 
         <div class="collapse navbar-collapse" :class="{show: showMobileMenu}" id="navbarSupportedContent">
@@ -170,6 +185,7 @@ import useWebSocket from '@/use/useWebSocket.js';
 import useResponsive from '@/use/useResponsive.js';
 
 import IpSelect from './IpSelect.vue';
+import PowerDialog from './PowerDialog.vue';
 
 import HomeIcon from './icons/HomeIcon';
 import CalibrationIcon from './icons/CalibrationIcon';
@@ -194,6 +210,7 @@ export default {
   components: {
     HomeIcon,
     IpSelect,
+    PowerDialog,
     CalibrationIcon,
     PeqIcon,
     ToneControlIcon,
@@ -219,6 +236,7 @@ export default {
     const route = useRoute();
 
     const showMobileMenu = ref(false);
+    const showPowerDialog = ref(false);
     
     onMounted(() => {
       updateWindowWidth();
@@ -250,13 +268,20 @@ export default {
       showMobileMenu.value = !showMobileMenu.value;
     }
 
+    function toggleShowPowerDialog() {
+      showPowerDialog.value = !showPowerDialog.value;
+    }
+
     const filteredSettingsRoutes = computed(() => 
       settingsRoutes.filter(route => 
         mso.value.personalize && mso.value.personalize.shortcuts[route.path]
       )
     );
 
-    return { settingsRoutes, filteredSettingsRoutes, showMobileMenu, toggleShowMobileMenu, isMobileMode, ...useMso() };
+    return { settingsRoutes, filteredSettingsRoutes, showMobileMenu, 
+      showPowerDialog, toggleShowPowerDialog,
+      toggleShowMobileMenu, isMobileMode, ...useMso() 
+    };
   }
 }
 </script>
