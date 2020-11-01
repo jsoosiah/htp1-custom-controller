@@ -1,7 +1,6 @@
 <template>
   <div class="transition-container">
     <h5>Help Manual</h5>
-
       <div class="accordion" id="accordionExample">
         <div class="card">
           <div class="card-header" id="headingOne" @click="toggleOpened(0)">
@@ -38,8 +37,8 @@
                 <li>The input configuration page sets which inputs are available
                   on buttons. Clicking in the upper left allows you to choose
                   from the full input list. </li>
-                <li>The sound enhancement page sets which upmixers are available
-                  on buttons. The help on the sound enhancement page explains
+                <li>The upmix page sets which upmixers are available
+                  on buttons. The help on the upmix page explains
                   the upmixers in more detail. </li>
                 <li>Night mode engages any available Dolby or DTS functions to
                   reduce the dynamic range of the program. It also lowers the
@@ -292,6 +291,37 @@
                 <li><b>Tone Control</b>: Traditional tone controls can be
                   enabled. When enabled the boost or cut can be specified as
                   well as the corner frequencies. </li>
+                <li>The tone and PEQ features are automatically disabled when a
+                  Dirac calibration is run. These filters are used to
+                  adjust a room that is already calibrated. There is discussion
+                  about allowing the PEQ to run before the Dirac filter to allow
+                  for a pre-calibration EQ. This is not yet exposed.<br>
+                </li>
+              </ul>
+              <blockquote>Note that applying large boost in the equalization can
+                lead to digital clipping. </blockquote>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header" id="headingTwo" @click="toggleOpened(6)">
+            <h2 class="mb-0">
+              <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                Loudness
+              </button>
+            </h2>
+          </div>
+          <div id="collapseTwo" class="collapse" :class="{'show': opened[6]}" aria-labelledby="headingTwo" data-parent="#accordionExample">
+            <div class="card-body">
+              <div class="alert alert-info small alert-box" role="alert">
+                The user guide has more information. <a
+                  :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`" target="_blank">Click
+                  here to access a PDF copy of the user guide</a>.
+              </div>
+              <p>
+                The controls for loudness compensation are found here.
+              </p>
+              <ul>
                 <li>
                   <b>Loudness Calibration</b>: The loudness calibration number
                   corresponds roughly to the sound pressure level at which you
@@ -313,53 +343,10 @@
           </div>
         </div>
         <div class="card">
-          <div class="card-header" id="headingThree" @click="toggleOpened(6)">
-            <h2 class="mb-0">
-              <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                Inputs
-              </button>
-            </h2>
-          </div>
-          <div id="collapseThree" class="collapse" :class="{'show': opened[6]}" aria-labelledby="headingThree" data-parent="#accordionExample">
-            <div class="card-body">
-              <div class="alert alert-info small alert-box" role="alert">
-                The user guide has more information. <a
-                  :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`" target="_blank">Click
-                  here to access a PDF copy of the user guide</a>.
-              </div>
-              <p>
-                The input page allows you to assign a human readable name to each
-                input. It also allows you to choose which input buttons will be
-                present on the main page of the web UI. 
-              </p>
-              <ul>
-                <li>The <i>UHD Capable</i> switches on the HDMI inputs can be
-                  helpful when debugging video connections. The difficulties
-                  getting 4k (UHD) video to play nice together are well
-                  documented on the web. Disabling UHD for an input will force
-                  the source device to send 2k (HD) video. The user guide has
-                  more ideas of what to try if this fixes the connection. </li>
-                <li>Nearly the last entry on the page is the BlueTooth device.
-                  The controls necessary to discover and pair with a BlueTooth
-                  device are found here. </li>
-                <li>When Show Advanced Input Settings is enabled, another switch is
-                  exposed for the digital inputs. The PCM Detector
-                  Sensitivity has three settings. "Auto" is the default
-                  setting and this is usually correct. The "Biased"
-                  setting is biased toward PCM material. This might be
-                  appropriate for a player playing a CD. The "indicated"
-                  setting relies on the audio format indicated by the HDMI
-                  stream.<br>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="card">
           <div class="card-header" id="headingTwo" @click="toggleOpened(7)">
             <h2 class="mb-0">
               <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                Sound Enhancement
+                Upmix
               </button>
             </h2>
           </div>
@@ -450,7 +437,7 @@
           <div class="card-header" id="headingThree" @click="toggleOpened(8)">
             <h2 class="mb-0">
               <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                Connectivity
+                Inputs
               </button>
             </h2>
           </div>
@@ -462,20 +449,62 @@
                   here to access a PDF copy of the user guide</a>.
               </div>
               <p>
-                The connectivity page allows you to configure your network
-                connection as well as the control connection with your TV. You can
-                enable or disable WiFi as well as configure automatic (DHCP)
-                address assignment or manual configuration. 
+                The input page allows you to assign a human readable name to each
+                input. It also allows you to choose which input buttons will be
+                present on the main page of the web UI. 
               </p>
               <ul>
+                <li>The <i>UHD Capable</i> switches on the HDMI inputs can be
+                  helpful when debugging video connections. The difficulties
+                  getting 4k (UHD) video to play nice together are well
+                  documented on the web. Disabling UHD for an input will force
+                  the source device to send 2k (HD) video. The user guide has
+                  more ideas of what to try if this fixes the connection. </li>
                 <li>CEC stands for Consumer Electronic Control. It is designed
                   to simplify the connection of devices like amplifiers and
                   players with TV sets. The entries on the connectivity page
                   allow you to configure CEC to work best in your system. 
                   CEC is an attempt to make one remote (that of the TV) control
                   the whole system. It works better with some combinations of
-                  devices than with others.<br>
+                  devices than with others.
                 </li>
+                <li>Nearly the last entry on the page is the BlueTooth device.
+                  The controls necessary to discover and pair with a BlueTooth
+                  device are found here. </li>
+                <li>When Show Advanced Input Settings is enabled, another switch is
+                  exposed for the digital inputs. The PCM Detector
+                  Sensitivity has three settings. "Auto" is the default
+                  setting and this is usually correct. The "Biased"
+                  setting is biased toward PCM material. This might be
+                  appropriate for a player playing a CD. The "indicated"
+                  setting relies on the audio format indicated by the HDMI
+                  stream.<br>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header" id="headingThree" @click="toggleOpened(9)">
+            <h2 class="mb-0">
+              <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                Network
+              </button>
+            </h2>
+          </div>
+          <div id="collapseThree" class="collapse" :class="{'show': opened[9]}" aria-labelledby="headingThree" data-parent="#accordionExample">
+            <div class="card-body">
+              <div class="alert alert-info small alert-box" role="alert">
+                The user guide has more information. <a
+                  :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`" target="_blank">Click
+                  here to access a PDF copy of the user guide</a>.
+              </div>
+              <p>
+                The network page allows you to 
+                enable or disable WiFi as well as configure automatic (DHCP)
+                address assignment or manual configuration. 
+              </p>
+              <ul>
                 <li>Ethernet settings are displayed. If a static IP
                   address is desired, turn off DHCP and provide the required
                   information. Then "apply" the network settings.</li>
@@ -489,14 +518,14 @@
           </div>
         </div>
         <div class="card">
-          <div class="card-header" id="headingTwo" @click="toggleOpened(9)">
+          <div class="card-header" id="headingTwo" @click="toggleOpened(10)">
             <h2 class="mb-0">
               <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                 Macros
               </button>
             </h2>
           </div>
-          <div id="collapseTwo" class="collapse" :class="{'show': opened[9]}" aria-labelledby="headingTwo" data-parent="#accordionExample">
+          <div id="collapseTwo" class="collapse" :class="{'show': opened[10]}" aria-labelledby="headingTwo" data-parent="#accordionExample">
             <div class="card-body">
               <p>The Macros page allows you to record your actions and save them to the CMD A/B/C/D and PRESET 1/2/3/4 buttons.</p>
               <ul>
@@ -510,14 +539,46 @@
           </div>
         </div>
         <div class="card">
-          <div class="card-header" id="headingThree" @click="toggleOpened(10)">
+          <div class="card-header" id="headingThree" @click="toggleOpened(11)">
+            <h2 class="mb-0">
+              <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                Personalize
+              </button>
+            </h2>
+          </div>
+          <div id="collapseThree" class="collapse" :class="{'show': opened[11]}" aria-labelledby="headingThree" data-parent="#accordionExample">
+            <div class="card-body">
+              <p>The Personalize page allows you to customize this user interface.
+              </p>
+              <ul>
+                <li>
+                  Home page status display
+                  <ul>
+                    <li>You can cause video status (resolution, color depth, etc)
+                      to be displayed on the main page.</li>
+                    <li>You can cause audio sample rates to be displayed on the
+                      main page.
+                    </li>
+                  </ul>
+                </li>
+                <li>You can select shortcuts to settings pages which will appear on the top right of the screen.</li>
+                <li>You can select which buttons appear under the Modes section of the home page.</li>
+                <li>You can select which macro buttons appear under the Macros section of the home page.</li>
+                <li>You can select which Dirac slots appear under the Dirac slots section of the home page.</li>
+                <li>Notices are small info boxes that appear on various settings pages. You can restore all dismissed notices.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header" id="headingThree" @click="toggleOpened(12)">
             <h2 class="mb-0">
               <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
                 System
               </button>
             </h2>
           </div>
-          <div id="collapseThree" class="collapse" :class="{'show': opened[10]}" aria-labelledby="headingThree" data-parent="#accordionExample">
+          <div id="collapseThree" class="collapse" :class="{'show': opened[12]}" aria-labelledby="headingThree" data-parent="#accordionExample">
             <div class="card-body">
               <div class="alert alert-info small alert-box" role="alert">
                 The user guide has more information. <a
@@ -566,6 +627,31 @@
             </div>
           </div>
         </div>
+        <div class="card">
+          <div class="card-header" id="headingThree" @click="toggleOpened(13)">
+            <h2 class="mb-0">
+              <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                Configs
+              </button>
+            </h2>
+          </div>
+          <div id="collapseThree" class="collapse" :class="{'show': opened[13]}" aria-labelledby="headingThree" data-parent="#accordionExample">
+            <div class="card-body">
+              <div class="alert alert-info small alert-box" role="alert">
+                The user guide has more information. <a
+                  :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`" target="_blank">Click
+                  here to access a PDF copy of the user guide</a>.
+              </div>
+              <ul>
+                <li>You can export and import settings. It's a good idea
+                  to export the configuration when you are happy with your
+                  settings. Then you can re-import them if the settings
+                  are lost or damaged.<br>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
   </div>
 
@@ -574,22 +660,59 @@
 <script>
 
 import { ref } from 'vue';
+import { onBeforeRouteUpdate } from 'vue-router'
 
 import useMso from "@/use/useMso.js";
 import useLocalStorage from "@/use/useLocalStorage.js";
 
+const helpIndexes = {
+  '/settings/speakers': 1,
+  '/settings/calibration': 2,
+  '/settings/signal-generator': 3,
+  '/settings/peq': 4,
+  '/settings/tone-control': 5,
+  '/settings/loudness': 6,
+  '/settings/upmix': 7,
+  '/settings/inputs': 8, 
+  '/settings/network': 9, 
+  '/settings/macros': 10, 
+  '/settings/personalize': 11, 
+  '/settings/system': 12, 
+  '/settings/configs': 13, 
+}
+
 export default {
   name: "About",
-  setup() {
-
-    const opened = ref({
-      0: true,
-    });
-    function toggleOpened(key) {
-      opened.value[key] = !opened.value[key];
+  data() {
+    return {
+      prevRoute: null,
+      opened: {
+        0: true,
+      },
+    };
+  },
+  methods: {
+    toggleOpened(key) {
+      this.opened[key] = !this.opened[key];
     }
-
-    return { ...useMso(), ...useLocalStorage(), opened, toggleOpened };
+  },
+  setup() {
+    return { ...useMso(), ...useLocalStorage() };
+  },
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      console.log('beforeRouteEnter', to, from);
+      vm.prevRoute = from;
+      if (helpIndexes[from.fullPath]) {
+        vm.opened = {
+          [helpIndexes[from.fullPath]]: true
+        };
+      } else {
+        vm.opened = {
+          0: true
+        };
+      }
+    });
   },
 };
 </script>
