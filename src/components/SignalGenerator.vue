@@ -3,6 +3,14 @@
     <div class="row mb-3">
       <div class="col">
         <h5>Signal Generator</h5>
+        <dismissable-alert v-if="mso.upmix.select !== 'off'" alertKey="sgen-direct" class="alert-warning">
+          <p>Upmix should be set to Direct for the signal generator to function correctly.</p>
+            <two-state-button 
+              button-text="Direct"
+              :state-on="mso.upmix.select === 'off'"
+              @click="setUpmix('off')"
+            />
+        </dismissable-alert>
         <two-state-button v-bind:button-text="`Signal Generator: ${mso.sgen?.sgensw}`" v-bind:state-on="mso.sgen?.sgensw === 'on'" @click="toggleSignalGenerator()" />
       </div>
     </div>
@@ -163,6 +171,7 @@
 
   import TwoStateButton from './buttons/TwoStateButton.vue';
   import MultiStateButtonGroup from './buttons/MultiStateButtonGroup.vue';
+  import DismissableAlert from './buttons/DismissableAlert.vue';
 
   export default {
     name: 'SignalGenerator',
@@ -170,7 +179,7 @@
 
       const { mso, toggleSignalGenerator, setSignalGeneratorChannel, setSignalGeneratorChannel2, 
         setSignalGeneratorSignalType, setSignalGeneratorOff, setSignalGeneratorOn, 
-        showCrossoverControls, setSineFrequency, setSineAmplitude } = useMso();
+        showCrossoverControls, setSineFrequency, setSineAmplitude, setUpmix } = useMso();
       const { getActiveChannels, spkName } = useSpeakerGroups();
 
       const signalOptions = [
@@ -216,12 +225,13 @@
       return { 
         mso, toggleSignalGenerator, setSignalGeneratorChannel, setSignalGeneratorChannel2, setSignalGeneratorSignalType, 
         activeChannels, visibleChannels, translatedSpkName, signalOptions, setSignalGeneratorOff, setSignalGeneratorOn, showCrossoverControls,
-        setSineFrequency, setSineAmplitude
+        setSineFrequency, setSineAmplitude, setUpmix
       };
     },
     components: {
       TwoStateButton,
-      MultiStateButtonGroup
+      MultiStateButtonGroup,
+      DismissableAlert
     },
     directives: {
       Tooltip
