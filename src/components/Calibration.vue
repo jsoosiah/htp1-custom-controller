@@ -138,6 +138,9 @@
       <dismissable-alert alertKey="calibration-dlbc">
         * denotes Dirac Live Room Correction filters with Bass Control.
       </dismissable-alert>
+      <dismissable-alert v-if="mso.cal?.speakerConfigMismatch" alertKey="calibration-filter-mismatch" class="alert-warning">
+        The selected Dirac calibration does not match the current speaker configuration.
+      </dismissable-alert>
       <div class="row justify-content-between mb-3">
         <div class="col-auto">
           <dirac-button-group :home-button="false" />

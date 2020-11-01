@@ -17,6 +17,9 @@
           </div>
         </div>
       </dismissable-alert>
+      <dismissable-alert v-if="mso.cal?.speakerConfigMismatch" alertKey="speaker-filter-mismatch" class="alert-warning">
+        The selected Dirac calibration does not match the current speaker configuration.
+      </dismissable-alert>
     </div>
     <div class="row">
       <div class="col-lg">
@@ -28,7 +31,7 @@
     </div>
     <div class="row speaker-map-container">
       <h5>Speaker Map <small class="text-muted">Click image to zoom</small></h5>
-      <dismissable-alert key="speaker-labels">
+      <dismissable-alert alertKey="speaker-labels">
         Depending on the combination of selected speakers, the physical labels on the back panel may not match the actual speaker mapping. The correct mapping is shown below. If the speakers are not enabled, no sound will be produced. Enabled speaker channels are highlighted in green.
       </dismissable-alert>
       <SpeakerMap />
