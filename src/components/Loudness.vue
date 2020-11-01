@@ -57,15 +57,37 @@
     </div>
   
     <h5>Night Mode</h5>
-    <!-- Night Mode -->
-    <three-state-button 
-      :button-text="`Night: ${mso.night}`"
-      :states="{'off': 0, 'on': 1, 'auto': 2}"
-      :state-value="mso.night"
-      @btn-click="setNextNightMode()"
-      :show-state-indicators="false"
-      min-width="6.75rem"
-    />
+    <div class="mb-3">
+      <multi-state-button-group
+        :states="[{value: 0, label: 'Night Off'}, {value: 2, label: 'Night Auto'}, {value: 1, label: 'Night On'}]"
+        :state-value="mso.night === 'on' ? 1 : mso.night === 'off' ? 0 : 2"
+        @set-on="setNightMode('on')"
+        @set-off="setNightMode('off')"
+        @set-other="setNightMode('auto')"
+      />
+
+    </div>
+
+    <h5>Dialog Enhance</h5>
+    <div class="row">
+      <div class="col-auto">
+      <div class="form-group">
+        <label class="col-form-label col-form-label-sm" for="dialog-enh">Dialog Enhance</label>
+        <div class="form-row">
+          <input 
+            type="range" 
+            class="custom-range col" 
+            id="dialog-enh" 
+            min="0" 
+            max="6"
+            :value="mso.dialogEnh"
+            @input="({ type, target }) => setDtsDialogEnh(target.value)"
+          >
+          <span class="col-auto auro-str-label">{{mso.dialogEnh}}</span>
+        </div>
+      </div>
+      </div>
+    </div>
   </div>
 
 </template>
@@ -73,7 +95,7 @@
 <script>
   import useMso from '@/use/useMso.js';
   import TwoStateButton from './buttons/TwoStateButton.vue';
-  import ThreeStateButton from './buttons/ThreeStateButton.vue';
+  import MultiStateButtonGroup from './buttons/MultiStateButtonGroup.vue';
   import DismissableAlert from './buttons/DismissableAlert.vue';
 
   export default {
@@ -91,7 +113,7 @@
     },
     components: {
       TwoStateButton,
-      ThreeStateButton,
+      MultiStateButtonGroup,
       DismissableAlert,
     },
   }

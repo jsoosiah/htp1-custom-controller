@@ -1,6 +1,6 @@
 import { ref, watch, computed } from 'vue';
 import { applyPatch, deepClone, compare } from 'fast-json-patch/index.mjs';
-import { debounce, get } from 'lodash-es';
+import { debounce, get, isEqual } from 'lodash-es';
 
 import useWebSocket from './useWebSocket.js';
 import useLocalStorage from './useLocalStorage.js';
@@ -484,26 +484,39 @@ const activeChannels = computed(() => {
   return getActiveChannels(mso.value.speakers?.groups);
 });
 
+function setDefaultsBeforePowerDown() {
+  // set default upmix for current input if necessary
+  const defaultUpmix = mso.value.inputs[mso.value.input].defaultUpmix;
+  if (defaultUpmix && mso.value?.upmix.select !== defaultUpmix) {
+    commands.push(
+      {'op':'replace', 'path': '/upmix/select', 'value': defaultUpmix}
+    );
+  }
+}
+
 // mso mutators --------------------------------------------
 
 function powerOff() {
-  // TODO show a bootstrap modal instead
-  if (confirm("The power will be turned off.")) {
-    const commands = [];
+  setDefaultsBeforePowerDown();
+  const commands = [];
+  commands.push({'op':'replace', 'path': '/powerAction', 'value': 'off'});
+  commandsToSend.value = commands;
+  return true;
+}
 
-    // set default upmix for current input if necessary
-    const defaultUpmix = mso.value.inputs[mso.value.input].defaultUpmix;
-    if (defaultUpmix && mso.value?.upmix.select !== defaultUpmix) {
-      commands.push(
-        {'op':'replace', 'path': '/upmix/select', 'value': defaultUpmix}
-      );
-    }
+function powerSleep() {
+  setDefaultsBeforePowerDown();
+  const commands = [];
+  commands.push({'op':'replace', 'path': '/powerAction', 'value': 'sleep'});
+  commandsToSend.value = commands;
+  return true;
+}
 
-    commands.push({'op':'replace', 'path': '/powerIsOn', 'value': false});
-
-    commandsToSend.value = commands;
-  }
-
+function powerRestart() {
+  setDefaultsBeforePowerDown();
+  const commands = [];
+  commands.push({'op':'replace', 'path': '/powerAction', 'value': 'reboot'});
+  commandsToSend.value = commands;
   return true;
 }
 
@@ -618,6 +631,10 @@ function setNextNightMode() {
   }
 
   return patchMso({'op':'replace', 'path': '/night', 'value': nightValue});
+}
+
+function setNightMode(mode) {
+  return patchMso({'op':'replace', 'path': '/night', value: mode});
 }
 
 function setNightOn() {
@@ -1286,13 +1303,13 @@ export default function useMso() {
   return { 
     mso, visibleInputs, visibleUpmixers, visibleDiracSlots, 
     visibleMacros, allUpmixers, upmixLabels,
-    powerOff, powerOn,
+    powerOff, powerSleep, powerRestart, powerOn,
     setVolume, toggleMute, setInput, setUpmix, 
     toggleUpmixHomevis, toggleUpmixCenterSpread, toggleUpmixWideSynth,
     setUpmixWideSynthOff, setUpmixWideSynthOn,
     setAuroMaticPreset, setAuroMaticStrength, setDefaultAuroMaticStrength,
     toggleReinforceBass, setReinforceBassOn, setReinforceBassOff,
-    setNextNightMode, toggleDirac, toggleLoudness, setNextDtsDialogEnh,
+    setNextNightMode, setNightMode, toggleDirac, toggleLoudness, setNextDtsDialogEnh, setDtsDialogEnh,
     setDiracOff, setDiracBypass, setDiracOn,
     setNightOff, setNightAuto, setNightOn,
     setLoudnessOff, setLoudnessOn,
@@ -1378,7 +1395,8 @@ function filterMatchingCommandType(cmdList, newCmd) {
 function filterMatchingCommand(cmdList, newCmd) {
   return cmdList.filter(
     cmd => {
-      return !(cmd.op === newCmd.op && cmd.path === newCmd.path && cmd.value === newCmd.value);
+      return !(cmd.op === newCmd.op && cmd.path === newCmd.path 
+        && isEqual(cmd.value, newCmd.value));
     }
   );
 }
