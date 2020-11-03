@@ -195,7 +195,7 @@
 
 <script>
 
-  import { reactive, ref, computed, watch, onMounted, onUnmounted } from 'vue';
+  import { reactive, ref, computed, watch, onActivated, onDeactivated, onActivate, onDeactivatedd } from 'vue';
 
   import useMso from '@/use/useMso.js';
   import useCountryCodes from '@/use/useCountryCodes.js';
@@ -315,16 +315,16 @@
 
       // perform initial network scan
       // and continue scanning every 5 seconds
-      onMounted(() => {
-        console.log('Connectivity onMounted');
+      onActivated(() => {
+        console.log('Connectivity onActivated');
         scan();
         scanInterval = setInterval(scan, 5000);
       });
 
       // clear scan interval if 
       // navigating away from this page
-      onUnmounted(() => {
-        console.log('Connectivity onUnmounted');
+      onDeactivated(() => {
+        console.log('Connectivity onDeactivated');
         clearInterval(scanInterval);
       });
 

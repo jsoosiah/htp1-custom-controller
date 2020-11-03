@@ -2,11 +2,33 @@
   <div>
       <div class="container">
         <!-- Input Label -->
-        <div class="row justify-content-between mb-3" v-if="!isMobileMode">
+        <div 
+          class="row justify-content-between mb-3" 
+          v-if="!isMobileMode && (mso.personalize.homeLabels?.topLeft !== null || mso.personalize.homeLabels?.topRight !== null)"
+        >
           <div class="col-auto">
-            <router-link class="settings-link current-input-label" :to="`/settings/inputs`">
-              {{mso.inputs && mso.inputs[mso.input].label}}
-            </router-link>
+            <template v-if="mso.personalize.homeLabels?.topLeft === 'current-input'">
+              <router-link class="settings-link current-input-label" :to="`/settings/inputs`">
+                {{mso.inputs && mso.inputs[mso.input].label}}
+              </router-link>
+            </template>
+            <template v-else-if="mso.personalize.homeLabels?.topLeft === 'unit-name'">
+              <router-link class="settings-link current-input-label" :to="`/settings/system`">
+                {{mso.unitname}}
+              </router-link>
+            </template>
+          </div>
+          <div class="col-auto">
+            <template v-if="mso.personalize.homeLabels?.topRight === 'current-input'">
+              <router-link class="settings-link current-input-label" :to="`/settings/inputs`">
+                {{mso.inputs && mso.inputs[mso.input].label}}
+              </router-link>
+            </template>
+            <template v-else-if="mso.personalize.homeLabels?.topRight === 'unit-name'">
+              <router-link class="settings-link current-input-label" :to="`/settings/system`">
+                {{mso.unitname}}
+              </router-link>
+            </template>
           </div>
         </div>
         <!-- Program Format, Video, Listening Format   -->
@@ -231,7 +253,7 @@
         <!-- Macros --> 
         <div class="row mt-2" v-if="mso.personalize?.macros && Object.keys(mso.personalize.macros).length > 0">
           <div class="col-md-12 text-center">
-              <h5><router-link class="settings-link" :to="`/settings/calibration`">Macros</router-link></h5>
+              <h5><router-link class="settings-link" :to="`/settings/macros`">Macros</router-link></h5>
               <div class="diracslot-container my-3">
                 <two-state-button 
                   v-for="(macro, key) in visibleMacros"

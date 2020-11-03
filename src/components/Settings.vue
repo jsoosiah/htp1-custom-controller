@@ -10,7 +10,7 @@
                 class="nav-link"
                 to="/"
               >
-                <home-icon />
+                <home-icon style="margin-top:-2px" />
                 Home
               </router-link>
             </li>
@@ -25,7 +25,10 @@
                   :class="{'active': `/settings/${tab.path}` === $route.path}" 
                   :to="tab.path"
                 >
-                  <component :is="tab.meta?.icon"></component> {{tab.meta?.label}}
+                  <component 
+                    :is="tab.meta?.icon"
+                    style="margin-top:-2px"
+                  ></component> {{tab.meta?.label}}
                 </router-link>
               </template>
               <template v-else>
@@ -35,21 +38,17 @@
             </li>
             <li class="nav-item">
               <a class="nav-link" @click="powerOff" href="javascript:void(0)">
-                <power-icon /> Power Off
+                <power-icon style="margin-top:-2px" /> Power Off
               </a>
             </li>
           </ul>
         </div>
       </nav>
-      <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
-        <router-view v-slot="{ Component, route }">
-          <keep-alive v-if="route.meta.keepAlive !== false">
+      <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-3">
+        <router-view v-slot="{ Component }">
+          <keep-alive>
             <component :is="Component" />
           </keep-alive>
-          <component 
-            v-if="route.meta.keepAlive === false"
-            :is="Component" 
-          />
         </router-view>
       </main>
     </div>
@@ -84,9 +83,11 @@ import PowerIcon from './icons/PowerIcon';
 
 export default {
   name: 'Settings',
-  setup() {
+  setup(props, { emit }) {
 
-    const { powerOff } = useMso();
+    function powerOff() {
+      emit('power-dialog');
+    }
 
     return { settingsRoutes, powerOff };
   },

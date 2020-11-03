@@ -22,6 +22,8 @@ const bmg = {
 const reverseBmg = {
   "l": "lr",
   "r": "lr",
+  "lf": "lr",
+  "rf": "lr",
   "c": "c",
   "ls": "lrs",
   "rs": "lrs",
@@ -43,7 +45,9 @@ const reverseBmg = {
   "lfh": "lrhf",
   "rfh": "lrhf",
   "lrh": "lrhr",
-  "rrh": "lrhr"
+  "rrh": "lrhr",
+  "lhb": "lrhr",
+  "rhb": "lrhr",
 };
 
 const bmgNames = {

@@ -5,6 +5,70 @@
       <div class="col">
         <h6>Home Page Status Display</h6>
         <div class="mb-3">
+        <table class="table table-sm table-striped table-responsive select">
+          <thead>
+            <tr>
+              <th>
+                Top Left Label (Desktop Mode)
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="topLabel in topLabels" :key="`left-${topLabel.code}`">
+              <td>
+                <div class="form-check">
+                  <input 
+                    class="form-check-input" 
+                    type="radio" 
+                    name="left-label" 
+                    :id="`radio-left-${topLabel.code}`" 
+                    :value="topLabel.code" 
+                    :checked="mso.personalize?.homeLabels?.topLeft === topLabel.code" 
+                    @click="setTopLeftLabel(topLabel.code)"
+                  >
+                  <label 
+                    class="form-check-label" 
+                    :for="`radio-left-${topLabel.code}`"
+                  >
+                    {{topLabel.label}}
+                  </label>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <table class="table table-sm table-striped table-responsive select">
+          <thead>
+            <tr>
+              <th>
+                Top Right Label (Desktop Mode)
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="topLabel in topLabels" :key="`right-${topLabel.code}`">
+              <td>
+                <div class="form-check">
+                  <input 
+                    class="form-check-input" 
+                    type="radio" 
+                    name="right-label" 
+                    :id="`radio-right-${topLabel.code}`" 
+                    :value="topLabel.code" 
+                    :checked="mso.personalize?.homeLabels?.topRight === topLabel.code" 
+                    @click="setTopRightLabel(topLabel.code)"
+                  >
+                  <label 
+                    class="form-check-label" 
+                    :for="`radio-right-${topLabel.code}`"
+                  >
+                    {{topLabel.label}}
+                  </label>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
           <div class="custom-control custom-switch">
             <input 
               type="checkbox" 
@@ -85,6 +149,35 @@
             </tr>
           </tbody>
         </table>
+        <template v-if="mso.personalize?.shortcuts?.power === true">
+          <h6>Power Off Shortcut Buttons</h6>
+          <table class="table table-sm table-responsive table-striped">
+            <thead>
+              <tr>
+                <th>Show Button</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="powerButton in powerButtons"
+                :key="powerButton.code"
+              >
+                <td>
+                  <div class="custom-control custom-switch">
+                    <input 
+                      type="checkbox" 
+                      class="custom-control-input" 
+                      :id="'powerbutton-'+powerButton.code" 
+                      :checked="mso.personalize?.powerDialogButtons[powerButton.code]" 
+                      @click="toggleShowPowerDialogButton(powerButton.code)"
+                    >
+                    <label class="custom-control-label" :for="'powerbutton-'+powerButton.code">{{ powerButton.label }}</label>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </template>
         <h6>Home Page Modes</h6>
         <table class="table table-sm table-responsive table-striped">
           <thead>
@@ -112,6 +205,7 @@
             </tr>
           </tbody>
         </table>
+
         <h6>Home Page Dirac Slots</h6>
         <table class="table table-sm table-responsive table-striped">
           <thead>
@@ -212,11 +306,24 @@
         {code: 'night', label: 'Night'},
       ];
 
+      const topLabels = [
+        {code: null, label: 'None'},
+        {code: 'current-input', label: 'Current Input'},
+        {code: 'unit-name', label: 'Unit Name'},
+      ];
+
+      const powerButtons = [
+        {code: 'shutdown', label: 'Shutdown'},
+        {code: 'sleep', label: 'Sleep'},
+        {code: 'restart', label: 'Restart'},
+        {code: 'cancel', label: 'Cancel'},
+      ];
+
       const customizableSettingsRoutes = computed(() => {
         return settingsRoutes.filter(route => route.meta?.label);
       });
 
-      return { ...useMso(), ...useInputs(), modes, customizableSettingsRoutes };
+      return { ...useMso(), ...useInputs(), modes, customizableSettingsRoutes, topLabels, powerButtons };
     },
     components: {
       Home,
@@ -246,4 +353,11 @@
     max-width: 27rem;
     background-color: black;
   }
+
+  table.select th {
+    font-size:87.5%;
+    font-weight: normal;
+    border-top: 0px;
+  }
+
 </style>

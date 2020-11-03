@@ -73,11 +73,12 @@
 </template>
 
 <script>
-  import { watch, ref, computed } from 'vue';
+  import { watch, ref, computed, onMounted, onUnmounted } from 'vue';
   import { compare } from 'fast-json-patch/index.mjs';
   import { VueDraggableNext } from 'vue-draggable-next'
 
   import useMso from '@/use/useMso.js';
+  import useImportExport from '@/use/useImportExport.js';
 
   import TwoStateButton from './buttons/TwoStateButton.vue';
 
@@ -95,6 +96,8 @@
         currentlyRecordingSlot, setRecordingStarted, setRecordingStopped, saveRecordedCommands,
         setMacroName } = useMso();
 
+      const { filterMacroCommands } = useImportExport();
+
       const show = ref(false);
       const touched = ref(false);
       let stopRecordingWatch;
@@ -105,6 +108,14 @@
         console.log('unsaved changes compare', compare(mso.value.svronly[props.commandKey], currentCommands.value));
         return compare(mso.value.svronly[props.commandKey], currentCommands.value).length > 0;
       });
+
+      onMounted(() => {
+        console.log('macroeditor on mounted');
+      })
+
+      onUnmounted(() => {
+        console.log('macroeditor on unmounted');
+      })
 
       function startRecordingWatch() {
         if (stopRecordingWatch) {
@@ -124,10 +135,8 @@
               }
 
             } else if (verb === 'msoupdate' && Array.isArray(arg)) { // record incoming commands
-              const newCommands = arg.filter(
-                cmd => cmd.path.search(/status|videostat|stat|svronly|versions|ipInfo|hostip|bluetooth/) < 0
-              );
-
+              const newCommands = filterMacroCommands(arg);
+              console.log('newCommands', newCommands)
               if (newCommands.length > 0) {
                 addRecordedCommands(newCommands)
               }

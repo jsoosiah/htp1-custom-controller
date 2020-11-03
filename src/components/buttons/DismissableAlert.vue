@@ -48,4 +48,8 @@
   .yellow-text-btn {
     color:yellow;
   }
+
+  .close {
+    font-size: 1rem;
+  }
 </style>

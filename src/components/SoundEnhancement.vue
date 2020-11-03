@@ -99,7 +99,7 @@
         </tr>
       </tbody>
     </table>
-    <div class="form-group">
+    <div class="form-group" style="padding-left:.3rem">
       <two-state-button 
         :button-text="`Wide Synth: ${mso.upmix?.dts.ws ? 'on' : 'off'}`" 
         :state-on="mso.upmix?.dts.ws" 

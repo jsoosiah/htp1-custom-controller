@@ -33,14 +33,16 @@
     </div>
   </template>
   <template v-else>
+    {{personalizePowerDialog}}
     <div 
       v-if="showPowerDialog" 
       class="connecting-overlay"
-      @click.self="toggleShowPowerDialog"
+      @click.self="toggleShowPowerDialog(true)"
     >
       <power-dialog
-        @click.self="toggleShowPowerDialog"
-        @cancel="toggleShowPowerDialog"
+        @click.self="toggleShowPowerDialog(true)"
+        @cancel="toggleShowPowerDialog(true)"
+        :personalize="personalizePowerDialog"
       />
     </div>
     <div class="container" style="z-index:1">
@@ -122,19 +124,14 @@
               </router-link>
             </li>
             <li class="nav-item shortcut-icon dropdown" v-if="mso.personalize?.shortcuts.power">
-              <a class="nav-link" @click="toggleShowPowerDialog">
+              <a class="nav-link" @click="toggleShowPowerDialog(true)">
                 <power-icon />
               </a>
-              <power-dialog
-                v-show="showPowerDialog"
-                @click.self="toggleShowPowerDialog"
-                @cancel="toggleShowPowerDialog"
-              />
             </li>
           </ul>
         </nav>
 
-        <!-- Full navigation --> 
+        <!-- Full navigation menu for mobile --> 
         <div class="collapse navbar-collapse" :class="{show: showMobileMenu}" id="navbarSupportedContent">
           <ul class="navbar-nav ml-auto nav-pills" :class="{'full-nav': $route.path !== '/'}">
             <li class="nav-item">
@@ -157,7 +154,7 @@
               </router-link>
             </li>
             <li class="nav-item">
-              <a class="nav-link" @click="powerOff">
+              <a class="nav-link" @click="toggleShowPowerDialog(false)">
                 <power-icon /> Power Off
               </a>
             </li>
@@ -167,7 +164,12 @@
     </div>
     <router-view v-slot="{ Component }">
       <transition name="mfade" mode="out-in">
-        <component :is="Component" />
+        <keep-alive>
+          <component 
+            :is="Component" 
+            @power-dialog="toggleShowPowerDialog(false)"
+          />
+        </keep-alive>
       </transition>
     </router-view>
   </template>
@@ -237,13 +239,15 @@ export default {
 
     const showMobileMenu = ref(false);
     const showPowerDialog = ref(false);
+
+    const personalizePowerDialog = ref(false);
     
     onMounted(() => {
       updateWindowWidth();
       window.addEventListener('resize', updateWindowWidth);
 
       if (!websocketIp.value) {
-        findServers(80, '192.168.1.', 1, 255, 20, 4000);
+        findServers(80, '192.168.0.', 1, 255, 20, 4000);
       }
     });
 
@@ -268,7 +272,9 @@ export default {
       showMobileMenu.value = !showMobileMenu.value;
     }
 
-    function toggleShowPowerDialog() {
+    function toggleShowPowerDialog(personalize) {
+      console.log('toggleShowPowerDialog', personalize)
+      personalizePowerDialog.value = personalize;
       showPowerDialog.value = !showPowerDialog.value;
     }
 
@@ -279,7 +285,7 @@ export default {
     );
 
     return { settingsRoutes, filteredSettingsRoutes, showMobileMenu, 
-      showPowerDialog, toggleShowPowerDialog,
+      showPowerDialog, toggleShowPowerDialog, personalizePowerDialog,
       toggleShowMobileMenu, isMobileMode, ...useMso() 
     };
   }
@@ -323,11 +329,13 @@ export default {
   }
 
   .connecting-overlay {
-    width:100%;
-    height:100%;
+    width:200%;
+    height:200%;
     background: rgba(0,0,0,0.5);
     z-index: 9999;
     position:fixed;
+    top:0;
+    left:0;
   }
 
   .loading-indicator {

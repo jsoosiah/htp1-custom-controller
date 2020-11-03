@@ -93,7 +93,8 @@
 
       const { importJson,
               exportJsonToFile,
-              importJsonFileToSelected } = useImportExport();
+              importJsonFileToSelected,
+              filterCommands } = useImportExport();
 
       const { maxWaitTimeToSendToMso, setMaxWaitTimeToSendToMso } = useLocalStorage();
 
@@ -114,7 +115,7 @@
       }
 
       const msoImportPatch = computed(() => {
-        return compare(mso.value, importJson.value);
+        return filterCommands(compare(mso.value, importJson.value));
       });
 
       function importMso() {

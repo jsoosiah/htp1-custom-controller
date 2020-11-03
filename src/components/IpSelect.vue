@@ -20,11 +20,18 @@
         </div>
         <div class="modal-body text-left text-white">
           <template v-if="websocketIp">
-            <p>
+            <p v-if="state === 'CONNECTING'">
+              Connecting to {{ websocketIp }}...
+              <span class="spinner-border text-primary" role="status">
+                <span class="sr-only">Loading...</span>
+              </span>
+            </p>
+            <p v-else>
               Connection to {{ websocketIp }} was lost. Reconnect will be attempted automatically.
               <span class="spinner-border text-primary" role="status">
                 <span class="sr-only">Loading...</span>
               </span>
+              state={{state}}
             </p>
             <p>
               Or, please update the IP address below if it has changed.
@@ -78,7 +85,7 @@
     name: 'IPSelect',
     setup() {
 
-      const { websocketIp, websocketurl, setWebsocketIp } = useWebSocket();
+      const { websocketIp, websocketurl, setWebsocketIp, state } = useWebSocket();
 
       const ipAddressText = ref('');
 
@@ -87,7 +94,7 @@
         setWebsocketIp(url);
       }
 
-      return { ipAddressText, websocketIp, websocketurl, validateAndSetWebsocketurl };
+      return { ipAddressText, websocketIp, websocketurl, state, validateAndSetWebsocketurl };
     }
   }
 </script>

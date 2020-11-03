@@ -5,8 +5,6 @@ const tippies = {};
 
 function updateTippies(el, binding) {
 
-  console.log('updateTippies', el.id);
-
   if (el.id) {
     if (tippies[el.id]) {
       tippies[el.id].destroy();

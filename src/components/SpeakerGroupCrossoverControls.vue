@@ -5,7 +5,7 @@
       <tr>
         <th colspan="3">{{speakerGroup.header}} <small class="text-muted" v-if="speakerGroup.subtitle">{{speakerGroup.subtitle}}</small></th>
       </tr>
-      <tr v-for="spk in speakerGroup.speakers" :key="spk.code">
+      <tr v-for="spk in speakerGroup.speakers" :key="spk.code" :class="{'table-warning': mso.cal?.speakerConfigMismatch && diracMismatchedChannelGroups.includes(spk.code)}">
         <td>
           <div class="custom-control custom-switch">
             <input 
@@ -72,7 +72,7 @@
     setup(props) {
 
       const { mso, showCrossoverControls, toggleSpeakerGroup, 
-        setSpeakerSize, setCenterFreq, activeChannels } = useMso();
+        setSpeakerSize, setCenterFreq, activeChannels, diracMismatchedChannelGroups } = useMso();
 
       // rule states the conditions for which the toggle should be enabled
       // all rules in the array will be combined with AND
@@ -196,7 +196,7 @@
       return { 
         mso, showCrossoverControls, toggleSpeakerGroup, setSpeakerSize, setCenterFreq,
         showCrossoverControlsForSpeaker, showCenterFreqControlsForSpeaker, showDolby,
-        props, allSpeakerToggles
+        props, allSpeakerToggles, diracMismatchedChannelGroups
       };
     },
     directives: {

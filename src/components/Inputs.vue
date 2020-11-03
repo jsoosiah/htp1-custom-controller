@@ -26,6 +26,7 @@
           <th>Label</th>
           <th>Visible on Home Page</th>
           <th>Default Sound Mode</th>
+          <th>Input Delay (ms)</th>
           <th>Input Trim (dB)</th>
           <th>UHD Capable</th>
           <th v-if="mso.stat?.displayAdvancedSettings">PCM Detect Sensitivity</th>
@@ -77,6 +78,18 @@
                 {{upmix.label}}
               </option>
             </select>
+          </td>
+          <td>
+            <input 
+              type="number" 
+              class="form-control form-control-sm text-right" 
+              aria-label="Input Delay" 
+              :value="inp.delay" 
+              @change="({ type, target }) => setInputDelay(inpcode, target.value)"
+              min="0" 
+              max="200" 
+              size="3"
+            />
           </td>
           <td>
             <input 

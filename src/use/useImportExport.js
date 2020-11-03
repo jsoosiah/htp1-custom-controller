@@ -28,10 +28,24 @@ export default function useImportExport() {
     }
   }
 
+  function filterMacroCommands(patch) {
+    return patch.filter(
+      cmd => cmd.path.search(/status|videostat|stat|svronly|versions|ipInfo|hostip|bluetooth/) < 0
+    );
+  }
+
+  function filterCommands(patch) {
+    return patch.filter(
+      cmd => cmd.path.search(/status|videostat|stat|versions|ipInfo|hostip|bluetooth/) < 0
+    );
+  }
+
   return {
     importJson,
     exportJsonToFile,
-    importJsonFileToSelected
+    importJsonFileToSelected,
+    filterCommands,
+    filterMacroCommands,
   };
 }
 

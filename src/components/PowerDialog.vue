@@ -15,7 +15,7 @@
         </div>
         <div class="modal-body text-left text-white">
 
-          <div class="form-group">
+          <div class="form-group" v-if="!props.personalize || mso.personalize?.powerDialogButtons.shutdown">
             <button 
               class="btn btn-sm btn-danger"
               @click="handleShutdown"
@@ -25,7 +25,7 @@
             <small class="form-text text-muted">Orderly shutdown the system and enter low power state</small>
           </div>
 
-          <div class="form-group">
+          <div class="form-group" v-if="!props.personalize || mso.personalize?.powerDialogButtons.sleep">
             <button 
               class="btn btn-sm btn-info"
               @click="handleSleep"
@@ -35,7 +35,7 @@
             <small class="form-text text-muted">Turn off front panel and sleep awaiting fast wake up</small>
           </div>
 
-          <div class="form-group">
+          <div class="form-group" v-if="!props.personalize || mso.personalize?.powerDialogButtons.restart">
             <button 
               class="btn btn-sm btn-warning"
               @click="handleRestart"
@@ -45,7 +45,7 @@
             <small class="form-text text-muted">Orderly shutdown and then restart the system</small>
           </div>
 
-          <div class="form-group">
+          <div class="form-group" v-if="!props.personalize || mso.personalize?.powerDialogButtons.cancel">
             <button 
               class="btn btn-sm btn-secondary"
               @click="handleCancel"
@@ -69,9 +69,15 @@
 
   export default {
     name: 'PowerDialog',
+    props: {
+      personalize: {
+        type: Boolean,
+        default: false,
+      }
+    },
     setup(props, { emit }) {
 
-      const { powerOff, powerSleep, powerRestart } = useMso();
+      const { mso, powerOff, powerSleep, powerRestart } = useMso();
 
       function handleShutdown() {
         handleCancel();
@@ -92,7 +98,7 @@
         emit('cancel');
       }
 
-      return { handleShutdown, handleSleep, handleRestart, handleCancel };
+      return { mso, handleShutdown, handleSleep, handleRestart, handleCancel, props };
     }
   }
 </script>

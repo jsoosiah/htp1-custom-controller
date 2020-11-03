@@ -2,30 +2,34 @@
   <div class="container">
     <div class="row">
       <h5>Speaker Selection</h5>
+    </div>
+    <div class="row">
       <dismissable-alert alertKey="speaker-bm">
-        <p>If the current Dirac Filter Slot has Bass Control and Dirac is On, speaker size and crossover controls are unavailable and must be configured using the Dirac software. Speaker sizes and crossovers can be changed if Dirac is off or in bypass mode.</p>
-        <div class="row alert-row">
-          <div class="col-lg-6">
-            <div :class="{'mb-3': !isLg}">
-              <dirac-button-group :home-button="false" />
-            </div>
-          </div>
-          <div class="col-lg-6">
-            <div class="alert alert-secondary">
-              <h6>Current bass manager: <img class="bm-icon" :src="require(`@/assets/${showCrossoverControls?'monolith-logo-small.svg':'dirac3.png'}`)+'#svgView(preserveAspectRatio(xMidYMid))'"> <span class="bm-status">{{showCrossoverControls ? 'HTP-1' : 'Dirac'}}</span></h6>
-            </div>
-          </div>
-        </div>
-      </dismissable-alert>
-      <dismissable-alert v-if="mso.cal?.speakerConfigMismatch" alertKey="speaker-filter-mismatch" class="alert-warning">
-        The selected Dirac calibration does not match the current speaker configuration.
+        If the current Dirac Filter Slot has Bass Control and Dirac is On, speaker size and crossover controls are unavailable and must be configured using the Dirac software. Speaker sizes and crossovers can be changed if Dirac is off or in bypass mode.
       </dismissable-alert>
     </div>
     <div class="row">
-      <div class="col-lg">
-        <speaker-group-crossover-controls :speaker-groups="speakerGroups" />
+      <dismissable-alert v-if="mso.cal?.speakerConfigMismatch" alertKey="speaker-filter-mismatch" class="alert-warning">
+        The selected Dirac calibration does not match the current speaker configuration. Uncalibrated channels are highlighted.
+      </dismissable-alert>
+    </div>
+    <div class="row align-items-start">
+      <div class="col-lg-auto">
+        <div :class="{'mb-3': !isLg}">
+          <dirac-button-group :home-button="false" />
+        </div>
       </div>
       <div class="col-lg">
+        <div class="alert alert-secondary mb-3">
+          <h6>Current bass manager: <img class="bm-icon" :src="require(`@/assets/${showCrossoverControls?'monolith-logo-small.svg':'dirac3.png'}`)+'#svgView(preserveAspectRatio(xMidYMid))'"> <span class="bm-status">{{showCrossoverControls ? 'HTP-1' : 'Dirac'}}</span></h6>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-7">
+        <speaker-group-crossover-controls :speaker-groups="speakerGroups" />
+      </div>
+      <div class="col-lg-5">
         <SpeakerDiagram :class="diagramSpeakerVisibility" />
       </div>
     </div>
@@ -167,7 +171,7 @@
     margin-bottom:1rem;
   }
 
-  .col-lg {
+  .col-lg, .col-lg-auto, .col-lg-5, .col-lg-6, .col-lg-7 {
     padding-left: 0;
   }
 

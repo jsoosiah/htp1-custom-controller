@@ -139,7 +139,7 @@
         * denotes Dirac Live Room Correction filters with Bass Control.
       </dismissable-alert>
       <dismissable-alert v-if="mso.cal?.speakerConfigMismatch" alertKey="calibration-filter-mismatch" class="alert-warning">
-        The selected Dirac calibration does not match the current speaker configuration.
+        The selected Dirac calibration does not match the current speaker configuration. Uncalibrated channels are highlighted.
       </dismissable-alert>
       <div class="row justify-content-between mb-3">
         <div class="col-auto">
@@ -194,7 +194,10 @@
           <tr 
             v-for="channame in activeChannels" 
             :key="channame"
-            :class="{'table-danger': currentDiracSlot?.channels[channame].mute === true}"
+            :class="{
+              'table-warning': diracMismatchedChannels.includes(channame),
+              'table-danger': currentDiracSlot?.channels[channame].mute === true
+            }"
           >
             <td>{{spkName(channame)}}</td>
             <td class="text-right" :class="{'text-muted':mso.cal?.diracactive=='off'}" :title="currentDiracSlot?.channels[channame].caldelay">
@@ -297,6 +300,7 @@
         setMinVolume, setMaxVolume, setMaxOutputLevel, setLipsyncDelay,
         currentDiracSlot, activeChannels, toggleMuteChannel,
         setMuteAllChannelsOff, setMuteAllChannelsOn, toggleAllMuteChannels,
+        diracMismatchedChannels
       } = useMso();
       const { spkName } = useSpeakerGroups();
       const { showChannelMuteControls, toggleShowChannelMuteControls } = useLocalStorage();
@@ -327,6 +331,7 @@
         activeChannels, spkName, formatDecimal, currentDiracTab, setDiracTab,
         showChannelMuteControls, toggleShowChannelMuteControls, toggleMuteChannel,
         setMuteAllChannelsOff, setMuteAllChannelsOn, toggleAllMuteChannels, isMobileMode,
+        diracMismatchedChannels
       };
     },
     components: {
