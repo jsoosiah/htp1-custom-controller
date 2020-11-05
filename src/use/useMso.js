@@ -517,35 +517,34 @@ function setDefaultsBeforePowerDown() {
   // set default upmix for current input if necessary
   const defaultUpmix = mso.value.inputs[mso.value.input].defaultUpmix;
   if (defaultUpmix && mso.value?.upmix.select !== defaultUpmix) {
-    commands.push(
+    return [
       {'op':'replace', 'path': '/upmix/select', 'value': defaultUpmix}
-    );
+    ];
   }
+
+  return [];
 }
 
 // mso mutators --------------------------------------------
 
 function powerOff() {
-  // setDefaultsBeforePowerDown();
-  // const commands = [];
-  // commands.push({'op':'replace', 'path': '/powerAction', 'value': 'off'});
-  // commandsToSend.value = commands;
+  const commands = setDefaultsBeforePowerDown();
+  commands.push({'op':'replace', 'path': '/powerAction', 'value': 'off'});
+  commandsToSend.value = commands;
   return true;
 }
 
 function powerSleep() {
-  setDefaultsBeforePowerDown();
-  const commands = [];
+  const commands = setDefaultsBeforePowerDown();
   commands.push({'op':'replace', 'path': '/powerAction', 'value': 'sleep'});
   commandsToSend.value = commands;
   return true;
 }
 
 function powerRestart() {
-  // setDefaultsBeforePowerDown();
-  // const commands = [];
-  // commands.push({'op':'replace', 'path': '/powerAction', 'value': 'reboot'});
-  // commandsToSend.value = commands;
+  const commands = setDefaultsBeforePowerDown();
+  commands.push({'op':'replace', 'path': '/powerAction', 'value': 'reboot'});
+  commandsToSend.value = commands;
   return true;
 }
 
