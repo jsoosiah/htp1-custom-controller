@@ -33,7 +33,6 @@
     </div>
   </template>
   <template v-else>
-    {{personalizePowerDialog}}
     <div 
       v-if="showPowerDialog" 
       class="connecting-overlay"
@@ -247,7 +246,7 @@ export default {
       window.addEventListener('resize', updateWindowWidth);
 
       if (!websocketIp.value) {
-        findServers(80, '192.168.0.', 1, 255, 20, 4000);
+        findServers(80, '192.168.1.', 1, 255, 20, 4000);
       }
     });
 

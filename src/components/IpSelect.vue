@@ -31,7 +31,6 @@
               <span class="spinner-border text-primary" role="status">
                 <span class="sr-only">Loading...</span>
               </span>
-              state={{state}}
             </p>
             <p>
               Or, please update the IP address below if it has changed.
