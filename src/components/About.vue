@@ -106,7 +106,7 @@
         </tr>
       </tbody>
     </table>
-    <h5>About this Custom Interface</h5>
+    <h5>About this Custom Web UI</h5>
     <table class="table table-sm table-striped table-responsive">
       <tbody>
         <tr>

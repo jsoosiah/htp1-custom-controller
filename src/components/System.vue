@@ -12,7 +12,7 @@
     <div class="row">
       <div class="col-auto">
         <div class="">
-          <label for="select-ip" class="col-form-label col-form-label-sm">Saved IP address</label>
+          <label for="select-ip" class="col-form-label col-form-label-sm">Web UI IP address</label>
           <input 
             type="text" 
             class="form-control form-control-sm" 
@@ -38,7 +38,7 @@
     <div class="row">
       <div class="col-auto">
         <div class="form-group">
-          <small class="form-text text-muted">The HTP-1 IP address that this interface should connect to. Your entry will be remembered on this device.</small>
+          <small class="form-text text-muted">The HTP-1 IP address that this web UI should connect to. Your entry will be remembered on this device.</small>
         </div>
       </div>
     </div>
