@@ -13,7 +13,7 @@
         The selected Dirac calibration does not match the current speaker configuration. Uncalibrated channels are highlighted.
       </dismissable-alert>
     </div>
-    <div class="row align-items-start">
+    <div class="row alert-row">
       <div class="col-lg-auto">
         <div :class="{'mb-3': !isLg}">
           <dirac-button-group :home-button="false" />

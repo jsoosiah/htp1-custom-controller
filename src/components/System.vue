@@ -9,6 +9,39 @@
         </div>
       </div>
     </div>
+    <div class="row">
+      <div class="col-auto">
+        <div class="">
+          <label for="select-ip" class="col-form-label col-form-label-sm">Saved IP address</label>
+          <input 
+            type="text" 
+            class="form-control form-control-sm" 
+            id="select-ip" 
+            aria-describedby="ip-help"
+            placeholder="e.g., 192.168.1.13" 
+            v-model="ipAddressText"
+          >
+        </div>
+      </div>
+      <div class="col-auto">
+        <div class="">
+          <label class="col-form-label col-form-label-sm">&nbsp;</label>
+          <button 
+            class="btn btn-sm btn-primary"
+            @click="validateAndSetWebsocketurl(ipAddressText)"
+          >
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-auto">
+        <div class="form-group">
+          <small class="form-text text-muted">The HTP-1 IP address that this interface should connect to. Your entry will be remembered on this device.</small>
+        </div>
+      </div>
+    </div>
 
     <h5>Output Settings</h5>
       <div class="row mb-3">
@@ -137,6 +170,7 @@
 
   import useLocalStorage from '@/use/useLocalStorage.js';
   import useImportExport from '@/use/useImportExport.js';
+  import useWebSocket from '@/use/useWebSocket.js';
   import useMso from '@/use/useMso.js';
 
   import TwoStateButton from './buttons/TwoStateButton.vue';
@@ -154,6 +188,17 @@
       const { maxWaitTimeToSendToMso, setMaxWaitTimeToSendToMso } = useLocalStorage();
 
       const { mso } = useMso();
+
+      const { websocketIp, websocketurl, setWebsocketIp, state } = useWebSocket();
+
+    console.log('help?',websocketIp.value)
+
+      const ipAddressText = ref(websocketIp.value);
+
+      function validateAndSetWebsocketurl(url) {
+        // todo: if valid 
+        setWebsocketIp(url);
+      }
 
       function downloadMsoAsJson(){
         exportJsonToFile(mso.value, 'config');
@@ -174,7 +219,8 @@
 
       return { 
         ...useMso(),
-        downloadMsoAsJson, importMsoFileSelected, importJson, msoImportPatch, importMso
+        downloadMsoAsJson, importMsoFileSelected, importJson, msoImportPatch, importMso,
+        validateAndSetWebsocketurl, ipAddressText, setWebsocketIp
       };
     },
     components: {
@@ -199,6 +245,10 @@
   .import-patch {
     max-height: 340px;
     overflow: auto;
+  }
+
+  .btn {
+    display: block;
   }
 
 </style>
