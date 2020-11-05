@@ -34,6 +34,14 @@
         />
       </div>
     </div>
+    <div class="row">
+      <div class="col-auto">
+        <h5>Import/Export Dirac Filters</h5>
+        <p>
+          Follow this link to the <a :href="`http://${websocketIp}/dirac.html`">Dirac Filters Export/Import Tools</a>.
+        </p>
+      </div>
+    </div>
     <template v-if="false">
       <h5>Support</h5>
       <div class="custom-control custom-switch">
@@ -96,7 +104,7 @@
               importJsonFileToSelected,
               filterCommands } = useImportExport();
 
-      const { maxWaitTimeToSendToMso, setMaxWaitTimeToSendToMso } = useLocalStorage();
+      const { maxWaitTimeToSendToMso, setMaxWaitTimeToSendToMso, websocketIp } = useLocalStorage();
 
       const { 
         mso, setUnitName, setFrontPanelBrightness, toggleFastStart, toggleFastStartPassThrough, 
@@ -127,7 +135,7 @@
         setPowerOnVol, toggleVideoStatusHomePage, toggleExtendedAudioStatus, toggleAdvancedInputSettings, 
         toggleSupportTools, importMsoPatchList, maxWaitTimeToSendToMso, setMaxWaitTimeToSendToMso,
         setFastStartOn, setFastStartOff, setFastStartPassThroughOn, setFastStartPassThroughOff,
-        downloadMsoAsJson, importMsoFileSelected, importJson, msoImportPatch, importMso
+        downloadMsoAsJson, importMsoFileSelected, importJson, msoImportPatch, importMso, websocketIp
       };
     },
     components: {
