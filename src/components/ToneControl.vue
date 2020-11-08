@@ -7,8 +7,8 @@
       @click="toggleToneControl()"
     />
 
-    <div class="row mt-3" v-show="!mso.eq?.tc">
-      <div class="col">
+    <div class="row mt-3">
+      <div class="col" v-show="!mso.eq?.tc">
         <dismissable-alert alertKey="tone-control-off" class="alert-warning">
           Tone controls are currently turned off. The following tone control settings may be modified, but they will not have any effect until tone controls are turned on.
         </dismissable-alert>

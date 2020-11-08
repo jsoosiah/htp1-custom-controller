@@ -7,8 +7,8 @@
       @btn-click="toggleLoudness()"
       min-width="7.5rem"
     />
-    <div class="row mt-3" v-show="mso.loudness !== 'on'">
-      <div class="col">
+    <div class="row mt-3">
+      <div class="col" v-show="mso.loudness !== 'on'">
         <dismissable-alert alertKey="loudness-off" class="alert-warning">
           Loudness compensation is currently turned off. The following loudness compensation settings may be modified, but they will not have any effect until loudness compensation is turned on.
         </dismissable-alert>
