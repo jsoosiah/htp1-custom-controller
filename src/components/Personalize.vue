@@ -3,7 +3,7 @@
     <h5>Personalize Interface</h5>
     <div class="row">
       <div class="col">
-        <h6>Home Page Status Display</h6>
+        <h6>Homepage Status Display</h6>
         <div class="mb-3">
         <table class="table table-sm table-striped table-responsive select">
           <thead>
@@ -78,7 +78,7 @@
               @click="toggleVideoStatusHomePage()"
             >
             <label class="custom-control-label" for="display-video">
-              Display Video Status on Home Page
+              Display Video Status on Homepage
             </label>
           </div>
           <div class="custom-control custom-switch">
@@ -90,7 +90,7 @@
               @click="toggleExtendedAudioStatus()"
             >
             <label class="custom-control-label" for="display-audio">
-              Display Audio Sample Rate on Home Page
+              Display Audio Sample Rate on Homepage
             </label>
           </div>
         </div>
@@ -178,7 +178,7 @@
             </tbody>
           </table>
         </template>
-        <h6>Home Page Modes</h6>
+        <h6>Homepage Modes</h6>
         <table class="table table-sm table-responsive table-striped">
           <thead>
             <tr>
@@ -206,7 +206,7 @@
           </tbody>
         </table>
 
-        <h6>Home Page Dirac Slots</h6>
+        <h6>Homepage Dirac Slots</h6>
         <table class="table table-sm table-responsive table-striped">
           <thead>
             <tr>
@@ -234,7 +234,7 @@
           </tbody>
         </table>
 
-        <h6>Home Page Macros</h6>
+        <h6>Homepage Macros</h6>
         <table class="table table-sm table-responsive table-striped" v-if="mso.svronly">
           <thead>
             <tr>

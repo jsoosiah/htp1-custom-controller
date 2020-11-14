@@ -5,7 +5,7 @@
       <thead>
         <tr>
           <th>Upmix</th>
-          <th>Show on Home Page</th>
+          <th>Show on Homepage</th>
           <th>Controls</th>
         </tr>
       </thead>

@@ -24,7 +24,7 @@
         <tr>
           <th>Input</th>
           <th>Label</th>
-          <th>Visible on Home Page</th>
+          <th>Visible on Homepage</th>
           <th>Default Sound Mode</th>
           <th>Input Delay (ms)</th>
           <th>Input Trim (dB)</th>

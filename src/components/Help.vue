@@ -6,7 +6,7 @@
           <div class="card-header" id="headingOne" @click="toggleOpened(0)">
             <h2 class="mb-0">
               <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                Main Page Help
+                Homepage
               </button>
             </h2>
           </div>
@@ -364,7 +364,7 @@
                 channels from fewer channels. They are designed in particular to
                 help older source material (stereo or 5.1) drive the wide set of
                 speakers that are supported here. Controls are provided for each
-                algorithm to choose whether or not it is visible on the home page.
+                algorithm to choose whether or not it is visible on the homepage.
                 A radio button allows you to choose one to listen to as you
                 adjust. And some of the algorithms have more controls that you can
                 access.</p>
@@ -451,7 +451,7 @@
               <p>
                 The input page allows you to assign a human readable name to each
                 input. It also allows you to choose which input buttons will be
-                present on the main page of the web UI. 
+                present on the homepage of the web UI. 
               </p>
               <ul>
                 <li>The <i>UHD Capable</i> switches on the HDMI inputs can be
@@ -552,19 +552,19 @@
               </p>
               <ul>
                 <li>
-                  Home page status display
+                  Homepage status display
                   <ul>
                     <li>You can cause video status (resolution, color depth, etc)
-                      to be displayed on the main page.</li>
+                      to be displayed on the homepage.</li>
                     <li>You can cause audio sample rates to be displayed on the
-                      main page.
+                      homepage.
                     </li>
                   </ul>
                 </li>
                 <li>You can select shortcuts to settings pages which will appear on the top right of the screen.</li>
-                <li>You can select which buttons appear under the Modes section of the home page.</li>
-                <li>You can select which macro buttons appear under the Macros section of the home page.</li>
-                <li>You can select which Dirac slots appear under the Dirac slots section of the home page.</li>
+                <li>You can select which buttons appear under the Modes section of the homepage.</li>
+                <li>You can select which macro buttons appear under the Macros section of the homepage.</li>
+                <li>You can select which Dirac slots appear under the Dirac slots section of the homepage.</li>
                 <li>Notices are small info boxes that appear on various settings pages. You can restore all dismissed notices.</li>
               </ul>
             </div>
@@ -619,9 +619,9 @@
                 <li>Several check-boxes enable features:</li>
                 <ul>
                   <li>You can cause video status (resolution, color depth, etc)
-                    to be displayed on the main page.</li>
+                    to be displayed on the homepage.</li>
                   <li>You can cause audio sample rates to be displayed on the
-                    main page.</li>
+                    homepage.</li>
                 </ul>
               </ul>
             </div>

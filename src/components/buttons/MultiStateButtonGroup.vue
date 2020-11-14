@@ -62,7 +62,7 @@
             'yellow-text-btn': buttonValue === 2 && props.stateValue === 2
           };
         }
-      };
+      }
 
       function setState(stateValue) {
         switch(stateValue) {

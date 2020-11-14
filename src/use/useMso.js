@@ -198,21 +198,21 @@ function applyProductRules() {
         setSpeakerGroupPresent('lrtr', false);
         setSpeakerGroupPresent('lrhf', false);
         setSpeakerGroupPresent('lrhr', false);
-    };
+    }
     if ((!spg.lrs.present) && (!spg.lrtm.present) && (spg.lrtr.present || spg.lrhr.present)) {
         setSpeakerGroupPresent('lrtf', spg.lrtf.present && (!spg.lrhf.present));
         setSpeakerGroupPresent('lrtr', false);
         setSpeakerGroupPresent('lrhr', false);
-    };
+    }
     if ((!spg.c.present) && (!spg.lrb.present)) {
         setSpeakerGroupPresent('lrtm', false);
-    };
+    }
     spg.lrtf.present = spg.lrtf.present && (!spg.lrhf.present); // only one front allowed
     spg.lrtr.present = spg.lrtr.present && (!spg.lrhr.present); // only one rear allowed
     if ((!spg.lrtf.present) && (!spg.lrhf.present)) {
         setSpeakerGroupPresent('lrhr', false); // no fronts . clear rears
         setSpeakerGroupPresent('lrtr', false);
-    };
+    }
     // No top middle when top front present but top rear not present
     if (spg.lrtm.present && spg.lrtf.present) {
         if ((!spg.lrtr.present) && (!spg.lrhr.present)) {
@@ -234,12 +234,12 @@ function applyProductRules() {
       const group = spg[groupName];
       if (group.fc) {
         setCenterFreq(groupName, Math.round(group.fc / 10) * 10);
-      };
+      }
     }
 
     if (mso.value.fastStart === 'off') {
         setFastStartPassThroughOff();
-    };
+    }
 
     if (!mso.value.crda) {
       initializeWifiCountryCode();

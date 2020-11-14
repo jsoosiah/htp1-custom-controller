@@ -111,7 +111,7 @@ export default function useSpeakerGroups() {
     var filtered = allKeys.filter(filterFn);
     var translated = spgToSp(filtered);
     return (translated);
-  };
+  }
 
   return { bmg, reverseBmg, bmgNames, spkName, spgToSp, getActiveChannels };
 }
