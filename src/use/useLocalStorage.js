@@ -1,4 +1,4 @@
-import { ref, onMounted, onUnmounted, watch, computed } from 'vue';
+import { ref } from 'vue';
 
 // IP address of HTP-1, used to connect to websocket
 const websocketIp = ref(localStorage.getItem('websocketIp'));

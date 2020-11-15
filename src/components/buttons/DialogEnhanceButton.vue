@@ -5,9 +5,7 @@
       :class="buttonClasses"
       @click="clicked"
     >
-      {{ `${((((mso.status?.raw?.streamType >= 33) && (mso.status?.raw?.streamType <= 44) &&
-        ((mso.status?.raw?.streamInfoBytes[0] % 32) >= 16))) ? 'DTS ' : '')}
-        Dialog Enhance ${mso.dialogEnh == 0 ? 'off' : mso.dialogEnh + ' dB'}` }}
+      {{ buttonText }}
     </button>
     <transition name="mfade">
       <ol
@@ -68,6 +66,12 @@
         }
       });
 
+      const buttonText = computed(() => {
+        return `${((((mso.value.status?.raw?.streamType >= 33) && (mso.value.status?.raw?.streamType <= 44) &&
+          ((mso.value.status?.raw?.streamInfoBytes[0] % 32) >= 16))) ? 'DTS ' : '')}
+          Dialog Enhance ${mso.value.dialogEnh == 0 ? 'off' : mso.value.dialogEnh + ' dB'}`;
+      });
+
       function clicked() {
         setNextDtsDialogEnh();
         recentlyInteracted.value = true;
@@ -77,7 +81,7 @@
         }, 3000);
       }
 
-      return { mso, clicked, props, buttonClasses, recentlyInteracted };
+      return { mso, clicked, props, buttonClasses, recentlyInteracted, buttonText };
     }
   }
 </script>

@@ -23,12 +23,11 @@
 
 <script>
 
-  import { ref } from 'vue';
-
   import useMso from '@/use/useMso.js';
 
   export default {
     name: 'PowerDropdown',
+    emits: ['cancel'],
     setup(props, { emit }) {
 
       const { powerOff, powerSleep, powerRestart } = useMso();
@@ -88,9 +87,5 @@
     text-transform: uppercase;
     font-weight: 600;
     min-width: 7.5rem;
-  }
-
-  .dropdown-menu {
-    /* width: 200px; */
   }
 </style>

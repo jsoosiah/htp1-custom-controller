@@ -74,7 +74,7 @@
       SpeakerMap,
       DismissableAlert,
     },
-    setup(props, { emit }) {
+    setup() {
 
       const { mso, showCrossoverControls, activeChannels } = useMso();
       const { isLg } = useResponsive();

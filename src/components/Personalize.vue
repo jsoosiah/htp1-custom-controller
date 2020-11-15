@@ -326,13 +326,11 @@
   import { settingsRoutes } from '@/router.js';
 
   import Home from './Home.vue';
-  import TwoStateButton from './buttons/TwoStateButton.vue';
 
   export default {
     name: 'Inputs',
     components: {
       Home,
-      TwoStateButton,
     },
     setup() {
 

@@ -66,11 +66,7 @@
 
 <script>
 
-import { ref } from 'vue';
-
 import { settingsRoutes } from '@/router.js';
-
-import useMso from '@/use/useMso.js';
 
 import HomeIcon from './icons/HomeIcon';
 import CalibrationIcon from './icons/CalibrationIcon';
@@ -111,6 +107,7 @@ export default {
     PowerIcon,
     ConfigsIcon,
   },
+  emits: ['power-dialog'],
   setup(props, { emit }) {
 
     function powerOff() {
@@ -118,14 +115,11 @@ export default {
     }
 
     return { settingsRoutes, powerOff };
-  }
+  },
 }
 </script>
 
 <style scoped>
-  div.container {
-    /* background-color: white; */
-  }
 
   div.background-light {
     background-color: white;

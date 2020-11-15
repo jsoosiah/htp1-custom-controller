@@ -29,9 +29,6 @@
       MultiStateButtonGroup
     },
     props: {
-      homeButton: Boolean,
-    }, 
-    props: {
       className: String,
       homeButton: Boolean,
     },

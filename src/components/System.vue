@@ -258,21 +258,16 @@
   import { ref, computed } from 'vue';
   import { compare } from 'fast-json-patch/index.mjs';
 
-  import useLocalStorage from '@/use/useLocalStorage.js';
   import useImportExport from '@/use/useImportExport.js';
   import useWebSocket from '@/use/useWebSocket.js';
   import useMso from '@/use/useMso.js';
 
   import TwoStateButton from './buttons/TwoStateButton.vue';
-  import MultiStateButtonGroup from './buttons/MultiStateButtonGroup.vue';
-  import MsoImporter from './MsoImporter.vue';
 
   export default {
     name: 'System',
     components: {
-      MultiStateButtonGroup,
       TwoStateButton,
-      MsoImporter
     },
     setup() {
 
@@ -280,11 +275,9 @@
               exportJsonToFile,
               importJsonFileToSelected } = useImportExport();
 
-      const { maxWaitTimeToSendToMso, setMaxWaitTimeToSendToMso } = useLocalStorage();
-
       const { mso } = useMso();
 
-      const { websocketIp, websocketurl, setWebsocketIp, state } = useWebSocket();
+      const { websocketIp, setWebsocketIp } = useWebSocket();
 
     console.log('help?',websocketIp.value)
 
@@ -308,13 +301,9 @@
         return compare(mso.value, importJson.value);
       });
 
-      function importMso() {
-        importMsoPatchList(msoImportPatch.value);
-      }
-
       return { 
         ...useMso(),
-        downloadMsoAsJson, importMsoFileSelected, importJson, msoImportPatch, importMso,
+        downloadMsoAsJson, importMsoFileSelected, importJson, msoImportPatch,
         validateAndSetWebsocketurl, ipAddressText, setWebsocketIp
       };
     },
@@ -327,9 +316,6 @@
 <style scoped>
   .form-control {
     text-align: left;
-  }
-
-  .pre-scrollable {
   }
 
   .import-patch {

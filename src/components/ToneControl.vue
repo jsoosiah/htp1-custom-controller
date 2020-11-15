@@ -192,10 +192,6 @@
     float:right;
   }
 
-  .table-sm td {
-    /* padding:0 0.3rem; */
-  }
-
   .col-lg {
     padding-left: 0;
   }

@@ -22,7 +22,7 @@ export default function useImportExport() {
         try {
           importJson.value = JSON.parse(e.target.result);
         } catch (e) {
-
+          console.error('import json error', e);
         }
       }
     }

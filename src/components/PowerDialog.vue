@@ -72,8 +72,6 @@
 
 <script>
 
-  import { ref } from 'vue';
-
   import useMso from '@/use/useMso.js';
 
   export default {
@@ -84,6 +82,7 @@
         default: false,
       }
     },
+    emits: ['cancel'],
     setup(props, { emit }) {
 
       const { mso, powerOff, powerSleep, powerRestart } = useMso();
@@ -143,9 +142,5 @@
     text-transform: uppercase;
     font-weight: 600;
     min-width: 7.5rem;
-  }
-
-  #power-dialog {
-    /* width: 200px; */
   }
 </style>

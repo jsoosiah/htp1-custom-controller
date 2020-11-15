@@ -207,6 +207,10 @@
             id="wlan0" 
             :network="network.wlan0"
             :blank-ip="BLANK_IP_ADDRESS"
+            @add-ip-address="addIPAddress"
+            @remove-ip-address="removeIPAddress"
+            @add-nameserver="addNameserver"
+            @remove-nameserver="removeNameserver"
             @apply-network-config="applyNetworkConfig"
           />
         </template>
@@ -233,14 +237,13 @@
 
 <script>
 
-  import { reactive, ref, computed, watch, onActivated, onDeactivated, onActivate, onDeactivatedd } from 'vue';
+  import { reactive, ref, computed, watch, onActivated, onDeactivated } from 'vue';
 
   import useMso from '@/use/useMso.js';
   import useCountryCodes from '@/use/useCountryCodes.js';
   import useNetworkManager from '@/use/useNetworkManager.js';
 
   import TwoStateButton from './buttons/TwoStateButton.vue';
-  import MultiStateButtonGroup from './buttons/MultiStateButtonGroup.vue';
   import DhcpSettings from './DhcpSettings.vue';
 
   const BLANK_IP_ADDRESS = {
@@ -252,16 +255,15 @@
   export default {
     name: 'Connectivity',
     components: {
-      MultiStateButtonGroup,
       TwoStateButton,
       DhcpSettings
     },
     setup() {
 
       const { 
-        state, nmstat, condetails, scan, applyNetworkConfig, wificonfig, 
+        nmstat, condetails, scan, applyNetworkConfig, wificonfig, 
         wificonnect, wifidisconnect, wififorget, wifipower, getConDetails,
-        int2ip, ip2int, cidr2mask, mask2cidr, networkLoading: loading
+        int2ip, ip2int, cidr2mask, mask2cidr
       } = useNetworkManager();
 
       // local form state
@@ -284,6 +286,22 @@
       });
 
       let scanInterval;
+
+      function addIPAddress(network) {
+        network.addresses.push(BLANK_IP_ADDRESS);
+      }
+
+      function removeIPAddress(network, index) {
+        network.addresses.splice(index, 1);
+      }
+
+      function addNameserver(network) {
+        network.dns.push('');
+      }
+
+      function removeNameserver(index) {
+        network.dns.splice(index, 1);
+      }
 
       function populateNetworkFromConfig(netInterface, config) {
         console.log('populateNetworkFromConfig', netInterface, config);
@@ -375,7 +393,8 @@
         ...useMso(), ...useCountryCodes(), nmstat, scan, applyNetworkConfig, BLANK_IP_ADDRESS,
         int2ip, ip2int, cidr2mask, mask2cidr, wificonfig, wifipower, getConDetails,
         network, password, showpass, selnet, actnet, 
-        configuredNetworks, wificonnect, wifidisconnect, wififorget
+        configuredNetworks, wificonnect, wifidisconnect, wififorget,
+        addIPAddress, removeIPAddress, addNameserver, removeNameserver
       };
     }
   }

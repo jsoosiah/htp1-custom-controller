@@ -176,7 +176,7 @@
   <div class="form-group">
     <button 
       class="btn btn-sm btn-primary"
-      @click="applyNetworkConfig(props.network)"
+      @click="applyNetworkConfig"
     >
       Apply Network Settings
     </button>
@@ -201,25 +201,32 @@
         type: Object,
       }
     },
-    emits: ['apply-network-config'], setup(props, { emit }) {
+    emits: [
+      'add-ip-address',
+      'remove-ip-address',
+      'add-nameserver',
+      'remove-nameserver',
+      'apply-network-config'
+    ], 
+    setup(props, { emit }) {
       function addIPAddress() {
-        props.network.addresses.push({...props.blankIp});
+        emit('add-ip-address', props.network);
       }
 
       function removeIPAddress(index) {
-        props.network.addresses.splice(index, 1);
+        emit('remove-ip-address', props.network, index);
       }
 
       function addNameserver() {
-        props.network.dns.push('');
+        emit('add-nameserver', props.network);
       }
 
       function removeNameserver(index) {
-        props.network.dns.splice(index, 1);
+        emit('remove-nameserver', props.network, index);
       }
 
-      function applyNetworkConfig(net) {
-        emit('apply-network-config', net);
+      function applyNetworkConfig() {
+        emit('apply-network-config', props.network);
       }
 
       return { props, addIPAddress, removeIPAddress, addNameserver, removeNameserver, applyNetworkConfig };

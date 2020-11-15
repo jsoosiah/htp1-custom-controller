@@ -385,7 +385,6 @@
   import useSpeakerGroups from '@/use/useSpeakerGroups.js';
 
   import TwoStateButton from './buttons/TwoStateButton.vue';
-  import MultiStateButtonGroup from './buttons/MultiStateButtonGroup';
   import MsoImporter from './MsoImporter.vue';
   import PeqChart from './PeqChart.vue';
   import DismissableAlert from './buttons/DismissableAlert.vue';
@@ -393,7 +392,6 @@
   export default {
     name: 'Eq',
     components: {
-      MultiStateButtonGroup,
       TwoStateButton,
       MsoImporter,
       PeqChart,

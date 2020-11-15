@@ -113,7 +113,7 @@
 
 <script>
 
-  import { watchEffect, computed, onMounted } from 'vue';
+  import { computed } from 'vue';
   import { Tooltip } from '@/directives/Tooltip.js';
 
   import useMso from '@/use/useMso.js';

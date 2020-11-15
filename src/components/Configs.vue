@@ -96,22 +96,18 @@
 
 <script>
 
-  import { ref, computed } from 'vue';
+  import { computed } from 'vue';
   import { compare } from 'fast-json-patch/index.mjs';
 
   import useLocalStorage from '@/use/useLocalStorage.js';
   import useImportExport from '@/use/useImportExport.js';
   import useMso from '@/use/useMso.js';
 
-  import TwoStateButton from './buttons/TwoStateButton.vue';
-  import MultiStateButtonGroup from './buttons/MultiStateButtonGroup.vue';
   import MsoImporter from './MsoImporter.vue';
 
   export default {
     name: 'Configs',
     components: {
-      MultiStateButtonGroup,
-      TwoStateButton,
       MsoImporter
     },
     setup() {
@@ -164,9 +160,6 @@
 <style scoped>
   .form-control {
     text-align: left;
-  }
-
-  .pre-scrollable {
   }
 
   .import-patch {

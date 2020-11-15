@@ -221,14 +221,12 @@
   import { Tooltip } from '@/directives/Tooltip.js';
 
   import TwoStateButton from './buttons/TwoStateButton.vue';
-  import MultiStateButtonGroup from './buttons/MultiStateButtonGroup.vue';
   import DismissableAlert from './buttons/DismissableAlert.vue';
 
   export default {
     name: 'SignalGenerator',
     components: {
       TwoStateButton,
-      MultiStateButtonGroup,
       DismissableAlert
     },
     directives: {

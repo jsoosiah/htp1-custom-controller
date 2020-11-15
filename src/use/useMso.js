@@ -252,13 +252,13 @@ function applyProductRules() {
 
     for (let inputKey in mso.value.inputs) {
       if (mso.value.inputs) {
-        if (!mso.value.inputs[inputKey].hasOwnProperty('defaultUpmix')) {
+        if (Object.prototype.hasOwnProperty.call(!mso.value.inputs[inputKey], 'defaultUpmix')) {
           _setInputDefaultUpmix(inputKey);
         }
-        if (!mso.value.inputs[inputKey].hasOwnProperty('gain')) {
+        if (Object.prototype.hasOwnProperty.call(!mso.value.inputs[inputKey], 'gain')) {
           _setInputVolumeTrim(inputKey);
         }
-        if (!mso.value.inputs[inputKey].hasOwnProperty('delay')) {
+        if (Object.prototype.hasOwnProperty.call(!mso.value.inputs[inputKey], 'delay')) {
           initializeInputDelay(inputKey);
         }
       }
@@ -1058,7 +1058,7 @@ function setInputFormatDetectOption(input, formatDetectOption) {
 // Warning: custom attribute
 function _setInputDefaultUpmix(input, defaultUpmix, op) {
   if (!op) {
-    op = mso.value.inputs[input].hasOwnProperty('defaultUpmix') ? 'replace' : 'add';
+    op = Object.prototype.hasOwnProperty.call(mso.value.inputs[input], 'defaultUpmix') ? 'replace' : 'add';
   }
 
   if (!allUpmixers.value[defaultUpmix]) {
@@ -1074,7 +1074,7 @@ function setInputDefaultUpmix(input, defaultUpmix) {
 
 function _setInputVolumeTrim(input, trim, op) {
   if (!op) {
-    op = mso.value.inputs[input].hasOwnProperty('gain') ? 'replace' : 'add';
+    op = Object.prototype.hasOwnProperty.call(mso.value.inputs[input], 'gain') ? 'replace' : 'add';
   }
   
   let trimValue = parseInt(trim);

@@ -15,7 +15,7 @@
     <transition name="mfade">
       <ol
         v-if="props.showStateIndicators"
-        v-show="props.recentlyInteracted || recentlyInteracted"
+        v-show="props.recentlyInteracted || localRecentlyInteracted"
         class="carousel-indicators"
       >
         <li
@@ -30,7 +30,7 @@
 
 <script>
 
-  import { watch, ref } from 'vue';
+  import { ref } from 'vue';
 
   export default {
     name: 'TwoStateButton',
@@ -75,20 +75,20 @@
     emits: ['btn-click'],
     setup(props, { emit }) {
 
-      const recentlyInteracted = ref(false);
+      const localRecentlyInteracted = ref(false);
       let recentlyInteractedTimeout;
 
       function clicked(e) {
         e.preventDefault();
         emit('btn-click');
-        recentlyInteracted.value = true;
+        localRecentlyInteracted.value = true;
         clearTimeout(recentlyInteractedTimeout);
         recentlyInteractedTimeout = setTimeout(() => {
-          recentlyInteracted.value = false;
+          localRecentlyInteracted.value = false;
         }, 3000);
       }
 
-      return { props, recentlyInteracted, clicked };
+      return { props, localRecentlyInteracted, clicked };
     }
   }
 </script>

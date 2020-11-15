@@ -137,12 +137,10 @@
   import useMso from '@/use/useMso.js';
 
   import TwoStateButton from './buttons/TwoStateButton.vue';
-  import MultiStateButtonGroup from './buttons/MultiStateButtonGroup.vue';
 
   export default {
     name: 'SoundEnhancement',
     components: {
-      MultiStateButtonGroup,
       TwoStateButton
     },
     setup() {

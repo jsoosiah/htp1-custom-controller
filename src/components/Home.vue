@@ -369,11 +369,9 @@
 
 <script>
 
-import { ref, defineAsyncComponent, computed, onMounted } from 'vue';
-import { debounce } from 'lodash-es';
+import { ref, computed, onMounted } from 'vue';
 import { applyPatch, deepClone, compare } from 'fast-json-patch/index.mjs';
 
-import useLocalStorage from '@/use/useLocalStorage.js';
 import useMso from '@/use/useMso.js';
 import useStream from '@/use/useStream.js';
 import useResponsive from '@/use/useResponsive.js';
@@ -382,25 +380,26 @@ import { LongPress, LongPressUp, Press } from '@/directives/Press.js';
 
 import TwoStateButton from './buttons/TwoStateButton.vue';
 import ThreeStateButton from './buttons/ThreeStateButton.vue';
-import MultiStateButtonGroup from './buttons/MultiStateButtonGroup.vue';
 import DiracButton from './buttons/DiracButton.vue';
 import DialogEnhanceButton from './buttons/DialogEnhanceButton.vue';
-import DiracButtonGroup from './buttons/DiracButtonGroup.vue';
-import IpSelect from './IpSelect.vue';
 
 // ms per dB
 const LONG_PRESS_VOLUME_ADJUST_SPEED = 125; 
 
-const SIGNAL_GENERATOR_TAB = 2;
-const INPUTS_TAB = 5;
-const SOUND_ENHANCEMENTS_TAB = 6;
-const MACROS_TAB = 8;
-const HELP_TAB = 11;
-
 export default {
+  components: {
+    DiracButton,
+    DialogEnhanceButton,
+    TwoStateButton,
+    ThreeStateButton,
+  },
+  directives: {
+    LongPress,
+    LongPressUp,
+    Press
+  },
   setup() {
 
-    const { settingsActiveTab, setSettingsActiveTab } = useLocalStorage();
     const { isMobileMode } = useResponsive();
 
     const { 
@@ -431,8 +430,6 @@ export default {
 
     const experimental = computed(() => window.location.href.includes('experimental'));
 
-    const settingsModalIsOpen = ref(false);
-
     const upmixRecentlyInteracted = ref(false);
     let upmixRecentlyInteractedTimeout;
     
@@ -441,8 +438,6 @@ export default {
 
     const diracSlotRecentlyInteracted = ref(false);
     let diracSlotRecentlyInteractedTimeout;
-
-    const showMobileMenu = ref(false);
 
     // intervals for performing the actual volume adjustments
     let incrementVolumeInterval;
@@ -555,21 +550,6 @@ export default {
       experimental, isMobileMode
     };
   },
-  components: {
-    Settings: defineAsyncComponent(() => import('./Settings.vue')),
-    DiracButton,
-    DiracButtonGroup,
-    DialogEnhanceButton,
-    TwoStateButton,
-    ThreeStateButton,
-    MultiStateButtonGroup,
-    IpSelect,
-  },
-  directives: {
-    LongPress,
-    LongPressUp,
-    Press
-  }
 }
 </script>
 

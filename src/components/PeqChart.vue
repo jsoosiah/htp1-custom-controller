@@ -6,7 +6,7 @@
 
 <script>
 
-  import { ref, reactive, computed, onMounted, watch } from 'vue';
+  import { ref, onMounted, watch } from 'vue';
   import { debounce } from 'lodash-es';
   import Chart from 'chart.js';
 
@@ -104,9 +104,7 @@
                       let parts = formatted.split(',');
                       
                       if ((Math.floor(index / 9)) % 2 === 0) {
-                        if (index % 2 === 0) {
-
-                        } else {
+                        if (index % 2 !== 0) {
                           return '';
                         }
                       } else {
@@ -131,7 +129,7 @@
                 enabled: true,
                 mode: 'single',
                 callbacks: {
-                  title: function(tooltipItems, data) {
+                  title: function(tooltipItems) {
                     return tooltipItems.map(tooltipItem => tooltipItem.xLabel.toFixed(2) + ' Hz');
                   },
                   label: function(tooltipItem, data) {
@@ -197,9 +195,9 @@
         return singleSeriesData;
       }
 
-      const stopPropWatch = watch(
+      watch(
         props,
-        (newProps, oldProps) => {
+        newProps => {
           if (newProps.peqSlots) {
             debouncedUpdateChart();
           }
@@ -222,8 +220,6 @@
           }
 
         } else { // initialize all channels
-
-          const newSeriesData = [];
 
           for (let i = 0; i < props.activeChannels.length; i++) {
             const ch = props.activeChannels[i];

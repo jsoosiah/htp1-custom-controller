@@ -10,7 +10,10 @@
       <h6>Commands To Send {{ commandsToSend.length }}</h6>
       <table class="table">
         <tbody>
-          <tr v-for="cmd in commandsToSend">
+          <tr
+            v-for="cmd in commandsToSend"
+            :key="cmd"
+          >
             <td>{{ cmd.op }}</td>
             <td>{{ cmd.path }}</td>
             <td>{{ cmd.value }}</td>
@@ -22,7 +25,10 @@
       <h6>Commands Received {{ commandsReceived.length }}</h6>
       <table class="table">
         <tbody>
-          <tr v-for="cmd in commandsReceived">
+          <tr
+            v-for="cmd in commandsReceived"
+            :key="cmd"
+          >
             <td>{{ cmd.op }}</td>
             <td>{{ cmd.path }}</td>
             <td>{{ cmd.value }}</td>
@@ -34,7 +40,10 @@
       <h6>Commands Awaiting Response {{ commandsAwaitingResponse.length }}</h6>
       <table class="table">
         <tbody>
-          <tr v-for="cmd in commandsAwaitingResponse">
+          <tr
+            v-for="cmd in commandsAwaitingResponse"
+            :key="cmd"
+          >
             <td>{{ cmd.op }}</td>
             <td>{{ cmd.path }}</td>
             <td>{{ cmd.value }}</td>
