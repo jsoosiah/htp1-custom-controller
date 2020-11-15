@@ -1,7 +1,7 @@
 <template>
   <div class="transition-container">
     <h5>Parametric Equalization Filters <small class="text-muted">up to 16 bands are available</small></h5>
-    <dismissable-alert alertKey="peq-bypass">
+    <dismissable-alert alert-key="peq-bypass">
       Note that a gain of 0dB is equivalent to bypassing the filter; * denotes channels or bands that have been modified and have active PEQ filters.
     </dismissable-alert>
     <peq-chart 
@@ -19,15 +19,39 @@
         />
       </div>
       <div class="col-auto mb-3">
-        <div class="btn-group btn-group-sm" role="group" aria-label="Group By">
-          <button @click="setGroupBy(0)" type="button" class="btn" :class="{'btn-primary': eqGroupBy === 0, 'btn-secondary': eqGroupBy !== 0}">Group by Channel</button>
-          <button @click="setGroupBy(1)" type="button" class="btn" :class="{'btn-primary': eqGroupBy === 1, 'btn-secondary': eqGroupBy !== 1}">Group by Band</button>
+        <div
+          class="btn-group btn-group-sm"
+          role="group"
+          aria-label="Group By"
+        >
+          <button
+            type="button"
+            class="btn"
+            :class="{'btn-primary': eqGroupBy === 0, 'btn-secondary': eqGroupBy !== 0}"
+            @click="setGroupBy(0)"
+          >
+            Group by Channel
+          </button>
+          <button
+            type="button"
+            class="btn"
+            :class="{'btn-primary': eqGroupBy === 1, 'btn-secondary': eqGroupBy !== 1}"
+            @click="setGroupBy(1)"
+          >
+            Group by Band
+          </button>
         </div>
       </div>
     </div>
-    <div class="row" v-show="!mso.peq?.peqsw">
+    <div
+      v-show="!mso.peq?.peqsw"
+      class="row"
+    >
       <div class="col">
-        <dismissable-alert alertKey="peq-off" class="alert-warning">
+        <dismissable-alert
+          alert-key="peq-off"
+          class="alert-warning"
+        >
           Parametric equalization is currently turned off. The following PEQ settings may be modified, but they will not have any effect until PEQ is turned on.
         </dismissable-alert>
       </div>
@@ -40,109 +64,120 @@
           :key="index"
           class="nav-link" 
           :class="{'active': mso.peq?.currentpeqslot === index, 'italic': bandHasModifications(index)}" 
-          @click="setSelectedBand(index)" 
           href="javascript:void(0)" 
+          @click="setSelectedBand(index)" 
         >
-         Band {{index + 1}}
+          Band {{ index + 1 }}
         </a>
       </nav>
       <table class="table table-sm table-responsive-lg table-striped">
         <thead>
           <tr>
             <th>Channel</th>
-            <th class="text-right">Center Freq. (Hz)</th>
-            <th class="text-right">Gain (dB)</th>
-            <th class="text-right">Q</th>
-            <th class="text-right">Filter Type</th>
+            <th class="text-right">
+              Center Freq. (Hz)
+            </th>
+            <th class="text-right">
+              Gain (dB)
+            </th>
+            <th class="text-right">
+              Q
+            </th>
+            <th class="text-right">
+              Filter Type
+            </th>
           </tr>
         </thead>
         <tbody :class="{'hiding':!tabLoaded, 'showing':tabLoaded}">
-          <tr v-for="(channame, chanIndex) in activeChannels" :key="channame">
-            <td>{{spkName(channame)}}</td>
+          <tr
+            v-for="(channame, chanIndex) in activeChannels"
+            :key="channame"
+          >
+            <td>{{ spkName(channame) }}</td>
             <td class="text-right">
               <input 
                 type="number" 
                 class="form-control form-control-sm text-right" 
                 :value="mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].Fc" 
-                @change="({ type, target }) => { clearAllImports(); setPEQCenterFrequency(activeChannels[chanIndex], mso.peq?.currentpeqslot, target.value) }" 
                 min="15" 
                 max="20000" 
-                step=".1"
+                step=".1" 
+                @change="({ type, target }) => { clearAllImports(); setPEQCenterFrequency(activeChannels[chanIndex], mso.peq?.currentpeqslot, target.value) }"
                 @focus="setSelectedChannel(chanIndex, true)"
-              />
+              >
             </td>
             <td class="text-right">
               <input 
                 type="number" 
                 class="form-control form-control-sm text-right" 
                 :value="mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].gaindB" 
-                @change="({ type, target }) => { clearAllImports(); setPEQGain(activeChannels[chanIndex], mso.peq?.currentpeqslot, target.value) }" 
                 min="-20" 
                 max="20" 
-                step=".1"
+                step=".1" 
+                @change="({ type, target }) => { clearAllImports(); setPEQGain(activeChannels[chanIndex], mso.peq?.currentpeqslot, target.value) }"
                 @focus="setSelectedChannel(chanIndex, true)"
-              />
+              >
             </td>
             <td class="text-right">
               <input 
                 type="number" 
                 class="form-control form-control-sm text-right" 
                 :value="mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].Q" 
-                @change="({ type, target }) => { clearAllImports(); setPEQQuality(activeChannels[chanIndex], mso.peq?.currentpeqslot, target.value) }" 
                 min=".1" 
                 max="10" 
-                step=".1"
+                step=".1" 
+                @change="({ type, target }) => { clearAllImports(); setPEQQuality(activeChannels[chanIndex], mso.peq?.currentpeqslot, target.value) }"
                 @focus="setSelectedChannel(chanIndex, true)"
-              />
+              >
             </td>
             <td class="text-right">
-                <select 
-                  class="form-control form-control-sm" 
-                  @change="({ type, target }) => { clearAllImports(); setPEQFilterType(activeChannels[chanIndex], mso.peq?.currentpeqslot, target.value) }"
-                  @focus="setSelectedChannel(chanIndex, true)"
+              <select 
+                class="form-control form-control-sm" 
+                @change="({ type, target }) => { clearAllImports(); setPEQFilterType(activeChannels[chanIndex], mso.peq?.currentpeqslot, target.value) }"
+                @focus="setSelectedChannel(chanIndex, true)"
+              >
+                <option 
+                  v-for="filterType in filterTypes" 
+                  :key="filterType.value"
+                  :value="filterType.value"
+                  :selected="filterType.value === mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].FilterType"
                 >
-                  <option 
-                    v-for="filterType in filterTypes" 
-                    :key="filterType.value"
-                    :value="filterType.value"
-                    :selected="filterType.value === mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].FilterType"
-                  >
-                    {{filterType.label}}
-                  </option>
-                </select>
+                  {{ filterType.label }}
+                </option>
+              </select>
             </td>
           </tr>
         </tbody>
       </table>
 
       <!-- import/export operations for band -->
-      <h6>Manage Band {{mso.peq?.currentpeqslot + 1}}</h6>
+      <h6>Manage Band {{ mso.peq?.currentpeqslot + 1 }}</h6>
       <div class="row">
         <div class="col-auto">
           <button 
             class="btn btn-sm btn-primary mb-3"
             @click="downloadSingleBandConfig(mso.peq?.currentpeqslot)"
           >
-            Export Band {{mso.peq?.currentpeqslot + 1}} PEQ Configuration to File
+            Export Band {{ mso.peq?.currentpeqslot + 1 }} PEQ Configuration to File
           </button>
         </div>
       </div>
       <div class="row">
         <div class="col-auto">
           <div class="form-group">
-            <label for="import=file">Import Band PEQ Configuration File to Band {{mso.peq?.currentpeqslot + 1}}</label>
+            <label for="import=file">Import Band PEQ Configuration File to Band {{ mso.peq?.currentpeqslot + 1 }}</label>
             <input 
-              ref="importBandRef"
+              id="import=file"
+              ref="importBandRef" 
               type="file" 
               class="form-control-file" 
-              id="import=file" 
               @change="bandImportFileSelected"
-            />
+            >
           </div>
           <mso-importer 
             v-if="bandImportJson" 
-            @confirm-import="confirmImport(bandImportPatch)"
             :mso-import-patch="bandImportPatch"
+            @confirm-import="confirmImport(bandImportPatch)"
           />
         </div>
       </div>
@@ -152,11 +187,10 @@
             class="btn btn-sm btn-warning mb-3"
             @click="resetPEQsForBand(mso.peq?.currentpeqslot)"
           >
-            Reset Settings for Band {{mso.peq?.currentpeqslot + 1}} 
+            Reset Settings for Band {{ mso.peq?.currentpeqslot + 1 }} 
           </button>
         </div>
       </div>
-
     </template>
     
     <!-- group by channel -->
@@ -167,105 +201,120 @@
           :key="channame"
           class="nav-link" 
           :class="{'active': selectedChannel === index, 'italic': channelHasModifications(channame)}" 
-          @click="setSelectedChannel(index)" 
           href="javascript:void(0)" 
+          @click="setSelectedChannel(index)" 
         >
-          {{spkName(channame)}}
+          {{ spkName(channame) }}
         </a>
       </nav>
       <table class="table table-sm table-responsive-md table-striped">
         <thead>
           <tr>
-            <th class="text-right">Band</th>
-            <th class="text-right">Center Freq. (Hz)</th>
-            <th class="text-right">Gain (dB)</th>
-            <th class="text-right">Q</th>
-            <th class="text-right">Filter Type</th>
+            <th class="text-right">
+              Band
+            </th>
+            <th class="text-right">
+              Center Freq. (Hz)
+            </th>
+            <th class="text-right">
+              Gain (dB)
+            </th>
+            <th class="text-right">
+              Q
+            </th>
+            <th class="text-right">
+              Filter Type
+            </th>
           </tr>
         </thead>
         <tbody :class="{'hiding':!tabLoaded, 'showing':tabLoaded}">
-          <tr v-for="(slot, index) in mso.peq?.slots" :key="index">
-            <td class="text-right">{{index + 1}}</td>
+          <tr
+            v-for="(slot, index) in mso.peq?.slots"
+            :key="index"
+          >
+            <td class="text-right">
+              {{ index + 1 }}
+            </td>
             <td class="text-right">
               <input 
                 type="number" 
                 class="form-control form-control-sm text-right" 
                 :value="slot.channels[activeChannels[selectedChannel]].Fc" 
-                @change="({ type, target }) => { clearAllImports(); setPEQCenterFrequency(activeChannels[selectedChannel], index, target.value) }" 
                 min="15" 
                 max="20000" 
-                step=".1"
-              />
+                step=".1" 
+                @change="({ type, target }) => { clearAllImports(); setPEQCenterFrequency(activeChannels[selectedChannel], index, target.value) }"
+              >
             </td>
             <td class="text-right">
               <input 
                 type="number" 
                 class="form-control form-control-sm text-right" 
                 :value="slot.channels[activeChannels[selectedChannel]].gaindB" 
-                @change="({ type, target }) => { clearAllImports(); setPEQGain(activeChannels[selectedChannel], index, target.value) }" 
                 min="-20" 
                 max="20" 
-                step=".1"
-              />
+                step=".1" 
+                @change="({ type, target }) => { clearAllImports(); setPEQGain(activeChannels[selectedChannel], index, target.value) }"
+              >
             </td>
             <td class="text-right">
               <input 
                 type="number" 
                 class="form-control form-control-sm text-right" 
                 :value="slot.channels[activeChannels[selectedChannel]].Q" 
-                @change="({ type, target }) => { clearAllImports(); setPEQQuality(activeChannels[selectedChannel], index, target.value) }" 
                 min=".1" 
                 max="10" 
-                step=".1"
-              />
+                step=".1" 
+                @change="({ type, target }) => { clearAllImports(); setPEQQuality(activeChannels[selectedChannel], index, target.value) }"
+              >
             </td>
             <td class="text-right">
-                <select 
-                  class="form-control form-control-sm" 
-                  @change="({ type, target }) => { clearAllImports(); setPEQFilterType(activeChannels[selectedChannel], index, target.value) }"
+              <select 
+                class="form-control form-control-sm" 
+                @change="({ type, target }) => { clearAllImports(); setPEQFilterType(activeChannels[selectedChannel], index, target.value) }"
+              >
+                <option 
+                  v-for="filterType in filterTypes" 
+                  :key="filterType.value"
+                  :value="filterType.value"
+                  :selected="filterType.value === slot.channels[activeChannels[selectedChannel]].FilterType"
                 >
-                  <option 
-                    v-for="filterType in filterTypes" 
-                    :key="filterType.value"
-                    :value="filterType.value"
-                    :selected="filterType.value === slot.channels[activeChannels[selectedChannel]].FilterType"
-                  >
-                    {{filterType.label}}
-                  </option>
-                </select>
+                  {{ filterType.label }}
+                </option>
+              </select>
             </td>
           </tr>
         </tbody>
       </table>
 
       <!-- import/export operations for channel -->
-      <h6>Manage Channel {{spkName(activeChannels[selectedChannel])}}</h6>
+      <h6>Manage Channel {{ spkName(activeChannels[selectedChannel]) }}</h6>
       <div class="row">
         <div class="col-auto">
-        <button 
-          class="btn btn-sm btn-primary mb-3"
-          @click="downloadSingleChannelConfig(activeChannels[selectedChannel])"
-        >
-          Export {{spkName(activeChannels[selectedChannel])}} PEQ Configuration to File
-        </button>
+          <button 
+            class="btn btn-sm btn-primary mb-3"
+            @click="downloadSingleChannelConfig(activeChannels[selectedChannel])"
+          >
+            Export {{ spkName(activeChannels[selectedChannel]) }} PEQ Configuration to File
+          </button>
         </div>
       </div>
       <div class="row">
         <div class="col-auto">
           <div class="form-group">
-            <label for="import=file">Import Channel PEQ Configuration File to Channel {{spkName(activeChannels[selectedChannel])}}</label>
+            <label for="import=file">Import Channel PEQ Configuration File to Channel {{ spkName(activeChannels[selectedChannel]) }}</label>
             <input 
-              ref="importChannelRef"
+              id="import=file"
+              ref="importChannelRef" 
               type="file" 
               class="form-control-file" 
-              id="import=file" 
               @change="channelImportFileSelected"
-            />
+            >
           </div>
           <mso-importer 
             v-if="channelImportJson" 
-            @confirm-import="confirmImport(channelImportPatch)"
             :mso-import-patch="channelImportPatch"
+            @confirm-import="confirmImport(channelImportPatch)"
           />
         </div>
       </div>
@@ -276,7 +325,7 @@
             class="btn btn-sm btn-warning mb-3"
             @click="resetPEQsForChannel(activeChannels[selectedChannel])"
           >
-            Reset Settings for Channel {{spkName(activeChannels[selectedChannel])}}
+            Reset Settings for Channel {{ spkName(activeChannels[selectedChannel]) }}
           </button>
         </div>
       </div>
@@ -298,17 +347,17 @@
         <div class="form-group">
           <label for="import=file">Import Full Configuration File</label>
           <input 
-            ref="importFullRef"
+            id="import=file"
+            ref="importFullRef" 
             type="file" 
             class="form-control-file" 
-            id="import=file" 
             @change="fullImportFileSelected"
-          />
+          >
         </div>
         <mso-importer 
           v-if="fullImportJson" 
-          @confirm-import="confirmImport(fullImportPatch)"
           :mso-import-patch="fullImportPatch"
+          @confirm-import="confirmImport(fullImportPatch)"
         />
       </div>
     </div>
@@ -343,6 +392,13 @@
 
   export default {
     name: 'Eq',
+    components: {
+      MultiStateButtonGroup,
+      TwoStateButton,
+      MsoImporter,
+      PeqChart,
+      DismissableAlert
+    },
     setup() {
 
       const { importJson: channelImportJson, importJsonFileToSelected: channelImportJsonFileToSelected } = useImportExport();
@@ -554,13 +610,6 @@
         resetPEQsForBand, resetPEQsForChannel, resetAllPEQs,
         eqGroupBy, setGroupBy
       };
-    },
-    components: {
-      MultiStateButtonGroup,
-      TwoStateButton,
-      MsoImporter,
-      PeqChart,
-      DismissableAlert
     }
   }
 </script>

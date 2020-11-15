@@ -3,15 +3,23 @@
     <div class="row mb-3">
       <div class="col">
         <h5>Signal Generator</h5>
-        <dismissable-alert v-if="mso.upmix.select !== 'off'" alertKey="sgen-direct" class="alert-warning">
+        <dismissable-alert
+          v-if="mso.upmix.select !== 'off'"
+          alert-key="sgen-direct"
+          class="alert-warning"
+        >
           <p>Upmix should be set to Direct for the signal generator to function correctly.</p>
-            <two-state-button 
-              button-text="Direct"
-              :state-on="mso.upmix.select === 'off'"
-              @click="setUpmix('off')"
-            />
+          <two-state-button 
+            button-text="Direct"
+            :state-on="mso.upmix.select === 'off'"
+            @click="setUpmix('off')"
+          />
         </dismissable-alert>
-        <two-state-button v-bind:button-text="`Signal Generator: ${mso.sgen?.sgensw}`" v-bind:state-on="mso.sgen?.sgensw === 'on'" @click="toggleSignalGenerator()" />
+        <two-state-button
+          :button-text="`Signal Generator: ${mso.sgen?.sgensw}`"
+          :state-on="mso.sgen?.sgensw === 'on'"
+          @click="toggleSignalGenerator()"
+        />
       </div>
     </div>
     <div class="row">
@@ -25,15 +33,26 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="signal in signalOptions" :key="signal.value">
+            <tr
+              v-for="signal in signalOptions"
+              :key="signal.value"
+            >
               <td>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="signal" :id="`radio-${signal.value}`" :value="signal.value" :checked="mso.sgen?.signalType === signal.value" @click="setSignalGeneratorSignalType(signal.value)">
+                  <input
+                    :id="`radio-${signal.value}`"
+                    class="form-check-input"
+                    type="radio"
+                    name="signal"
+                    :value="signal.value"
+                    :checked="mso.sgen?.signalType === signal.value"
+                    @click="setSignalGeneratorSignalType(signal.value)"
+                  >
                   <label 
                     class="form-check-label" 
                     :for="`radio-${signal.value}`"
                   >
-                    {{signal.label}}
+                    {{ signal.label }}
                   </label>
                 </div>
               </td>
@@ -42,7 +61,10 @@
         </table>
         <div v-if="mso.sgen?.signalType === 'sine'">
           <div class="form-group">
-            <label for="inputEmail3" class="col-form-label col-form-label-sm">Frequency</label>
+            <label
+              for="inputEmail3"
+              class="col-form-label col-form-label-sm"
+            >Frequency</label>
             <div class="input-group input-group-sm numeric-input">
               <input 
                 type="number" 
@@ -50,17 +72,24 @@
                 aria-label="Frequency" 
                 aria-describedby="basic-addon2" 
                 :value="mso.sgen?.sinehz" 
-                @change="({ type, target }) => setSineFrequency(target.value)" 
                 min="10" 
-                max="20000"
-                step="10">
+                max="20000" 
+                step="10"
+                @change="({ type, target }) => setSineFrequency(target.value)"
+              >
               <div class="input-group-append">
-                <span class="input-group-text" id="basic-addon2">Hz</span>
+                <span
+                  id="basic-addon2"
+                  class="input-group-text"
+                >Hz</span>
               </div>
             </div>
           </div>
           <div class="form-group">
-            <label for="inputEmail3" class="col-form-label col-form-label-sm">Amplitude</label>
+            <label
+              for="inputEmail3"
+              class="col-form-label col-form-label-sm"
+            >Amplitude</label>
             <div class="input-group input-group-sm numeric-input">
               <input 
                 type="number" 
@@ -68,12 +97,16 @@
                 aria-label="Amplitude" 
                 aria-describedby="basic-addon2" 
                 :value="mso.sgen?.sinedb" 
-                @change="({ type, target }) => setSineAmplitude(target.value)" 
                 min="-140" 
-                max="0"
-                step="5">
+                max="0" 
+                step="5"
+                @change="({ type, target }) => setSineAmplitude(target.value)"
+              >
               <div class="input-group-append">
-                <span class="input-group-text" id="basic-addon2">dBFS (peak)</span>
+                <span
+                  id="basic-addon2"
+                  class="input-group-text"
+                >dBFS (peak)</span>
               </div>
             </div>
           </div>
@@ -84,28 +117,39 @@
           <thead>
             <tr>
               <th>
-                Channel Select {{mso.sgen?.signalType === 'both' ? ' - for left input' : ''}}
+                Channel Select {{ mso.sgen?.signalType === 'both' ? ' - for left input' : '' }}
               </th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="channame in visibleChannels" :key="channame">
+            <tr
+              v-for="channame in visibleChannels"
+              :key="channame"
+            >
               <td>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="channel" :id="`radio-${channame}`" :value="channame" :checked="mso.sgen?.select === channame" @click="setSignalGeneratorChannel(channame)">
+                  <input
+                    :id="`radio-${channame}`"
+                    class="form-check-input"
+                    type="radio"
+                    name="channel"
+                    :value="channame"
+                    :checked="mso.sgen?.select === channame"
+                    @click="setSignalGeneratorChannel(channame)"
+                  >
                   <label 
                     class="form-check-label" 
                     :for="`radio-${channame}`"
                   >
-                    {{translatedSpkName(channame)}} 
+                    {{ translatedSpkName(channame) }} 
                     <font-awesome-icon 
+                      v-if="visibleChannels.length !== activeChannels.length && channame === 'sub1'"
+                      :id="`tooltip-container-left-${channame}`"
                       v-tooltip="{
                         enabled: !(visibleChannels.length !== activeChannels.length && channame === 'sub1'),
                         message: 'Individual subwoofer channels are unavailable when Dirac Bass Control is enabled.'
                       }"
-                      :id="`tooltip-container-left-${channame}`"
                       :icon="['fas', 'question-circle']"
-                      v-if="visibleChannels.length !== activeChannels.length && channame === 'sub1'"
                     />
                   </label>
                 </div>
@@ -114,7 +158,10 @@
           </tbody>
         </table>
       </div>
-      <div class="col-auto" v-if="mso.sgen?.signalType === 'both'">
+      <div
+        v-if="mso.sgen?.signalType === 'both'"
+        class="col-auto"
+      >
         <table class="table table-sm table-striped table-responsive">
           <thead>
             <tr>
@@ -124,30 +171,34 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="channame in visibleChannels" :key="channame">
+            <tr
+              v-for="channame in visibleChannels"
+              :key="channame"
+            >
               <td>
                 <div class="form-check">
                   <input 
+                    :id="`radio2-${channame}`" 
                     class="form-check-input" 
                     type="radio" 
                     name="channel2" 
-                    :id="`radio2-${channame}`" 
                     :value="channame" 
                     :checked="mso.sgen?.select2 === channame" 
-                    @click="setSignalGeneratorChannel2(channame)">
+                    @click="setSignalGeneratorChannel2(channame)"
+                  >
                   <label 
                     class="form-check-label" 
                     :for="`radio2-${channame}`"
                   >
-                    {{translatedSpkName(channame)}} 
+                    {{ translatedSpkName(channame) }} 
                     <font-awesome-icon 
+                      v-if="visibleChannels.length !== activeChannels.length && channame === 'sub1'"
+                      :id="`tooltip-container-right-${channame}`"
                       v-tooltip="{
                         enabled: !(visibleChannels.length !== activeChannels.length && channame === 'sub1'),
                         message: 'Individual subwoofer channels are unavailable when Dirac Bass Control is enabled.'
                       }"
-                      :id="`tooltip-container-right-${channame}`"
                       :icon="['fas', 'question-circle']"
-                      v-if="visibleChannels.length !== activeChannels.length && channame === 'sub1'"
                     />
                   </label>
                 </div>
@@ -175,6 +226,14 @@
 
   export default {
     name: 'SignalGenerator',
+    components: {
+      TwoStateButton,
+      MultiStateButtonGroup,
+      DismissableAlert
+    },
+    directives: {
+      Tooltip
+    },
     setup() {
 
       const { mso, toggleSignalGenerator, setSignalGeneratorChannel, setSignalGeneratorChannel2, 
@@ -227,14 +286,6 @@
         activeChannels, visibleChannels, translatedSpkName, signalOptions, setSignalGeneratorOff, setSignalGeneratorOn, showCrossoverControls,
         setSineFrequency, setSineAmplitude, setUpmix
       };
-    },
-    components: {
-      TwoStateButton,
-      MultiStateButtonGroup,
-      DismissableAlert
-    },
-    directives: {
-      Tooltip
     }
   }
 </script>

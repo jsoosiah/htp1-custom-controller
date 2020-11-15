@@ -5,91 +5,103 @@
       <div class="col">
         <h6>Homepage Status Display</h6>
         <div class="mb-3">
-        <table class="table table-sm table-striped table-responsive select">
-          <thead>
-            <tr>
-              <th>
-                Top Left Label (Desktop Mode)
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="topLabel in topLabels" :key="`left-${topLabel.code}`">
-              <td>
-                <div class="form-check">
-                  <input 
-                    class="form-check-input" 
-                    type="radio" 
-                    name="left-label" 
-                    :id="`radio-left-${topLabel.code}`" 
-                    :value="topLabel.code" 
-                    :checked="mso.personalize?.homeLabels?.topLeft === topLabel.code" 
-                    @click="setTopLeftLabel(topLabel.code)"
-                  >
-                  <label 
-                    class="form-check-label" 
-                    :for="`radio-left-${topLabel.code}`"
-                  >
-                    {{topLabel.label}}
-                  </label>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <table class="table table-sm table-striped table-responsive select">
-          <thead>
-            <tr>
-              <th>
-                Top Right Label (Desktop Mode)
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="topLabel in topLabels" :key="`right-${topLabel.code}`">
-              <td>
-                <div class="form-check">
-                  <input 
-                    class="form-check-input" 
-                    type="radio" 
-                    name="right-label" 
-                    :id="`radio-right-${topLabel.code}`" 
-                    :value="topLabel.code" 
-                    :checked="mso.personalize?.homeLabels?.topRight === topLabel.code" 
-                    @click="setTopRightLabel(topLabel.code)"
-                  >
-                  <label 
-                    class="form-check-label" 
-                    :for="`radio-right-${topLabel.code}`"
-                  >
-                    {{topLabel.label}}
-                  </label>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+          <table class="table table-sm table-striped table-responsive select">
+            <thead>
+              <tr>
+                <th>
+                  Top Left Label (Desktop Mode)
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="topLabel in topLabels"
+                :key="`left-${topLabel.code}`"
+              >
+                <td>
+                  <div class="form-check">
+                    <input 
+                      :id="`radio-left-${topLabel.code}`" 
+                      class="form-check-input" 
+                      type="radio" 
+                      name="left-label" 
+                      :value="topLabel.code" 
+                      :checked="mso.personalize?.homeLabels?.topLeft === topLabel.code" 
+                      @click="setTopLeftLabel(topLabel.code)"
+                    >
+                    <label 
+                      class="form-check-label" 
+                      :for="`radio-left-${topLabel.code}`"
+                    >
+                      {{ topLabel.label }}
+                    </label>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <table class="table table-sm table-striped table-responsive select">
+            <thead>
+              <tr>
+                <th>
+                  Top Right Label (Desktop Mode)
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="topLabel in topLabels"
+                :key="`right-${topLabel.code}`"
+              >
+                <td>
+                  <div class="form-check">
+                    <input 
+                      :id="`radio-right-${topLabel.code}`" 
+                      class="form-check-input" 
+                      type="radio" 
+                      name="right-label" 
+                      :value="topLabel.code" 
+                      :checked="mso.personalize?.homeLabels?.topRight === topLabel.code" 
+                      @click="setTopRightLabel(topLabel.code)"
+                    >
+                    <label 
+                      class="form-check-label" 
+                      :for="`radio-right-${topLabel.code}`"
+                    >
+                      {{ topLabel.label }}
+                    </label>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
           <div class="custom-control custom-switch">
             <input 
+              id="display-video" 
               type="checkbox" 
               class="custom-control-input" 
-              id="display-video" 
               :checked="mso.stat?.displayVideoStat" 
               @click="toggleVideoStatusHomePage()"
             >
-            <label class="custom-control-label" for="display-video">
+            <label
+              class="custom-control-label"
+              for="display-video"
+            >
               Display Video Status on Homepage
             </label>
           </div>
           <div class="custom-control custom-switch">
             <input 
+              id="display-audio" 
               type="checkbox" 
               class="custom-control-input" 
-              id="display-audio" 
               :checked="mso.stat?.displayAudioStat" 
               @click="toggleExtendedAudioStatus()"
             >
-            <label class="custom-control-label" for="display-audio">
+            <label
+              class="custom-control-label"
+              for="display-audio"
+            >
               Display Audio Sample Rate on Homepage
             </label>
           </div>
@@ -106,13 +118,16 @@
               <td>
                 <div class="custom-control custom-switch">
                   <input 
+                    :id="'shortcut-'+'home'" 
                     type="checkbox" 
                     class="custom-control-input" 
-                    :id="'shortcut-'+'home'" 
                     :checked="mso.personalize?.shortcuts.home" 
                     @click="toggleShortcut('home')"
                   >
-                  <label class="custom-control-label" :for="'shortcut-'+'home'">Home</label>
+                  <label
+                    class="custom-control-label"
+                    :for="'shortcut-'+'home'"
+                  >Home</label>
                 </div>
               </td>
             </tr>
@@ -123,13 +138,16 @@
               <td>
                 <div class="custom-control custom-switch">
                   <input 
+                    :id="'shortcut-'+route.path" 
                     type="checkbox" 
                     class="custom-control-input" 
-                    :id="'shortcut-'+route.path" 
                     :checked="mso.personalize?.shortcuts[route.path]" 
                     @click="toggleShortcut(route.path)"
                   >
-                  <label class="custom-control-label" :for="'shortcut-'+route.path">{{ route.meta.label }}</label>
+                  <label
+                    class="custom-control-label"
+                    :for="'shortcut-'+route.path"
+                  >{{ route.meta.label }}</label>
                 </div>
               </td>
             </tr>
@@ -137,13 +155,16 @@
               <td>
                 <div class="custom-control custom-switch">
                   <input 
+                    :id="'shortcut-'+'power'" 
                     type="checkbox" 
                     class="custom-control-input" 
-                    :id="'shortcut-'+'power'" 
                     :checked="mso.personalize?.shortcuts.power" 
                     @click="toggleShortcut('power')"
                   >
-                  <label class="custom-control-label" :for="'shortcut-'+'power'">Power Off</label>
+                  <label
+                    class="custom-control-label"
+                    :for="'shortcut-'+'power'"
+                  >Power Off</label>
                 </div>
               </td>
             </tr>
@@ -165,13 +186,16 @@
                 <td>
                   <div class="custom-control custom-switch">
                     <input 
+                      :id="'powerbutton-'+powerButton.code" 
                       type="checkbox" 
                       class="custom-control-input" 
-                      :id="'powerbutton-'+powerButton.code" 
                       :checked="mso.personalize?.powerDialogButtons[powerButton.code]" 
                       @click="toggleShowPowerDialogButton(powerButton.code)"
                     >
-                    <label class="custom-control-label" :for="'powerbutton-'+powerButton.code">{{ powerButton.label }}</label>
+                    <label
+                      class="custom-control-label"
+                      :for="'powerbutton-'+powerButton.code"
+                    >{{ powerButton.label }}</label>
                   </div>
                 </td>
               </tr>
@@ -193,13 +217,16 @@
               <td>
                 <div class="custom-control custom-switch">
                   <input 
+                    :id="'showmode-'+mode.code" 
                     type="checkbox" 
                     class="custom-control-input" 
-                    :id="'showmode-'+mode.code" 
                     :checked="mso.personalize?.modes[mode.code]" 
                     @click="toggleShowMode(mode.code)"
                   >
-                  <label class="custom-control-label" :for="'showmode-'+mode.code">{{ mode.label }}</label>
+                  <label
+                    class="custom-control-label"
+                    :for="'showmode-'+mode.code"
+                  >{{ mode.label }}</label>
                 </div>
               </td>
             </tr>
@@ -221,13 +248,16 @@
               <td>
                 <div class="custom-control custom-switch">
                   <input 
+                    :id="'showdiracslot-'+key" 
                     type="checkbox" 
                     class="custom-control-input" 
-                    :id="'showdiracslot-'+key" 
                     :checked="mso.personalize?.diracSlots[key]" 
                     @click="toggleShowDiracSlot(key)"
                   >
-                  <label class="custom-control-label" :for="'showdiracslot-'+key">{{ slot.name }}</label>
+                  <label
+                    class="custom-control-label"
+                    :for="'showdiracslot-'+key"
+                  >{{ slot.name }}</label>
                 </div>
               </td>
             </tr>
@@ -235,7 +265,10 @@
         </table>
 
         <h6>Homepage Macros</h6>
-        <table class="table table-sm table-responsive table-striped" v-if="mso.svronly">
+        <table
+          v-if="mso.svronly"
+          class="table table-sm table-responsive table-striped"
+        >
           <thead>
             <tr>
               <th>Show Button</th>
@@ -249,13 +282,16 @@
               <td>
                 <div class="custom-control custom-switch">
                   <input 
+                    :id="'showmacro-'+key" 
                     type="checkbox" 
                     class="custom-control-input" 
-                    :id="'showmacro-'+key" 
                     :checked="mso.personalize?.macros[key]" 
                     @click="toggleShowMacro(key)"
                   >
-                  <label class="custom-control-label" :for="'showmacro-'+key">{{ mso.svronly.macroNames[key] }}</label>
+                  <label
+                    class="custom-control-label"
+                    :for="'showmacro-'+key"
+                  >{{ mso.svronly.macroNames[key] }}</label>
                 </div>
               </td>
             </tr>
@@ -269,7 +305,6 @@
         >
           Restore All Dismissed Notices
         </button>
-
       </div>
       <div class="col-auto">
         <h6>Preview</h6>
@@ -295,6 +330,10 @@
 
   export default {
     name: 'Inputs',
+    components: {
+      Home,
+      TwoStateButton,
+    },
     setup() {
 
       const modes = [
@@ -324,10 +363,6 @@
       });
 
       return { ...useMso(), ...useInputs(), modes, customizableSettingsRoutes, topLabels, powerButtons };
-    },
-    components: {
-      Home,
-      TwoStateButton,
     }
   }
 </script>

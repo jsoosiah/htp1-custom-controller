@@ -2,16 +2,21 @@
   <div class="custom-btn-group">
     <button 
       class="btn btn-sm" 
-      :class="buttonClasses" @click="clicked"
+      :class="buttonClasses"
       :style="{'min-width': props.minWidth}"
+      @click="clicked"
     >
-      {{props.buttonText}}
+      {{ props.buttonText }}
     </button>
     <transition name="mfade">
-      <ol class="carousel-indicators" v-if="props.showStateIndicators" v-show="recentlyInteracted">
-        <li :class="{'active':props.states[props.stateValue] === 0}"></li>
-        <li :class="{'active':props.states[props.stateValue] === 2}"></li>
-        <li :class="{'active-bright':props.states[props.stateValue] === 1}"></li>
+      <ol
+        v-if="props.showStateIndicators"
+        v-show="recentlyInteracted"
+        class="carousel-indicators"
+      >
+        <li :class="{'active':props.states[props.stateValue] === 0}" />
+        <li :class="{'active':props.states[props.stateValue] === 2}" />
+        <li :class="{'active-bright':props.states[props.stateValue] === 1}" />
       </ol>
     </transition>
   </div>
@@ -52,6 +57,7 @@
         default: '6rem',
       }
     },
+    emits: ['btn-click'],
     setup(props, { emit }) {
 
       const recentlyInteracted = ref(false);
@@ -86,8 +92,7 @@
       }
 
       return { props, buttonClasses, clicked, recentlyInteracted };
-    },
-    emits: ['btn-click']
+    }
   }
 </script>
 

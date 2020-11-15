@@ -8,8 +8,14 @@
     />
 
     <div class="row mt-3">
-      <div class="col" v-show="!mso.eq?.tc">
-        <dismissable-alert alertKey="tone-control-off" class="alert-warning">
+      <div
+        v-show="!mso.eq?.tc"
+        class="col"
+      >
+        <dismissable-alert
+          alert-key="tone-control-off"
+          class="alert-warning"
+        >
           Tone controls are currently turned off. The following tone control settings may be modified, but they will not have any effect until tone controls are turned on.
         </dismissable-alert>
       </div>
@@ -18,48 +24,108 @@
     <div class="container">
       <div class="row">
         <div class="col-lg">
-            <div class="form-group">
-              <label for="inputEmail3" class="col-form-label col-form-label-sm ">Bass Corner Frequency</label>
-              <div class="input-group input-group-sm numeric-input">
-                <input type="number" class="form-control" aria-label="Minimum volume" aria-describedby="basic-addon2" :value="mso.eq?.bass.freq" @change="({ type, target }) => setBassCornerFrequency(target.value)" min="40" max ="500">
-                <div class="input-group-append">
-                  <span class="input-group-text" id="basic-addon2">Hz</span>
-                </div>
+          <div class="form-group">
+            <label
+              for="inputEmail3"
+              class="col-form-label col-form-label-sm "
+            >Bass Corner Frequency</label>
+            <div class="input-group input-group-sm numeric-input">
+              <input
+                type="number"
+                class="form-control"
+                aria-label="Minimum volume"
+                aria-describedby="basic-addon2"
+                :value="mso.eq?.bass.freq"
+                min="40"
+                max="500"
+                @change="({ type, target }) => setBassCornerFrequency(target.value)"
+              >
+              <div class="input-group-append">
+                <span
+                  id="basic-addon2"
+                  class="input-group-text"
+                >Hz</span>
               </div>
             </div>
+          </div>
         </div>
         <div class="col-lg">
-            <div class="form-group">
-              <label for="inputEmail3" class="col-form-label col-form-label-sm ">Treble Corner Frequency</label>
-              <div class="input-group input-group-sm numeric-input">
-                <input type="number" class="form-control" aria-label="Minimum volume" aria-describedby="basic-addon2" :value="mso.eq?.treble.freq" @change="({ type, target }) => setTrebleCornerFrequency(target.value)" min="501" max ="8000">
-                <div class="input-group-append">
-                  <span class="input-group-text" id="basic-addon2">Hz</span>
-                </div>
+          <div class="form-group">
+            <label
+              for="inputEmail3"
+              class="col-form-label col-form-label-sm "
+            >Treble Corner Frequency</label>
+            <div class="input-group input-group-sm numeric-input">
+              <input
+                type="number"
+                class="form-control"
+                aria-label="Minimum volume"
+                aria-describedby="basic-addon2"
+                :value="mso.eq?.treble.freq"
+                min="501"
+                max="8000"
+                @change="({ type, target }) => setTrebleCornerFrequency(target.value)"
+              >
+              <div class="input-group-append">
+                <span
+                  id="basic-addon2"
+                  class="input-group-text"
+                >Hz</span>
               </div>
             </div>
+          </div>
         </div>
         <div class="col-lg">
-            <div class="form-group">
-              <label for="inputEmail3" class="col-form-label col-form-label-sm ">Bass Boost/Cut Level</label>
-              <div class="input-group input-group-sm numeric-input">
-                <input type="number" class="form-control" aria-label="Minimum volume" aria-describedby="basic-addon2" :value="mso.eq?.bass.level" @change="({ type, target }) => setBassBoostCutLevel(target.value)" min="-12" max="12">
-                <div class="input-group-append">
-                  <span class="input-group-text" id="basic-addon2">dB</span>
-                </div>
+          <div class="form-group">
+            <label
+              for="inputEmail3"
+              class="col-form-label col-form-label-sm "
+            >Bass Boost/Cut Level</label>
+            <div class="input-group input-group-sm numeric-input">
+              <input
+                type="number"
+                class="form-control"
+                aria-label="Minimum volume"
+                aria-describedby="basic-addon2"
+                :value="mso.eq?.bass.level"
+                min="-12"
+                max="12"
+                @change="({ type, target }) => setBassBoostCutLevel(target.value)"
+              >
+              <div class="input-group-append">
+                <span
+                  id="basic-addon2"
+                  class="input-group-text"
+                >dB</span>
               </div>
             </div>
+          </div>
         </div>
         <div class="col-lg">
-            <div class="form-group">
-              <label for="inputPassword3" class="col-form-label col-form-label-sm ">Treble Boost/Cut Level</label>
-              <div class="input-group input-group-sm numeric-input">
-                <input type="number" class="form-control" aria-label="Minimum volume" aria-describedby="basic-addon2" :value="mso.eq?.treble.level" @change="({ type, target }) => setTrebleBoostCutLevel(target.value)" min="-12" max="12">
-                <div class="input-group-append">
-                  <span class="input-group-text" id="basic-addon2">dB</span>
-                </div>
+          <div class="form-group">
+            <label
+              for="inputPassword3"
+              class="col-form-label col-form-label-sm "
+            >Treble Boost/Cut Level</label>
+            <div class="input-group input-group-sm numeric-input">
+              <input
+                type="number"
+                class="form-control"
+                aria-label="Minimum volume"
+                aria-describedby="basic-addon2"
+                :value="mso.eq?.treble.level"
+                min="-12"
+                max="12"
+                @change="({ type, target }) => setTrebleBoostCutLevel(target.value)"
+              >
+              <div class="input-group-append">
+                <span
+                  id="basic-addon2"
+                  class="input-group-text"
+                >dB</span>
               </div>
             </div>
+          </div>
         </div>
       </div>
     </div>
@@ -73,6 +139,10 @@
 
   export default {
     name: 'ToneControl',
+    components: {
+      TwoStateButton,
+      DismissableAlert,
+    },
     setup() {
 
       const loudnessOptions = [
@@ -83,10 +153,6 @@
       return {
         ...useMso(), loudnessOptions
       };
-    },
-    components: {
-      TwoStateButton,
-      DismissableAlert,
     },
   }
 </script>

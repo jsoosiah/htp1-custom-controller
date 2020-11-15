@@ -1,5 +1,5 @@
 import { ref, watch, computed } from 'vue';
-import { applyPatch, deepClone, compare } from 'fast-json-patch/index.mjs';
+import { applyPatch } from 'fast-json-patch/index.mjs';
 import { debounce, get, isEqual } from 'lodash-es';
 
 import useWebSocket from './useWebSocket.js';
@@ -62,7 +62,7 @@ const loading = ref(false);
 // it will be stored here and a notice will be shown
 const currentlyRecordingSlot = ref(null);
 
-const { data, state, send, close } = useWebSocket();
+const { data, state, send } = useWebSocket();
 
 const { getActiveChannels, reverseBmg } = useSpeakerGroups();
 

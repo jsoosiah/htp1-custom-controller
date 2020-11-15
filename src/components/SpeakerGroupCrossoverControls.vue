@@ -1,54 +1,108 @@
 <template>
   <table class="table table-sm table-striped table-responsive-sm">
-    <tbody v-for="speakerGroup in props.speakerGroups" :key="speakerGroup.header">
-      <tr></tr>
+    <tbody
+      v-for="speakerGroup in props.speakerGroups"
+      :key="speakerGroup.header"
+    >
+      <tr />
       <tr>
-        <th colspan="3">{{speakerGroup.header}} <small class="text-muted" v-if="speakerGroup.subtitle">{{speakerGroup.subtitle}}</small></th>
+        <th colspan="3">
+          {{ speakerGroup.header }} <small
+            v-if="speakerGroup.subtitle"
+            class="text-muted"
+          >{{ speakerGroup.subtitle }}</small>
+        </th>
       </tr>
-      <tr v-for="spk in speakerGroup.speakers" :key="spk.code" :class="{'table-warning': mso.cal?.speakerConfigMismatch && diracMismatchedChannelGroups.includes(spk.code)}">
+      <tr
+        v-for="spk in speakerGroup.speakers"
+        :key="spk.code"
+        :class="{'table-warning': mso.cal?.speakerConfigMismatch && diracMismatchedChannelGroups.includes(spk.code)}"
+      >
         <td>
           <div class="custom-control custom-switch">
             <input 
+              :id="'check-'+spk.code" 
               type="checkbox" 
               class="custom-control-input" 
-              :id="'check-'+spk.code" 
               :checked="mso.speakers?.groups[spk.code]?.present" 
-              @change="toggleSpeakerGroup(spk.code)"
               :disabled="!allSpeakerToggles[spk.code].enabled"
-            />
-            <label 
-              :class="{'custom-control-label':spk.code !== 'lr', 'hidden-switch-label': spk.code === 'lr'}" 
-              :for="'check-'+spk.code"
-              :id="'tooltip-container-' + spk.code"
-              v-tooltip="allSpeakerToggles[spk.code]"
+              @change="toggleSpeakerGroup(spk.code)"
             >
-              {{spk.label}} 
-            <font-awesome-icon 
-              :icon="['fas', 'question-circle']"
-              v-if="!allSpeakerToggles[spk.code].enabled && allSpeakerToggles[spk.code].message"
-            /></label>
+            <label 
+              :id="'tooltip-container-' + spk.code" 
+              v-tooltip="allSpeakerToggles[spk.code]"
+              :class="{'custom-control-label':spk.code !== 'lr', 'hidden-switch-label': spk.code === 'lr'}"
+              :for="'check-'+spk.code"
+            >
+              {{ spk.label }} 
+              <font-awesome-icon 
+                v-if="!allSpeakerToggles[spk.code].enabled && allSpeakerToggles[spk.code].message"
+                :icon="['fas', 'question-circle']"
+              /></label>
           </div>
         </td>
         <td class="text-right">
           <template v-if="showCenterFreqControlsForSpeaker(spk.code)">
-            <label class="sr-only" :for="'xo-'+spk.code">Crossover Frequency Center (Hz)</label>
+            <label
+              class="sr-only"
+              :for="'xo-'+spk.code"
+            >Crossover Frequency Center (Hz)</label>
             <div class="input-group input-group-sm numeric-input float-right">
               <div class="input-group-prepend">
-                <div class="input-group-text">fc</div>
+                <div class="input-group-text">
+                  fc
+                </div>
               </div>
-              <input type="number" step="10" min="40" max="200" class="form-control" :id="'xo-'+spk.code" :value="mso.speakers?.groups[spk.code]?.fc" @change="({ type, target }) => setCenterFreq(spk.code, target.value)" >
+              <input
+                :id="'xo-'+spk.code"
+                type="number"
+                step="10"
+                min="40"
+                max="200"
+                class="form-control"
+                :value="mso.speakers?.groups[spk.code]?.fc"
+                @change="({ type, target }) => setCenterFreq(spk.code, target.value)"
+              >
               <div class="input-group-append">
-                <div class="input-group-text">Hz</div>
+                <div class="input-group-text">
+                  Hz
+                </div>
               </div>
             </div>
           </template>
         </td>
         <td class="text-right">
           <template v-if="showCrossoverControlsForSpeaker(spk.code)">
-            <div class="btn-group btn-group-sm" role="group" aria-label="Speaker Size">
-              <button v-if="showDolby(spk.code)" @click="setSpeakerSize(spk.code, 'd')" type="button" class="btn" :class="{'btn-primary': mso.speakers?.groups[spk.code].size === 'd', 'btn-secondary': mso.speakers?.groups[spk.code].size !== 'd'}">Dolby</button>
-              <button @click="setSpeakerSize(spk.code, 's')" type="button" class="btn" :class="{'btn-primary': mso.speakers?.groups[spk.code].size === 's', 'btn-secondary': mso.speakers?.groups[spk.code].size !== 's'}">Small</button>
-              <button @click="setSpeakerSize(spk.code, 'l')" type="button" class="btn" :class="{'btn-primary': mso.speakers?.groups[spk.code].size === 'l', 'btn-secondary': mso.speakers?.groups[spk.code].size !== 'l'}">Large</button>
+            <div
+              class="btn-group btn-group-sm"
+              role="group"
+              aria-label="Speaker Size"
+            >
+              <button
+                v-if="showDolby(spk.code)"
+                type="button"
+                class="btn"
+                :class="{'btn-primary': mso.speakers?.groups[spk.code].size === 'd', 'btn-secondary': mso.speakers?.groups[spk.code].size !== 'd'}"
+                @click="setSpeakerSize(spk.code, 'd')"
+              >
+                Dolby
+              </button>
+              <button
+                type="button"
+                class="btn"
+                :class="{'btn-primary': mso.speakers?.groups[spk.code].size === 's', 'btn-secondary': mso.speakers?.groups[spk.code].size !== 's'}"
+                @click="setSpeakerSize(spk.code, 's')"
+              >
+                Small
+              </button>
+              <button
+                type="button"
+                class="btn"
+                :class="{'btn-primary': mso.speakers?.groups[spk.code].size === 'l', 'btn-secondary': mso.speakers?.groups[spk.code].size !== 'l'}"
+                @click="setSpeakerSize(spk.code, 'l')"
+              >
+                Large
+              </button>
             </div>
           </template>
         </td>
@@ -66,6 +120,9 @@
 
   export default {
     'name': 'SpeakerGroupCrossoverControls',
+    directives: {
+      Tooltip
+    },
     'props': {
       speakerGroups: Array
     },
@@ -198,9 +255,6 @@
         showCrossoverControlsForSpeaker, showCenterFreqControlsForSpeaker, showDolby,
         props, allSpeakerToggles, diracMismatchedChannelGroups
       };
-    },
-    directives: {
-      Tooltip
     }
   }
 </script>

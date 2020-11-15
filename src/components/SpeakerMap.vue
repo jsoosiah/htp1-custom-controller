@@ -1,13 +1,18 @@
 <template>
   <div style="position:relative">
-    <img class="speaker-mapping" :class="{'speaker-mapping-enlarged': enlarged, 'speaker-mapping-standard': !enlarged}" @click="toggleEnlarged()" :src="require('@/assets/HTP-1_back.webp')" />
+    <img
+      class="speaker-mapping"
+      :class="{'speaker-mapping-enlarged': enlarged, 'speaker-mapping-standard': !enlarged}"
+      :src="require('@/assets/HTP-1_back.webp')"
+      @click="toggleEnlarged()"
+    >
     <span 
+      v-for="(spk, i) in mso.speakers?.mapping" 
+      :key="spk" 
       class="speaker-label" 
       :class="{'speaker-label-enlarged': enlarged, 
-      'speaker-label-standard': !enlarged, 
-      'hot': mso.speakers?.groups[reverseBmg[speakerLabels[spk?.trim()].toLowerCase()]].present !== false}" 
-      v-for="(spk, i) in mso.speakers?.mapping" 
-      :key="spk"
+               'speaker-label-standard': !enlarged, 
+               'hot': mso.speakers?.groups[reverseBmg[speakerLabels[spk?.trim()].toLowerCase()]].present !== false}"
       :style="{left: 3.25 + (100 * i/19) + '%'}"
     >{{ speakerLabels[spk?.trim()] }}</span>
   </div>

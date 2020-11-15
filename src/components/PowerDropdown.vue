@@ -1,11 +1,23 @@
 <template>
-  <div class="dropdown-menu dropdown-menu-right bg-dark text-white show" aria-labelledby="navbarDropdown">
-    <a class="dropdown-item" @click="handleShutdown">
-        Shutdown
-        <small class="form-text text-muted">Orderly shutdown the system and enter low power state</small>
+  <div
+    class="dropdown-menu dropdown-menu-right bg-dark text-white show"
+    aria-labelledby="navbarDropdown"
+  >
+    <a
+      class="dropdown-item"
+      @click="handleShutdown"
+    >
+      Shutdown
+      <small class="form-text text-muted">Orderly shutdown the system and enter low power state</small>
     </a>
-    <a class="dropdown-item" href="#">Sleep</a>
-    <a class="dropdown-item" href="#">Something else here</a>
+    <a
+      class="dropdown-item"
+      href="#"
+    >Sleep</a>
+    <a
+      class="dropdown-item"
+      href="#"
+    >Something else here</a>
   </div>
 </template>
 

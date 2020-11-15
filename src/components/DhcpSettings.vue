@@ -1,66 +1,99 @@
 <template>
   <div class="custom-control custom-switch mb-3">
     <input 
-      type="checkbox" 
-      class="custom-control-input" 
       :id="`${id}-use-dhcp`" 
       v-model="props.network.dhcp" 
+      type="checkbox" 
+      class="custom-control-input" 
     >
-    <label class="custom-control-label" :for="`${id}-use-dhcp`" >
+    <label
+      class="custom-control-label"
+      :for="`${id}-use-dhcp`"
+    >
       Use DHCP
     </label>
   </div>
-  <table class="table table-sm table-responsive table-striped" v-if="!props.network.dhcp">
+  <table
+    v-if="!props.network.dhcp"
+    class="table table-sm table-responsive table-striped"
+  >
     <tbody>
-      <tr v-for="(addr, index) in props.network.addresses" :key="index">
+      <tr
+        v-for="(addr, index) in props.network.addresses"
+        :key="index"
+      >
         <td>
           <div class="form-group">
-            <label class="small" :for="`${props.id}-ip-addr-${index}`">IP Address</label>
+            <label
+              class="small"
+              :for="`${props.id}-ip-addr-${index}`"
+            >IP Address</label>
             <div class="input-group input-group-sm">
               <input 
+                :id="`${props.id}-ip-addr-${index}`" 
+                v-model="addr.address" 
                 type="text" 
                 class="form-control" 
-                :id="`${props.id}-ip-addr-${index}`" 
-                aria-label="IP Address" 
+                aria-label="IP Address"
                 aria-describedby="ip"
-                v-model="addr.address"
               >
               <div class="input-group-append">
-                <span class="input-group-text" id="ip">/24</span>
+                <span
+                  id="ip"
+                  class="input-group-text"
+                >/24</span>
               </div>
             </div>
           </div>
         </td>
         <td>
           <div class="form-group">
-            <label class="small" :for="`${props.id}-netmask-${index}`">Network Mask</label>
+            <label
+              class="small"
+              :for="`${props.id}-netmask-${index}`"
+            >Network Mask</label>
             <input 
-              type="text" 
-              class="form-control form-control-sm" 
-              :id="`${props.id}-netmask-${index}`"
-              v-model="addr.netmask"
+              :id="`${props.id}-netmask-${index}`" 
+              v-model="addr.netmask" 
+              type="text"
+              class="form-control form-control-sm"
             >
           </div>
         </td>
         <td>
-          <div class="form-group" v-if="props.network.addresses.length > 1">
-            <label class="small" :for="`${props.id}-ip-addr`">&nbsp;</label>
+          <div
+            v-if="props.network.addresses.length > 1"
+            class="form-group"
+          >
+            <label
+              class="small"
+              :for="`${props.id}-ip-addr`"
+            >&nbsp;</label>
             <button 
               class="form-control form-control-sm btn btn-sm btn-danger"
               @click="removeIPAddress(index)"
             >
-              <font-awesome-icon size="lg" :icon="['fas', 'times']" />
+              <font-awesome-icon
+                size="lg"
+                :icon="['fas', 'times']"
+              />
             </button>
           </div>
         </td>
         <td>
-          <div class="form-group" v-if="index === props.network.addresses?.length - 1">
+          <div
+            v-if="index === props.network.addresses?.length - 1"
+            class="form-group"
+          >
             <label class="small">&nbsp;</label>
             <button 
               class="form-control form-control-sm btn btn-sm btn-primary"
               @click="addIPAddress()"
             >
-              <font-awesome-icon size="lg" :icon="['fas', 'plus']" />
+              <font-awesome-icon
+                size="lg"
+                :icon="['fas', 'plus']"
+              />
             </button>
           </div>
         </td>
@@ -68,51 +101,72 @@
       <tr>
         <td>
           <div class="form-group">
-            <label class="small" :for="`${props.id}-gateway`">Default Gateway</label>
+            <label
+              class="small"
+              :for="`${props.id}-gateway`"
+            >Default Gateway</label>
             <input 
-              type="text" 
-              class="form-control form-control-sm" 
-              :id="`${props.id}-gateway`"
-              v-model="props.network.gateway"
-            />
+              :id="`${props.id}-gateway`" 
+              v-model="props.network.gateway" 
+              type="text"
+              class="form-control form-control-sm"
+            >
           </div>
         </td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td />
+        <td />
+        <td />
       </tr>
-      <tr v-for="(dns, index) in props.network.dns" :key="index">
+      <tr
+        v-for="(dns, index) in props.network.dns"
+        :key="index"
+      >
         <td>
           <div class="form-group">
-            <label class="small" :for="`${props.id}-dns-${index}`">DNS Server {{ index + 1 }}</label>
+            <label
+              class="small"
+              :for="`${props.id}-dns-${index}`"
+            >DNS Server {{ index + 1 }}</label>
             <input 
-              type="text" 
-              class="form-control form-control-sm" 
-              :id="`${props.id}-dns-${index}`"
-              v-model="props.network.dns[index]"
-            />
+              :id="`${props.id}-dns-${index}`" 
+              v-model="props.network.dns[index]" 
+              type="text"
+              class="form-control form-control-sm"
+            >
           </div>
         </td>
-        <td></td>
+        <td />
         <td>
-          <div class="form-group" v-if="props.network.dns?.length > 1">
+          <div
+            v-if="props.network.dns?.length > 1"
+            class="form-group"
+          >
             <label class="small">&nbsp;</label>
             <button 
               class="form-control form-control-sm btn btn-sm btn-danger"
               @click="removeNameserver(index)"
             >
-              <font-awesome-icon size="lg" :icon="['fas', 'times']" />
+              <font-awesome-icon
+                size="lg"
+                :icon="['fas', 'times']"
+              />
             </button>
           </div>
         </td>
         <td>
-          <div class="form-group" v-if="index === props.network.dns?.length - 1">
+          <div
+            v-if="index === props.network.dns?.length - 1"
+            class="form-group"
+          >
             <label class="small">&nbsp;</label>
             <button 
               class="form-control form-control-sm btn btn-sm btn-primary"
               @click="addNameserver()"
             >
-              <font-awesome-icon size="lg" :icon="['fas', 'plus']" />
+              <font-awesome-icon
+                size="lg"
+                :icon="['fas', 'plus']"
+              />
             </button>
           </div>
         </td>
@@ -146,7 +200,8 @@
         required: true,
         type: Object,
       }
-    }, setup(props, { emit }) {
+    },
+    emits: ['apply-network-config'], setup(props, { emit }) {
       function addIPAddress() {
         props.network.addresses.push({...props.blankIp});
       }
@@ -168,8 +223,7 @@
       }
 
       return { props, addIPAddress, removeIPAddress, addNameserver, removeNameserver, applyNetworkConfig };
-    },
-    emits: ['apply-network-config']
+    }
   }
 </script>
 

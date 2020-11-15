@@ -4,12 +4,18 @@
     <two-state-button 
       :button-text="`Loudness Compensation: ${mso.loudness}`" 
       :state-on="mso.loudness === 'on'" 
-      @btn-click="toggleLoudness()"
       min-width="7.5rem"
+      @btn-click="toggleLoudness()"
     />
     <div class="row mt-3">
-      <div class="col" v-show="mso.loudness !== 'on'">
-        <dismissable-alert alertKey="loudness-off" class="alert-warning">
+      <div
+        v-show="mso.loudness !== 'on'"
+        class="col"
+      >
+        <dismissable-alert
+          alert-key="loudness-off"
+          class="alert-warning"
+        >
           Loudness compensation is currently turned off. The following loudness compensation settings may be modified, but they will not have any effect until loudness compensation is turned on.
         </dismissable-alert>
       </div>
@@ -27,15 +33,26 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="curve in loudnessOptions" :key="curve.value">
+            <tr
+              v-for="curve in loudnessOptions"
+              :key="curve.value"
+            >
               <td>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="curve" :id="`radio-${curve.value}`" :value="curve.value" :checked="mso.loudnessCurve === curve.value" @click="setLoudnessCurve(curve.value)">
+                  <input
+                    :id="`radio-${curve.value}`"
+                    class="form-check-input"
+                    type="radio"
+                    name="curve"
+                    :value="curve.value"
+                    :checked="mso.loudnessCurve === curve.value"
+                    @click="setLoudnessCurve(curve.value)"
+                  >
                   <label 
                     class="form-check-label" 
                     :for="`radio-${curve.value}`"
                   >
-                    {{curve.label}}
+                    {{ curve.label }}
                   </label>
                 </div>
               </td>
@@ -44,15 +61,30 @@
         </table>
       </div>
       <div class="col-auto">
-          <div class="form-group">
-            <label for="inputPassword3" class="col-form-label col-form-label-sm ">Loudness Calibration</label>
-              <div class="input-group input-group-sm numeric-input">
-                <input type="number" class="form-control" aria-label="Minimum volume" aria-describedby="basic-addon2" :value="mso.loudnessCal" @change="({ type, target }) => setLoudnessCalibration(target.value)" min="50" max="90">
-                <div class="input-group-append">
-                  <span class="input-group-text" id="basic-addon2">dB</span>
-                </div>
-              </div>
+        <div class="form-group">
+          <label
+            for="inputPassword3"
+            class="col-form-label col-form-label-sm "
+          >Loudness Calibration</label>
+          <div class="input-group input-group-sm numeric-input">
+            <input
+              type="number"
+              class="form-control"
+              aria-label="Minimum volume"
+              aria-describedby="basic-addon2"
+              :value="mso.loudnessCal"
+              min="50"
+              max="90"
+              @change="({ type, target }) => setLoudnessCalibration(target.value)"
+            >
+            <div class="input-group-append">
+              <span
+                id="basic-addon2"
+                class="input-group-text"
+              >dB</span>
+            </div>
           </div>
+        </div>
       </div>
     </div>
   
@@ -65,31 +97,32 @@
         @set-off="setNightMode('off')"
         @set-other="setNightMode('auto')"
       />
-
     </div>
 
     <h5>Dialog Enhance</h5>
     <div class="row">
       <div class="col-auto">
-      <div class="form-group">
-        <label class="col-form-label col-form-label-sm" for="dialog-enh">Dialog Enhance</label>
-        <div class="form-row">
-          <input 
-            type="range" 
-            class="custom-range col" 
-            id="dialog-enh" 
-            min="0" 
-            max="6"
-            :value="mso.dialogEnh"
-            @input="({ type, target }) => setDtsDialogEnh(target.value)"
-          >
-          <span class="col-auto auro-str-label">{{mso.dialogEnh}}</span>
+        <div class="form-group">
+          <label
+            class="col-form-label col-form-label-sm"
+            for="dialog-enh"
+          >Dialog Enhance</label>
+          <div class="form-row">
+            <input 
+              id="dialog-enh" 
+              type="range" 
+              class="custom-range col" 
+              min="0" 
+              max="6"
+              :value="mso.dialogEnh"
+              @input="({ type, target }) => setDtsDialogEnh(target.value)"
+            >
+            <span class="col-auto auro-str-label">{{ mso.dialogEnh }}</span>
+          </div>
         </div>
-      </div>
       </div>
     </div>
   </div>
-
 </template>
 
 <script>
@@ -100,6 +133,11 @@
 
   export default {
     name: 'ToneControl',
+    components: {
+      TwoStateButton,
+      MultiStateButtonGroup,
+      DismissableAlert,
+    },
     setup() {
 
       const loudnessOptions = [
@@ -110,11 +148,6 @@
       return {
         ...useMso(), loudnessOptions
       };
-    },
-    components: {
-      TwoStateButton,
-      MultiStateButtonGroup,
-      DismissableAlert,
     },
   }
 </script>

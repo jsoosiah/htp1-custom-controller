@@ -10,7 +10,10 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="upmix in allUpmixers" :key="upmix.value">
+        <tr
+          v-for="upmix in allUpmixers"
+          :key="upmix.value"
+        >
           <td>
             <two-state-button 
               :button-text="upmix.label"
@@ -22,35 +25,46 @@
           <td>
             <div class="custom-control custom-switch">
               <input 
+                :id="'homevis-'+upmix.value" 
                 type="checkbox" 
                 class="custom-control-input" 
-                :id="'homevis-'+upmix.value" 
                 :checked="upmix.homevis" 
                 @click="toggleUpmixHomevis(upmix.value)"
               >
-              <label class="custom-control-label" :for="'homevis-'+upmix.value"></label>
+              <label
+                class="custom-control-label"
+                :for="'homevis-'+upmix.value"
+              />
             </div>
           </td>
           <td>
             <div v-if="upmix.value === 'dolby'">
               <div class="custom-control custom-switch">
                 <input 
+                  id="dolbycs" 
                   type="checkbox" 
                   class="custom-control-input" 
-                  id="dolbycs" 
                   :checked="mso.upmix?.dolby.cs" 
                   @click="toggleUpmixCenterSpread()"
                 >
-                <label class="custom-control-label" for="dolbycs">
+                <label
+                  class="custom-control-label"
+                  for="dolbycs"
+                >
                   Center Spread
                 </label>
               </div>
             </div>
-            <div class="row" v-if="upmix.value === 'auro'">
+            <div
+              v-if="upmix.value === 'auro'"
+              class="row"
+            >
               <div class="col-lg">
-                
                 <div class="form-group">
-                  <label for="inputEmail3" class="col-form-label col-form-label-sm ">AuroMatic Preset</label>
+                  <label
+                    for="inputEmail3"
+                    class="col-form-label col-form-label-sm "
+                  >AuroMatic Preset</label>
                   <select 
                     class="form-control form-control-sm" 
                     @change="({ type, target }) => setAuroMaticPreset(target.value)"
@@ -61,25 +75,28 @@
                       :value="opt.value"
                       :selected="opt.value === mso.upmix?.auro.preset"
                     >
-                      {{opt.label}}
+                      {{ opt.label }}
                     </option>
                   </select>
                 </div>
               </div>
               <div class="col-lg">
                 <div class="form-group">
-                  <label class="col-form-label col-form-label-sm" for="auro-strength">AuroMatic Strength</label>
+                  <label
+                    class="col-form-label col-form-label-sm"
+                    for="auro-strength"
+                  >AuroMatic Strength</label>
                   <div class="form-row">
                     <input 
+                      id="auro-strength" 
                       type="range" 
                       class="custom-range col" 
-                      id="auro-strength" 
                       min="1" 
                       max="16"
                       :value="mso.upmix?.auro.strength"
                       @input="({ type, target }) => setAuroMaticStrength(target.value)"
                     >
-                    <span class="col-auto auro-str-label">{{mso.upmix?.auro.strength}}</span>
+                    <span class="col-auto auro-str-label">{{ mso.upmix?.auro.strength }}</span>
                   </div>
                 </div>
               </div>
@@ -99,7 +116,10 @@
         </tr>
       </tbody>
     </table>
-    <div class="form-group" style="padding-left:.3rem">
+    <div
+      class="form-group"
+      style="padding-left:.3rem"
+    >
       <two-state-button 
         :button-text="`Wide Synth: ${mso.upmix?.dts.ws ? 'on' : 'off'}`" 
         :state-on="mso.upmix?.dts.ws" 
@@ -121,6 +141,10 @@
 
   export default {
     name: 'SoundEnhancement',
+    components: {
+      MultiStateButtonGroup,
+      TwoStateButton
+    },
     setup() {
 
       const auroPresets = [
@@ -132,10 +156,6 @@
       ];
 
       return { ...useMso(), auroPresets };
-    },
-    components: {
-      MultiStateButtonGroup,
-      TwoStateButton
     }
   }
 </script>

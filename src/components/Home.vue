@@ -1,272 +1,369 @@
 <template>
   <div>
-      <div class="container">
-        <!-- Input Label -->
-        <div 
-          class="row justify-content-between mb-3" 
-          v-if="!isMobileMode && (mso.personalize.homeLabels?.topLeft !== null || mso.personalize.homeLabels?.topRight !== null)"
+    <div class="container">
+      <!-- Input Label -->
+      <div 
+        v-if="!isMobileMode && (mso.personalize.homeLabels?.topLeft !== null || mso.personalize.homeLabels?.topRight !== null)" 
+        class="row justify-content-between mb-3"
+      >
+        <div class="col-auto">
+          <template v-if="mso.personalize.homeLabels?.topLeft === 'current-input'">
+            <router-link
+              class="settings-link current-input-label"
+              :to="`/settings/inputs`"
+            >
+              {{ mso.inputs && mso.inputs[mso.input].label }}
+            </router-link>
+          </template>
+          <template v-else-if="mso.personalize.homeLabels?.topLeft === 'unit-name'">
+            <router-link
+              class="settings-link current-input-label"
+              :to="`/settings/system`"
+            >
+              {{ mso.unitname }}
+            </router-link>
+          </template>
+        </div>
+        <div class="col-auto">
+          <template v-if="mso.personalize.homeLabels?.topRight === 'current-input'">
+            <router-link
+              class="settings-link current-input-label"
+              :to="`/settings/inputs`"
+            >
+              {{ mso.inputs && mso.inputs[mso.input].label }}
+            </router-link>
+          </template>
+          <template v-else-if="mso.personalize.homeLabels?.topRight === 'unit-name'">
+            <router-link
+              class="settings-link current-input-label"
+              :to="`/settings/system`"
+            >
+              {{ mso.unitname }}
+            </router-link>
+          </template>
+        </div>
+      </div>
+      <!-- Program Format, Video, Listening Format   -->
+      <div class="row">
+        <div class="col-md">
+          <div
+            class="card"
+            :class="{'desktop-card': !isMobileMode, 'mobile-card': isMobileMode}"
+          >
+            <div class="card-body">
+              <div class="row align-items-center">
+                <div class="col-auto icon-col">
+                  <img
+                    v-if="streamTypeIcon(mso.status)"
+                    class="fillheight"
+                    :src="require(`@/assets/${streamTypeIcon(mso.status)}`)+'#svgView(preserveAspectRatio(xMidYMid))'"
+                  >
+                </div>
+                <div class="col">
+                  <h6 class="card-title text-muted">
+                    Program Format
+                  </h6>
+                  <h6 class="card-text">
+                    {{ mso.status?.DECProgramFormat }} <small>{{ mso.status?.DECSourceProgram }} <span v-if="mso.stat?.displayAudioStat">{{ mso.status?.DECSampleRate }}</span></small>
+                  </h6>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          v-if="mso.stat?.displayVideoStat"
+          class="col-md"
         >
-          <div class="col-auto">
-            <template v-if="mso.personalize.homeLabels?.topLeft === 'current-input'">
-              <router-link class="settings-link current-input-label" :to="`/settings/inputs`">
-                {{mso.inputs && mso.inputs[mso.input].label}}
-              </router-link>
-            </template>
-            <template v-else-if="mso.personalize.homeLabels?.topLeft === 'unit-name'">
-              <router-link class="settings-link current-input-label" :to="`/settings/system`">
-                {{mso.unitname}}
-              </router-link>
-            </template>
-          </div>
-          <div class="col-auto">
-            <template v-if="mso.personalize.homeLabels?.topRight === 'current-input'">
-              <router-link class="settings-link current-input-label" :to="`/settings/inputs`">
-                {{mso.inputs && mso.inputs[mso.input].label}}
-              </router-link>
-            </template>
-            <template v-else-if="mso.personalize.homeLabels?.topRight === 'unit-name'">
-              <router-link class="settings-link current-input-label" :to="`/settings/system`">
-                {{mso.unitname}}
-              </router-link>
-            </template>
-          </div>
-        </div>
-        <!-- Program Format, Video, Listening Format   -->
-        <div class="row">
-          <div class="col-md">
-            <div class="card" :class="{'desktop-card': !isMobileMode, 'mobile-card': isMobileMode}">
-              <div class="card-body">
-                <div class="row align-items-center">
-                  <div class="col-auto icon-col">
-                    <img class="fillheight"  v-if="streamTypeIcon(mso.status)" :src="require(`@/assets/${streamTypeIcon(mso.status)}`)+'#svgView(preserveAspectRatio(xMidYMid))'">
-                  </div>
-                  <div class="col">
-                    <h6 class="card-title text-muted">Program Format</h6>
-                    <h6 class="card-text">{{mso.status?.DECProgramFormat}} <small>{{mso.status?.DECSourceProgram}} <span v-if="mso.stat?.displayAudioStat">{{mso.status?.DECSampleRate}}</span></small></h6>
-                  </div>
+          <div
+            class="card"
+            :class="{'desktop-card': !isMobileMode, 'mobile-card': isMobileMode}"
+          >
+            <div class="card-body">
+              <div class="row align-items-center">
+                <div class="col-auto icon-col text-center">
+                  <font-awesome-icon
+                    class="text-muted"
+                    size="2x"
+                    :icon="['fas', 'tv']"
+                  />
                 </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-md" v-if="mso.stat?.displayVideoStat">
-            <div class="card" :class="{'desktop-card': !isMobileMode, 'mobile-card': isMobileMode}">
-              <div class="card-body">
-                <div class="row align-items-center">
-                  <div class="col-auto icon-col text-center">
-                    <font-awesome-icon  class="text-muted" size="2x" :icon="['fas', 'tv']" />
-                  </div>
-                  <div class="col">
-                    <h6 class="card-title text-muted">Video</h6>
+                <div class="col">
+                  <h6 class="card-title text-muted">
+                    Video
+                  </h6>
                     
-                      <h6 class="card-text">{{mso.videostat.VideoResolution}}
-                        <small>
-                          {{mso.videostat.VideoColorSpace}}
-                          {{mso.videostat.VideoMode}}
-                          {{mso.videostat.HDRstatus}}
-                          {{mso.videostat.VideoBitDepth}}
-                          {{mso.videostat.Video3D}}
-                        </small>
-                      </h6>
-                    
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-md">
-            <div class="card" :class="{'desktop-card': !isMobileMode, 'mobile-card': isMobileMode}">
-              <div class="card-body">
-                <div class="row align-items-center">
-                  <div class="col-auto icon-col">
-                    <img class="fillheight" v-if="upmixerIcon(mso.status)" :src="require(`@/assets/${upmixerIcon(mso.status)}`)+'#svgView(preserveAspectRatio(xMidYMid))'">
-                  </div>
-                  <div class="col">
-                    <h6 class="card-title text-muted">Listening Format</h6>
-                    <h6 class="card-text">{{mso.status?.ENCListeningFormat}} <small>{{mso.status?.SurroundMode}} <span v-if="mso.stat?.displayAudioStat">{{mso.status?.ENCSampleRate}}</span></small></h6>
-                  </div>
+                  <h6 class="card-text">
+                    {{ mso.videostat.VideoResolution }}
+                    <small>
+                      {{ mso.videostat.VideoColorSpace }}
+                      {{ mso.videostat.VideoMode }}
+                      {{ mso.videostat.HDRstatus }}
+                      {{ mso.videostat.VideoBitDepth }}
+                      {{ mso.videostat.Video3D }}
+                    </small>
+                  </h6>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <!-- Program Format Logo, Volumn Text, Listening Format Logo -->
-        <div class="row mt-2 justify-content-center">
-          <div class="col-auto text-left" :class="{'px-0': isMobileMode}">
-            <button 
-              type="button" 
-              class="btn btn-dark vol-btn" 
-              v-press="handleVolumeDownPress"
-              v-long-press="handleVolumeDownLongPress"
-              v-long-press-up="handleVolumeLongPressUp"
-            >
-              <font-awesome-icon  :class="{'text-danger':mso.muted}" size="4x" :icon="['fas', 'volume-down']" />
-            </button>
-          </div>
-          <div class="col-auto text-center" :class="{'px-0': isMobileMode}">
-            <span 
-              class="vol-display" 
-              :class="{'text-danger':mso.muted}" 
-              v-press="handleMute"
-            >
-              {{mso.volume}} dB
-            </span>
-          </div>
-          <div class="col-auto text-right pr-0">
-            <button 
-              type="button" 
-              class="btn btn-dark vol-btn" 
-              v-press="handleVolumeUpPress"
-              v-long-press="handleVolumeUpLongPress"
-              v-long-press-up="handleVolumeLongPressUp"
-            >
-              <font-awesome-icon  :class="{'text-danger':mso.muted}" size="4x" :icon="['fas', 'volume-up']" />
-            </button>
-          </div>
-        </div>
-        <!-- Volume Buttons -->
-        <div class="row mt-2">
-          <div class="col-md-12 text-center">
-
-
-          </div>
-        </div>
-        <!-- Input Select -->
-        <div class="row mt-2">
-          <div class="col-md-12 text-center">
-              <h5><router-link  class="settings-link" :to="`/settings/inputs`">Input Select</router-link></h5>
-              <div class="inputs-container my-3">
-                <two-state-button 
-                  v-for="(inp, key) in visibleInputs"
-                  :key="key"
-                  :button-text="inp.label"
-                  :state-on="inputLoaded(key)"
-                  :state-loading="inputSelectedAndLoading(key)"
-                  :home-button="true"
-                  @btn-click="handleInputClicked(key)"
-                  :show-state-indicators="true"
-                  :single-indicator="true"
-                  :recently-interacted="inputRecentlyInteracted"
-                />
+        <div class="col-md">
+          <div
+            class="card"
+            :class="{'desktop-card': !isMobileMode, 'mobile-card': isMobileMode}"
+          >
+            <div class="card-body">
+              <div class="row align-items-center">
+                <div class="col-auto icon-col">
+                  <img
+                    v-if="upmixerIcon(mso.status)"
+                    class="fillheight"
+                    :src="require(`@/assets/${upmixerIcon(mso.status)}`)+'#svgView(preserveAspectRatio(xMidYMid))'"
+                  >
+                </div>
+                <div class="col">
+                  <h6 class="card-title text-muted">
+                    Listening Format
+                  </h6>
+                  <h6 class="card-text">
+                    {{ mso.status?.ENCListeningFormat }} <small>{{ mso.status?.SurroundMode }} <span v-if="mso.stat?.displayAudioStat">{{ mso.status?.ENCSampleRate }}</span></small>
+                  </h6>
+                </div>
               </div>
-          </div>
-        </div>
-        <!-- Upmix Select -->
-        <div class="row mt-2" v-if="mso.stat.systemAudio">
-          <div class="col-md-12 text-center">
-              <h5><router-link class="settings-link" :to="`/settings/upmix`">Upmix Select</router-link></h5>
-              <div class="upmix-container my-3">
-                <two-state-button 
-                  v-for="(upmix, key) in visibleUpmixers"
-                  :key="key"
-                  :button-text="upmix.label"
-                  :state-on="key === mso.upmix.select"
-                  :home-button="true"
-                  @btn-click="handleUpmixClicked(key)" 
-                  :show-state-indicators="true"
-                  :single-indicator="true"
-                  :recently-interacted="upmixRecentlyInteracted"
-                />
-              </div>
-          </div>
-        </div>
-        <!-- Modes -->
-        <div class="row mt-2" v-if="mso.personalize?.modes && Object.keys(mso.personalize?.modes).length > 0">
-          <div class="col-md-12 text-center">
-              <h5>Modes</h5>
-              <div class="my-3">
-                <!-- Dirac -->
-                <dirac-button 
-                  v-if="mso.personalize?.modes.dirac"
-                  :home-button="true"
-                />
-                <!-- PEQ -->
-                <two-state-button 
-                  v-if="mso.personalize?.modes.peq"
-                  :button-text="`PEQ ${mso.peq?.peqsw ? 'on' : 'off'}`"
-                  :state-on="mso.peq?.peqsw"
-                  :home-button="true"
-                  @btn-click="toggleGlobalPEQ()"
-                  :show-state-indicators="true"
-                />
-                <!-- Tone Control -->
-                <two-state-button 
-                  v-if="mso.personalize?.modes.tone"
-                  :button-text="`Tone Control ${mso.eq?.tc ? 'on' : 'off'}`"
-                  :state-on="mso.eq?.tc"
-                  :home-button="true"
-                  @btn-click="toggleToneControl()"
-                  :show-state-indicators="true"
-                  min-width="10rem"
-                />
-                <!-- Loudness -->
-                <two-state-button 
-                  v-if="mso.personalize?.modes.loudness"
-                  :button-text="`Loudness ${mso.loudness}`" 
-                  :state-on="mso.loudness === 'on'" 
-                  :home-button="true"
-                  @btn-click="toggleLoudness()"
-                  :show-state-indicators="true"
-                  min-width="7.5rem"
-                />
-                <!-- Dialog Enhance --> 
-                <dialog-enhance-button 
-                  v-if="mso.personalize?.modes.dialogenh"
-                  :home-button="true" 
-                  :show-state-indicators="true" 
-                />
-
-                <!-- Night Mode -->
-                <three-state-button 
-                  v-if="mso.personalize?.modes.night"
-                  :button-text="`Night ${mso.night}`"
-                  :states="{'off': 0, 'on': 1, 'auto': 2}"
-                  :state-value="mso.night"
-                  :home-button="true"
-                  @btn-click="setNextNightMode()"
-                  :show-state-indicators="true"
-                  min-width="6.75rem"
-                />
-              </div>
-          </div>
-        </div>
-
-        <!-- Dirac Slots -->
-        <div class="row mt-2" v-if="mso.personalize?.diracSlots && Object.keys(mso.personalize.diracSlots).length > 0">
-          <div class="col-md-12 text-center">
-              <h5><router-link class="settings-link" :to="`/settings/calibration`">Dirac Slot Select</router-link></h5>
-              <div class="diracslot-container my-3">
-                <two-state-button 
-                  v-for="(slot, key) in visibleDiracSlots"
-                  :key="key"
-                  :button-text="slot.name"
-                  :state-on="parseInt(key) === mso.cal?.currentdiracslot"
-                  :home-button="true"
-                  @btn-click="handleDiracSlotClicked(key)" 
-                  :show-state-indicators="true"
-                  :single-indicator="true"
-                  :recently-interacted="diracSlotRecentlyInteracted"
-                />
-              </div>
-          </div>
-        </div>
-
-        <!-- Macros --> 
-        <div class="row mt-2" v-if="mso.personalize?.macros && Object.keys(mso.personalize.macros).length > 0">
-          <div class="col-md-12 text-center">
-              <h5><router-link class="settings-link" :to="`/settings/macros`">Macros</router-link></h5>
-              <div class="diracslot-container my-3">
-                <two-state-button 
-                  v-for="(macro, key) in visibleMacros"
-                  :key="key"
-                  :button-text="mso.svronly?.macroNames[key]"
-                  :state-on="macroIsActive(macro)"
-                  :home-button="true"
-                  @btn-click="executeMacro(macro)" 
-                />
-              </div>
+            </div>
           </div>
         </div>
       </div>
+      <!-- Program Format Logo, Volumn Text, Listening Format Logo -->
+      <div class="row mt-2 justify-content-center">
+        <div
+          class="col-auto text-left"
+          :class="{'px-0': isMobileMode}"
+        >
+          <button 
+            v-press="handleVolumeDownPress" 
+            v-long-press="handleVolumeDownLongPress" 
+            v-long-press-up="handleVolumeLongPressUp"
+            type="button"
+            class="btn btn-dark vol-btn"
+          >
+            <font-awesome-icon
+              :class="{'text-danger':mso.muted}"
+              size="4x"
+              :icon="['fas', 'volume-down']"
+            />
+          </button>
+        </div>
+        <div
+          class="col-auto text-center"
+          :class="{'px-0': isMobileMode}"
+        >
+          <span 
+            v-press="handleMute" 
+            class="vol-display" 
+            :class="{'text-danger':mso.muted}"
+          >
+            {{ mso.volume }} dB
+          </span>
+        </div>
+        <div class="col-auto text-right pr-0">
+          <button 
+            v-press="handleVolumeUpPress" 
+            v-long-press="handleVolumeUpLongPress" 
+            v-long-press-up="handleVolumeLongPressUp"
+            type="button"
+            class="btn btn-dark vol-btn"
+          >
+            <font-awesome-icon
+              :class="{'text-danger':mso.muted}"
+              size="4x"
+              :icon="['fas', 'volume-up']"
+            />
+          </button>
+        </div>
+      </div>
+      <!-- Volume Buttons -->
+      <div class="row mt-2">
+        <div class="col-md-12 text-center" />
+      </div>
+      <!-- Input Select -->
+      <div class="row mt-2">
+        <div class="col-md-12 text-center">
+          <h5>
+            <router-link
+              class="settings-link"
+              :to="`/settings/inputs`"
+            >
+              Input Select
+            </router-link>
+          </h5>
+          <div class="inputs-container my-3">
+            <two-state-button 
+              v-for="(inp, key) in visibleInputs"
+              :key="key"
+              :button-text="inp.label"
+              :state-on="inputLoaded(key)"
+              :state-loading="inputSelectedAndLoading(key)"
+              :home-button="true"
+              :show-state-indicators="true"
+              :single-indicator="true"
+              :recently-interacted="inputRecentlyInteracted"
+              @btn-click="handleInputClicked(key)"
+            />
+          </div>
+        </div>
+      </div>
+      <!-- Upmix Select -->
+      <div
+        v-if="mso.stat.systemAudio"
+        class="row mt-2"
+      >
+        <div class="col-md-12 text-center">
+          <h5>
+            <router-link
+              class="settings-link"
+              :to="`/settings/upmix`"
+            >
+              Upmix Select
+            </router-link>
+          </h5>
+          <div class="upmix-container my-3">
+            <two-state-button 
+              v-for="(upmix, key) in visibleUpmixers"
+              :key="key"
+              :button-text="upmix.label"
+              :state-on="key === mso.upmix.select"
+              :home-button="true"
+              :show-state-indicators="true" 
+              :single-indicator="true"
+              :recently-interacted="upmixRecentlyInteracted"
+              @btn-click="handleUpmixClicked(key)"
+            />
+          </div>
+        </div>
+      </div>
+      <!-- Modes -->
+      <div
+        v-if="mso.personalize?.modes && Object.keys(mso.personalize?.modes).length > 0"
+        class="row mt-2"
+      >
+        <div class="col-md-12 text-center">
+          <h5>Modes</h5>
+          <div class="my-3">
+            <!-- Dirac -->
+            <dirac-button 
+              v-if="mso.personalize?.modes.dirac"
+              :home-button="true"
+            />
+            <!-- PEQ -->
+            <two-state-button 
+              v-if="mso.personalize?.modes.peq"
+              :button-text="`PEQ ${mso.peq?.peqsw ? 'on' : 'off'}`"
+              :state-on="mso.peq?.peqsw"
+              :home-button="true"
+              :show-state-indicators="true"
+              @btn-click="toggleGlobalPEQ()"
+            />
+            <!-- Tone Control -->
+            <two-state-button 
+              v-if="mso.personalize?.modes.tone"
+              :button-text="`Tone Control ${mso.eq?.tc ? 'on' : 'off'}`"
+              :state-on="mso.eq?.tc"
+              :home-button="true"
+              :show-state-indicators="true"
+              min-width="10rem"
+              @btn-click="toggleToneControl()"
+            />
+            <!-- Loudness -->
+            <two-state-button 
+              v-if="mso.personalize?.modes.loudness"
+              :button-text="`Loudness ${mso.loudness}`" 
+              :state-on="mso.loudness === 'on'" 
+              :home-button="true"
+              :show-state-indicators="true"
+              min-width="7.5rem"
+              @btn-click="toggleLoudness()"
+            />
+            <!-- Dialog Enhance --> 
+            <dialog-enhance-button 
+              v-if="mso.personalize?.modes.dialogenh"
+              :home-button="true" 
+              :show-state-indicators="true" 
+            />
+
+            <!-- Night Mode -->
+            <three-state-button 
+              v-if="mso.personalize?.modes.night"
+              :button-text="`Night ${mso.night}`"
+              :states="{'off': 0, 'on': 1, 'auto': 2}"
+              :state-value="mso.night"
+              :home-button="true"
+              :show-state-indicators="true"
+              min-width="6.75rem"
+              @btn-click="setNextNightMode()"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Dirac Slots -->
+      <div
+        v-if="mso.personalize?.diracSlots && Object.keys(mso.personalize.diracSlots).length > 0"
+        class="row mt-2"
+      >
+        <div class="col-md-12 text-center">
+          <h5>
+            <router-link
+              class="settings-link"
+              :to="`/settings/calibration`"
+            >
+              Dirac Slot Select
+            </router-link>
+          </h5>
+          <div class="diracslot-container my-3">
+            <two-state-button 
+              v-for="(slot, key) in visibleDiracSlots"
+              :key="key"
+              :button-text="slot.name"
+              :state-on="parseInt(key) === mso.cal?.currentdiracslot"
+              :home-button="true"
+              :show-state-indicators="true" 
+              :single-indicator="true"
+              :recently-interacted="diracSlotRecentlyInteracted"
+              @btn-click="handleDiracSlotClicked(key)"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Macros --> 
+      <div
+        v-if="mso.personalize?.macros && Object.keys(mso.personalize.macros).length > 0"
+        class="row mt-2"
+      >
+        <div class="col-md-12 text-center">
+          <h5>
+            <router-link
+              class="settings-link"
+              :to="`/settings/macros`"
+            >
+              Macros
+            </router-link>
+          </h5>
+          <div class="diracslot-container my-3">
+            <two-state-button 
+              v-for="(macro, key) in visibleMacros"
+              :key="key"
+              :button-text="mso.svronly?.macroNames[key]"
+              :state-on="macroIsActive(macro)"
+              :home-button="true"
+              @btn-click="executeMacro(macro)" 
+            />
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 

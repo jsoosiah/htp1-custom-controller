@@ -1,6 +1,11 @@
 <template>
-  <div class="alert alert-dismissible small" :class="props.class" role="alert" v-if="!mso.personalize?.dismissedAlerts[props.alertKey]">
-    <slot></slot>
+  <div
+    v-if="!mso.personalize?.dismissedAlerts[props.alertKey]"
+    class="alert alert-dismissible small"
+    :class="props.class"
+    role="alert"
+  >
+    <slot />
     <button 
       type="button" 
       class="close" 
@@ -19,10 +24,6 @@
 
   export default {
     name: 'DismissableAlert',
-    setup(props) {
-
-      return { ...useMso(), props };
-    },
     props: {
       class: {
         type: String,
@@ -32,6 +33,10 @@
         type: String,
         required: true,
       }
+    },
+    setup(props) {
+
+      return { ...useMso(), props };
     },
   }
 </script>

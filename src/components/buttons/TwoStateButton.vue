@@ -3,19 +3,26 @@
     <button 
       class="btn btn-sm" 
       :class="{[props.homeButton?'btn-light':props.muteButton?'btn-danger':'btn-success']: props.stateOn, 
-        [props.homeButton?'btn-dark':'btn-secondary']: !props.stateOn && !props.stateLoading, 
+               [props.homeButton?'btn-dark':'btn-secondary']: !props.stateOn && !props.stateLoading, 
         
-        'btn-progress-bar-animated': props.stateLoading,
-        'home-btn': props.homeButton}"
+               'btn-progress-bar-animated': props.stateLoading,
+               'home-btn': props.homeButton}"
       :style="{'min-width': props.minWidth}"
       @click="clicked"
     >
-      {{props.buttonText}}
+      {{ props.buttonText }}
     </button>
     <transition name="mfade">
-      <ol class="carousel-indicators" v-if="props.showStateIndicators" v-show="props.recentlyInteracted || recentlyInteracted">
-        <li v-if="!props.singleIndicator" :class="{'active':!props.stateOn}"></li>
-        <li :class="{'active-bright':props.stateOn}"></li>
+      <ol
+        v-if="props.showStateIndicators"
+        v-show="props.recentlyInteracted || recentlyInteracted"
+        class="carousel-indicators"
+      >
+        <li
+          v-if="!props.singleIndicator"
+          :class="{'active':!props.stateOn}"
+        />
+        <li :class="{'active-bright':props.stateOn}" />
       </ol>
     </transition>
   </div>
@@ -65,6 +72,7 @@
         default: false,
       }
     },
+    emits: ['btn-click'],
     setup(props, { emit }) {
 
       const recentlyInteracted = ref(false);
@@ -81,8 +89,7 @@
       }
 
       return { props, recentlyInteracted, clicked };
-    },
-    emits: ['btn-click']
+    }
   }
 </script>
 

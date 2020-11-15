@@ -42,7 +42,7 @@ function findServers(port, ipBase, ipLow, ipHigh, maxInFlight, timeout, cb) {
                 // next();
             }
         };
-        socket.onerror = function(err) {
+        socket.onerror = function() {
             if (socket) {
                 console.log(address + " error");
                 clearTimeout(timer);
@@ -85,13 +85,10 @@ class WSClient {
     }
 
     // Open the URL
-    open(url) {
+    open() {
 
         // Define that
         var that = this;
-
-        // Open the URL
-        // this.url = url;
 
         // Create underlying websocket instance
         this.instance = new WebSocket(websocketurl.value);
@@ -168,7 +165,7 @@ class WSClient {
     }
 
     // Define the reconnection function
-    reconnect(e) {
+    reconnect() {
 
         // Define that
         var that = this;
@@ -189,7 +186,7 @@ class WSClient {
 
 // this implementation is ported from https://github.com/logaretm/vue-use-web by Abdelrahman Awad 
 // it uses the above WSClient to reconnect automatically 
-import { ref, onMounted, onUnmounted, watch, computed } from 'vue';
+import { ref, watch, computed } from 'vue';
 
 
 const data = ref(null);

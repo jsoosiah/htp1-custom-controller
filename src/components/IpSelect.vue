@@ -1,8 +1,7 @@
 <template>
-
   <div 
-    class="modal fade show" 
     id="settingsModal" 
+    class="modal fade show" 
     tabindex="-1" 
     aria-labelledby="settingsModalLabel"
   >
@@ -22,13 +21,19 @@
           <template v-if="websocketIp">
             <p v-if="state === 'CONNECTING'">
               Connecting to {{ websocketIp }}...
-              <span class="spinner-border text-primary" role="status">
+              <span
+                class="spinner-border text-primary"
+                role="status"
+              >
                 <span class="sr-only">Loading...</span>
               </span>
             </p>
             <p v-else>
               Connection to {{ websocketIp }} was lost. Reconnect will be attempted automatically.
-              <span class="spinner-border text-primary" role="status">
+              <span
+                class="spinner-border text-primary"
+                role="status"
+              >
                 <span class="sr-only">Loading...</span>
               </span>
             </p>
@@ -38,8 +43,11 @@
           </template>
           <template v-else>
             <p>
-             Now scanning the network for your HTP-1...
-              <span class="spinner-border text-primary" role="status">
+              Now scanning the network for your HTP-1...
+              <span
+                class="spinner-border text-primary"
+                role="status"
+              >
                 <span class="sr-only">Loading...</span>
               </span>
             </p>
@@ -47,16 +55,22 @@
           </template>
 
           <div class="form-group">
-            <label for="select-ip" class="text-white">IP address</label>
+            <label
+              for="select-ip"
+              class="text-white"
+            >IP address</label>
             <input 
-              type="text" 
-              class="form-control form-control-sm text-white bg-dark" 
               id="select-ip" 
-              aria-describedby="ip-help"
-              placeholder="e.g., 192.168.1.13" 
-              v-model="ipAddressText"
+              v-model="ipAddressText" 
+              type="text" 
+              class="form-control form-control-sm text-white bg-dark"
+              aria-describedby="ip-help" 
+              placeholder="e.g., 192.168.1.13"
             >
-            <small id="ip-help" class="form-text">Your entry will be remembered on this device.</small>
+            <small
+              id="ip-help"
+              class="form-text"
+            >Your entry will be remembered on this device.</small>
           </div>
           <div class="row justify-content-end">
             <div class="col-auto">

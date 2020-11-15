@@ -1,50 +1,60 @@
 <template>
   <div class="transition-container">
     <template v-if="isMobileMode">
-      <h5>Dirac Room Correction Filters <br/><small class="text-muted ">up to 6 sets or slots available</small></h5>
+      <h5>Dirac Room Correction Filters <br><small class="text-muted ">up to 6 sets or slots available</small></h5>
       <div class="mb-3">
         <dirac-button-group :home-button="false" />
       </div>
       <div class="custom-control custom-switch mb-3">
         <input 
+          id="display-adv-input" 
           type="checkbox" 
           class="custom-control-input" 
-          id="display-adv-input" 
           :checked="showChannelMuteControls" 
           @click="toggleShowChannelMuteControls()"
         >
-        <label class="custom-control-label" for="display-adv-input">
+        <label
+          class="custom-control-label"
+          for="display-adv-input"
+        >
           Show Advanced Settings
         </label>
       </div>
 
       <div class="form-group">
         <label for="diracSlot">Dirac Slot</label>
-        <select class="form-control" id="diracSlot" @change="({ type, target }) => { setDiracTab(target.value) }" >
+        <select
+          id="diracSlot"
+          class="form-control"
+          @change="({ type, target }) => { setDiracTab(target.value) }"
+        >
           <option 
             v-for="(slot, key) in mso.cal?.slots"
             :key="key"
             :selected="mso.cal?.currentdiracslot === key"
             :value="key"
           >
-            {{slot.name}} {{slot.hasBCFilter ? '*' : ''}}
+            {{ slot.name }} {{ slot.hasBCFilter ? '*' : '' }}
           </option>
         </select>
       </div>
 
-      <div class="card" 
+      <div
         v-for="channame in activeChannels" 
-        :key="channame"
+        :key="channame" 
+        class="card"
         :class=" currentDiracSlot?.channels[channame].mute === true ? ['border-danger', 'text-danger'] :'' "
       >
-        <h5 class="card-header">{{spkName(channame)}}</h5>
+        <h5 class="card-header">
+          {{ spkName(channame) }}
+        </h5>
         <div class="card-body">
           <div class="row">
             <div class="col small">
               Dirac Calibration Delay
             </div>
             <div class="col text-right">
-              {{formatDecimal(currentDiracSlot?.channels[channame].caldelay)}} ms
+              {{ formatDecimal(currentDiracSlot?.channels[channame].caldelay) }} ms
             </div>
           </div>
           <div class="row">
@@ -53,22 +63,27 @@
             </div>
             <div class="col text-right">
               <div class="form-group">
-                  <div class="input-group input-group-sm numeric-input" style="float:right">
-                    <input 
-                      type="number" 
-                      class="form-control form-control-sm text-right" 
-                      :value="currentDiracSlot?.channels[channame].delay" 
-                      @change="({ type, target }) => setUserDelay(channame, target.value)" 
-                      min="0" 
-                      max="100" 
-                      step=".1"
-                    />
-                    <div class="input-group-append">
-                      <span class="input-group-text" id="basic-addon2">ms</span>
-                    </div>
+                <div
+                  class="input-group input-group-sm numeric-input"
+                  style="float:right"
+                >
+                  <input 
+                    type="number" 
+                    class="form-control form-control-sm text-right" 
+                    :value="currentDiracSlot?.channels[channame].delay" 
+                    min="0" 
+                    max="100" 
+                    step=".1" 
+                    @change="({ type, target }) => setUserDelay(channame, target.value)"
+                  >
+                  <div class="input-group-append">
+                    <span
+                      id="basic-addon2"
+                      class="input-group-text"
+                    >ms</span>
                   </div>
+                </div>
               </div>
-
             </div>
           </div>
           <div class="row">
@@ -76,7 +91,7 @@
               Total Delay
             </div>
             <div class="col text-right">
-              {{formatDecimal((mso.cal?.diracactive=='off' ? 0 : currentDiracSlot?.channels[channame].caldelay) + currentDiracSlot?.channels[channame].delay)}} ms
+              {{ formatDecimal((mso.cal?.diracactive=='off' ? 0 : currentDiracSlot?.channels[channame].caldelay) + currentDiracSlot?.channels[channame].delay) }} ms
             </div>
           </div>
           <div class="row">
@@ -84,7 +99,7 @@
               Dirac Calibration Trim 
             </div>
             <div class="col text-right">
-              {{formatDecimal(currentDiracSlot?.channels[channame].caltrim)}} dB
+              {{ formatDecimal(currentDiracSlot?.channels[channame].caltrim) }} dB
             </div>
           </div>
           <div class="row">
@@ -93,19 +108,25 @@
             </div>
             <div class="col">
               <div class="form-group">
-                <div class="input-group input-group-sm numeric-input" style="float:right">
+                <div
+                  class="input-group input-group-sm numeric-input"
+                  style="float:right"
+                >
                   <input 
                     type="number" 
                     class="form-control form-control-sm text-right" 
                     :value="currentDiracSlot?.channels[channame].mute === true ? currentDiracSlot?.channels[channame].preMuteTrim : currentDiracSlot?.channels[channame].trim" 
-                    @change="({ type, target }) => setUserTrim(channame, target.value)" 
-                    :disabled="currentDiracSlot?.channels[channame].mute === true"
-                    min="-12" 
+                    :disabled="currentDiracSlot?.channels[channame].mute === true" 
+                    min="-12"
                     max="12" 
-                    step=".5"
+                    step=".5" 
+                    @change="({ type, target }) => setUserTrim(channame, target.value)"
                   >
                   <div class="input-group-append">
-                    <span class="input-group-text" id="basic-addon2">dB</span>
+                    <span
+                      id="basic-addon2"
+                      class="input-group-text"
+                    >dB</span>
                   </div>
                 </div>
               </div>
@@ -116,17 +137,19 @@
               Total Trim
             </div>
             <div class="col text-right">
-              {{formatDecimal((mso.cal?.diracactive=='off' ? 0 : currentDiracSlot?.channels[channame].caltrim) + (currentDiracSlot?.channels[channame].mute === true ? currentDiracSlot?.channels[channame].preMuteTrim : currentDiracSlot?.channels[channame].trim))}} dB
+              {{ formatDecimal((mso.cal?.diracactive=='off' ? 0 : currentDiracSlot?.channels[channame].caltrim) + (currentDiracSlot?.channels[channame].mute === true ? currentDiracSlot?.channels[channame].preMuteTrim : currentDiracSlot?.channels[channame].trim)) }} dB
             </div>
           </div>
-          <div class="row" v-if="showChannelMuteControls">
+          <div
+            v-if="showChannelMuteControls"
+            class="row"
+          >
             <div class="col">
               <two-state-button 
                 :button-text="`Mute: ${currentDiracSlot?.channels[channame].mute ? 'on' : 'off'}`" 
                 :state-on="currentDiracSlot?.channels[channame].mute === true" 
                 :mute-button="true"
                 @btn-click="toggleMuteChannel(channame)"
-                
               />
             </div>
           </div>
@@ -135,10 +158,14 @@
     </template>
     <template v-else>
       <h5>Dirac Room Correction Filters <small class="text-muted">up to 6 sets or slots available</small></h5>
-      <dismissable-alert alertKey="calibration-dlbc">
+      <dismissable-alert alert-key="calibration-dlbc">
         * denotes Dirac Live Room Correction filters with Bass Control.
       </dismissable-alert>
-      <dismissable-alert v-if="mso.cal?.speakerConfigMismatch" alertKey="calibration-filter-mismatch" class="alert-warning">
+      <dismissable-alert
+        v-if="mso.cal?.speakerConfigMismatch"
+        alert-key="calibration-filter-mismatch"
+        class="alert-warning"
+      >
         The selected Dirac calibration does not match the current speaker configuration. Uncalibrated channels are highlighted.
       </dismissable-alert>
       <div class="row justify-content-between mb-3">
@@ -148,13 +175,16 @@
         <div class="col-auto">
           <div class="custom-control custom-switch">
             <input 
+              id="display-adv-input" 
               type="checkbox" 
               class="custom-control-input" 
-              id="display-adv-input" 
               :checked="showChannelMuteControls" 
               @click="toggleShowChannelMuteControls()"
             >
-            <label class="custom-control-label" for="display-adv-input">
+            <label
+              class="custom-control-label"
+              for="display-adv-input"
+            >
               Show Advanced Settings
             </label>
           </div>
@@ -162,26 +192,38 @@
       </div>
       <nav class="navbar nav-fill nav-pills bg-light navbar-light">
         <a 
+          v-for="(slot, key) in mso.cal?.slots" 
+          :key="key" 
           class="nav-link" 
           :class="{'active': mso.cal?.currentdiracslot === key, 'italic': slot.hasBCFilter}" 
-          @click="setDiracTab(key)" 
-          href="javascript:void(0)" 
-          v-for="(slot, key) in mso.cal?.slots"
-          :key="key"
+          href="javascript:void(0)"
+          @click="setDiracTab(key)"
         >
-          {{slot.name}}
+          {{ slot.name }}
         </a>
       </nav>
       <table class="table table-sm table-responsive-md table-striped">
         <thead>
           <tr>
             <th>Channel</th>
-            <th class="text-right">Dirac Calibration<br/>Delay (ms)</th>
-            <th class="text-right">User Delay (ms)</th>
-            <th class="text-right">Total Delay (ms)</th>
-            <th class="text-right">Dirac Calibration<br/>Trim (dB)</th>
-            <th class="text-right">User Trim (dB)</th>
-            <th class="text-right">Total Trim (dB)</th>
+            <th class="text-right">
+              Dirac Calibration<br>Delay (ms)
+            </th>
+            <th class="text-right">
+              User Delay (ms)
+            </th>
+            <th class="text-right">
+              Total Delay (ms)
+            </th>
+            <th class="text-right">
+              Dirac Calibration<br>Trim (dB)
+            </th>
+            <th class="text-right">
+              User Trim (dB)
+            </th>
+            <th class="text-right">
+              Total Trim (dB)
+            </th>
             <th 
               v-if="showChannelMuteControls"
               class="text-right"
@@ -199,83 +241,101 @@
               'table-danger': currentDiracSlot?.channels[channame].mute === true
             }"
           >
-            <td>{{spkName(channame)}}</td>
-            <td class="text-right" :class="{'text-muted':mso.cal?.diracactive=='off'}" :title="currentDiracSlot?.channels[channame].caldelay">
-              {{formatDecimal(currentDiracSlot?.channels[channame].caldelay)}}
+            <td>{{ spkName(channame) }}</td>
+            <td
+              class="text-right"
+              :class="{'text-muted':mso.cal?.diracactive=='off'}"
+              :title="currentDiracSlot?.channels[channame].caldelay"
+            >
+              {{ formatDecimal(currentDiracSlot?.channels[channame].caldelay) }}
             </td>
             <td class="text-right">
               <input 
                 type="number" 
                 class="form-control form-control-sm text-right" 
                 :value="currentDiracSlot?.channels[channame].delay" 
-                @change="({ type, target }) => setUserDelay(channame, target.value)" 
                 min="0" 
                 max="100" 
-                step=".1"
-              />
+                step=".1" 
+                @change="({ type, target }) => setUserDelay(channame, target.value)"
+              >
             </td>
             <td 
-              class="text-right" :title="currentDiracSlot?.channels[channame].caldelay + currentDiracSlot?.channels[channame].delay">
-              {{formatDecimal((mso.cal?.diracactive=='off' ? 0 : currentDiracSlot?.channels[channame].caldelay) + currentDiracSlot?.channels[channame].delay)}}
+              class="text-right"
+              :title="currentDiracSlot?.channels[channame].caldelay + currentDiracSlot?.channels[channame].delay"
+            >
+              {{ formatDecimal((mso.cal?.diracactive=='off' ? 0 : currentDiracSlot?.channels[channame].caldelay) + currentDiracSlot?.channels[channame].delay) }}
             </td>
-            <td class="text-right" :class="{'text-muted':mso.cal?.diracactive=='off'}" :title="currentDiracSlot?.channels[channame].caltrim">
-              {{formatDecimal(currentDiracSlot?.channels[channame].caltrim)}}
+            <td
+              class="text-right"
+              :class="{'text-muted':mso.cal?.diracactive=='off'}"
+              :title="currentDiracSlot?.channels[channame].caltrim"
+            >
+              {{ formatDecimal(currentDiracSlot?.channels[channame].caltrim) }}
             </td>
             <td class="text-right">
               <input 
                 type="number" 
                 class="form-control form-control-sm text-right" 
                 :value="currentDiracSlot?.channels[channame].mute === true ? currentDiracSlot?.channels[channame].preMuteTrim : currentDiracSlot?.channels[channame].trim" 
-                @change="({ type, target }) => setUserTrim(channame, target.value)" 
-                :disabled="currentDiracSlot?.channels[channame].mute === true"
-                min="-12" 
+                :disabled="currentDiracSlot?.channels[channame].mute === true" 
+                min="-12"
                 max="12" 
-                step=".5"
+                step=".5" 
+                @change="({ type, target }) => setUserTrim(channame, target.value)"
               >
             </td>
-            <td class="text-right" :title="currentDiracSlot?.channels[channame].caltrim + currentDiracSlot?.channels[channame].trim">
-              {{formatDecimal((mso.cal?.diracactive=='off' ? 0 : currentDiracSlot?.channels[channame].caltrim) + (currentDiracSlot?.channels[channame].mute === true ? currentDiracSlot?.channels[channame].preMuteTrim : currentDiracSlot?.channels[channame].trim))}}
+            <td
+              class="text-right"
+              :title="currentDiracSlot?.channels[channame].caltrim + currentDiracSlot?.channels[channame].trim"
+            >
+              {{ formatDecimal((mso.cal?.diracactive=='off' ? 0 : currentDiracSlot?.channels[channame].caltrim) + (currentDiracSlot?.channels[channame].mute === true ? currentDiracSlot?.channels[channame].preMuteTrim : currentDiracSlot?.channels[channame].trim)) }}
             </td>
-            <td class="text-right" v-if="showChannelMuteControls">
+            <td
+              v-if="showChannelMuteControls"
+              class="text-right"
+            >
               <two-state-button 
                 :button-text="`Mute: ${currentDiracSlot?.channels[channame].mute ? 'on' : 'off'}`" 
                 :state-on="currentDiracSlot?.channels[channame].mute === true" 
                 :mute-button="true"
                 @btn-click="toggleMuteChannel(channame)"
-                
               />
             </td>
           </tr>
         </tbody>
       </table>
-      </template>
-      <div class="row" v-if="showChannelMuteControls">
-        <div class="col-auto">
-          <button 
-            class="btn btn-sm btn-danger mb-3"
-            @click="setMuteAllChannelsOn()"
-          >
-            Mute All Channels
-          </button>
-        </div>
-        <div class="col-auto">
-          <button 
-            class="btn btn-sm btn-primary mb-3"
-            @click="setMuteAllChannelsOff()"
-          >
-            Unmute All Channels
-          </button>
-        </div>
-        <div class="col-auto">
-          <button 
-            class="btn btn-sm btn-info mb-3"
-            @click="toggleAllMuteChannels()"
-          >
-            Invert Mute on All Channels
-          </button>
-        </div>
+    </template>
+    <div
+      v-if="showChannelMuteControls"
+      class="row"
+    >
+      <div class="col-auto">
+        <button 
+          class="btn btn-sm btn-danger mb-3"
+          @click="setMuteAllChannelsOn()"
+        >
+          Mute All Channels
+        </button>
+      </div>
+      <div class="col-auto">
+        <button 
+          class="btn btn-sm btn-primary mb-3"
+          @click="setMuteAllChannelsOff()"
+        >
+          Unmute All Channels
+        </button>
+      </div>
+      <div class="col-auto">
+        <button 
+          class="btn btn-sm btn-info mb-3"
+          @click="toggleAllMuteChannels()"
+        >
+          Invert Mute on All Channels
+        </button>
       </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -293,6 +353,11 @@
 
   export default {
     name: 'Calibration',
+    components: {
+      DiracButtonGroup,
+      TwoStateButton,
+      DismissableAlert
+    },
     setup() {
 
       const { 
@@ -333,11 +398,6 @@
         setMuteAllChannelsOff, setMuteAllChannelsOn, toggleAllMuteChannels, isMobileMode,
         diracMismatchedChannels
       };
-    },
-    components: {
-      DiracButtonGroup,
-      TwoStateButton,
-      DismissableAlert
     }
   }
 </script>

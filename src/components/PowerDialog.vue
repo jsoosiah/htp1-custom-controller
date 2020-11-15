@@ -1,8 +1,7 @@
 <template>
-
   <div 
-    class="modal fade show" 
     id="power-dialog" 
+    class="modal fade show" 
     tabindex="-1" 
     aria-labelledby="settingsModalLabel"
   >
@@ -14,8 +13,10 @@
           </h4>
         </div>
         <div class="modal-body text-left text-white">
-
-          <div class="form-group" v-if="!props.personalize || mso.personalize?.powerDialogButtons.shutdown">
+          <div
+            v-if="!props.personalize || mso.personalize?.powerDialogButtons.shutdown"
+            class="form-group"
+          >
             <button 
               class="btn btn-sm btn-danger"
               @click="handleShutdown"
@@ -25,7 +26,10 @@
             <small class="form-text text-muted">Orderly shutdown the system and enter low power state</small>
           </div>
 
-          <div class="form-group" v-if="!props.personalize || mso.personalize?.powerDialogButtons.sleep">
+          <div
+            v-if="!props.personalize || mso.personalize?.powerDialogButtons.sleep"
+            class="form-group"
+          >
             <button 
               class="btn btn-sm btn-info"
               @click="handleSleep"
@@ -35,7 +39,10 @@
             <small class="form-text text-muted">Turn off front panel and sleep awaiting fast wake up</small>
           </div>
 
-          <div class="form-group" v-if="!props.personalize || mso.personalize?.powerDialogButtons.restart">
+          <div
+            v-if="!props.personalize || mso.personalize?.powerDialogButtons.restart"
+            class="form-group"
+          >
             <button 
               class="btn btn-sm btn-warning"
               @click="handleRestart"
@@ -45,7 +52,10 @@
             <small class="form-text text-muted">Orderly shutdown and then restart the system</small>
           </div>
 
-          <div class="form-group" v-if="!props.personalize || mso.personalize?.powerDialogButtons.cancel">
+          <div
+            v-if="!props.personalize || mso.personalize?.powerDialogButtons.cancel"
+            class="form-group"
+          >
             <button 
               class="btn btn-sm btn-secondary"
               @click="handleCancel"
@@ -54,7 +64,6 @@
             </button>
             <small class="form-text text-muted">Do nothing</small>
           </div>
-          
         </div>
       </div>
     </div>

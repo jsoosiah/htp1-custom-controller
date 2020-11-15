@@ -1,195 +1,233 @@
 <template>
   <div class="transition-container">
-      <h5>Ethernet</h5>
-      <template v-if="nmstat.eth0detail">
-        <h6>Current Settings</h6>
-        <table class="table table-sm table-responsive table-striped">
-          <tbody>
-            <tr>
-              <td>IP Address</td>
-              <td><code>{{nmstat?.devs?.eth0?.IP4 && nmstat?.devs?.eth0?.IP4["ADDRESS[1]"]}}</code></td>
-            </tr>
-            <tr>
-              <td>Gateway</td>
-              <td><code>{{nmstat?.devs?.eth0?.IP4 && nmstat?.devs?.eth0?.IP4["GATEWAY"]}}</code></td>
-            </tr>
-            <tr>
-              <td>Network Cable</td>
-              <td><code>{{(nmstat?.devs?.eth0["WIRED-PROPERTIES"]["CARRIER"]=="on")?"Connected":"Disconnected"}}</code></td>
-            </tr>
-            <tr>
-              <td>MAC Address</td>
-              <td><code>{{nmstat?.devs?.eth0["GENERAL"]["HWADDR"]}}</code></td>
-            </tr>
-          </tbody>
-        </table>
-        <h6>Configuration for Wired Network</h6>
-        <template v-if="network.eth0.uuid">
+    <h5>Ethernet</h5>
+    <template v-if="nmstat.eth0detail">
+      <h6>Current Settings</h6>
+      <table class="table table-sm table-responsive table-striped">
+        <tbody>
+          <tr>
+            <td>IP Address</td>
+            <td><code>{{ nmstat?.devs?.eth0?.IP4 && nmstat?.devs?.eth0?.IP4["ADDRESS[1]"] }}</code></td>
+          </tr>
+          <tr>
+            <td>Gateway</td>
+            <td><code>{{ nmstat?.devs?.eth0?.IP4 && nmstat?.devs?.eth0?.IP4["GATEWAY"] }}</code></td>
+          </tr>
+          <tr>
+            <td>Network Cable</td>
+            <td><code>{{ (nmstat?.devs?.eth0["WIRED-PROPERTIES"]["CARRIER"]=="on")?"Connected":"Disconnected" }}</code></td>
+          </tr>
+          <tr>
+            <td>MAC Address</td>
+            <td><code>{{ nmstat?.devs?.eth0["GENERAL"]["HWADDR"] }}</code></td>
+          </tr>
+        </tbody>
+      </table>
+      <h6>Configuration for Wired Network</h6>
+      <template v-if="network.eth0.uuid">
+        <dhcp-settings
+          id="eth0" 
+          :network="network.eth0"
+          :blank-ip="BLANK_IP_ADDRESS"
+        />
+      </template>
+      <template v-else>
+        <p>Connect the Ethernet cable in order to configure the wired network. </p>
+      </template>
+    </template>
+    <template v-else>
+      <div
+        class="spinner-border text-primary"
+        role="status"
+      >
+        <span class="sr-only">Loading...</span>
+      </div>
+    </template>
+
+    <h5>Wi-Fi</h5>
+    <!-- TODO toggle wifi -->
+    <div class="mb-3">
+      <two-state-button 
+        :button-text="`Wi-Fi: ${nmstat?.radioenabled === true ? 'On' : 'Off'}`" 
+        :state-on="nmstat?.radioenabled === true" 
+        :home-button="false"
+        @click="wifipower"
+      />
+    </div>
+
+    <div class="form-group">
+      <label
+        for="inputEmail3"
+        class="col-form-label col-form-label-sm "
+      >Country Code for Wireless Regulatory Settings {{ mso.crda }}</label>
+      <select 
+        class="form-control form-control-sm" 
+        @change="({ type, target }) => setWifiCountryCode(target.value)"
+      >
+        <option 
+          v-for="(name, code) in isoCountries" 
+          :key="code"
+          :value="code"
+          :selected="code === mso.crda"
+        >
+          {{ code }}: {{ name }}
+        </option>
+      </select>
+    </div>
+
+    <template v-if="nmstat?.devs?.wlan0">
+      <h6>Current Settings</h6>
+      <table class="table table-sm table-responsive table-striped">
+        <tbody>
+          <tr>
+            <td>Connected Network</td>
+            <td><code>{{ nmstat?.devs?.wlan0 && nmstat?.devs?.wlan0["GENERAL"]["CONNECTION"] }}</code></td>
+          </tr>
+          <tr>
+            <td>IP Address</td>
+            <td><code>{{ nmstat?.devs?.wlan0?.IP4 && nmstat?.devs?.wlan0?.IP4["ADDRESS[1]"] }}</code></td>
+          </tr>
+          <tr>
+            <td>Gateway</td>
+            <td><code>{{ nmstat?.devs?.wlan0?.IP4 && nmstat?.devs?.wlan0?.IP4["GATEWAY"] }}</code></td>
+          </tr>
+          <tr>
+            <td>MAC Address</td>
+            <td><code>{{ nmstat?.devs?.wlan0["GENERAL"]["HWADDR"] }}</code></td>
+          </tr>
+        </tbody>
+      </table>
+      <h6>Manage Wi-Fi Networks</h6>
+      <div class="row">
+        <div class="form-group col-md">
+          <label for="available-networks">Available Networks</label>
+          <select
+            id="available-networks"
+            v-model="selnet"
+            size="10"
+            class="form-control"
+          >
+            <option
+              v-for="net in nmstat.wifinets"
+              :key="net"
+              :value="net"
+            >
+              {{ net.ssid }}
+            </option>
+          </select>
+        </div>
+        <div class="col-md">
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input 
+              id="password" 
+              v-model="password" 
+              :type="showpass?'text':'password'" 
+              class="form-control form-control-sm"
+              aria-describedby="showpass-small"
+            >
+            <small
+              id="showpass-small"
+              class="form-text text-muted"
+            >
+              <div class="form-check">
+                <input
+                  id="showpass"
+                  v-model="showpass"
+                  class="form-check-input"
+                  type="checkbox"
+                >
+                <label
+                  class="form-check-label form-check-label-sm"
+                  for="showpass"
+                >
+                  Show password
+                </label>
+              </div>
+            </small>
+          </div>
+          <button 
+            :disabled="!selnet.ssid || (selnet.security && !password)"
+            class="btn btn-sm btn-primary"
+            @click="wificonfig(selnet.ssid, password)"
+          >
+            Configure Network
+          </button>
+        </div>
+        <div class="form-group col">
+          <label for="configured-networks">Configured Networks</label>
+          <select
+            id="configured-networks"
+            v-model="actnet"
+            size="10"
+            class="form-control"
+          >
+            <option
+              v-for="net in configuredNetworks"
+              :key="net.NAME + net.UUID"
+              :value="net"
+            >
+              {{ net.NAME }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="row justify-content-end mb-3">
+        <div class="col-auto">
+          <button 
+            :disabled="!actnet.UUID"
+            class="btn btn-disabled btn-sm btn-danger"
+            @click="wififorget(actnet.UUID)"
+          >
+            Forget
+          </button>
+            &nbsp;
+          <button 
+            :disabled="!actnet.UUID"
+            class="btn btn-disabled btn-sm btn-warning"
+            @click="wifidisconnect(actnet.UUID)"
+          >
+            Disconnect
+          </button>
+            &nbsp;
+          <button 
+            :disabled="!actnet.UUID"
+            class="btn btn-disabled btn-sm btn-success"
+            @click="wificonnect(actnet.UUID)"
+          >
+            Connect
+          </button>
+        </div>
+      </div>
+        
+      <template v-if="actnet.UUID">
+        <h6>Configuration for Wi-Fi Network "{{ actnet.NAME }}"</h6>
+        <template v-if="network.wlan0.populated">
           <dhcp-settings
-            id="eth0" 
-            :network="network.eth0"
+            id="wlan0" 
+            :network="network.wlan0"
             :blank-ip="BLANK_IP_ADDRESS"
+            @apply-network-config="applyNetworkConfig"
           />
         </template>
         <template v-else>
-          <p>Connect the Ethernet cable in order to configure the wired network. </p>
-        </template>
-      </template>
-      <template v-else>
-        <div class="spinner-border text-primary" role="status">
-          <span class="sr-only">Loading...</span>
-        </div>
-      </template>
-
-      <h5>Wi-Fi</h5>
-      <!-- TODO toggle wifi -->
-      <div class="mb-3">
-        <two-state-button 
-          :button-text="`Wi-Fi: ${nmstat?.radioenabled === true ? 'On' : 'Off'}`" 
-          :state-on="nmstat?.radioenabled === true" 
-          :home-button="false"
-          @click="wifipower"
-        />
-      </div>
-
-      <div class="form-group">
-        <label for="inputEmail3" class="col-form-label col-form-label-sm ">Country Code for Wireless Regulatory Settings {{mso.crda}}</label>
-        <select 
-          class="form-control form-control-sm" 
-          @change="({ type, target }) => setWifiCountryCode(target.value)"
-        >
-          <option 
-            v-for="(name, code) in isoCountries" 
-            :key="code"
-            :value="code"
-            :selected="code === mso.crda"
+          <div
+            class="spinner-border text-primary"
+            role="status"
           >
-            {{code}}: {{name}}
-          </option>
-        </select>
-      </div>
-
-      <template v-if="nmstat?.devs?.wlan0">
-        <h6>Current Settings</h6>
-        <table class="table table-sm table-responsive table-striped">
-          <tbody>
-            <tr>
-              <td>Connected Network</td>
-              <td><code>{{nmstat?.devs?.wlan0 && nmstat?.devs?.wlan0["GENERAL"]["CONNECTION"]}}</code></td>
-            </tr>
-            <tr>
-              <td>IP Address</td>
-              <td><code>{{nmstat?.devs?.wlan0?.IP4 && nmstat?.devs?.wlan0?.IP4["ADDRESS[1]"]}}</code></td>
-            </tr>
-            <tr>
-              <td>Gateway</td>
-              <td><code>{{nmstat?.devs?.wlan0?.IP4 && nmstat?.devs?.wlan0?.IP4["GATEWAY"]}}</code></td>
-            </tr>
-            <tr>
-              <td>MAC Address</td>
-              <td><code>{{nmstat?.devs?.wlan0["GENERAL"]["HWADDR"]}}</code></td>
-            </tr>
-          </tbody>
-        </table>
-        <h6>Manage Wi-Fi Networks</h6>
-        <div class="row">
-          <div class="form-group col-md">
-            <label for="available-networks">Available Networks</label>
-            <select v-model="selnet" size="10" class="form-control" id="available-networks">
-              <option
-                v-for="net in nmstat.wifinets"
-                :key="net"
-                :value="net"
-              >
-                {{net.ssid}}
-              </option>
-            </select>
+            <span class="sr-only">Loading...</span>
           </div>
-          <div class="col-md">
-            <div class="form-group">
-              <label for="password">Password</label>
-              <input 
-                :type="showpass?'text':'password'" 
-                class="form-control form-control-sm" 
-                id="password" 
-                aria-describedby="showpass-small"
-                v-model="password"
-              />
-              <small id="showpass-small" class="form-text text-muted">
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" v-model="showpass" id="showpass" />
-                  <label class="form-check-label form-check-label-sm" for="showpass">
-                    Show password
-                  </label>
-                </div>
-              </small>
-            </div>
-            <button 
-              :disabled="!selnet.ssid || (selnet.security && !password)"
-              class="btn btn-sm btn-primary"
-              @click="wificonfig(selnet.ssid, password)"
-            >
-              Configure Network
-            </button>
-          </div>
-          <div class="form-group col">
-            <label for="configured-networks">Configured Networks</label>
-            <select v-model="actnet" size="10" class="form-control" id="configured-networks">
-              <option v-for="net in configuredNetworks" :value="net" :key="net.NAME + net.UUID">{{net.NAME}}</option>
-            </select>
-          </div>
-        </div>
-        <div class="row justify-content-end mb-3">
-          <div class="col-auto">
-            <button 
-              :disabled="!actnet.UUID"
-              class="btn btn-disabled btn-sm btn-danger"
-              @click="wififorget(actnet.UUID)"
-            >
-              Forget
-            </button>
-            &nbsp;
-            <button 
-              :disabled="!actnet.UUID"
-              class="btn btn-disabled btn-sm btn-warning"
-              @click="wifidisconnect(actnet.UUID)"
-            >
-              Disconnect
-            </button>
-            &nbsp;
-            <button 
-              :disabled="!actnet.UUID"
-              class="btn btn-disabled btn-sm btn-success"
-              @click="wificonnect(actnet.UUID)"
-            >
-              Connect
-            </button>
-          </div>
-        </div>
-        
-        <template v-if="actnet.UUID">
-          <h6>Configuration for Wi-Fi Network "{{actnet.NAME}}"</h6>
-          <template v-if="network.wlan0.populated">
-            <dhcp-settings
-              id="wlan0" 
-              :network="network.wlan0"
-              :blank-ip="BLANK_IP_ADDRESS"
-              @apply-network-config="applyNetworkConfig"
-            />
-          </template>
-          <template v-else>
-            <div class="spinner-border text-primary" role="status">
-              <span class="sr-only">Loading...</span>
-            </div>
-          </template>
         </template>
       </template>
-      <template v-else>
-        <div class="spinner-border text-primary" role="status">
-          <span class="sr-only">Loading...</span>
-        </div>
-      </template>
-
+    </template>
+    <template v-else>
+      <div
+        class="spinner-border text-primary"
+        role="status"
+      >
+        <span class="sr-only">Loading...</span>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -213,6 +251,11 @@
 
   export default {
     name: 'Connectivity',
+    components: {
+      MultiStateButtonGroup,
+      TwoStateButton,
+      DhcpSettings
+    },
     setup() {
 
       const { 
@@ -334,11 +377,6 @@
         network, password, showpass, selnet, actnet, 
         configuredNetworks, wificonnect, wifidisconnect, wififorget
       };
-    },
-    components: {
-      MultiStateButtonGroup,
-      TwoStateButton,
-      DhcpSettings
     }
   }
 </script>

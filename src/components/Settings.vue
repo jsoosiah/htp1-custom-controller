@@ -1,8 +1,11 @@
 <template>
   <div class="container">
-    <div class="background-light"></div>
-     <div class="row">
-      <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse nav-pills">
+    <div class="background-light" />
+    <div class="row">
+      <nav
+        id="sidebarMenu"
+        class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse nav-pills"
+      >
         <div class="sidebar-sticky">
           <ul class="nav flex-column">
             <li class="nav-item">
@@ -15,9 +18,9 @@
               </router-link>
             </li>
             <li 
-              class="nav-item"
               v-for="(tab) in settingsRoutes"
               :key="tab.path"
+              class="nav-item"
             >
               <template v-if="tab.meta?.icon">
                 <router-link 
@@ -28,23 +31,29 @@
                   <component 
                     :is="tab.meta?.icon"
                     style="margin-top:-2px"
-                  ></component> {{tab.meta?.label}}
+                  /> {{ tab.meta?.label }}
                 </router-link>
               </template>
               <template v-else>
-                <hr />
+                <hr>
               </template>
-              
             </li>
             <li class="nav-item">
-              <a class="nav-link" @click="powerOff" href="javascript:void(0)">
+              <a
+                class="nav-link"
+                href="javascript:void(0)"
+                @click="powerOff"
+              >
                 <power-icon style="margin-top:-2px" /> Power Off
               </a>
             </li>
           </ul>
         </div>
       </nav>
-      <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-3">
+      <main
+        role="main"
+        class="col-md-9 ml-sm-auto col-lg-10 px-md-3"
+      >
         <router-view v-slot="{ Component }">
           <keep-alive>
             <component :is="Component" />
@@ -83,14 +92,6 @@ import PowerIcon from './icons/PowerIcon';
 
 export default {
   name: 'Settings',
-  setup(props, { emit }) {
-
-    function powerOff() {
-      emit('power-dialog');
-    }
-
-    return { settingsRoutes, powerOff };
-  },
   components: {
     HomeIcon,
     CalibrationIcon,
@@ -109,6 +110,14 @@ export default {
     HelpIcon,
     PowerIcon,
     ConfigsIcon,
+  },
+  setup(props, { emit }) {
+
+    function powerOff() {
+      emit('power-dialog');
+    }
+
+    return { settingsRoutes, powerOff };
   }
 }
 </script>

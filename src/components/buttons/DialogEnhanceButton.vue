@@ -1,21 +1,27 @@
 <template>
   <div class="custom-btn-group">
-    <button class="btn btn-sm" :class="buttonClasses" @click="clicked">
-      {{`${((((mso.status?.raw?.streamType>=33) && (mso.status?.raw?.streamType<=44) &&
+    <button
+      class="btn btn-sm"
+      :class="buttonClasses"
+      @click="clicked"
+    >
+      {{ `${((((mso.status?.raw?.streamType >= 33) && (mso.status?.raw?.streamType <= 44) &&
         ((mso.status?.raw?.streamInfoBytes[0] % 32) >= 16))) ? 'DTS ' : '')}
-        Dialog Enhance ${mso.dialogEnh == 0 ? 'off' : mso.dialogEnh  + ' dB'}` }}
-
-
+        Dialog Enhance ${mso.dialogEnh == 0 ? 'off' : mso.dialogEnh + ' dB'}` }}
     </button>
     <transition name="mfade">
-      <ol class="carousel-indicators" v-if="props.showStateIndicators" v-show="recentlyInteracted">
-        <li :class="{'active':mso.dialogEnh === 0}"></li>
-        <li :class="{'active-bright':mso.dialogEnh === 1}"></li>
-        <li :class="{'active-bright':mso.dialogEnh === 2}"></li>
-        <li :class="{'active-bright':mso.dialogEnh === 3}"></li>
-        <li :class="{'active-bright':mso.dialogEnh === 4}"></li>
-        <li :class="{'active-bright':mso.dialogEnh === 5}"></li>
-        <li :class="{'active-bright':mso.dialogEnh === 6}"></li>
+      <ol
+        v-if="props.showStateIndicators"
+        v-show="recentlyInteracted"
+        class="carousel-indicators"
+      >
+        <li :class="{'active':mso.dialogEnh === 0}" />
+        <li :class="{'active-bright':mso.dialogEnh === 1}" />
+        <li :class="{'active-bright':mso.dialogEnh === 2}" />
+        <li :class="{'active-bright':mso.dialogEnh === 3}" />
+        <li :class="{'active-bright':mso.dialogEnh === 4}" />
+        <li :class="{'active-bright':mso.dialogEnh === 5}" />
+        <li :class="{'active-bright':mso.dialogEnh === 6}" />
       </ol>
     </transition>
   </div>
@@ -62,7 +68,7 @@
         }
       });
 
-      function clicked(e) {
+      function clicked() {
         setNextDtsDialogEnh();
         recentlyInteracted.value = true;
         clearTimeout(recentlyInteractedTimeout);

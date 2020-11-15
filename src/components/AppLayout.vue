@@ -1,32 +1,64 @@
 <template>
-  <div v-if="loading" class="loading-indicator">
-    <div class="spinner-border text-primary" role="status">
+  <div
+    v-if="loading"
+    class="loading-indicator"
+  >
+    <div
+      class="spinner-border text-primary"
+      role="status"
+    >
       <span class="sr-only">Loading...</span>
     </div>
   </div>
-  <div class="fixed-top mx-auto" v-if="mso?.sgen?.sgensw === 'on'">
-    <router-link class="sgen-on-warning" to="/settings/signal-generator">
-      Signal Generator On <font-awesome-icon  :icon="['fas', 'external-link-alt']" />
+  <div
+    v-if="mso?.sgen?.sgensw === 'on'"
+    class="fixed-top mx-auto"
+  >
+    <router-link
+      class="sgen-on-warning"
+      to="/settings/signal-generator"
+    >
+      Signal Generator On <font-awesome-icon :icon="['fas', 'external-link-alt']" />
     </router-link>
   </div>
-  <div class="fixed-top mx-auto" v-if="calToolConnected">
+  <div
+    v-if="calToolConnected"
+    class="fixed-top mx-auto"
+  >
     <span class="sgen-on-warning">Dirac Calibration in Progress - Currently in Readonly Mode</span>
   </div>
-  <div class="fixed-top mx-auto" v-if="currentlyRecordingSlot">
-    <router-link to="/settings/macros" class="sgen-on-warning">
-      Currently Recording - {{currentlyRecordingSlot}} <font-awesome-icon  :icon="['fas', 'external-link-alt']" />
+  <div
+    v-if="currentlyRecordingSlot"
+    class="fixed-top mx-auto"
+  >
+    <router-link
+      to="/settings/macros"
+      class="sgen-on-warning"
+    >
+      Currently Recording - {{ currentlyRecordingSlot }} <font-awesome-icon :icon="['fas', 'external-link-alt']" />
     </router-link>
   </div>
-  <div v-if="state !== 'OPEN'" class="connecting-overlay">
+  <div
+    v-if="state !== 'OPEN'"
+    class="connecting-overlay"
+  >
     <ip-select />
   </div>
   <template v-if="!mso?.powerIsOn">
     <div class="container">
       <div class="row pt-5">
         <div class="col-md-12 text-center">
-          <p class="standby-msg">Unit is in standby mode. Click below to power on.</p>
-          <button class="btn btn-dark rounded-circle menu-btn" @click="powerOn()">
-            <font-awesome-icon size="lg" :icon="['fas', 'power-off']" />
+          <p class="standby-msg">
+            Unit is in standby mode. Click below to power on.
+          </p>
+          <button
+            class="btn btn-dark rounded-circle menu-btn"
+            @click="powerOn()"
+          >
+            <font-awesome-icon
+              size="lg"
+              :icon="['fas', 'power-off']"
+            />
           </button>
         </div>
       </div>
@@ -39,26 +71,39 @@
       @click.self="toggleShowPowerDialog(true)"
     >
       <power-dialog
+        :personalize="personalizePowerDialog"
         @click.self="toggleShowPowerDialog(true)"
         @cancel="toggleShowPowerDialog(true)"
-        :personalize="personalizePowerDialog"
       />
     </div>
-    <div class="container" style="z-index:1">
-      <nav class="navbar p-0" style="z-index:1">
-        <ul class="navbar-nav mr-auto" :class="{'shortcut-nav': isMobileMode}">
+    <div
+      class="container"
+      style="z-index:1"
+    >
+      <nav
+        class="navbar p-0"
+        style="z-index:1"
+      >
+        <ul
+          class="navbar-nav mr-auto"
+          :class="{'shortcut-nav': isMobileMode}"
+        >
           <!-- If desktop mode -->
           <!-- If desktop mode home screen, hamburger button goes directly to settings --> 
           <li 
+            v-if="!isMobileMode"
             class="nav-item shortcut-icon px-0"
             :class="[$route.path !== '/' ? ['d-xl-none', 'd-lg-none', 'd-md-none'] : '' ]"
-            v-if="!isMobileMode"
-          > <!-- class="d-xl-none d-lg-none d-md-none" -->
+          >
+            <!-- class="d-xl-none d-lg-none d-md-none" -->
             <router-link 
               class="settings-status"
               :to="`/settings/${settingsRoutes[1].path}`"
             >
-              <font-awesome-icon size="lg" :icon="['fas', 'cog']" /> Settings
+              <font-awesome-icon
+                size="lg"
+                :icon="['fas', 'cog']"
+              /> Settings
             </router-link>
           </li>
           <!-- If desktop mode settings, show status and click to go home --> 
@@ -67,19 +112,20 @@
             :class="[$route.path === '/' ? 'd-none' : ['d-none', 'd-md-block'] ]"
           >
             <router-link 
-            class="settings-status"
+              class="settings-status"
               to="/"
             >
-              {{mso.volume}} dB &middot; {{mso.inputs && mso.inputs[mso.input].label}} &middot; {{mso.upmix && upmixLabels[mso.upmix.select]}}
+              {{ mso.volume }} dB &middot; {{ mso.inputs && mso.inputs[mso.input].label }} &middot; {{ mso.upmix && upmixLabels[mso.upmix.select] }}
             </router-link>
           </li>
           <!-- If mobile mode, always show hamburger button menu --> 
           <!-- Hamburger menu --> 
           <li 
+            v-if="isMobileMode"
             class="nav-item shortcut-icon px-0"
             :class="[$route.path !== '/' ? ['d-xl-none', 'd-lg-none', 'd-md-none'] : '' ]"
-            v-if="isMobileMode"
-          > <!-- class="d-xl-none d-lg-none d-md-none" -->
+          >
+            <!-- class="d-xl-none d-lg-none d-md-none" -->
             <button 
               class="navbar-toggler" 
               type="button" 
@@ -90,22 +136,28 @@
               aria-label="Toggle navigation"
               @click="toggleShowMobileMenu"
             >
-              <span class="navbar-toggler-icon"></span>
+              <span class="navbar-toggler-icon" />
             </button>
           </li>
-          <li class="small text-muted shortcut-icon" v-if="isMobileMode">
+          <li
+            v-if="isMobileMode"
+            class="small text-muted shortcut-icon"
+          >
             <router-link 
-            class="settings-status"
+              class="settings-status"
               to="/"
             >
-              {{mso.volume}} dB &middot; {{mso.inputs && mso.inputs[mso.input].label}} &middot; {{mso.upmix && upmixLabels[mso.upmix.select]}}
+              {{ mso.volume }} dB &middot; {{ mso.inputs && mso.inputs[mso.input].label }} &middot; {{ mso.upmix && upmixLabels[mso.upmix.select] }}
             </router-link>
           </li>
         </ul>
         <!-- Shortcut icons --> 
         <nav class="navbar navbar-expand-lg">
           <ul class="navbar-nav ml-auto shortcut-nav">
-            <li class="nav-item shortcut-icon" v-if="mso.personalize?.shortcuts.home">
+            <li
+              v-if="mso.personalize?.shortcuts.home"
+              class="nav-item shortcut-icon"
+            >
               <router-link 
                 class="nav-link"
                 to="/"
@@ -113,17 +165,30 @@
                 <home-icon />
               </router-link>
             </li>
-            <li class="nav-item shortcut-icon" v-for="route in filteredSettingsRoutes" :key="route.path">
+            <li
+              v-for="route in filteredSettingsRoutes"
+              :key="route.path"
+              class="nav-item shortcut-icon"
+            >
               <router-link
                 class="nav-link"
                 :class="{'active': $route.path === `/settings/${route.path}`}"
                 :to="`/settings/${route.path}`"
               >
-                <component v-if="route.meta?.icon" :is="route.meta?.icon" /> 
+                <component
+                  :is="route.meta?.icon"
+                  v-if="route.meta?.icon"
+                /> 
               </router-link>
             </li>
-            <li class="nav-item shortcut-icon dropdown" v-if="mso.personalize?.shortcuts.power">
-              <a class="nav-link" @click="toggleShowPowerDialog(true)">
+            <li
+              v-if="mso.personalize?.shortcuts.power"
+              class="nav-item shortcut-icon dropdown"
+            >
+              <a
+                class="nav-link"
+                @click="toggleShowPowerDialog(true)"
+              >
                 <power-icon />
               </a>
             </li>
@@ -131,8 +196,15 @@
         </nav>
 
         <!-- Full navigation menu for mobile --> 
-        <div class="collapse navbar-collapse" :class="{show: showMobileMenu}" id="navbarSupportedContent">
-          <ul class="navbar-nav ml-auto nav-pills" :class="{'full-nav': $route.path !== '/'}">
+        <div
+          id="navbarSupportedContent"
+          class="collapse navbar-collapse"
+          :class="{show: showMobileMenu}"
+        >
+          <ul
+            class="navbar-nav ml-auto nav-pills"
+            :class="{'full-nav': $route.path !== '/'}"
+          >
             <li class="nav-item">
               <router-link 
                 class="nav-link"
@@ -143,17 +215,27 @@
                 Home
               </router-link>
             </li>
-            <li class="nav-item" v-for="route in settingsRoutes" :key="route.path">
+            <li
+              v-for="route in settingsRoutes"
+              :key="route.path"
+              class="nav-item"
+            >
               <router-link
                 class="nav-link"
                 :class="{'active': $route.path === `/settings/${route.path}`}"
                 :to="`/settings/${route.path}`"
               >
-                <component v-if="route.meta?.icon" :is="route.meta?.icon" /> {{route.meta?.label}}
+                <component
+                  :is="route.meta?.icon"
+                  v-if="route.meta?.icon"
+                /> {{ route.meta?.label }}
               </router-link>
             </li>
             <li class="nav-item">
-              <a class="nav-link" @click="toggleShowPowerDialog(false)">
+              <a
+                class="nav-link"
+                @click="toggleShowPowerDialog(false)"
+              >
                 <power-icon /> Power Off
               </a>
             </li>
@@ -162,7 +244,10 @@
       </nav>
     </div>
     <router-view v-slot="{ Component }">
-      <transition name="mfade" mode="out-in">
+      <transition
+        name="mfade"
+        mode="out-in"
+      >
         <keep-alive>
           <component 
             :is="Component" 

@@ -4,12 +4,16 @@
       <h5>Speaker Selection</h5>
     </div>
     <div class="row">
-      <dismissable-alert alertKey="speaker-bm">
+      <dismissable-alert alert-key="speaker-bm">
         If the current Dirac Filter Slot has Bass Control and Dirac is On, speaker size and crossover controls are unavailable and must be configured using the Dirac software. Speaker sizes and crossovers can be changed if Dirac is off or in bypass mode.
       </dismissable-alert>
     </div>
     <div class="row">
-      <dismissable-alert v-if="mso.cal?.speakerConfigMismatch" alertKey="speaker-filter-mismatch" class="alert-warning">
+      <dismissable-alert
+        v-if="mso.cal?.speakerConfigMismatch"
+        alert-key="speaker-filter-mismatch"
+        class="alert-warning"
+      >
         The selected Dirac calibration does not match the current speaker configuration. Uncalibrated channels are highlighted.
       </dismissable-alert>
     </div>
@@ -21,7 +25,12 @@
       </div>
       <div class="col-lg">
         <div class="alert alert-secondary mb-3">
-          <h6>Current bass manager: <img class="bm-icon" :src="require(`@/assets/${showCrossoverControls?'monolith-logo-small.svg':'dirac3.png'}`)+'#svgView(preserveAspectRatio(xMidYMid))'"> <span class="bm-status">{{showCrossoverControls ? 'HTP-1' : 'Dirac'}}</span></h6>
+          <h6>
+            Current bass manager: <img
+              class="bm-icon"
+              :src="require(`@/assets/${showCrossoverControls?'monolith-logo-small.svg':'dirac3.png'}`)+'#svgView(preserveAspectRatio(xMidYMid))'"
+            > <span class="bm-status">{{ showCrossoverControls ? 'HTP-1' : 'Dirac' }}</span>
+          </h6>
         </div>
       </div>
     </div>
@@ -35,7 +44,7 @@
     </div>
     <div class="row speaker-map-container">
       <h5>Speaker Map <small class="text-muted">Click image to zoom</small></h5>
-      <dismissable-alert alertKey="speaker-labels">
+      <dismissable-alert alert-key="speaker-labels">
         Depending on the combination of selected speakers, the physical labels on the back panel may not match the actual speaker mapping. The correct mapping is shown below. If the speakers are not enabled, no sound will be produced. Enabled speaker channels are highlighted in green.
       </dismissable-alert>
       <SpeakerMap />
@@ -58,6 +67,13 @@
 
   export default {
     name: 'Speakers',
+    components: {
+      SpeakerDiagram,
+      DiracButtonGroup,
+      SpeakerGroupCrossoverControls,
+      SpeakerMap,
+      DismissableAlert,
+    },
     setup(props, { emit }) {
 
       const { mso, showCrossoverControls, activeChannels } = useMso();
@@ -119,13 +135,6 @@
         mso, showCrossoverControls, mainSpeakers, surroundSpeakers, upperSpeakers, 
         diagramSpeakerVisibility, speakerGroups, activeChannels, isLg
       };
-    },
-    components: {
-      SpeakerDiagram,
-      DiracButtonGroup,
-      SpeakerGroupCrossoverControls,
-      SpeakerMap,
-      DismissableAlert,
     }
   }
 </script>

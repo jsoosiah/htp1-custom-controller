@@ -10,15 +10,18 @@
         </tr>
       </thead>
       <tbody class="import-patch">
-        <tr v-for="patch in msoImportPatch" :key="patch">
+        <tr
+          v-for="patch in msoImportPatch"
+          :key="patch"
+        >
           <td>
-            <code>{{patch.op}}</code>
+            <code>{{ patch.op }}</code>
           </td>
           <td>
-            <code>{{patch.path}}</code>
+            <code>{{ patch.path }}</code>
           </td>
           <td>
-            <code>{{patch.value}}</code>
+            <code>{{ patch.value }}</code>
           </td>
         </tr>
       </tbody>
@@ -31,7 +34,10 @@
     </button>
   </template>
   <template v-else>
-    <div class="alert alert-success small" role="alert">
+    <div
+      class="alert alert-success small"
+      role="alert"
+    >
       The selected configuration file matches the current configuration. No changes necessary. 
     </div>
   </template>
@@ -46,14 +52,14 @@
         type: Object,
       }
     },
+    emits: ['confirm-import'],
     setup(props, { emit }) {
       function importMso() {
         emit('confirm-import');
       }
 
       return { importMso };
-    },
-    emits: ['confirm-import']
+    }
   }
 </script>
 

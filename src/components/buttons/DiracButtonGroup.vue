@@ -1,6 +1,6 @@
 <template>
   <multi-state-button-group
-    v-if = "mso?.cal?.slots[mso?.cal?.currentdiracslot].checksum !== 31802"
+    v-if="mso?.cal?.slots[mso?.cal?.currentdiracslot].checksum !== 31802"
     :states="[{value: 0, label: 'Dirac Off'}, {value: 2, label: 'Dirac Bypass'}, {value: 1, label: 'Dirac On' + (mso?.cal?.slots[mso?.cal?.currentdiracslot].hasBCFilter ? ' BC' : '   ')}]"
     :state-value="mso.cal?.diracactive === 'on' ? 1 : mso.cal?.diracactive === 'off' ? 0 : 2"
     :home-button="props.homeButton"
@@ -10,7 +10,7 @@
   />
 
   <multi-state-button-group
-    v-if = "mso?.cal?.slots[mso?.cal?.currentdiracslot].checksum === 31802"
+    v-if="mso?.cal?.slots[mso?.cal?.currentdiracslot].checksum === 31802"
     :states="[{value: 0, label: 'Dirac No Filter'}]"
     :state-value="0"
     :home-button="props.homeButton"
@@ -25,7 +25,14 @@
 
   export default {
     name: 'DiracButtonGroup',
+    components: {
+      MultiStateButtonGroup
+    },
     props: {
+      homeButton: Boolean,
+    }, 
+    props: {
+      className: String,
       homeButton: Boolean,
     },
     setup(props) {
@@ -33,13 +40,6 @@
       const { mso, setDiracOff, setDiracBypass, setDiracOn } = useMso();
 
       return { mso, setDiracOff, setDiracBypass, setDiracOn, props };
-    }, 
-    props: {
-      className: String,
-      homeButton: Boolean,
-    },
-    components: {
-      MultiStateButtonGroup
     }
   }
 </script>

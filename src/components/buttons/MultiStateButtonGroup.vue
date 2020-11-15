@@ -1,6 +1,10 @@
 <template>
-  <div class="btn-group" :class="{'btn': props.homeButton}">
-    <button v-for="(state) in props.states"
+  <div
+    class="btn-group"
+    :class="{'btn': props.homeButton}"
+  >
+    <button
+      v-for="(state) in props.states"
       :key="state.value"
       class="btn btn-sm" 
       :class="buttonClasses(state.value)"
@@ -34,6 +38,7 @@
         default: false
       },
     },
+    emits: ['set-off', 'set-on', 'set-other'],
     setup(props, { emit }) {
 
       function buttonClasses(buttonValue) {
@@ -79,8 +84,7 @@
       }
 
       return { props, buttonClasses, setState };
-    },
-    emits: ['set-off', 'set-on', 'set-other']
+    }
   }
 </script>
 

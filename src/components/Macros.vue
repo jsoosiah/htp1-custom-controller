@@ -1,12 +1,15 @@
 <template>
   <div class="transition-container">
     <h5>Record Macros</h5>
-    <div class="accordion" id="accordionExample">
+    <div
+      id="accordionExample"
+      class="accordion"
+    >
       <template v-if="mso.svronly">
         <macro-editor 
-          :commandKey="key" 
-          :key="key"
           v-for="key in commandKeys" 
+          :key="key"
+          :command-key="key" 
         />
       </template>
     </div>
@@ -21,14 +24,14 @@
 
   export default {
     name: 'Macros',
+    components: {
+      MacroEditor,
+    },
     setup(props, { emit }) {
 
       return {
         ...useMso()
       };
-    },
-    components: {
-      MacroEditor,
     }
   }
 </script>

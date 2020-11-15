@@ -1,7 +1,5 @@
-import { ref, watch, computed } from 'vue';
+import { ref, watch } from 'vue';
 import useWebSocket from './useWebSocket.js';
-import { applyPatch } from 'fast-json-patch/index.mjs';
-import { debounce } from 'lodash-es';
 
 import useMso from './useMso.js';
 
@@ -10,7 +8,7 @@ const nmstat = ref({});
 
 const condetails = ref({});
 
-const { data, state, send, close } = useWebSocket();
+const { data, state, send } = useWebSocket();
 
 const { loading } = useMso();
 
@@ -69,10 +67,6 @@ export default function useNetworkManager() {
     condetails.value = detail;
   }
 
-  function receiveNMCons(cons) {
-
-  }
-
   function receiveNMStat(nms) {
     console.log('receiveNMStat', nms);
     nmstat.value = nms;
@@ -115,12 +109,8 @@ export default function useNetworkManager() {
     val => {
       const { verb, arg } = parseMSO(val);
       console.log('received verb', verb, arg);
-      if (verb === 'wifinetworks') {
-
-      } else if (verb === 'nmcondetail') {
+      if (verb === 'nmcondetail') {
         receiveNMConDetail(arg);
-      } else if (verb === 'nmcons') {
-
       } else if (verb === 'nmstat') {
         receiveNMStat(arg)
       } else if (verb === 'error') {
@@ -136,7 +126,7 @@ export default function useNetworkManager() {
   return { 
     nmstat, condetails, applyNetworkConfig,
     scan, wificonfig, wificonnect, wifidisconnect, wififorget, 
-    getConDetails, wifipower, reseteth0, receiveNMConDetail, receiveNMCons,
+    getConDetails, wifipower, reseteth0, receiveNMConDetail,
     int2ip, ip2int, cidr2mask, mask2cidr,
     state, loading,
   };
@@ -152,20 +142,4 @@ function parseMSO(cmd) {
     verb: cmd,
     arg: undefined
   }
-}
-
-// create a new array with newCmd appended to cmdList 
-// and all commands of type newCmd filtered out of cmdList,
-// since those should be unnecessary  
-function addCommand(cmdList, newCmd) {
-  const newCmdList = cmdList.filter(
-    cmd => {
-      return !(cmd.op === newCmd.op && cmd.path === newCmd.path);
-      // return true;
-    }
-  );
-
-  newCmdList.push(newCmd);
-  
-  return newCmdList;
 }
