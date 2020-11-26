@@ -261,9 +261,11 @@
         );
       });
 
-      const toListSentence = (arr) => arr.length < 3 ?
+      function toListSentence(arr) {
+        return arr.length < 3 ?
         arr.join(' and ') :
         `${arr.slice(0, -1).join(', ')}, and ${arr[arr.length - 1]}`;
+      } 
 
       function translatedSpkName(channame) {
         if (!showCrossoverControls.value && channame === 'sub1') {
