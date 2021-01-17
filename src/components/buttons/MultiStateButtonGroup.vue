@@ -8,7 +8,7 @@
       :key="state.value"
       class="btn btn-sm" 
       :class="buttonClasses(state.value)"
-      @click="setState(state.value)"
+      @click="e => setState(e, state.value)"
     >
       {{ state.label }}
     </button>
@@ -67,7 +67,9 @@
         }
       }
 
-      function setState(stateValue) {
+      function setState(e, stateValue) {
+        console.log('buttonc clicked', e)
+        e.target.blur();
         switch(stateValue) {
           case 0:
             emit('set-off');

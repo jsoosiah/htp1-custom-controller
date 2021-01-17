@@ -80,6 +80,7 @@
 
       function clicked(e) {
         e.preventDefault();
+        e.target.blur();
         emit('btn-click');
         localRecentlyInteracted.value = true;
         clearTimeout(recentlyInteractedTimeout);
@@ -167,10 +168,10 @@
     animation: barberpole 10s linear infinite;
   }
 
-@keyframes barberpole {
-  100% {
-    background-position: 100% 100%;
+  @keyframes barberpole {
+    100% {
+      background-position: 100% 100%;
+    }
   }
-}
 
 </style>

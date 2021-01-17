@@ -1,9 +1,10 @@
 <template>
   <div class="transition-container">
     <h5>Record Macros</h5>
+    <h6>Remote Buttons</h6>
     <div
       id="accordionExample"
-      class="accordion"
+      class="accordion mb-3"
     >
       <template v-if="mso.svronly">
         <macro-editor 
@@ -13,6 +14,12 @@
         />
       </template>
     </div>
+    <h6>Additional Macros</h6>
+    <dismissable-alert
+      alert-key="macros-extra"
+    >
+      Additional macros beyond the 8 standard slots may be added or removed. These extra macros can only be run from this web UI and are not accessible from the remote.
+    </dismissable-alert>
   </div>
 </template>
 
@@ -21,13 +28,15 @@
   import useMso from '@/use/useMso.js';
 
   import MacroEditor from './MacroEditor.vue';
+  import DismissableAlert from './buttons/DismissableAlert.vue';
 
   export default {
     name: 'Macros',
     components: {
       MacroEditor,
+      DismissableAlert,
     },
-    setup(props, { emit }) {
+    setup() {
 
       return {
         ...useMso()

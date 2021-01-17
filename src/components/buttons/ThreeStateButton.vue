@@ -83,6 +83,8 @@
 
       function clicked(e) {
         e.preventDefault();
+        console.log('blur?', e.target);
+        e.target.blur();
         emit('btn-click');
         recentlyInteracted.value = true;
         clearTimeout(recentlyInteractedTimeout);

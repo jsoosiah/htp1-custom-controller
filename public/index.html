@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-build-timestamp-utc="<%= new Date().toISOString() %>">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -15,6 +15,29 @@
       html, body, div#app {
         height: 100%;
       }
+
+      /** 
+      * The default focus style is likely provided by Bootstrap or the browser
+      * but here we override everything else with a visually appealing cross-
+      * browser solution that works well on all focusable page elements
+      * including buttons, links, inputs, textareas, and selects.
+      */
+      *:focus { 
+        outline: 0 !important;
+        box-shadow:
+          0 0 0 .2rem #fff, /* use site bg color to create whitespace for faux focus ring */
+          0 0 0 .35rem #069 !important; /* faux focus ring color */
+      }
+
+      /**
+      * Undo the above focused button styles when the element received focus
+      * via mouse click or touch, but not keyboard navigation.
+      */
+      *:focus:not(:focus-visible) {
+        outline: 0 !important;
+        box-shadow: none !important;
+      }
+
     </style>
   </head>
   <body class="app-body">

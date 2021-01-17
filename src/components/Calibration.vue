@@ -159,7 +159,7 @@
     <template v-else>
       <h5>Dirac Room Correction Filters <small class="text-muted">up to 6 sets or slots available</small></h5>
       <dismissable-alert alert-key="calibration-dlbc">
-        * denotes Dirac Live Room Correction filters with Bass Control.
+        <span class="italic" /> denotes Dirac Live Room Correction filters with Bass Control.
       </dismissable-alert>
       <dismissable-alert
         v-if="mso.cal?.speakerConfigMismatch"
@@ -405,12 +405,14 @@
 <style scoped>
 
   .italic {
-    font-style: italic;
+    /* font-style: italic; */
   }
 
   .italic:after {
-    content:" *";
+    content:" BASS";
     font-weight: bold;
+    vertical-align: super;
+    font-size:75%;
   }
 
   .navbar {

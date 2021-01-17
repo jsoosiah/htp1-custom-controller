@@ -1,5 +1,5 @@
 import { ref, watch, computed } from 'vue';
-import { applyPatch } from 'fast-json-patch/index.mjs';
+import { applyPatch, deepClone } from 'fast-json-patch/index.mjs';
 import { debounce, get, isEqual } from 'lodash-es';
 
 import useWebSocket from './useWebSocket.js';
@@ -41,6 +41,9 @@ const commandKeys = [
   'preset3',
   'preset4'
 ];
+
+// flag to apply bmlfec from bassLpf
+let bmlfecApplied = false;
 
 // local MSO state, used to display values on the interface
 const mso = ref({});
@@ -304,6 +307,20 @@ function applyProductRules() {
     if (!mso.value.svronly.macroNames) {
       initializeMacroNames();
     }
+
+    if (!mso.value.svronly.extraMacros) {
+      initializeExtraMacros();
+    }
+
+    if (!mso.value.bassLpf) {
+      initializeBassLpf();
+    } else {
+      if (mso.value.powerIsOn && !bmlfecApplied) {
+      // TODO remove once the MSO is read by avController
+      send(`avcui "bmlfec ${mso.value.bassLpf}"`);
+      bmlfecApplied = true;
+      }
+    }
   }
 }
 
@@ -511,7 +528,21 @@ const diracMismatchedChannels = computed(() => {
 const diracMismatchedChannelGroups = computed(() => {
   console.log('mismatched', diracMismatchedChannels.value)
   return [...new Set(diracMismatchedChannels.value.map(chan => reverseBmg[chan]))];
-})
+});
+
+const powerIsOn = computed(() => {
+  return mso.value.powerIsOn;
+});
+
+// watch mso power state
+watch(
+  powerIsOn,
+  (newPower, oldPower) => {
+    if (newPower != oldPower) {
+      bmlfecApplied = false;
+    }
+  }
+)
 
 function setDefaultsBeforePowerDown() {
   // set default upmix for current input if necessary
@@ -557,15 +588,9 @@ function powerOn() {
 }
 
 function setVolume(volumeLevel) {
-  if (volumeLevel < mso.value.cal?.vpl) {
-    volumeLevel = mso.value.cal?.vpl;
-  }
+  const volInt = convertInt(volumeLevel, mso.value.powerOnVol, mso.value.cal?.vpl, mso.value.cal?.vph);
 
-  if (volumeLevel > mso.value.cal?.vph) {
-    volumeLevel = mso.value.cal?.vph;
-  }
-
-  return patchMso('replace', '/volume', volumeLevel);
+  return patchMso('replace', '/volume', volInt);
 }
 
 function toggleMute() {
@@ -750,6 +775,10 @@ function setCenterFreq(spkCode, centerFreq) {
   return patchMso( 'replace', `/speakers/groups/${spkCode}/fc`, parseInt(centerFreq));
 }
 
+function setLPFforLFE(centerFreq) {
+  return patchMso('replace', 'TODO', parseInt(centerFreq));
+}
+
 function setMinVolume(minVol) {
   return patchMso( 'replace', '/cal/vpl', parseInt(minVol));
 }
@@ -763,14 +792,7 @@ function setMaxOutputLevel(outputLevel) {
 }
 
 function setLipsyncDelay(lipsyncDelay) {
-  let delay = parseInt(lipsyncDelay);
-  if (isNaN(delay)) {
-    delay = 0;
-  } else if (delay < 0) {
-    delay = 0;
-  } else if (delay > 200) {
-    delay = 200;
-  }
+  let delay = convertInt(lipsyncDelay, 0, 0, 200);
   return patchMso( 'replace', '/cal/lipsync', delay);
 }
 
@@ -896,26 +918,12 @@ function setSignalGeneratorSignalType(signalType) {
 }
 
 function setSineFrequency(freq) {
-  let freqValue = parseInt(freq);
-  if (isNaN(freqValue)) {
-    freqValue = 440;
-  } else if (freqValue < 10) {
-    freqValue = 10;
-  } else if (freqValue > 20000) {
-    freqValue = 20000;
-  }
+  let freqValue = convertInt(freq, 440, 10, 20000);
   return patchMso( 'replace', `/sgen/sinehz`, freqValue);
 }
 
 function setSineAmplitude(gain) {
-  let gainValue = parseFloat(gain);
-  if (isNaN(gainValue)) {
-    gainValue = -20;
-  } else if (gainValue < -140) {
-    gainValue = -140;
-  } else if (gainValue > 0) {
-    gainValue = 0;
-  }
+  let gainValue = convertFloat(gain, -20, -140, 0);
   return patchMso( 'replace', `/sgen/sinedb`, gainValue);
 }
 
@@ -986,45 +994,21 @@ function setPEQSlot(bandNumber) {
 
 function setPEQCenterFrequency(channel, slot, centerFreq) {
 
-  let centerFreqValue = parseFloat(centerFreq);
-
-  if (isNaN(centerFreqValue)) {
-    centerFreqValue = 100.0;
-  } else if (centerFreqValue < 15.0) {
-    centerFreqValue = 15.0;
-  } else if (centerFreqValue > 20000.0) {
-    centerFreqValue = 20000.0;
-  }
+  let centerFreqValue = convertFloat(centerFreq, 100.0, 15.0, 20000.0);
 
   return patchMso( 'replace', `/peq/slots/${slot}/channels/${channel}/Fc`, centerFreqValue);
 }
 
 function setPEQGain(channel, slot, gain) {
 
-  let gainValue = parseFloat(gain);
-
-  if (isNaN(gainValue)) {
-    gainValue = 0.0;
-  } else if (gainValue < -20.0) {
-    gainValue = -20.0;
-  } else if (gainValue > 20.0) {
-    gainValue = 20.0;
-  }
+  let gainValue = convertFloat(gain, 0.0, -20.0, 20.0);
 
   return patchMso( 'replace', `/peq/slots/${slot}/channels/${channel}/gaindB`, gainValue);
 }
 
 function setPEQQuality(channel, slot, q) {
 
-  let qValue = parseFloat(q);
-
-  if (isNaN(qValue)) {
-    qValue = 1.0;
-  } else if (qValue < 0.1) {
-    qValue = 0.1;
-  } else if (qValue > 10.0) {
-    qValue = 10.0;
-  }
+  let qValue = convertFloat(q, 1.0, .1, 10.0);
 
   return patchMso( 'replace', `/peq/slots/${slot}/channels/${channel}/Q`, qValue);
 }
@@ -1077,14 +1061,7 @@ function _setInputVolumeTrim(input, trim, op) {
     op = Object.prototype.hasOwnProperty.call(mso.value.inputs[input], 'gain') ? 'replace' : 'add';
   }
   
-  let trimValue = parseInt(trim);
-  if (isNaN(trimValue)) {
-    trimValue = 0;
-  } else if (trimValue > 12) {
-    trimValue  = 12;
-  } else if (trimValue < -12) {
-    trimValue = -12;
-  }
+  let trimValue = convertInt(trim, 0, -12, 12);
   return patchMso( 'replace', `/inputs/${input}/gain`, trimValue);
 }
 
@@ -1093,15 +1070,7 @@ function initializeInputDelay(input) {
 }
 
 function setInputDelay(input, delayStr) {
-  let delay = parseInt(delayStr);
-  if (isNaN(delay)) {
-    delay = 0;
-  } else if (delay < 0) {
-    delay = 0;
-  } else if (delay > 200) {
-    delay = 200;
-  }
-  console.log('setinputdelay', delayStr, delay);
+  let delay = convertInt(delayStr, 0, 0, 200);
   return patchMso( 'replace', `/inputs/${input}/delay`, delay);
 }
 
@@ -1261,6 +1230,16 @@ function initializePowerDialogButtons() {
   });
 }
 
+function initializeBassLpf() {
+  return patchMso('add', '/bassLpf', 120);
+}
+
+function setBassLpf(lpf) {
+  let lpfValue = convertInt(lpf, 120, 40, 200);
+  bmlfecApplied = false;
+  return patchMso('replace', '/bassLpf', parseInt(lpfValue));
+}
+
 function toggleShowPowerDialogButton(button) {
   if (mso.value.personalize.powerDialogButtons[button]) {
     return patchMso( 'remove', `/personalize/powerDialogButtons/${button}`)
@@ -1349,6 +1328,10 @@ function initializeMacroNames() {
   });
 }
 
+function initializeExtraMacros() {
+  return patchMso('add', '/svronly/extraMacros', {});
+}
+
 function setMacroName(macroKey, name) {
   return patchMso( 'replace', `/svronly/macroNames/${macroKey}`, name);
 }
@@ -1399,7 +1382,7 @@ export default function useMso() {
     setNightOff, setNightAuto, setNightOn,
     setLoudnessOff, setLoudnessOn,
     setToneControlOff, setToneControlOn,
-    toggleSpeakerGroup, setSpeakerSize, setCenterFreq,
+    toggleSpeakerGroup, setSpeakerSize, setCenterFreq, setBassLpf,
     setMinVolume, setMaxVolume, setMaxOutputLevel, setLipsyncDelay, setDiracSlot,
     setUserDelay, setUserTrim, toggleMuteChannel,
     setMuteAllChannelsOff, setMuteAllChannelsOn, toggleAllMuteChannels,
@@ -1497,4 +1480,26 @@ function filterMatchingCommandList(cmdList, newCmdList) {
   }
 
   return result;
+}
+
+function convertInt(value, defaultValue, minValue, maxValue) {
+  return convert(parseInt, value, defaultValue, minValue, maxValue);
+}
+
+function convertFloat(value, defaultValue, minValue, maxValue) {
+  return convert(parseFloat, value, defaultValue, minValue, maxValue);
+}
+
+function convert(convertFunction, value, defaultValue, minValue, maxValue) {
+  let intValue = convertFunction(value);
+
+  if (isNaN(intValue)) {
+    return defaultValue;
+  } else if (intValue < minValue) {
+    return minValue;
+  } else if (intValue > maxValue) {
+    return maxValue;
+  }
+
+  return intValue;
 }

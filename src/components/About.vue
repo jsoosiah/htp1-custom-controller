@@ -123,6 +123,14 @@
     <table class="table table-sm table-striped table-responsive">
       <tbody>
         <tr>
+          <th>
+            Last Updated
+          </th>
+          <td>
+            {{ buildTime }}
+          </td>
+        </tr>
+        <tr>
           <th>GitHub</th>
           <td>
             <a
@@ -155,13 +163,22 @@
 </template>
 
 <script>
+
+import { computed } from 'vue';
+
 import useMso from "@/use/useMso.js";
 import useLocalStorage from "@/use/useLocalStorage.js";
 
 export default {
   name: "About",
   setup() {
-    return { ...useMso(), ...useLocalStorage() };
+
+    const buildTime = computed(() => {
+      return new Date(document.documentElement.dataset.buildTimestampUtc).toLocaleString(
+      );
+    });
+
+    return { ...useMso(), ...useLocalStorage(), buildTime };
   },
 };
 </script>

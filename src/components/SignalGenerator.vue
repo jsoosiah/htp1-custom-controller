@@ -23,6 +23,34 @@
       </div>
     </div>
     <div class="row">
+      <div class="col">
+        <div class="form-group">
+          <label
+            for="inputEmail3"
+            class="col-form-label col-form-label-sm "
+          >Volume Control</label>
+          <div class="input-group input-group-sm numeric-input">
+            <input
+              type="number"
+              class="form-control"
+              aria-label="Minimum volume"
+              aria-describedby="basic-addon2"
+              :value="mso.volume"
+              :min="mso.cal?.vpl"
+              :max="mso.cal?.vph"
+              @change="({ type, target }) => setVolume(target.value)"
+            >
+            <div class="input-group-append">
+              <span
+                id="basic-addon2"
+                class="input-group-text"
+              >dB</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
       <div class="col-auto">
         <table class="table table-sm table-striped table-responsive">
           <thead>
@@ -236,7 +264,7 @@
 
       const { mso, toggleSignalGenerator, setSignalGeneratorChannel, setSignalGeneratorChannel2, 
         setSignalGeneratorSignalType, setSignalGeneratorOff, setSignalGeneratorOn, 
-        showCrossoverControls, setSineFrequency, setSineAmplitude, setUpmix } = useMso();
+        showCrossoverControls, setSineFrequency, setSineAmplitude, setUpmix, setVolume } = useMso();
       const { getActiveChannels, spkName } = useSpeakerGroups();
 
       const signalOptions = [
@@ -250,6 +278,8 @@
         {'label': 'Left and right input as signal', 'value': 'both'},
       ];
 
+      const lf = new Intl.ListFormat('en');
+
       const activeChannels = computed(() => {
         return getActiveChannels(mso.value.speakers?.groups);
       });
@@ -260,12 +290,6 @@
           channame => showCrossoverControls.value || (channame != 'sub2' && channame != 'sub3' && channame != 'sub4' && channame != 'sub5')
         );
       });
-
-      function toListSentence(arr) {
-        return arr.length < 3 ?
-        arr.join(' and ') :
-        `${arr.slice(0, -1).join(', ')}, and ${arr[arr.length - 1]}`;
-      } 
 
       function translatedSpkName(channame) {
         if (!showCrossoverControls.value && channame === 'sub1') {
@@ -278,7 +302,7 @@
               }
             }
           }
-          return toListSentence(subs);
+          return lf.format(subs);
         }
         return spkName(channame);
       }
@@ -286,7 +310,7 @@
       return { 
         mso, toggleSignalGenerator, setSignalGeneratorChannel, setSignalGeneratorChannel2, setSignalGeneratorSignalType, 
         activeChannels, visibleChannels, translatedSpkName, signalOptions, setSignalGeneratorOff, setSignalGeneratorOn, showCrossoverControls,
-        setSineFrequency, setSineAmplitude, setUpmix
+        setSineFrequency, setSineAmplitude, setUpmix, setVolume
       };
     }
   }
