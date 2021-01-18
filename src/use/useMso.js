@@ -1333,8 +1333,11 @@ function createExtraMacro() {
   if (mso.value.svronly.extraMacros) {
     const keys = Object.keys(mso.value.svronly.extraMacros);
     const newKey = keys.length > 0 ? (parseInt(maxBy(keys, k => parseInt(k))) + 1) : 1;
-    setMacroName(newKey, newKey);
-    return patchMso('add', `/svronly/extraMacros/${newKey}`, []);
+    // setMacroName(newKey, newKey);
+    const removeName = patchMso('remove', `/svronly/macroNames/${newKey}`);
+    const addName = patchMso('add', `/svronly/macroNames/${newKey}`, newKey);
+    const addMacro = patchMso('add', `/svronly/extraMacros/${newKey}`, []);
+    return removeName && addName && addMacro;
   }
 }
 
