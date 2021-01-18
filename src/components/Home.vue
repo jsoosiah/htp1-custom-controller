@@ -303,6 +303,16 @@
               min-width="6.75rem"
               @btn-click="setNextNightMode()"
             />
+
+            <!-- Wide Synth -->
+            <two-state-button 
+              v-if="mso.personalize?.modes.ws"
+              :button-text="`Wide Synth ${mso.upmix?.dts.ws ? 'on' : 'off'}`" 
+              :state-on="mso.upmix?.dts.ws" 
+              :home-button="true"
+              min-width="9rem"
+              @click="toggleUpmixWideSynth()"
+            />
           </div>
         </div>
       </div>
@@ -409,7 +419,7 @@ export default {
       setNextNightMode, toggleLoudness, setNextDtsDialogEnh, toggleToneControl, toggleGlobalPEQ,
       setNightOff, setNightAuto, setNightOn, setLoudnessOff, setLoudnessOn, setDiracSlot,
       setToneControlOff, setToneControlOn, setGlobalPEQOff, setGlobalPEQOn, setDtsDialogEnh,
-      currentlyRecordingSlot, visibleMacros, executeMacro
+      currentlyRecordingSlot, visibleMacros, executeMacro, toggleUpmixWideSynth
     } = useMso();
 
     onMounted(() => {
@@ -547,7 +557,7 @@ export default {
       setNightOff, setNightAuto, setNightOn, setLoudnessOff, setLoudnessOn, setToneControlOff, setToneControlOn, setGlobalPEQOff, setGlobalPEQOn,setDtsDialogEnh,
       currentlyRecordingSlot,
       inputLoaded, inputSelectedAndLoading,
-      experimental, isMobileMode
+      experimental, isMobileMode, toggleUpmixWideSynth
     };
   },
 }

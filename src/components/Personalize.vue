@@ -341,6 +341,7 @@
         {code: 'loudness', label: 'Loudness'},
         {code: 'dialogenh', label: 'Dialog Enhance'},
         {code: 'night', label: 'Night'},
+        {code: 'ws', label: 'Wide Synth'},
       ];
 
       const topLabels = [
