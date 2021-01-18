@@ -318,6 +318,11 @@ function applyProductRules() {
       if (mso.value.powerIsOn && !bmlfecApplied) {
       // TODO remove once the MSO is read by avController
       send(`avcui "bmlfec ${mso.value.bassLpf}"`);
+      send(`avcui "bmsubc sub1 ${mso.value.bassLpf}"`);
+      send(`avcui "bmsubc sub2 ${mso.value.bassLpf}"`);
+      send(`avcui "bmsubc sub3 ${mso.value.bassLpf}"`);
+      send(`avcui "bmsubc sub4 ${mso.value.bassLpf}"`);
+      send(`avcui "bmsubc sub5 ${mso.value.bassLpf}"`);
       bmlfecApplied = true;
       }
     }
