@@ -118,13 +118,26 @@
             No commands recorded yet.
           </div>
         </div>
-        <button
-          class="btn btn-sm btn-primary"
-          :disabled="!unsavedChanges"
-          @click="save"
-        >
-          Save
-        </button>
+        
+        <div class="row justify-content-between">
+          <div class="col-auto">
+            <button
+              class="btn btn-sm btn-primary"
+              :disabled="!unsavedChanges"
+              @click="save"
+            >
+              Save
+            </button>
+          </div>
+          <div class="col-auto">
+            <button
+              class="btn btn-sm btn-danger"
+              @click="deleteMacro"
+            >
+              Delete Macro
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -150,6 +163,10 @@
       commandKey: {
         required: true,
         type: String,
+      },
+      isExtraCommand: {
+        type: Boolean,
+        default: false,
       }
     },
     emits: ['recording-started', 'recording-stopped'],
@@ -157,7 +174,7 @@
 
       const { mso, data, parseMSO, 
         currentlyRecordingSlot, setRecordingStarted, setRecordingStopped, saveRecordedCommands,
-        setMacroName } = useMso();
+        saveExtraRecordedCommands, setMacroName, deleteExtraMacro } = useMso();
 
       const { filterMacroCommands } = useImportExport();
 
@@ -165,11 +182,19 @@
       const touched = ref(false);
       let stopRecordingWatch;
 
-      const currentCommands = ref([...mso.value.svronly[props.commandKey]]);
+      const commands = computed(() => {
+        if (props.isExtraCommand) {
+          return mso.value.svronly.extraMacros;
+        }
+
+        return mso.value.svronly;
+      })
+
+      const currentCommands = ref([...commands.value[props.commandKey]]);
 
       const unsavedChanges = computed(() => {
-        console.log('unsaved changes compare', compare(mso.value.svronly[props.commandKey], currentCommands.value));
-        return compare(mso.value.svronly[props.commandKey], currentCommands.value).length > 0;
+        // console.log('unsaved changes compare', compare(commands.value[props.commandKey], currentCommands.value));
+        return compare(commands.value[props.commandKey], currentCommands.value).length > 0;
       });
 
       onMounted(() => {
@@ -189,7 +214,7 @@
           val => {
             const { verb, arg } = parseMSO(val);
               if (verb === 'mso') { // receive update after saving command
-              currentCommands.value = [...mso.value.svronly[props.commandKey]];
+              currentCommands.value = [...commands.value[props.commandKey]];
               setTimeout(() => { touched.value = false; }, 3000);
               
               setRecordingStopped();
@@ -240,16 +265,26 @@
 
       function save() {
         startRecordingWatch();
-        saveRecordedCommands(props.commandKey, currentCommands.value);
+        if (props.isExtraCommand) {
+          saveExtraRecordedCommands(props.commandKey, currentCommands.value);
+        } else {
+          saveRecordedCommands(props.commandKey, currentCommands.value);
+        }
       }
 
       function setTouched() {
         touched.value = true;
       }
 
+      function deleteMacro() {
+        if (confirm(`The macro "${mso.value.svronly.macroNames[props.commandKey]}" will be deleted.`)) {
+          deleteExtraMacro(props.commandKey);
+        }
+      }
+
       return { mso, data, props, toggleRecording, removeRecordedCommand, show, toggleShow,
       currentlyRecordingSlot, currentCommands, unsavedChanges, saveRecordedCommands, touched, save, setTouched,
-      setMacroName };
+      saveExtraRecordedCommands, setMacroName, deleteMacro };
     }
   }
 </script>

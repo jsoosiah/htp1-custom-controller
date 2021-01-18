@@ -20,6 +20,20 @@
     >
       Additional macros beyond the 8 standard slots may be added or removed. These extra macros can only be run from this web UI and are not accessible from the remote.
     </dismissable-alert>
+    <div class="accordion mb-3">
+      <macro-editor
+        v-for="(value, key) in mso.svronly.extraMacros"
+        :key="key"
+        :command-key="key.toString()"
+        :is-extra-command="true"
+      />
+    </div>
+    <button 
+      class="btn btn-sm btn-primary mb-3"
+      @click="createExtraMacro"
+    >
+      Create New Macro
+    </button>
   </div>
 </template>
 

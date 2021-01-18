@@ -1,6 +1,6 @@
 import { ref, watch, computed } from 'vue';
-import { applyPatch, deepClone } from 'fast-json-patch/index.mjs';
-import { debounce, get, isEqual } from 'lodash-es';
+import { applyPatch } from 'fast-json-patch/index.mjs';
+import { debounce, get, isArray, isEqual, maxBy } from 'lodash-es';
 
 import useWebSocket from './useWebSocket.js';
 import useLocalStorage from './useLocalStorage.js';
@@ -308,7 +308,7 @@ function applyProductRules() {
       initializeMacroNames();
     }
 
-    if (!mso.value.svronly.extraMacros) {
+    if (!mso.value.svronly.extraMacros || isArray(mso.value.svronly.extraMacros)) {
       initializeExtraMacros();
     }
 
@@ -475,7 +475,7 @@ const visibleMacros = computed(() => {
   const filtered = {};
   if (mso.value.personalize?.macros) {
     for (let key in mso.value.personalize?.macros) {
-      filtered[key] = mso.value.svronly[key];
+      filtered[key] = mso.value.svronly[key] || mso.value.svronly.extraMacros[key];
     }
   }
   console.log('visibleMacros', visibleMacros)
@@ -773,10 +773,6 @@ function setSpeakerSize(spkCode, sizeCode) {
 
 function setCenterFreq(spkCode, centerFreq) {
   return patchMso( 'replace', `/speakers/groups/${spkCode}/fc`, parseInt(centerFreq));
-}
-
-function setLPFforLFE(centerFreq) {
-  return patchMso('replace', 'TODO', parseInt(centerFreq));
 }
 
 function setMinVolume(minVol) {
@@ -1329,7 +1325,23 @@ function initializeMacroNames() {
 }
 
 function initializeExtraMacros() {
+  patchMso('remove', '/svronly/extraMacros');
   return patchMso('add', '/svronly/extraMacros', {});
+}
+
+function createExtraMacro() {
+  if (mso.value.svronly.extraMacros) {
+    const keys = Object.keys(mso.value.svronly.extraMacros);
+    const newKey = keys.length > 0 ? (parseInt(maxBy(keys, k => parseInt(k))) + 1) : 1;
+    setMacroName(newKey, newKey);
+    return patchMso('add', `/svronly/extraMacros/${newKey}`, []);
+  }
+}
+
+function deleteExtraMacro(macroKey) {
+  const removeName = patchMso('remove', `/svronly/macroNames/${macroKey}`);
+  const removeMacro = patchMso('remove', `/svronly/extraMacros/${macroKey}`);
+  return removeName && removeMacro;
 }
 
 function setMacroName(macroKey, name) {
@@ -1343,6 +1355,17 @@ function saveRecordedCommands(slot, commands) {
 
   // patchMso( 'replace', 'path': `/svronly/${slot}`, value: [...mso.value.svronly[slot], ...commands]});
   changemso([{'op': 'replace', 'path': `/svronly/${slot}`, value: commands}]);
+  send('getmso');
+  return true;
+}
+
+function saveExtraRecordedCommands(slot, commands) {
+  if (!mso.value.svronly.extraMacros) {
+    return false;
+  }
+
+  // patchMso( 'replace', 'path': `/svronly/${slot}`, value: [...mso.value.svronly[slot], ...commands]});
+  changemso([{'op': 'replace', 'path': `/svronly/extraMacros/${slot}`, value: commands}]);
   send('getmso');
   return true;
 }
@@ -1405,7 +1428,7 @@ export default function useMso() {
     setUnitName, setPowerOnVol,
     setFrontPanelBrightness, toggleVideoStatusHomePage, toggleExtendedAudioStatus,
     toggleAdvancedInputSettings, toggleSupportTools, importMsoPatchList,
-    saveRecordedCommands,
+    saveRecordedCommands, saveExtraRecordedCommands, createExtraMacro, deleteExtraMacro,
     toggleShortcut, toggleShowMode, toggleShowDiracSlot, toggleShowMacro,
     setMacroName, commandKeys, executeMacro,
     setTopLeftLabel, setTopRightLabel, toggleShowPowerDialogButton,

@@ -276,7 +276,7 @@
           </thead>
           <tbody>
             <tr
-              v-for="key in commandKeys"
+              v-for="(name, key) in mso.svronly.macroNames"
               :key="key"
             >
               <td>
