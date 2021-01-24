@@ -278,8 +278,6 @@
         {'label': 'Left and right input as signal', 'value': 'both'},
       ];
 
-      const lf = new Intl.ListFormat('en');
-
       const activeChannels = computed(() => {
         return getActiveChannels(mso.value.speakers?.groups);
       });
@@ -290,6 +288,12 @@
           channame => showCrossoverControls.value || (channame != 'sub2' && channame != 'sub3' && channame != 'sub4' && channame != 'sub5')
         );
       });
+
+      function toListSentence(arr) {
+        return arr.length < 3 ?
+        arr.join(' and ') :
+        `${arr.slice(0, -1).join(', ')}, and ${arr[arr.length - 1]}`;
+      } 
 
       function translatedSpkName(channame) {
         if (!showCrossoverControls.value && channame === 'sub1') {
@@ -302,7 +306,7 @@
               }
             }
           }
-          return lf.format(subs);
+          return toListSentence(subs);
         }
         return spkName(channame);
       }
