@@ -149,48 +149,6 @@
           </tr>
         </tbody>
       </table>
-
-      <!-- import/export operations for band -->
-      <h6>Manage Band {{ mso.peq?.currentpeqslot + 1 }}</h6>
-      <div class="row">
-        <div class="col-auto">
-          <button 
-            class="btn btn-sm btn-primary mb-3"
-            @click="downloadSingleBandConfig(mso.peq?.currentpeqslot)"
-          >
-            Export Band {{ mso.peq?.currentpeqslot + 1 }} PEQ Configuration to File
-          </button>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-auto">
-          <div class="form-group">
-            <label for="import=file">Import Band PEQ Configuration File to Band {{ mso.peq?.currentpeqslot + 1 }}</label>
-            <input 
-              id="import=file"
-              ref="importBandRef" 
-              type="file" 
-              class="form-control-file" 
-              @change="bandImportFileSelected"
-            >
-          </div>
-          <mso-importer 
-            v-if="bandImportJson" 
-            :mso-import-patch="bandImportPatch"
-            @confirm-import="confirmImport(bandImportPatch)"
-          />
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-auto">
-          <button 
-            class="btn btn-sm btn-warning mb-3"
-            @click="resetPEQsForBand(mso.peq?.currentpeqslot)"
-          >
-            Reset Settings for Band {{ mso.peq?.currentpeqslot + 1 }} 
-          </button>
-        </div>
-      </div>
     </template>
     
     <!-- group by channel -->
@@ -286,9 +244,26 @@
           </tr>
         </tbody>
       </table>
+    </template>
 
-      <!-- import/export operations for channel -->
-      <h6>Manage Channel {{ spkName(activeChannels[selectedChannel]) }}</h6>
+    <!-- eq operations -->
+
+    <!-- export operations -->
+    <template v-if="eqGroupBy === 1">
+      <h6>Export Band {{ mso.peq?.currentpeqslot + 1 }}</h6>
+      <div class="row">
+        <div class="col-auto">
+          <button 
+            class="btn btn-sm btn-primary mb-3"
+            @click="downloadSingleBandConfig(mso.peq?.currentpeqslot)"
+          >
+            Export Band {{ mso.peq?.currentpeqslot + 1 }} PEQ Configuration to File
+          </button>
+        </div>
+      </div>
+    </template>
+    <template v-else>
+      <h6>Export Channel {{ spkName(activeChannels[selectedChannel]) }}</h6>
       <div class="row">
         <div class="col-auto">
           <button 
@@ -299,10 +274,51 @@
           </button>
         </div>
       </div>
+    </template>
+    <h6>Export Full PEQ Configuration</h6>
+    <div class="row">
+      <div class="col-auto">
+        <button 
+          class="btn btn-sm btn-primary mb-3"
+          @click="downloadFullConfig()"
+        >
+          Export Full PEQ Configuration to File
+        </button>
+      </div>
+    </div>
+
+    <!-- import operations -->
+
+    <!-- import operations for band -->
+    <template v-if="eqGroupBy === 1">
+      <h6>Import Band PEQ Configuration to Band {{ mso.peq?.currentpeqslot + 1 }}</h6>
       <div class="row">
         <div class="col-auto">
           <div class="form-group">
-            <label for="import=file">Import Channel PEQ Configuration File to Channel {{ spkName(activeChannels[selectedChannel]) }}</label>
+            <label for="import=file">Select Band PEQ Configuration File</label>
+            <input 
+              id="import=file"
+              ref="importBandRef" 
+              type="file" 
+              class="form-control-file" 
+              @change="bandImportFileSelected"
+            >
+          </div>
+          <mso-importer 
+            v-if="bandImportJson" 
+            :mso-import-patch="bandImportPatch"
+            @confirm-import="confirmImport(bandImportPatch)"
+          />
+        </div>
+      </div>
+    </template>
+    <!-- import operations for channel -->
+    <template v-else>
+      <h6>Import Channel PEQ Configuration or REW Filter to Channel {{ spkName(activeChannels[selectedChannel]) }}</h6>
+      <div class="row">
+        <div class="col-auto">
+          <div class="form-group">
+            <label for="import=file">Select Channel PEQ Configuration File or REW filter file</label>
             <input 
               id="import=file"
               ref="importChannelRef" 
@@ -314,38 +330,18 @@
           <mso-importer 
             v-if="channelImportJson" 
             :mso-import-patch="channelImportPatch"
+            :validation-warnings="channelImportValidationWarnings"
             @confirm-import="confirmImport(channelImportPatch)"
           />
         </div>
       </div>
-
-      <div class="row">
-        <div class="col-auto">
-          <button 
-            class="btn btn-sm btn-warning mb-3"
-            @click="resetPEQsForChannel(activeChannels[selectedChannel])"
-          >
-            Reset Settings for Channel {{ spkName(activeChannels[selectedChannel]) }}
-          </button>
-        </div>
-      </div>
     </template>
-    <!-- global import/export operations -->
-    <h6>Manage all Channels/Bands</h6>
-    <div class="row">
-      <div class="col-auto">
-        <button 
-          class="btn btn-sm btn-primary mb-3"
-          @click="downloadFullConfig()"
-        >
-          Export Full PEQ Configuration to File
-        </button>
-      </div>
-    </div>
+    <!-- global import operations -->
+    <h6>Import Full PEQ Configuration File</h6>
     <div class="row">
       <div class="col-auto">
         <div class="form-group">
-          <label for="import=file">Import Full Configuration File</label>
+          <label for="import=file">Select Full PEQ Configuration File</label>
           <input 
             id="import=file"
             ref="importFullRef" 
@@ -361,6 +357,69 @@
         />
       </div>
     </div>
+    
+    <!-- clone operations --> 
+    <template v-if="eqGroupBy === 0">
+      <h6>Clone Channel {{ spkName(activeChannels[selectedChannel]) }} PEQ to Other Channels</h6>
+      <div class="form-group">
+        <label for="target-channels">Target Channels</label>
+        <select
+          id="target-channels"
+          v-model="targetCloneChannels"
+          multiple
+          class="form-control"
+        >
+          <option
+            v-for="channel in selectableChannels"
+            :key="channel"
+            :value="channel"
+          >
+            {{ spkName(channel) }}
+          </option>
+        </select>
+      </div>
+      <div class="row">
+        <div class="col-auto">
+          <button 
+            class="btn btn-sm btn-primary mb-3"
+            :disabled="targetCloneChannels.length === 0"
+            @click="cloneSelectedChannelPEQToTargetChannels"
+          >
+            Clone {{ spkName(activeChannels[selectedChannel]) }} PEQ to Selected Channels
+          </button>
+        </div>
+      </div>
+    </template>
+
+    <!-- reset operations --> 
+    <h6>Reset PEQ Settings</h6>
+    <!-- band reset operations -->
+    <template v-if="eqGroupBy === 1">
+      <div class="row">
+        <div class="col-auto">
+          <button 
+            class="btn btn-sm btn-warning mb-3"
+            @click="resetPEQsForBand(mso.peq?.currentpeqslot)"
+          >
+            Reset Settings for Band {{ mso.peq?.currentpeqslot + 1 }} 
+          </button>
+        </div>
+      </div>
+    </template>
+    <!-- channel reset operations -->
+    <template v-else>
+      <div class="row">
+        <div class="col-auto">
+          <button 
+            class="btn btn-sm btn-warning mb-3"
+            @click="resetPEQsForChannel(activeChannels[selectedChannel])"
+          >
+            Reset Settings for Channel {{ spkName(activeChannels[selectedChannel]) }}
+          </button>
+        </div>
+      </div>
+    </template>
+    <!-- global reset operations -->
     <div class="row">
       <div class="col-auto">
         <button 
@@ -399,12 +458,12 @@
     },
     setup() {
 
-      const { importJson: channelImportJson, importJsonFileToSelected: channelImportJsonFileToSelected } = useImportExport();
+      const { importJson: channelImportJson, importJsonFileToSelected: channelImportJsonFileToSelected, validationWarnings: channelImportValidationWarnings } = useImportExport();
       const { importJson: bandImportJson, importJsonFileToSelected: bandImportJsonFileToSelected } = useImportExport();
       const { importJson: fullImportJson, importJsonFileToSelected: fullImportJsonFileToSelected, exportJsonToFile } = useImportExport();
       
       const { eqGroupBy, setEqGroupBy } = useLocalStorage();
-      const { mso, setPEQSlot, resetPEQ, importMsoPatchList } = useMso();
+      const { mso, setPEQSlot, resetPEQ, importMsoPatchList, setPEQCenterFrequency, setPEQQuality, setPEQFilterType, setPEQGain } = useMso();
       const { getActiveChannels, spkName } = useSpeakerGroups();
 
       const tabLoaded = ref(true);
@@ -413,8 +472,15 @@
       const importBandRef = ref(null);
       const importFullRef = ref(null);
 
+      const targetCloneChannels = ref([]);
+
       const activeChannels = computed(() => {
         return getActiveChannels(mso.value.speakers?.groups);
+      });
+
+      const selectableChannels = computed(() => {
+        console.log('selectable',activeChannels)
+        return activeChannels.value.filter((ch, index) => index !== selectedChannel.value);
       });
 
       const selectedChannel = ref(0);
@@ -598,15 +664,38 @@
         { label: 'High Shelf', value: 2 }
       ];
 
+      function toListSentence(arr) {
+        return arr.length < 3 ?
+        arr.join(' and ') :
+        `${arr.slice(0, -1).join(', ')}, and ${arr[arr.length - 1]}`;
+      } 
+
+      function cloneSelectedChannelPEQToTargetChannels() {
+        if (confirm(`The PEQ for channel ${spkName(activeChannels.value[selectedChannel.value])} will be cloned to the following channels, overwriting their existing PEQ filters: ${toListSentence(targetCloneChannels.value.map(ch => spkName(ch)))}`)) {
+          for (const channel of targetCloneChannels.value) {
+            for (let band = 0; band < 16; band++) {
+              const currentPEQ = mso.value.peq?.slots[band].channels[activeChannels.value[selectedChannel.value]];
+              setPEQCenterFrequency(channel, band, currentPEQ.Fc);
+              setPEQQuality(channel, band, currentPEQ.Q);
+              setPEQFilterType(channel, band, currentPEQ.FilterType);
+              setPEQGain(channel, band, currentPEQ.gaindB);
+            }
+          }
+
+          targetCloneChannels.value = [];
+        }
+      }
+
       return {
-        ...useMso(), activeChannels, spkName, selectedChannel, setSelectedChannel, 
+        ...useMso(), activeChannels, spkName, selectedChannel, setSelectedChannel, selectableChannels,
         bandHasModifications, channelHasModifications, filterTypes, tabLoaded, setSelectedBand, 
         downloadSingleChannelConfig, downloadSingleBandConfig, downloadFullConfig, 
-        channelImportFileSelected, bandImportFileSelected, fullImportFileSelected, 
+        channelImportFileSelected, bandImportFileSelected, fullImportFileSelected, channelImportValidationWarnings,
         channelImportJson, bandImportJson, fullImportJson, bandImportPatch, channelImportPatch, fullImportPatch, 
         confirmImport, clearAllImports, importBandRef, importChannelRef, importFullRef,
         resetPEQsForBand, resetPEQsForChannel, resetAllPEQs,
-        eqGroupBy, setGroupBy
+        eqGroupBy, setGroupBy,
+        cloneSelectedChannelPEQToTargetChannels, targetCloneChannels
       };
     }
   }

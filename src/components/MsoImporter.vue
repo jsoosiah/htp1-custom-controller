@@ -1,4 +1,18 @@
 <template>
+  <div
+    v-if="validationWarnings.length > 0"
+    class="alert alert-dismissable alert-warning small"
+    role="alert"
+  >
+    <ul>
+      <li
+        v-for="warning in validationWarnings"
+        :key="warning"
+      >
+        {{ warning }}
+      </li>
+    </ul>
+  </div>
   <p>The following changes will be imported into the current configuration:</p>
   <template v-if="msoImportPatch.length > 0">
     <table class="table table-sm table-striped table-responsive">
@@ -50,6 +64,12 @@
       msoImportPatch: {
         required: true,
         type: Object,
+      },
+      validationWarnings: {
+        type: Array,
+        default() {
+          return [];
+        },
       }
     },
     emits: ['confirm-import'],
@@ -66,5 +86,9 @@
 <style scoped>
   code {
     color: inherit;
+  }
+
+  ul {
+    padding-left:1em;
   }
 </style>
