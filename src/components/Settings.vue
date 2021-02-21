@@ -85,6 +85,7 @@ import PersonalizeIcon from './icons/PersonalizeIcon';
 import AboutIcon from './icons/AboutIcon';
 import HelpIcon from './icons/HelpIcon';
 import PowerIcon from './icons/PowerIcon';
+import VolumeIcon from './icons/VolumeIcon';
 
 export default {
   name: 'Settings',
@@ -106,6 +107,7 @@ export default {
     HelpIcon,
     PowerIcon,
     ConfigsIcon,
+    VolumeIcon,
   },
   emits: ['power-dialog'],
   setup(props, { emit }) {

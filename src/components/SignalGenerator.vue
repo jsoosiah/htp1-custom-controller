@@ -141,99 +141,17 @@
         </div>
       </div>
       <div class="col-auto">
-        <table class="table table-sm table-striped table-responsive">
-          <thead>
-            <tr>
-              <th>
-                Channel Select {{ mso.sgen?.signalType === 'both' ? ' - for left input' : '' }}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="channame in visibleChannels"
-              :key="channame"
-            >
-              <td>
-                <div class="form-check">
-                  <input
-                    :id="`radio-${channame}`"
-                    class="form-check-input"
-                    type="radio"
-                    name="channel"
-                    :value="channame"
-                    :checked="mso.sgen?.select === channame"
-                    @click="setSignalGeneratorChannel(channame)"
-                  >
-                  <label 
-                    class="form-check-label" 
-                    :for="`radio-${channame}`"
-                  >
-                    {{ translatedSpkName(channame) }} 
-                    <font-awesome-icon 
-                      v-if="visibleChannels.length !== activeChannels.length && channame === 'sub1'"
-                      :id="`tooltip-container-left-${channame}`"
-                      v-tooltip="{
-                        enabled: !(visibleChannels.length !== activeChannels.length && channame === 'sub1'),
-                        message: 'Individual subwoofer channels are unavailable when Dirac Bass Control is enabled.'
-                      }"
-                      :icon="['fas', 'question-circle']"
-                    />
-                  </label>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <ChannelSelect :title="'Channel Select' + (mso.sgen?.signalType === 'both' ? ' - for left input' : '')" />
       </div>
       <div
         v-if="mso.sgen?.signalType === 'both'"
         class="col-auto"
       >
-        <table class="table table-sm table-striped table-responsive">
-          <thead>
-            <tr>
-              <th>
-                Channel Select - for right input
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="channame in visibleChannels"
-              :key="channame"
-            >
-              <td>
-                <div class="form-check">
-                  <input 
-                    :id="`radio2-${channame}`" 
-                    class="form-check-input" 
-                    type="radio" 
-                    name="channel2" 
-                    :value="channame" 
-                    :checked="mso.sgen?.select2 === channame" 
-                    @click="setSignalGeneratorChannel2(channame)"
-                  >
-                  <label 
-                    class="form-check-label" 
-                    :for="`radio2-${channame}`"
-                  >
-                    {{ translatedSpkName(channame) }} 
-                    <font-awesome-icon 
-                      v-if="visibleChannels.length !== activeChannels.length && channame === 'sub1'"
-                      :id="`tooltip-container-right-${channame}`"
-                      v-tooltip="{
-                        enabled: !(visibleChannels.length !== activeChannels.length && channame === 'sub1'),
-                        message: 'Individual subwoofer channels are unavailable when Dirac Bass Control is enabled.'
-                      }"
-                      :icon="['fas', 'question-circle']"
-                    />
-                  </label>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <ChannelSelect
+          title="Channel Select - for right input"
+          :show-levels="false"
+          :second-channel="true"
+        />
       </div>
     </div>
   </div>
@@ -241,19 +159,18 @@
 
 <script>
 
-  import { computed } from 'vue';
-
   import useMso from '@/use/useMso.js';
-  import useSpeakerGroups from '@/use/useSpeakerGroups.js';
 
   import { Tooltip } from '@/directives/Tooltip.js';
 
+  import ChannelSelect from './ChannelSelect.vue';
   import TwoStateButton from './buttons/TwoStateButton.vue';
   import DismissableAlert from './buttons/DismissableAlert.vue';
 
   export default {
     name: 'SignalGenerator',
     components: {
+      ChannelSelect,
       TwoStateButton,
       DismissableAlert
     },
@@ -265,7 +182,6 @@
       const { mso, toggleSignalGenerator, setSignalGeneratorChannel, setSignalGeneratorChannel2, 
         setSignalGeneratorSignalType, setSignalGeneratorOff, setSignalGeneratorOn, 
         showCrossoverControls, setSineFrequency, setSineAmplitude, setUpmix, setVolume } = useMso();
-      const { getActiveChannels, spkName } = useSpeakerGroups();
 
       const signalOptions = [
         {'label': '"THX-like" band limited noise', 'value': 'thx'},
@@ -278,43 +194,10 @@
         {'label': 'Left and right input as signal', 'value': 'both'},
       ];
 
-      const activeChannels = computed(() => {
-        return getActiveChannels(mso.value.speakers?.groups);
-      });
-
-      const visibleChannels = computed(() => {
-        console.log('visible', visibleChannels)
-        return activeChannels.value.filter(
-          channame => showCrossoverControls.value || (channame != 'sub2' && channame != 'sub3' && channame != 'sub4' && channame != 'sub5')
-        );
-      });
-
-      function toListSentence(arr) {
-        return arr.length < 3 ?
-        arr.join(' and ') :
-        `${arr.slice(0, -1).join(', ')}, and ${arr[arr.length - 1]}`;
-      } 
-
-      function translatedSpkName(channame) {
-        if (!showCrossoverControls.value && channame === 'sub1') {
-          let subs = ['Subwoofer 1'];
-          for (const channame of activeChannels.value) {
-            if (channame.startsWith('sub')) {
-              const subNumber = channame[channame.length - 1];
-              if (subNumber > 1) {
-                subs.push(subNumber);
-              }
-            }
-          }
-          return toListSentence(subs);
-        }
-        return spkName(channame);
-      }
-
       return { 
         mso, toggleSignalGenerator, setSignalGeneratorChannel, setSignalGeneratorChannel2, setSignalGeneratorSignalType, 
-        activeChannels, visibleChannels, translatedSpkName, signalOptions, setSignalGeneratorOff, setSignalGeneratorOn, showCrossoverControls,
-        setSineFrequency, setSineAmplitude, setUpmix, setVolume
+        signalOptions, setSignalGeneratorOff, setSignalGeneratorOn, showCrossoverControls,
+        setSineFrequency, setSineAmplitude, setUpmix, setVolume, 
       };
     }
   }

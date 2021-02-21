@@ -1,3 +1,5 @@
+import {invert} from 'lodash-es';
+
 // group to single channel
 const bmg = {
   "lr": ["lf", "rf"],
@@ -16,6 +18,17 @@ const bmg = {
   "lrhf": ["lfh", "rfh"],
   "lrhr": ["lhb", "rhb"],
 };
+
+const allChannelCodes = ['lf', 'rf', 'c', 
+'sub1', 'sub2', 'sub3', 
+'ls', 'rs', 'lb', 'rb', 
+'ltf', 'rtf', 'ltm', 'rtm','ltr', 'rtr',
+'lw','rw',
+'lfh', 'rfh', 'lhb', 'rhb',
+'sub4', 'sub5',
+];
+
+const reverseAllChannelCodes = invert(allChannelCodes);
 
 // single channel to group, for speaker map display only
 // note that LF and RF become L and R; LHB and RHB become LRH, RRH
@@ -113,5 +126,5 @@ export default function useSpeakerGroups() {
     return (translated);
   }
 
-  return { bmg, reverseBmg, bmgNames, spkName, spgToSp, getActiveChannels };
+  return { bmg, reverseBmg, bmgNames, spkName, spgToSp, getActiveChannels, allChannelCodes, reverseAllChannelCodes };
 }

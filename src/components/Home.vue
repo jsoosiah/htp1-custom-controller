@@ -164,7 +164,7 @@
             class="vol-display" 
             :class="{'text-danger':mso.muted}"
           >
-            {{ mso.volume }} dB
+            {{ displayVolume }} dB
           </span>
         </div>
         <div class="col-auto text-right pr-0">
@@ -363,7 +363,17 @@
           </h5>
           <div class="diracslot-container my-3">
             <two-state-button 
-              v-for="(macro, key) in visibleMacros"
+              v-for="(macro, key) in visibleRemoteMacros"
+              :key="key"
+              :button-text="mso.svronly?.macroNames[key]"
+              :state-on="macroIsActive(macro)"
+              :home-button="true"
+              @btn-click="executeMacro(macro)" 
+            />
+          </div>
+          <div class="diracslot-container my-3">
+            <two-state-button 
+              v-for="(macro, key) in visibleExtraMacros"
               :key="key"
               :button-text="mso.svronly?.macroNames[key]"
               :state-on="macroIsActive(macro)"
@@ -419,7 +429,8 @@ export default {
       setNextNightMode, toggleLoudness, setNextDtsDialogEnh, toggleToneControl, toggleGlobalPEQ,
       setNightOff, setNightAuto, setNightOn, setLoudnessOff, setLoudnessOn, setDiracSlot,
       setToneControlOff, setToneControlOn, setGlobalPEQOff, setGlobalPEQOn, setDtsDialogEnh,
-      currentlyRecordingSlot, visibleMacros, executeMacro, toggleUpmixWideSynth
+      currentlyRecordingSlot, visibleRemoteMacros, visibleExtraMacros, executeMacro, toggleUpmixWideSynth,
+      displayVolume
     } = useMso();
 
     onMounted(() => {
@@ -546,7 +557,7 @@ export default {
     return { 
       mso, setVolume, toggleMute,
       loading, calToolConnected, state,
-      visibleInputs, visibleUpmixers, visibleDiracSlots, visibleMacros, macroIsActive, executeMacro,
+      visibleInputs, visibleUpmixers, visibleDiracSlots, visibleRemoteMacros, visibleExtraMacros, macroIsActive, executeMacro,
       powerOn, setInput, setUpmix, powerOff, 
       setNextNightMode, toggleLoudness, setNextDtsDialogEnh, toggleToneControl, toggleGlobalPEQ,
       ...useStream(),
@@ -557,7 +568,8 @@ export default {
       setNightOff, setNightAuto, setNightOn, setLoudnessOff, setLoudnessOn, setToneControlOff, setToneControlOn, setGlobalPEQOff, setGlobalPEQOn,setDtsDialogEnh,
       currentlyRecordingSlot,
       inputLoaded, inputSelectedAndLoading,
-      experimental, isMobileMode, toggleUpmixWideSynth
+      experimental, isMobileMode, toggleUpmixWideSynth,
+      displayVolume
     };
   },
 }

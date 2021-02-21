@@ -62,6 +62,27 @@
           </button>
         </div>
       </div>
+      <div class="row justify-content-center pt-5">
+        <div class="col-auto text-center">
+          <h5 class="text-muted">
+            Quick Links
+          </h5>
+          <ul>
+            <li>
+              <a
+                target="_blank"
+                :href="`http://${websocketIp}/history.html`"
+              >View Release History and Perform Updates</a>
+            </li>
+            <li>
+              <a
+                target="_blank"
+                :href="`http://${websocketIp}/feedback`"
+              >Submit Feedback</a>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
   </template>
   <template v-else>
@@ -115,7 +136,7 @@
               class="settings-status"
               to="/"
             >
-              {{ mso.volume }} dB &middot; {{ mso.inputs && mso.inputs[mso.input].label }} &middot; {{ mso.upmix && upmixLabels[mso.upmix.select] }}
+              {{ displayVolume }} dB &middot; {{ mso.inputs && mso.inputs[mso.input].label }} &middot; {{ mso.upmix && upmixLabels[mso.upmix.select] }}
             </router-link>
           </li>
           <!-- If mobile mode, always show hamburger button menu --> 
@@ -147,7 +168,7 @@
               class="settings-status"
               to="/"
             >
-              {{ mso.volume }} dB &middot; {{ mso.inputs && mso.inputs[mso.input].label }} &middot; {{ mso.upmix && upmixLabels[mso.upmix.select] }}
+              {{ displayVolume }} dB &middot; {{ mso.inputs && mso.inputs[mso.input].label }} &middot; {{ mso.upmix && upmixLabels[mso.upmix.select] }}
             </router-link>
           </li>
         </ul>
@@ -269,6 +290,7 @@ import { settingsRoutes } from '@/router.js';
 import useMso from '@/use/useMso.js';
 import useWebSocket from '@/use/useWebSocket.js';
 import useResponsive from '@/use/useResponsive.js';
+import useLocalStorage from "@/use/useLocalStorage.js";
 
 import IpSelect from './IpSelect.vue';
 import PowerDialog from './PowerDialog.vue';
@@ -290,6 +312,7 @@ import MacrosIcon from './icons/MacrosIcon';
 import AboutIcon from './icons/AboutIcon';
 import HelpIcon from './icons/HelpIcon';
 import PowerIcon from './icons/PowerIcon';
+import VolumeIcon from './icons/VolumeIcon';
 
 export default {
   name: 'App',
@@ -313,6 +336,7 @@ export default {
     HelpIcon,
     PowerIcon,
     ConfigsIcon,
+    VolumeIcon,
   },
   setup() {
 
@@ -370,7 +394,7 @@ export default {
 
     return { settingsRoutes, filteredSettingsRoutes, showMobileMenu, 
       showPowerDialog, toggleShowPowerDialog, personalizePowerDialog,
-      toggleShowMobileMenu, isMobileMode, ...useMso() 
+      toggleShowMobileMenu, isMobileMode, ...useMso(), ...useLocalStorage()
     };
   }
 }
@@ -564,6 +588,11 @@ export default {
 
   a.home-active svg {
     fill: white;
+  }
+
+  ul {
+    list-style-type: none;
+    padding-left: 0;
   }
 
 </style>

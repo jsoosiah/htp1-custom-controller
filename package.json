@@ -1,8 +1,8 @@
 {
   "name": "htp1-custom-controller",
-  "author": "Jeff Soosiah",
   "version": "0.1.0",
   "private": true,
+  "author": "Jeff Soosiah",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build --modern",
@@ -17,16 +17,16 @@
     "core-js": "^3.7.0",
     "fast-json-patch": "^3.0.0-1",
     "hammerjs": "^2.0.8",
-    "lodash-es": "^4.17.15",
+    "lodash-es": "^4.17.20",
     "tippy.js": "^6.2.7",
-    "vue": "^3.0.2",
+    "vue": "^3.0.5",
     "vue-draggable-next": "^1.0.8",
-    "vue-router": "^4.0.0-rc.3"
+    "vue-router": "^4.0.3"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^4.5.8",
-    "@vue/cli-plugin-eslint": "^4.5.8",
-    "@vue/cli-service": "^4.5.8",
+    "@vue/cli-plugin-babel": "^4.5.11",
+    "@vue/cli-plugin-eslint": "^4.5.11",
+    "@vue/cli-service": "^4.5.11",
     "@vue/compiler-sfc": "^3.0.2",
     "babel-eslint": "^10.1.0",
     "eslint": "^6.7.2",

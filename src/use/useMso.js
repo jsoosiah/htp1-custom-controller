@@ -1,6 +1,6 @@
 import { ref, watch, computed } from 'vue';
 import { applyPatch } from 'fast-json-patch/index.mjs';
-import { debounce, get, isArray, isEqual, maxBy } from 'lodash-es';
+import { cloneDeep, debounce, get, isArray, isEqual, maxBy } from 'lodash-es';
 
 import useWebSocket from './useWebSocket.js';
 import useLocalStorage from './useLocalStorage.js';
@@ -45,6 +45,9 @@ const commandKeys = [
 // flag to apply bmlfec from bassLpf
 let bmlfecApplied = false;
 
+// flag to apply headroom from cal/headroom
+let headroomApplied = false;
+
 // local MSO state, used to display values on the interface
 const mso = ref({});
 
@@ -65,7 +68,7 @@ const loading = ref(false);
 // it will be stored here and a notice will be shown
 const currentlyRecordingSlot = ref(null);
 
-const { data, state, send } = useWebSocket();
+const { eventHash, data, state, send } = useWebSocket();
 
 const { getActiveChannels, reverseBmg } = useSpeakerGroups();
 
@@ -75,9 +78,9 @@ const { maxWaitTimeToSendToMso } = useLocalStorage();
 
 // watch websocket messages and keep local mso state up to date
 watch(
-  data, 
+  eventHash, 
   val => {
-    const { verb, arg } = parseMSO(val);
+    const { verb, arg } = parseMSO(data.value);
     console.log('received verb', verb);
     if (verb === 'mso') {
       // full mso object
@@ -321,6 +324,20 @@ function applyProductRules() {
       bmlfecApplied = true;
       }
     }
+
+    if (!mso.value.cal.headroom) {
+      initializeHeadroom();
+    } else {
+      if (mso.value.powerIsOn && !headroomApplied) {
+        // TODO remove once the MSO is read by avController
+        send(`avcui "headroom ${mso.value.cal.headroom}"`);
+        headroomApplied = true;
+      }
+    }
+
+    if (!mso.value.cal.zeroPoint) {
+      initializeZeroPoint();
+    }
   }
 }
 
@@ -471,14 +488,32 @@ const visibleDiracSlots = computed(() => {
   return filtered;
 });
 
-const visibleMacros = computed(() => {
+const visibleRemoteMacros = computed(() => {
   const filtered = {};
   if (mso.value.personalize?.macros) {
     for (let key in mso.value.personalize?.macros) {
-      filtered[key] = mso.value.svronly[key] || mso.value.svronly.extraMacros[key];
+      if (mso.value.svronly[key]) {
+        filtered[key] = mso.value.svronly[key];
+      } 
+      // else if (mso.value.svronly.extraMacros[key]) {
+        // filtered[key] = mso.value.svronly.extraMacros[key];
+      // }
     }
   }
-  console.log('visibleMacros', visibleMacros)
+
+  return filtered;
+});
+
+const visibleExtraMacros = computed(() => {
+  const filtered = {};
+  if (mso.value.personalize?.macros) {
+    for (let key in mso.value.personalize?.macros) {
+      if (mso.value.svronly.extraMacros[key]) {
+        filtered[key] = mso.value.svronly.extraMacros[key];
+      }
+    }
+  }
+
   return filtered;
 });
 
@@ -534,12 +569,18 @@ const powerIsOn = computed(() => {
   return mso.value.powerIsOn;
 });
 
+// apply zero point to master volume
+const displayVolume = computed(() => {
+  return mso.value.cal?.zeroPoint ? mso.value.volume - mso.value.cal.zeroPoint : mso.value.volume;
+})
+
 // watch mso power state
 watch(
   powerIsOn,
   (newPower, oldPower) => {
     if (newPower != oldPower) {
       bmlfecApplied = false;
+      headroomApplied = false;
     }
   }
 )
@@ -779,16 +820,37 @@ function setMinVolume(minVol) {
   return patchMso( 'replace', '/cal/vpl', parseInt(minVol));
 }
 
+function setDefaultMinVolume() {
+  return setMinVolume(-100);
+}
+
 function setMaxVolume(maxVol) {
   return patchMso( 'replace', '/cal/vph', parseInt(maxVol));
 }
 
+function setDefaultMaxVolume() {
+  return setMaxVolume(0);
+}
+
 function setMaxOutputLevel(outputLevel) {
-  return patchMso( 'replace', '/cal/ampsense', parseFloat(outputLevel));
+  return patchMso( 'replace', '/cal/ampsense', convertFloat(outputLevel, 1.6, .1, 4));
+}
+
+function setDefaultMaxOutputLevel() {
+  return setMaxOutputLevel(1.6);
+}
+
+function setHeadroom(headroom) {
+  headroomApplied = false;
+  return patchMso('replace', '/cal/headroom', convertFloat(headroom, 12, 0, 30))
+}
+
+function setDefaultHeadroom() {
+  return setHeadroom(12);
 }
 
 function setLipsyncDelay(lipsyncDelay) {
-  let delay = convertInt(lipsyncDelay, 0, 0, 200);
+  let delay = convertInt(lipsyncDelay, 0, 0, 340);
   return patchMso( 'replace', '/cal/lipsync', delay);
 }
 
@@ -919,7 +981,7 @@ function setSineFrequency(freq) {
 }
 
 function setSineAmplitude(gain) {
-  let gainValue = convertFloat(gain, -20, -140, 0);
+  let gainValue = convertFloat(gain, -20, -140, 6);
   return patchMso( 'replace', `/sgen/sinedb`, gainValue);
 }
 
@@ -1230,6 +1292,22 @@ function initializeBassLpf() {
   return patchMso('add', '/bassLpf', 120);
 }
 
+function initializeHeadroom() {
+  return patchMso('add', '/cal/headroom', 12);
+}
+
+function initializeZeroPoint() {
+  return patchMso('add', '/cal/zeroPoint', 0);
+}
+
+function setZeroPoint(zeroPoint) {
+  return patchMso('replace', '/cal/zeroPoint', convertInt(zeroPoint, 0, -100, 22));
+}
+
+function setDefaultZeroPoint() {
+  return setZeroPoint(0);
+}
+
 function setBassLpf(lpf) {
   let lpfValue = convertInt(lpf, 120, 40, 200);
   bmlfecApplied = false;
@@ -1387,6 +1465,20 @@ function setRecordingStopped() {
   currentlyRecordingSlot.value = null;
 }
 
+function updateVu() {
+  console.log('call updateVu', new Date());
+  send('avcui "vu"');
+}
+
+function setVuPeakMode() {
+  send('avcui "vud 1"');
+}
+
+function clearVuPeakLevels() {
+  send('avcui "vud 0"');
+  setVuPeakMode();
+}
+
 /**
 * Composition function which exposes the MSO state, as well 
 * as an API to interact with MSO, abstracting away all 
@@ -1396,7 +1488,7 @@ export default function useMso() {
 
   return { 
     mso, visibleInputs, visibleUpmixers, visibleDiracSlots, 
-    visibleMacros, allUpmixers, upmixLabels,
+    visibleRemoteMacros, visibleExtraMacros, allUpmixers, upmixLabels,
     powerOff, powerSleep, powerRestart, powerOn,
     setVolume, toggleMute, setInput, setUpmix, 
     toggleUpmixHomevis, toggleUpmixCenterSpread, toggleUpmixWideSynth,
@@ -1409,7 +1501,10 @@ export default function useMso() {
     setLoudnessOff, setLoudnessOn,
     setToneControlOff, setToneControlOn,
     toggleSpeakerGroup, setSpeakerSize, setCenterFreq, setBassLpf,
-    setMinVolume, setMaxVolume, setMaxOutputLevel, setLipsyncDelay, setDiracSlot,
+    setMinVolume, setMaxVolume, setDefaultMinVolume, setDefaultMaxVolume,
+    setMaxOutputLevel, setDefaultMaxOutputLevel, 
+    setHeadroom, setDefaultHeadroom, setZeroPoint, setDefaultZeroPoint,
+    setLipsyncDelay, setDiracSlot,
     setUserDelay, setUserTrim, toggleMuteChannel,
     setMuteAllChannelsOff, setMuteAllChannelsOn, toggleAllMuteChannels,
     toggleSignalGenerator, setSignalGeneratorOff, setSignalGeneratorOn,
@@ -1440,8 +1535,10 @@ export default function useMso() {
     diracMismatchedChannels, diracMismatchedChannelGroups,
     currentlyRecordingSlot, setRecordingStarted, setRecordingStopped,
     dismissAlert, resetDismissedAlerts,
+    updateVu, clearVuPeakLevels, setVuPeakMode,
+    displayVolume,
     state, loading,
-    parseMSO, data,
+    parseMSO, data, eventHash,
     commandsToSend, commandsReceived, commandsAwaitingResponse // debug
   };
 }

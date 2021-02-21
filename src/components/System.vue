@@ -10,7 +10,6 @@
           >Unit Name</label>
           <input
             id="unit-name"
-            disabled
             type="text"
             class="form-control form-control-sm"
             aria-label="Unit Name"
@@ -62,88 +61,9 @@
       <div class="col-lg-auto">
         <div class="form-group">
           <label
-            for="inputEmail3"
-            class="col-form-label col-form-label-sm"
-          >Min. volume</label>
-          <div class="input-group input-group-sm numeric-input">
-            <input
-              type="number"
-              class="form-control"
-              aria-label="Minimum volume"
-              aria-describedby="basic-addon2"
-              :value="mso.cal?.vpl"
-              min="-100"
-              max="-60"
-              @change="({ type, target }) => setMinVolume(target.value)"
-            >
-            <div class="input-group-append">
-              <span
-                id="basic-addon2"
-                class="input-group-text"
-              >dB</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-auto">
-        <div class="form-group">
-          <label
-            for="inputEmail3"
-            class="col-form-label col-form-label-sm"
-          >Max. volume</label>
-          <div class="input-group input-group-sm numeric-input">
-            <input
-              type="number"
-              class="form-control"
-              aria-label="Minimum volume"
-              aria-describedby="basic-addon2"
-              :value="mso.cal?.vph"
-              min="-59"
-              max="22"
-              @change="({ type, target }) => setMaxVolume(target.value)"
-            >
-            <div class="input-group-append">
-              <span
-                id="basic-addon2"
-                class="input-group-text"
-              >dB</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-auto">
-        <div class="form-group">
-          <label
-            for="inputEmail3"
-            class="col-form-label col-form-label-sm"
-          >Max. output level</label>
-          <div class="input-group input-group-sm numeric-input">
-            <input
-              type="number"
-              class="form-control"
-              aria-label="Minimum volume"
-              aria-describedby="basic-addon2"
-              :value="mso.cal?.ampsense"
-              min="0.1"
-              max="4"
-              step="0.1"
-              @change="({ type, target }) => setMaxOutputLevel(target.value)"
-            >
-            <div class="input-group-append">
-              <span
-                id="basic-addon2"
-                class="input-group-text"
-              >Vrms</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-auto">
-        <div class="form-group">
-          <label
             for="inputPassword3"
             class="col-form-label col-form-label-sm"
-          >Lipsync delay</label>
+          >Lipsync Delay</label>
           <div class="input-group input-group-sm numeric-input">
             <input
               type="number"
@@ -152,7 +72,7 @@
               aria-describedby="basic-addon2"
               :value="mso.cal?.lipsync"
               min="0"
-              max="200"
+              max="340"
               @change="({ type, target }) => setLipsyncDelay(target.value)"
             >
             <div class="input-group-append">

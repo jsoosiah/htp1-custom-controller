@@ -14,6 +14,8 @@ const showChannelMuteControls = ref(localStorage.getItem('showChannelMuteControl
 
 const maxWaitTimeToSendToMso = ref(375);
 
+const showAdvancedVolumeSettings = ref(localStorage.getItem('showAdvancedVolumeSettings') ? localStorage.getItem('showAdvancedVolumeSettings') : false);
+
 export default function useLocalStorage() {
 
   function setWebsocketIp(url) {
@@ -41,6 +43,11 @@ export default function useLocalStorage() {
     localStorage.setItem('showChannelMuteControls', showChannelMuteControls.value);
   }
 
+  function toggleShowAdvancedVolumeSettings() {
+    showAdvancedVolumeSettings.value = !showAdvancedVolumeSettings.value;
+    localStorage.setItem('showAdvancedVolumeSettings', showAdvancedVolumeSettings.value);
+  }
+
   return {
     websocketIp,
     setWebsocketIp,
@@ -52,5 +59,7 @@ export default function useLocalStorage() {
     setMaxWaitTimeToSendToMso,
     showChannelMuteControls,
     toggleShowChannelMuteControls,
+    showAdvancedVolumeSettings,
+    toggleShowAdvancedVolumeSettings
   };
 }
