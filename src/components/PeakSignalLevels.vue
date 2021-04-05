@@ -38,7 +38,10 @@
             Peak Signal Level
           </th>
           <th>
-            Raw Vu Value
+            8 bit Raw Vu Value
+          </th>
+          <th>
+            6 bit Raw Vu Value
           </th>
         </tr>
       </thead>
@@ -65,11 +68,15 @@
             </span>
           </td>
           <td class="text-right">
+            {{ vuMap[channame].rawValue }}
+          </td>
+          <td class="text-right">
             {{ vuMap[channame].value }}
           </td>
         </tr>
       </tbody>
     </table>
+    <code v-if="peakSignalMonitoringEnabled">mso.vu = {{ mso.vu }}</code>
   </div>
 </template>
 
@@ -193,6 +200,7 @@ import DismissableAlert from './buttons/DismissableAlert.vue';
             active: 0 !==(vu & 0x80),
             clipped: (vu & 0x40) > 0,
             value: value,
+            rawValue: mso.value.vu[reverseAllChannelCodes[ch]],
             // dBFS: value * 2 - 96,
             dBFS: vuValToDBFS[value],
           };
