@@ -475,7 +475,11 @@ const visibleMacros = computed(() => {
   const filtered = {};
   if (mso.value.personalize?.macros) {
     for (let key in mso.value.personalize?.macros) {
-      filtered[key] = mso.value.svronly[key] || mso.value.svronly.extraMacros[key];
+      if (mso.value.svronly[key]) {
+        filtered[key] = mso.value.svronly[key];
+      } else if (mso.value.svronly.extraMacros[key]) {
+        filtered[key] = mso.value.svronly.extraMacros[key];
+      }
     }
   }
   console.log('visibleMacros', visibleMacros)
@@ -952,7 +956,7 @@ function setTrebleBoostCutLevel(level) {
 }
 
 function setLoudnessCalibration(loudness) {
-  return patchMso( 'replace', `/loudnessCal`, parseFloat(loudness));
+  return patchMso( 'replace', `/loudnessCal`, convertFloat(loudness,80, 50, 90));
 }
 
 // warning: custom attribute
