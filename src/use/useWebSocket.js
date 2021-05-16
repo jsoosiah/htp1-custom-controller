@@ -96,7 +96,7 @@ class WSClient {
         // Setup the event handler for onopen
         this.instance.onopen = function (ev) {
 
-            this.reconnectsAttempted = 0;
+            that.reconnectsAttempted = 0;
 
             // Run the open function
             that.onopen(ev);
@@ -175,7 +175,7 @@ class WSClient {
 
             that.reconnectsAttempted += 1;
 
-            console.log('WS: attempt reconnect');
+            console.log('WS: attempt reconnect', that.reconnectsAttempted);
 
             // Try and open the URL
             that.open(websocketurl.value);
