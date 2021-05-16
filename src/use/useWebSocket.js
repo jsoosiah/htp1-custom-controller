@@ -180,7 +180,7 @@ class WSClient {
             // Try and open the URL
             that.open(websocketurl.value);
 
-        }, that.reconnectsAttempted < 6 ? this.shortReconnectInterval : this.longReconnectInterval);
+        }, that.reconnectsAttempted < 10 ? this.shortReconnectInterval : this.longReconnectInterval);
     }
 }
 
