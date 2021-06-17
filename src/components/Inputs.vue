@@ -28,9 +28,9 @@
           <th>Input</th>
           <th>Label</th>
           <th>Visible on Homepage</th>
-          <th>Default Sound Mode</th>
-          <th>Input Delay (ms)</th>
-          <th>Input Trim (dB)</th>
+          <th>Sound Mode</th>
+          <th>Delay (ms)</th>
+          <th>Dirac Slot</th>
           <th>UHD Capable</th>
           <th v-if="mso.stat?.displayAdvancedSettings">
             PCM Detect Sensitivity
@@ -103,16 +103,23 @@
             >
           </td>
           <td>
-            <input 
-              type="number" 
-              class="form-control form-control-sm text-right" 
-              aria-label="Volume Offset" 
-              :value="inp.gain" 
-              min="-12"
-              max="12" 
-              size="3" 
-              @change="({ type, target }) => setInputVolumeTrim(inpcode, target.value)"
+            <select
+              id="diracSlot"
+              class="form-control form-control-sm"
+              @change="({ type, target }) => { setInputDiracSlot(inpcode, target.value) }"
             >
+              <option :value="null">
+                Last Used
+              </option>
+              <option 
+                v-for="(slot, key) in mso.cal?.slots"
+                :key="key"
+                :selected="inp.diracslot === key"
+                :value="key"
+              >
+                {{ slot.name }} {{ slot.hasBCFilter ? '*' : '' }}
+              </option>
+            </select>
           </td>
           <td>
             <div
