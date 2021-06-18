@@ -539,7 +539,7 @@ export default {
       
       applyPatch(msoCopy, deepClone(macro));
       const result = compare(mso.value, msoCopy).length === 0;
-      return result;
+      return result
     }
 
     function inputSelectedAndLoading(inp) {

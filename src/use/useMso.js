@@ -258,14 +258,17 @@ function applyProductRules() {
 
     for (let inputKey in mso.value.inputs) {
       if (mso.value.inputs) {
-        if (Object.prototype.hasOwnProperty.call(!mso.value.inputs[inputKey], 'defaultUpmix')) {
+        if (!Object.prototype.hasOwnProperty.call(mso.value.inputs[inputKey], 'defaultUpmix')) {
           _setInputDefaultUpmix(inputKey);
         }
-        if (Object.prototype.hasOwnProperty.call(!mso.value.inputs[inputKey], 'gain')) {
+        if (!Object.prototype.hasOwnProperty.call(mso.value.inputs[inputKey], 'gain')) {
           _setInputVolumeTrim(inputKey);
         }
-        if (Object.prototype.hasOwnProperty.call(!mso.value.inputs[inputKey], 'delay')) {
+        if (!Object.prototype.hasOwnProperty.call(mso.value.inputs[inputKey], 'delay')) {
           initializeInputDelay(inputKey);
+        }
+        if (!Object.prototype.hasOwnProperty.call(mso.value.inputs[inputKey], 'diracslot')) {
+          initializeInputDiracSlot(inputKey);
         }
       }
     }
@@ -508,7 +511,9 @@ const visibleExtraMacros = computed(() => {
   const filtered = {};
   if (mso.value.personalize?.macros) {
     for (let key in mso.value.personalize?.macros) {
-      if (mso.value.svronly.extraMacros[key]) {
+      if (mso.value.svronly[key]) {
+        filtered[key] = mso.value.svronly[key];
+      } else if (mso.value.svronly.extraMacros[key]) {
         filtered[key] = mso.value.svronly.extraMacros[key];
       }
     }
@@ -587,12 +592,13 @@ watch(
 
 function setDefaultsBeforePowerDown() {
   // set default upmix for current input if necessary
-  const defaultUpmix = mso.value.inputs[mso.value.input].defaultUpmix;
-  if (defaultUpmix && mso.value?.upmix.select !== defaultUpmix) {
-    return [
-      {'op':'replace', 'path': '/upmix/select', 'value': defaultUpmix}
-    ];
-  }
+  // TODO restore
+  // const defaultUpmix = mso.value.inputs[mso.value.input].defaultUpmix;
+  // if (defaultUpmix && mso.value?.upmix.select !== defaultUpmix) {
+  //   return [
+  //     {'op':'replace', 'path': '/upmix/select', 'value': defaultUpmix}
+  //   ];
+  // }
 
   return [];
 }
@@ -1014,7 +1020,7 @@ function setTrebleBoostCutLevel(level) {
 }
 
 function setLoudnessCalibration(loudness) {
-  return patchMso( 'replace', `/loudnessCal`, parseFloat(loudness));
+  return patchMso( 'replace', `/loudnessCal`, convertFloat(loudness,80, 50, 90));
 }
 
 // warning: custom attribute
@@ -1130,6 +1136,15 @@ function initializeInputDelay(input) {
 function setInputDelay(input, delayStr) {
   let delay = convertInt(delayStr, 0, 0, 200);
   return patchMso( 'replace', `/inputs/${input}/delay`, delay);
+}
+
+function initializeInputDiracSlot(input) {
+  console.log('init dirac?')
+  return patchMso('add', `/inputs/${input}/diracslot`, null);
+}
+
+function setInputDiracSlot(input, diracslot) {
+  return patchMso('replace', `/inputs/${input}/diracslot`, convertInt(diracslot, null, 0, 6));
 }
 
 // Warning: custom attribute
@@ -1516,7 +1531,7 @@ export default function useMso() {
     setPEQSlot, setPEQCenterFrequency, setPEQGain, 
     setPEQQuality, setPEQFilterType, resetPEQ,
     setInputLabel, toggleInputVisible, setInputFormatDetectOption, toggleInputUHD, 
-    setInputDefaultUpmix, setInputVolumeTrim, setInputDelay,
+    setInputDefaultUpmix, setInputVolumeTrim, setInputDelay, setInputDiracSlot,
     setBluetoothDiscoverableTime, enableBluetoothDiscovery,
     toggleCEC, setCECOff, setCECOn,
     setTVSoundSrcDefault, toggleCECAllowPowerKey, toggleCECAllowVolKey, 
