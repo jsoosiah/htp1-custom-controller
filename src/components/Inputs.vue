@@ -3,6 +3,12 @@
     <div class="row justify-content-between">
       <div class="col-auto">
         <h5>Input Setup</h5>
+        <dismissable-alert alert-key="inputs-background-service">
+          * Sound Mode, Delay, and Dirac Slot for individual inputs require the <a
+            target="_blank"
+            href="https://github.com/jsoosiah/htp1-custom-ui-background-service/releases/latest"
+          >HTP-1 Custom UI Background Service</a> to be running in the background on a computer in order to function.
+        </dismissable-alert>
       </div>
       <div class="col-auto">
         <div class="custom-control custom-switch">
@@ -28,9 +34,9 @@
           <th>Input</th>
           <th>Label</th>
           <th>Visible on Homepage</th>
-          <th>Sound Mode</th>
-          <th>Delay (ms)</th>
-          <th>Dirac Slot</th>
+          <th>Sound Mode*</th>
+          <th>Delay (ms)*</th>
+          <th>Dirac Slot*</th>
           <th>UHD Capable</th>
           <th v-if="mso.stat?.displayAdvancedSettings">
             PCM Detect Sensitivity
@@ -325,11 +331,13 @@
   import useInputs from '@/use/useInputs.js';
 
   import TwoStateButton from './buttons/TwoStateButton.vue';
+  import DismissableAlert from './buttons/DismissableAlert.vue';
 
   export default {
     name: 'Inputs',
     components: {
       TwoStateButton,
+      DismissableAlert,
     },
     setup() {
 
