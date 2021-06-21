@@ -80,17 +80,14 @@
 </script>
 
 <style scoped>
-
-  .speaker-mapping {
-    cursor: pointer;
-  }
-
   .speaker-mapping-standard {
     width:100%;
+    cursor:zoom-in;
   }
 
   .speaker-mapping-enlarged {
     width: 1200px;
+    cursor:zoom-out;
   }
 
   .speaker-label {

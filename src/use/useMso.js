@@ -328,7 +328,6 @@ function applyProductRules() {
 }
 
 function patchMso(op, path, value) {
-  
   const singlePatch = {
     'op': op,
     'path': path,
@@ -553,13 +552,12 @@ watch(
 
 function setDefaultsBeforePowerDown() {
   // set default upmix for current input if necessary
-  // TODO restore
-  // const defaultUpmix = mso.value.inputs[mso.value.input].defaultUpmix;
-  // if (defaultUpmix && mso.value?.upmix.select !== defaultUpmix) {
-  //   return [
-  //     {'op':'replace', 'path': '/upmix/select', 'value': defaultUpmix}
-  //   ];
-  // }
+  const defaultUpmix = mso.value.inputs[mso.value.input].defaultUpmix;
+  if (defaultUpmix && mso.value?.upmix.select !== defaultUpmix) {
+    return [
+      {'op':'replace', 'path': '/upmix/select', 'value': defaultUpmix}
+    ];
+  }
 
   return [];
 }
@@ -998,7 +996,7 @@ function setPEQSlot(bandNumber) {
 
 function setPEQCenterFrequency(channel, slot, centerFreq) {
 
-  let centerFreqValue = convertFloat(centerFreq, 100.0, 15.0, 20000.0);
+  let centerFreqValue = convertFloat(centerFreq, 100.0, 10.0, 20000.0);
 
   return patchMso( 'replace', `/peq/slots/${slot}/channels/${channel}/Fc`, centerFreqValue);
 }
@@ -1021,6 +1019,18 @@ function setPEQFilterType(channel, slot, filterType) {
   return patchMso( 'replace', `/peq/slots/${slot}/channels/${channel}/FilterType`, parseInt(filterType));
 }
 
+function addBEQFlag(channel, slot) {
+  return patchMso('add', `/peq/slots/${slot}/channels/${channel}/beq`, true);
+}
+
+function addBEQActive(underlying) {
+  return patchMso('add', `/peq/beqActive`, underlying);
+}
+
+function removeBEQActive() {
+  return patchMso('remove', '/peq/beqActive');
+}
+
 function resetPEQ(channel, slot) {
 
   const fc = setPEQCenterFrequency(channel, slot, 100);
@@ -1029,6 +1039,13 @@ function resetPEQ(channel, slot) {
   const filterType = setPEQFilterType(channel, slot, 0);
 
   return fc && gain && q && filterType;
+}
+
+function resetBEQ(channel, slot) {
+  const removeBEQFlag = patchMso('remove', `/peq/slots/${slot}/channels/${channel}/beq`);
+  const reset = resetPEQ(channel, slot);
+
+  return removeBEQFlag && reset;
 }
 
 function setInputLabel(input, label) {
@@ -1436,7 +1453,8 @@ export default function useMso() {
     setBassBoostCutLevel, setTrebleBoostCutLevel, setLoudnessCalibration, setLoudnessCurve,
     toggleGlobalPEQ, setGlobalPEQOff, setGlobalPEQOn,
     setPEQSlot, setPEQCenterFrequency, setPEQGain, 
-    setPEQQuality, setPEQFilterType, resetPEQ,
+    setPEQQuality, setPEQFilterType, resetPEQ, addBEQFlag, resetBEQ,
+    addBEQActive, removeBEQActive,
     setInputLabel, toggleInputVisible, setInputFormatDetectOption, toggleInputUHD, 
     setInputDefaultUpmix, setInputVolumeTrim, setInputDelay, setInputDiracSlot,
     setBluetoothDiscoverableTime, enableBluetoothDiscovery,
