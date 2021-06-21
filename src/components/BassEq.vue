@@ -492,9 +492,9 @@ export default {
     }
 
     async function getBeqByUnderlying() {
-      const response = await fetch(`${apiBaseUrl}/search?underlying=${beqActiveUnderlying.value}`);
+      const response = await fetch(`${apiBaseUrl}/lookup/underlying/${encodeURIComponent(beqActiveUnderlying.value)}`);
       const data = await response.json();
-      activeBeq.value = data.rows[0];
+      activeBeq.value = data;
     }
 
     async function getFilterValues() {
@@ -527,6 +527,7 @@ export default {
     }
 
     function applyBeqFilters(beq) {
+      console.log('apply', beq);
       clearAllExistingBeqFilters();
       // TODO make sure there are enough bands to fit BEQ filters
       for (const ch of activeSubwoofers.value) {
