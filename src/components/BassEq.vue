@@ -370,7 +370,7 @@ import NetflixIcon from './icons/streaming/NetflixIcon.vue';
 import ParamountPlusIcon from './icons/streaming/ParamountPlusIcon.vue';
 import YoutubePremiumIcon from './icons/streaming/YoutubePremiumIcon.vue';
 
-const apiBaseUrl = 'http://localhost:8082';
+const apiBaseUrl = 'http://jsoosiah.com/api';
 
 export default {
   components: { DismissableAlert, ImageDialog },
