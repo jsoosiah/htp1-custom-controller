@@ -56,6 +56,17 @@
         </dismissable-alert>
       </div>
     </div>
+    <div class="row">
+      <div class="col">
+        <dismissable-alert
+          v-if="mso.peq.beqActive"
+          alert-key="beq-filters-highlighted"
+          class="alert-warning"
+        >
+          BEQ filters are highlighted.
+        </dismissable-alert>
+      </div>
+    </div>
     <!-- group by band --> 
     <template v-if="eqGroupBy === 1">
       <nav class="navbar nav-fill nav-pills bg-light navbar-light">
@@ -92,6 +103,7 @@
           <tr
             v-for="(channame, chanIndex) in activeChannels"
             :key="channame"
+            :class="{'table-warning': mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].beq}"
           >
             <td>{{ spkName(channame) }}</td>
             <td class="text-right">
@@ -189,6 +201,7 @@
           <tr
             v-for="(slot, index) in mso.peq?.slots"
             :key="index"
+            :class="{'table-warning': slot.channels[activeChannels[selectedChannel]].beq}"
           >
             <td class="text-right">
               {{ index + 1 }}

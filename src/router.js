@@ -9,11 +9,12 @@ const Speakers = () => import('./components/Speakers.vue');
 const Calibration = () => import('./components/Calibration.vue');
 const SignalGenerator = () => import('./components/SignalGenerator.vue');
 const Peq = () => import('./components/Peq.vue');
+const BassEq = () => import('./components/BassEq.vue');
 const ToneControl = () => import('./components/ToneControl.vue');
 const Loudness = () => import('./components/Loudness.vue');
+const SoundEnhancement = () => import('./components/SoundEnhancement.vue');
 
 const Inputs = () => import('./components/Inputs.vue');
-const SoundEnhancement = () => import('./components/SoundEnhancement.vue');
 const Connectivity = () => import('./components/Connectivity.vue');
 const Macros = () => import('./components/Macros.vue');
 const Personalize = () => import('./components/Personalize.vue');
@@ -30,6 +31,7 @@ const settingsRoutes = [
   { path: 'calibration', component: Calibration, meta: { label: 'Calibration', icon: 'calibration-icon' }},
   { path: 'signal-generator', component: SignalGenerator, meta: { label: 'Signal Generator', icon: 'sgen-icon' }},
   { path: 'peq', component: Peq, meta: { label: 'PEQ', icon: 'peq-icon' }},
+  { path: 'bass-eq', component: BassEq, meta: { label: 'Filtered Bass EQ', icon: 'peq-icon' }},
   { path: 'tone-control', component: ToneControl, meta: { label: 'Tone Control', icon: 'tone-control-icon' }},
   { path: 'loudness', component: Loudness, meta: { label: 'Loudness', icon: 'loudness-icon' }},
   { path: 'upmix', component: SoundEnhancement, meta: { label: 'Upmix', icon: 'upmix-icon' }},
