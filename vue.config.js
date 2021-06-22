@@ -1,8 +1,6 @@
 module.exports = {
   productionSourceMap: false,
-  // publicPath: process.env.NODE_ENV === 'production'
-    // ? '/custom/'
-    // : '/'
+  publicPath: process.env.VUE_APP_PUBLIC_PATH || '/',
   configureWebpack: config => {
     config.externals = {
       moment: 'moment'
