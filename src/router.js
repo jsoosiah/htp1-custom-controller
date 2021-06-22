@@ -30,7 +30,7 @@ const settingsRoutes = [
   { path: 'calibration', component: Calibration, meta: { label: 'Calibration', icon: 'calibration-icon' }},
   { path: 'signal-generator', component: SignalGenerator, meta: { label: 'Signal Generator', icon: 'sgen-icon' }},
   { path: 'peq', component: Peq, meta: { label: 'PEQ', icon: 'peq-icon' }},
-  { path: 'bass-eq', component: BassEq, meta: { label: 'Filtered Bass EQ', icon: 'peq-icon' }},
+  { path: 'bass-eq', component: BassEq, meta: { label: 'Filtered Bass EQ', icon: 'filtered-bass-eq-icon' }},
   { path: 'tone-control', component: ToneControl, meta: { label: 'Tone Control', icon: 'tone-control-icon' }},
   { path: 'loudness', component: Loudness, meta: { label: 'Loudness', icon: 'loudness-icon' }},
   { path: 'upmix', component: SoundEnhancement, meta: { label: 'Upmix', icon: 'upmix-icon' }},

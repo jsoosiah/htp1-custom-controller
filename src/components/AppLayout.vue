@@ -275,6 +275,7 @@ import PowerDialog from './PowerDialog.vue';
 
 import HomeIcon from './icons/HomeIcon';
 import CalibrationIcon from './icons/CalibrationIcon';
+import FilteredBassEqIcon from './icons/FilteredBassEqIcon.vue';
 import PeqIcon from './icons/PeqIcon';
 import ToneControlIcon from './icons/ToneControlIcon';
 import LoudnessIcon from './icons/LoudnessIcon';
@@ -313,6 +314,7 @@ export default {
     HelpIcon,
     PowerIcon,
     ConfigsIcon,
+    FilteredBassEqIcon,
   },
   setup() {
 
