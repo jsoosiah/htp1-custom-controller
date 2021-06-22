@@ -52,6 +52,14 @@
               </span>
             </p>
             <p>Or, please enter the local IP address for your HTP-1 below.</p>
+            <p>
+              <small>
+                Don't have an HTP-1? Try the UI in <a
+                  href="#"
+                  @click.prevent="validateAndSetWebsocketurl('jsoosiah.com')"
+                >Demo Mode</a>.
+              </small>
+            </p>
           </template>
 
           <div class="form-group">
@@ -137,5 +145,10 @@
 
   small {
     color: rgba(255,255,255,.5) !important;
+  }
+
+  a {
+    font-weight: bold;
+    color: rgba(255,255,255,.75);
   }
 </style>
