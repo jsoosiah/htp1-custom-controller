@@ -576,7 +576,4 @@ export default {
 </script>
 
 <style scoped>
-  .beq-table {
-    padding-right: 0;
-  }
 </style>
