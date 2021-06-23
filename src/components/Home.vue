@@ -52,12 +52,13 @@
           >
             <div class="card-body">
               <div class="row align-items-center">
-                <div class="col-auto icon-col">
-                  <img
-                    v-if="streamTypeIcon(mso.status)"
-                    class="fillheight"
-                    :src="require(`@/assets/${streamTypeIcon(mso.status)}`)+'#svgView(preserveAspectRatio(xMidYMid))'"
-                  >
+                <div class="col-auto icon-col text-center">
+                  <component
+                    :is="streamTypeIcon(mso.status)"
+                    height="52"
+                    width="80"
+                    preserve-aspect-ratio="xMidYMid"
+                  />
                 </div>
                 <div class="col">
                   <h6 class="card-title text-muted">
@@ -81,7 +82,7 @@
           >
             <div class="card-body">
               <div class="row align-items-center">
-                <div class="col-auto icon-col text-center">
+                <div class="col-auto icon-col text-center fillheight">
                   <font-awesome-icon
                     class="text-muted"
                     size="2x"
@@ -115,12 +116,13 @@
           >
             <div class="card-body">
               <div class="row align-items-center">
-                <div class="col-auto icon-col">
-                  <img
-                    v-if="upmixerIcon(mso.status)"
-                    class="fillheight"
-                    :src="require(`@/assets/${upmixerIcon(mso.status)}`)+'#svgView(preserveAspectRatio(xMidYMid))'"
-                  >
+                <div class="col-auto icon-col text-center fillheight">
+                  <component
+                    :is="upmixerIcon(mso.status)"
+                    height="52"
+                    width="80"
+                    preserve-aspect-ratio="xMidYMid"
+                  />
                 </div>
                 <div class="col">
                   <h6 class="card-title text-muted">
@@ -393,6 +395,18 @@ import ThreeStateButton from './buttons/ThreeStateButton.vue';
 import DiracButton from './buttons/DiracButton.vue';
 import DialogEnhanceButton from './buttons/DialogEnhanceButton.vue';
 
+import AuroCodecIcon from './icons/streamformat/AuroCodecIcon.vue';
+import AuromaticCroppedIcon from './icons/streamformat/AuromaticCroppedIcon.vue';
+import DirectIcon from './icons/streamformat/DirectIcon.vue';
+import DolbyAtmosWhiteIcon from './icons/streamformat/DolbyAtmosWhiteIcon.vue';
+import DolbyAudioWhiteIcon from './icons/streamformat/DolbyAudioWhiteIcon.vue';
+import DtsHdmaWhiteIcon from './icons/streamformat/DtsHdmaWhiteIcon.vue';
+import DtsHdWhiteIcon from './icons/streamformat/DtsHdWhiteIcon.vue';
+import DtsWhiteIcon from './icons/streamformat/DtsWhiteIcon.vue';
+import DtsXWhiteIcon from './icons/streamformat/DtsXWhiteIcon.vue';
+import PcmIcon from './icons/streamformat/PcmIcon.vue';
+import StereoIcon from './icons/streamformat/StereoIcon.vue';
+
 // ms per dB
 const LONG_PRESS_VOLUME_ADJUST_SPEED = 125; 
 
@@ -402,6 +416,17 @@ export default {
     DialogEnhanceButton,
     TwoStateButton,
     ThreeStateButton,
+    AuroCodecIcon,
+    AuromaticCroppedIcon,
+    DirectIcon,
+    DolbyAtmosWhiteIcon,
+    DolbyAudioWhiteIcon,
+    DtsHdmaWhiteIcon,
+    DtsHdWhiteIcon,
+    DtsWhiteIcon,
+    DtsXWhiteIcon,
+    PcmIcon,
+    StereoIcon,
   },
   directives: {
     LongPress,
@@ -609,9 +634,6 @@ export default {
     color:yellow;
   }
   .fillheight {
-    max-height:3.25rem;
-    width:5rem;
-    display: block;
     opacity: .9;
   }
 
@@ -697,3 +719,14 @@ export default {
 
 
 </style>
+
+
+
+
+
+
+
+
+
+
+
