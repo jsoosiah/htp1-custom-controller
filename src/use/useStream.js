@@ -56,41 +56,41 @@ export default function useStream() {
 
         switch (arg.raw.streamType) {
             case DAE_DECODE_PCM:
-                return 'pcm.svg';
+                return 'pcm-icon';
             case DAE_DECODE_AC3:
-                return 'dolby-audio-white.svg'; // Dolby Digital
+                return 'dolby-audio-white-icon'; // Dolby Digital
             case DAE_DECODE_DDP:
                 if (arg.raw.streamInfoBytes[0] & STREAM_INFO_FLAGS_DA_ATMOS) {
                     if (arg.raw.streamInfoBytes[0] & STREAM_INFO_FLAGS_DD_CANT_DECODE_ATMOS)
-                        return 'dolby-atmos-white.svg'; // Legacy
+                        return 'dolby-atmos-white-icon'; // Legacy
                     else
-                        return 'dolby-atmos-white.svg';
+                        return 'dolby-atmos-white-icon';
                 }
                 else
-                    return 'dolby-audio-white.svg'; // Dolby Digital Plus
+                    return 'dolby-audio-white-icon'; // Dolby Digital Plus
             case DAE_DECODE_THD:
                 if (arg.raw.streamInfoBytes[0] & STREAM_INFO_FLAGS_DA_ATMOS) {
                     if (arg.raw.streamInfoBytes[0] & STREAM_INFO_FLAGS_DD_CANT_DECODE_ATMOS)
-                        return 'dolby-atmos-white.svg'; // Legacy
+                        return 'dolby-atmos-white-icon'; // Legacy
                     else
-                        return 'dolby-atmos-white.svg';
+                        return 'dolby-atmos-white-icon';
                 }
                 else
-                    return 'dolby-audio-white.svg'; // Dolby TrueHD
+                    return 'dolby-audio-white-icon'; // Dolby TrueHD
             case DAE_DECODE_STREAM_TYPE_MAT_PCM_CHANNEL:       // Dolby MAT
-                return 'pcm.svg';
+                return 'pcm-icon';
             case DAE_DECODE_STREAM_TYPE_MAT_PCM_OBJECT:       // Dolby Atmos
-                return 'dolby-atmos-white.svg';  
+                return 'dolby-atmos-white-icon';  
 
             case DAE_DECODE_DTS_STREAM_TYPE_DTS_X:
             case DAE_DECODE_DTS_STREAM_TYPE_DTS_X_MA:
             case DAE_DECODE_DTS_STREAM_TYPE_DTS_X_GAME:
-                return 'dts-x-white.svg';
+                return 'dts-x-white-icon';
             case DAE_DECODE_DTS_STREAM_TYPE_MA:
-                return 'dts-hdma-white.svg';
+                return 'dts-hdma-white-icon';
             case DAE_DECODE_DTSHD:
             case DAE_DECODE_DTS_STREAM_TYPE_HIRES:
-                return 'dts-hd-white.svg';
+                return 'dts-hd-white-icon';
             case DAE_DECODE_DTS:
             case DAE_DECODE_DTS12:
             case DAE_DECODE_DTS13:
@@ -104,7 +104,7 @@ export default function useStream() {
             case DAE_DECODE_DTS_STREAM_TYPE_LBR:
             case DAE_DECODE_DTS_STREAM_TYPE_LOSSLESS:
                 // DTS "other" image.
-                return 'dts-white.svg';
+                return 'dts-white-icon';
             default:
                 return '';
         }
@@ -118,22 +118,22 @@ export default function useStream() {
             case SysPlaybackMode_mono:
             case SysPlaybackMode_multiChMono:
             case SysPlaybackMode_direct:
-                return 'direct.svg'
+                return 'direct-icon'
             case SysPlaybackMode_Native:
                 return '';
             case SysPlaybackMode_stereo:
-                return 'stereo.svg';
+                return 'stereo-icon';
             case SysPlaybackMode_dolbySurround:
-                return 'dolby-audio-white.svg';
+                return 'dolby-audio-white-icon';
             case SysPlaybackMode_dolbyAtmos:
-                return 'dolby-atmos-white.svg';
+                return 'dolby-atmos-white-icon';
             case SysPlaybackMode_dtsX:
             case SysPlaybackMode_dtsNeuralX:
-                return 'dts-white.svg';
+                return 'dts-white-icon';
             case SysPlaybackMode_Auro3D:
-                return 'auro-codec.svg';
+                return 'auro-codec-icon';
             case SysPlaybackMode_AuroMatic:
-                return 'auromatic-cropped.svg';
+                return 'auromatic-cropped-icon';
         default:
                 return '';
         }

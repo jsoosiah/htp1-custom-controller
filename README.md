@@ -30,10 +30,15 @@ npm run build
 ```
 
 ### Building and Uploading to HTP-1
-1. With the latest NodeJS LTS installed on your machine, check out the code and run the following:
+1. With the latest NodeJS LTS installed on your machine, check out the code and run the following.
+Linux/Mac:
 ```
 npm install
-npm run build
+VUE_APP_PUBLIC_PATH=/custom/ npm run build
+```
+Windows CMD:
+```
+set VUE_APP_PUBLIC_PATH=/custom/&& npm run build 
 ```
 2. This compiles and minifies the project to the `dist` directory. Rename `dist` to `custom`.
 3. Upload the `custom` directory to `/opt/olympia/node-red/static` on the HTP-1, removing the old `custom` directory first, if it already exists on the HTP-1.

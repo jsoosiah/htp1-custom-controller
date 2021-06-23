@@ -70,6 +70,7 @@ import { settingsRoutes } from '@/router.js';
 
 import HomeIcon from './icons/HomeIcon';
 import CalibrationIcon from './icons/CalibrationIcon';
+import FilteredBassEqIcon from './icons/FilteredBassEqIcon';
 import PeqIcon from './icons/PeqIcon';
 import ToneControlIcon from './icons/ToneControlIcon';
 import LoudnessIcon from './icons/LoudnessIcon';
@@ -108,6 +109,7 @@ export default {
     PowerIcon,
     ConfigsIcon,
     VolumeIcon,
+    FilteredBassEqIcon,
   },
   emits: ['power-dialog'],
   setup(props, { emit }) {
