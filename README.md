@@ -3,6 +3,11 @@
 ## Overview
 This project is an unofficial web interface to control the Monoprice Monolith HTP-1 written in Vue 3. The goal is a lightweight, responsive, and mobile-friendly interface. 
 
+## Demo
+http://jsoosiah.com
+
+Click on the "Demo Mode" link to test out the interface. 
+
 ## Screens
 
 <img src="./docs/htp1-home.png" alt="HTP-1 Home" height=300 />
