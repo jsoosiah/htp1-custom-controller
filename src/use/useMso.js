@@ -143,7 +143,6 @@ watch(
     console.log('watch commandsAwaitingResponse', newCommandsAwaitingResponse.length)
     if (newCommandsAwaitingResponse.length > 0) {
       debouncedSendCommands.value();
-      // sendCommands();
       loading.value = true;
     } else {
       loading.value = false;
@@ -376,7 +375,14 @@ function sendCommands() {
   if (commandsToSend.value.length > 0) {
     console.log('changemso', commandsToSend.value.length, commandsToSend.value[0]);
     // send('changemso ' + JSON.stringify(commandsToSend.value));
-    changemso(commandsToSend.value)
+    if (commandsToSend.value.length > 2) {
+      changemso(commandsToSend.value)
+    } else {
+      for (const cmd of commandsToSend.value) { // hack for dirac bypass
+        changemso([cmd]);
+      }
+    }
+    
     commandsToSend.value = [];
   }
 }
@@ -772,7 +778,9 @@ function setDiracOn() {
 }
 
 function setDiracBypass() {
-  return patchMso('replace', '/cal/diracactive', 'bypass');
+  const setOn = setDiracOn();
+  const setBypass = patchMso('replace', '/cal/diracactive', 'bypass');
+  return setOn && setBypass;
 }
 
 function setDiracOff() {
@@ -1611,7 +1619,8 @@ function addCommandList(cmdList, newCmdList) {
 function filterMatchingCommandType(cmdList, newCmd) {
   return cmdList.filter(
     cmd => {
-      return !(cmd.op === newCmd.op && cmd.path === newCmd.path);
+      return  !(cmd.op === newCmd.op && cmd.path === newCmd.path)
+      || cmd.path === '/cal/diracactive'; // hack
       // return true;
     }
   );

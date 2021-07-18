@@ -40,6 +40,14 @@
             <p>
               Or, please update the IP address below if it has changed.
             </p>
+            <p>
+              <small>
+                Don't have an HTP-1? Try the UI in <a
+                  href="#"
+                  @click.prevent="validateAndSetWebsocketurl('jsoosiah.com')"
+                >Demo Mode</a>.
+              </small>
+            </p>
           </template>
           <template v-else>
             <p>

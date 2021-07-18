@@ -377,7 +377,7 @@ export default {
   setup() {
 
     const { mso, setPEQCenterFrequency, setPEQGain, setPEQFilterType, setPEQQuality,
-    addBEQFlag, resetBEQ, addBEQActive, removeBEQActive } = useMso();
+    addBEQFlag, resetBEQ, addBEQActive, removeBEQActive, setGlobalPEQOn } = useMso();
     const { getActiveChannels } = useSpeakerGroups();
     const { isMobileMode } = useResponsive();
 
@@ -485,7 +485,7 @@ export default {
     }
 
     async function getBeqTableResults() {
-      const response = await fetch(`${apiBaseUrl}/search?q=${encodeURIComponent(searchText.value)}&content_type=${contentTypeFilter.value}&language=${languageFilter.value}&year=${yearFilter.value}&source=${sourceFilter.value}&p=${page.value}&s=${pageSize}`);
+      const response = await fetch(`${apiBaseUrl}/search?q=${encodeURIComponent(searchText.value)}&content_type=${encodeURIComponent(contentTypeFilter.value)}&language=${encodeURIComponent(languageFilter.value)}&year=${encodeURIComponent(yearFilter.value)}&source=${encodeURIComponent(sourceFilter.value)}&p=${page.value}&s=${pageSize}`);
       const data = await response.json();
       beqTableResults.value = data.rows;
       totalRows.value = data.pagination[0] ? data.pagination[0].total : 0;
@@ -546,6 +546,7 @@ export default {
       }
 
       addBEQActive(beq.underlying);
+      setGlobalPEQOn();
     }
 
     function clearAllExistingBeqFilters() {
