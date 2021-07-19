@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">HTP-1 Custom Remote</string>
+    <string name="title_activity_main">HTP-1 Custom Remote</string>
+    <string name="package_name">com.jsoosiah.htp1customremote</string>
+    <string name="custom_url_scheme">com.jsoosiah.htp1customremote</string>
+</resources>
