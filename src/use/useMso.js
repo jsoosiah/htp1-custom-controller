@@ -516,9 +516,10 @@ const visibleExtraMacros = computed(() => {
   const filtered = {};
   if (mso.value.personalize?.macros) {
     for (let key in mso.value.personalize?.macros) {
-      if (mso.value.svronly[key]) {
-        filtered[key] = mso.value.svronly[key];
-      } else if (mso.value.svronly.extraMacros[key]) {
+      // if (mso.value.svronly[key]) {
+        // filtered[key] = mso.value.svronly[key];
+      // } else 
+      if (mso.value.svronly.extraMacros[key]) {
         filtered[key] = mso.value.svronly.extraMacros[key];
       }
     }
