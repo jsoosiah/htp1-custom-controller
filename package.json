@@ -6,8 +6,13 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build --modern",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "electron:build": "vue-cli-service electron:build",
+    "electron:serve": "vue-cli-service electron:serve",
+    "postinstall": "electron-builder install-app-deps",
+    "postuninstall": "electron-builder install-app-deps"
   },
+  "main": "background.js",
   "dependencies": {
     "@capacitor/android": "^3.1.2",
     "@capacitor/cli": "^3.1.2",
@@ -33,7 +38,10 @@
     "@vue/cli-service": "^4.5.13",
     "@vue/compiler-sfc": "^3.1.5",
     "babel-eslint": "^10.1.0",
+    "electron": "^13.1.7",
+    "electron-devtools-installer": "^3.1.0",
     "eslint": "^6.7.2",
-    "eslint-plugin-vue": "^7.15.0"
+    "eslint-plugin-vue": "^7.15.0",
+    "vue-cli-plugin-electron-builder": "~2.1.1"
   }
 }
