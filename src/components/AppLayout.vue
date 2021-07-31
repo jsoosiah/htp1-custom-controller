@@ -342,7 +342,7 @@ export default {
   },
   setup() {
 
-    const { mso } = useMso();
+    const { mso, state } = useMso();
     const { findServers, websocketIp } = useWebSocket();
     const { windowWidth, isMobileMode } = useResponsive();
     const { userCss } = useLocalStorage();
@@ -374,6 +374,14 @@ export default {
         }, 100);
       }
     );
+
+    watch(state, () => {
+      if (state.value === 'OPEN') {
+        window.ipcRenderer.send('connected', true);
+      } else {
+        window.ipcRenderer.send('connected', false);
+      }
+    });
 
     watch(
       userCss,

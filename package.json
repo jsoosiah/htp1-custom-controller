@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "author": "Jeff Soosiah",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jsoosiah/htp1-custom-controller.git"
+  },
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build --modern",
@@ -21,9 +25,11 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.35",
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
     "@fortawesome/vue-fontawesome": "^3.0.0-4",
+    "auto-launch": "^5.0.5",
     "bootstrap": "^4.6.0",
     "chart.js": "^2.9.4",
     "core-js": "^3.16.0",
+    "electron-updater": "^4.3.9",
     "fast-json-patch": "^3.0.0-1",
     "hammerjs": "^2.0.8",
     "lodash-es": "^4.17.21",
