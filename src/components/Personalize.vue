@@ -305,6 +305,17 @@
         >
           Restore All Dismissed Notices
         </button>
+        <h6>User CSS</h6>
+        <div class="form-group">
+          <label for="user-css-input">CSS</label>
+          <textarea
+            id="user-css-input"
+            class="form-control"
+            rows="10"
+            :value="localUserCss"
+            @change="({type, target}) => setLocalUserCss(target.value)"
+          />
+        </div>
       </div>
       <div class="col-auto">
         <h6>Preview</h6>
@@ -318,10 +329,11 @@
 
 <script>
 
-  import { computed } from 'vue';
+  import { computed, ref } from 'vue';
 
   import useMso from '@/use/useMso.js';
   import useInputs from '@/use/useInputs.js';
+  import useLocalStorage from '@/use/useLocalStorage.js';
 
   import { settingsRoutes } from '@/router.js';
 
@@ -333,6 +345,9 @@
       Home,
     },
     setup() {
+
+      const { userCss, setUserCss } = useLocalStorage();
+      const localUserCss = ref( userCss );
 
       const modes = [
         {code: 'dirac', label: 'Dirac'},
@@ -361,7 +376,13 @@
         return settingsRoutes.filter(route => route.meta?.label);
       });
 
-      return { ...useMso(), ...useInputs(), modes, customizableSettingsRoutes, topLabels, powerButtons };
+      function setLocalUserCss(newUserCss) {
+        localUserCss.value = newUserCss;
+        setUserCss(newUserCss);
+      }
+
+      return { ...useMso(), ...useInputs(), modes, customizableSettingsRoutes, topLabels, powerButtons,
+        localUserCss, setLocalUserCss  };
     }
   }
 </script>
@@ -392,6 +413,10 @@
     font-size:87.5%;
     font-weight: normal;
     border-top: 0px;
+  }
+
+  textarea#user-css-input {
+    font-family:consolas, monospace;
   }
 
 </style>

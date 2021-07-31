@@ -345,6 +345,7 @@ export default {
     const { mso } = useMso();
     const { findServers, websocketIp } = useWebSocket();
     const { windowWidth, isMobileMode } = useResponsive();
+    const { userCss } = useLocalStorage();
     const route = useRoute();
 
     const showMobileMenu = ref(false);
@@ -374,6 +375,21 @@ export default {
       }
     );
 
+    watch(
+      userCss,
+      () => {
+        const style = document.getElementById('user-css');
+        if (style) {
+          console.log('userCss', userCss.value);
+          style.innerHTML = userCss.value;
+        }
+        
+      },
+      {
+        immediate: true,
+      }
+    )
+
     function updateWindowWidth() {
       windowWidth.value = window.innerWidth;
     }
@@ -396,7 +412,7 @@ export default {
 
     return { settingsRoutes, filteredSettingsRoutes, showMobileMenu, 
       showPowerDialog, toggleShowPowerDialog, personalizePowerDialog,
-      toggleShowMobileMenu, isMobileMode, ...useMso(), ...useLocalStorage()
+      toggleShowMobileMenu, isMobileMode, ...useMso(), websocketIp, userCss,
     };
   }
 }
