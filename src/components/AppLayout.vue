@@ -375,13 +375,15 @@ export default {
       }
     );
 
-    watch(state, () => {
-      if (state.value === 'OPEN') {
-        window.ipcRenderer.send('connected', true);
-      } else {
-        window.ipcRenderer.send('connected', false);
-      }
-    });
+    if (window.ipcRenderer) {
+      watch(state, () => {
+        if (state.value === 'OPEN') {
+          window.ipcRenderer.send('connected', true);
+        } else {
+          window.ipcRenderer.send('connected', false);
+        }
+      });
+    }
 
     watch(
       userCss,
