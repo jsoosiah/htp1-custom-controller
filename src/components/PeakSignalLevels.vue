@@ -25,58 +25,74 @@
     </div>
   </div>
   <div class="row">
-    <table
+    <div
       v-if="peakSignalMonitoringEnabled"
-      class="table table-sm table-striped table-responsive"
+      class="col"
     >
-      <thead>
-        <tr>
-          <th>
-            Channel
-          </th>
-          <th>
-            Peak Signal Level
-          </th>
-          <th>
-            8 bit Raw Vu Value
-          </th>
-          <th>
-            6 bit Raw Vu Value
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          v-for="channame in activeChannels"
-          :key="channame"
-          :class="{'table-danger':vuMap[channame].clipped,'text-danger':vuMap[channame].clipped, 'font-weight-bold':vuMap[channame].clipped}"
-        >
-          <td>
-            {{ spkName(channame) }}
-          </td>
-          <td
-            class="text-right"
+      <strong>Peak Signals</strong>
+      <table
+        class="table table-sm table-striped table-responsive"
+      >
+        <thead>
+          <tr>
+            <th>
+              Channel
+            </th>
+            <th>
+              Peak Signal Level
+            </th>
+            <th v-if="debug">
+              8 bit Raw Vu Value
+            </th>
+            <th v-if="debug">
+              6 bit Raw Vu Value
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="channame in activeChannels"
+            :key="channame"
+            :class="{'table-danger':vuMap[channame].clipped,'text-danger':vuMap[channame].clipped, 'font-weight-bold':vuMap[channame].clipped}"
           >
-            <span
-              v-if="vuMap[channame].active"
-              :class="{'text-success':!vuMap[channame].clipped && vuMap[channame].value > 0, 'text-secondary':!vuMap[channame].clipped && vuMap[channame].value === 0}"
+            <td>
+              {{ spkName(channame) }}
+            </td>
+            <td
+              class="text-right"
             >
-              {{
-                vuMap[channame].dBFS
-              }}
-              dBFS
-            </span>
-          </td>
-          <td class="text-right">
-            {{ vuMap[channame].rawValue }}
-          </td>
-          <td class="text-right">
-            {{ vuMap[channame].value }}
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <code v-if="peakSignalMonitoringEnabled">mso.vu = {{ mso.vu }}</code>
+              <span
+                v-if="vuMap[channame].active"
+                :class="{'text-success':!vuMap[channame].clipped && vuMap[channame].value > 0, 'text-secondary':!vuMap[channame].clipped && vuMap[channame].value === 0}"
+              >
+                {{
+                  vuMap[channame].dBFS
+                }}
+                dBFS
+              </span>
+            </td>
+            <td
+              v-if="debug"
+              class="text-right"
+            >
+              {{ vuMap[channame].rawValue }}
+            </td>
+            <td
+              v-if="debug"
+              class="text-right"
+            >
+              {{ vuMap[channame].value }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div
+      v-if="peakSignalMonitoringEnabled"
+      class="col"
+    >
+      <signal-generator small-header />
+    </div>
   </div>
 </template>
 
@@ -87,15 +103,16 @@
   import useMso from '@/use/useMso.js';
   import useSpeakerGroups from '@/use/useSpeakerGroups.js';
 
-  import { Tooltip } from '@/directives/Tooltip.js';
-import TwoStateButton from './buttons/TwoStateButton.vue';
-import DismissableAlert from './buttons/DismissableAlert.vue';
+  import TwoStateButton from './buttons/TwoStateButton.vue';
+  import DismissableAlert from './buttons/DismissableAlert.vue';
+  import SignalGenerator from './SignalGenerator.vue';
 
   export default {
     name: 'PeakSignalLevels',
     components: {
       TwoStateButton,
-      DismissableAlert
+      DismissableAlert,
+      SignalGenerator,
     },
     setup(props) {
 
@@ -122,7 +139,7 @@ import DismissableAlert from './buttons/DismissableAlert.vue';
       let lastVuReceived = 0;
 
       const vuValToDBFS = [
-        -84,
+        '< -84',
         -80,
         -76,
         -72,
@@ -188,6 +205,10 @@ import DismissableAlert from './buttons/DismissableAlert.vue';
         6
       ];
 
+      const debug = computed(() => {
+        return window.location.href.includes('debug');
+      });
+
       const activeChannels = computed(() => {
         return getActiveChannels(mso.value.speakers?.groups);
       });
@@ -202,8 +223,7 @@ import DismissableAlert from './buttons/DismissableAlert.vue';
             active: 0 !==(vu & 0x80),
             clipped: (vu & 0x40) > 0,
             value: value,
-            rawValue: mso.value.vu[reverseAllChannelCodes[ch]],
-            // dBFS: value * 2 - 96,
+            rawValue: (mso.value.vu && reverseAllChannelCodes) ? mso.value.vu[reverseAllChannelCodes[ch]] : 0,
             dBFS: vuValToDBFS[value],
           };
         }
@@ -280,7 +300,7 @@ import DismissableAlert from './buttons/DismissableAlert.vue';
         mso, toggleSignalGenerator, setSignalGeneratorChannel, setSignalGeneratorChannel2, setSignalGeneratorSignalType, 
         activeChannels, spkName, signalOptions, setSignalGeneratorOff, setSignalGeneratorOn, showCrossoverControls,
         setSineFrequency, setSineAmplitude, setUpmix, setVolume, vuMap, channelDisabled, showTooltip, handleSelect, isChecked,
-        clearVuPeakLevels,setVuPeakMode, peakSignalMonitoringEnabled, togglePeakSignalMonitoring
+        clearVuPeakLevels,setVuPeakMode, peakSignalMonitoringEnabled, togglePeakSignalMonitoring, debug
       };
     }
   }

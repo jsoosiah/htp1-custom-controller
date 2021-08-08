@@ -44,7 +44,51 @@
   >
     <ip-select />
   </div>
-  <template v-if="!mso?.powerIsOn">
+  <template v-if="mso?.stat?.updateprogmsg.updating !== undefined && mso?.stat?.updateprogmsg.updating">
+    <div class="container">
+      <div class="row pt-5">
+        <div class="col-md-12 text-center">
+          <h1
+            v-if="mso.stat.updateprogmsg.title !== undefined"
+            class="standby-msg"
+          >
+            {{ mso.stat.updateprogmsg.title }}
+          </h1>
+          <h1
+            v-else
+            class="standby-msg"
+          >
+            System Update in Progress
+          </h1>
+        </div>
+      </div>
+      <div class="row pt-5">
+        <div class="col-md-12 text-center">
+          <div
+            class="progress"
+            style="height:4px;"
+          >
+            <div
+              class="progress-bar progress-bar-striped"
+              role="progressbar"
+              :style="{width: `${mso.stat.updateprogmsg.percent}%`}"
+              :aria-valuenow="mso.stat.updateprogmsg.percent"
+              aria-valuemin="0"
+              aria-valuemax="100"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="row pt-5">
+        <div class="col-md-12 text-center">
+          <h2 class="standby-msg">
+            {{ mso.stat.updateprogmsg.msg }}
+          </h2>
+        </div>
+      </div>
+    </div>
+  </template>
+  <template v-else-if="!mso?.powerIsOn">
     <div class="container">
       <div class="row pt-5">
         <div class="col-md-12 text-center">
@@ -79,6 +123,22 @@
                 target="_blank"
                 :href="`http://${websocketIp}/feedback`"
               >Submit Feedback</a>
+            </li>
+            <li>
+              <a
+                href="javascript:void(0)"
+                @click="toggleShowPowerDialog(true)"
+              >Power Options</a>
+              <div 
+                v-if="showPowerDialog" 
+                class="connecting-overlay"
+                @click.self="toggleShowPowerDialog(true)"
+              >
+                <power-dialog
+                  @click.self="toggleShowPowerDialog(true)"
+                  @cancel="toggleShowPowerDialog(true)"
+                />
+              </div>
             </li>
           </ul>
         </div>

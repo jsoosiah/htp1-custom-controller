@@ -2,7 +2,15 @@
   <div class="container">
     <div class="row mb-3">
       <div class="col">
-        <h5>Signal Generator</h5>
+        <strong
+          v-if="smallHeader"
+          class="small-header"
+        >
+          Signal Generator
+        </strong>
+        <h5 v-else>
+          Signal Generator
+        </h5>
         <dismissable-alert
           v-if="mso.upmix.select !== 'off'"
           alert-key="sgen-direct"
@@ -177,6 +185,12 @@
     directives: {
       Tooltip
     },
+    props: {
+      smallHeader: {
+        type: Boolean,
+        default: false,
+      }
+    },
     setup() {
 
       const { mso, toggleSignalGenerator, setSignalGeneratorChannel, setSignalGeneratorChannel2, 
@@ -214,5 +228,9 @@
 
   .numeric-input {
     width: 9.5rem;
+  }
+
+  .small-header {
+    display:block;
   }
 </style>
