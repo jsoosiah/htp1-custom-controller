@@ -27,6 +27,13 @@ module.exports = {
           repo: 'htp1-custom-controller',
           owner: 'jsoosiah',
         },
+        extraResources: [
+          {
+            from: 'public',
+            to: '.',
+            filter: '**/*.ico',
+          },
+        ],
       },
     },
   },
