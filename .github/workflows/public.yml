@@ -13,8 +13,8 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
+  build-electron:
+    name: Build Electron
     # The type of runner that the job will run on
     runs-on: ${{ matrix.os }}
     
@@ -36,8 +36,50 @@ jobs:
         with: 
           node-version: 14.x
           
-      - uses: sergioramos/yarn-actions/install@v6
-        with:
-          frozen-lockfile: true
-          
+      # - uses: sergioramos/yarn-actions/install@v6
+      #   with:
+      #     frozen-lockfile: true
+      - run: yarn install
       - run: yarn release
+
+  build-apk:
+    name: Build Capacitor APK
+    runs-on: ubuntu-20.04
+    env:
+      GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      RELEASE_KEYSTORE: ${{secrets.RELEASE_KEYSTORE}}
+      RELEASE_KEYSTORE_PASSWORD: ${{secrets.RELEASE_KEYSTORE_PASSWORD}}
+      RELEASE_KEY_ALIAS: ${{secrets.RELEASE_KEY_ALIAS}}
+      RELEASE_KEY_PASSWORD: ${{secrets.RELEASE_KEY_PASSWORD}}
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v2
+
+      - name: Setup java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+
+      # - uses: sergioramos/yarn-actions/install@v6
+      #   with:
+      #     frozen-lockfile: true
+
+      - run: yarn install
+      - run: yarn run build
+      - run: npx cap copy android
+      - run: >
+          cd android && 
+          ./gradlew assembleRelease && 
+          cd app/build/outputs/apk/release && 
+          echo $RELEASE_KEYSTORE | base64 -d upload-keystore.jks && 
+          jarsigner -keystore upload-keystore.jks -storepass $RELEASE_KEYSTORE_PASSWORD app-release-unsigned.apk $RELEASE_KEY_ALIAS && 
+          zipalign 4 app-release-unsigned.apk app-release.apk
+
+  # TODO: iOS
+  # TODO: deploy web app
