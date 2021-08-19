@@ -72,7 +72,7 @@ jobs:
 
       - run: yarn install
       - run: yarn run build
-      - run: npx cap copy android
+      - run: npx cap sync android
       - run: >
           cd android && 
           chmod +x ./gradlew &&
