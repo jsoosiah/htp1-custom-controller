@@ -81,6 +81,7 @@ jobs:
           echo "${RELEASE_KEYSTORE// /}" | base64 --decode > upload-keystore.jks && 
           ls -l && 
           jarsigner -keystore ./upload-keystore.jks -storepass $RELEASE_KEYSTORE_PASSWORD ./app-release-unsigned.apk $RELEASE_KEY_ALIAS && 
+          sudo apt-get install zipalign -y &&
           zipalign 4 app-release-unsigned.apk app-release.apk
       - uses: softprops/action-gh-release@v1
         with: 
