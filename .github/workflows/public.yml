@@ -36,9 +36,6 @@ jobs:
         with: 
           node-version: 14.x
           
-      # - uses: sergioramos/yarn-actions/install@v6
-      #   with:
-      #     frozen-lockfile: true
       - run: yarn install
       - run: yarn release
 
@@ -66,10 +63,6 @@ jobs:
         with:
           node-version: 14.x
 
-      # - uses: sergioramos/yarn-actions/install@v6
-      #   with:
-      #     frozen-lockfile: true
-
       - run: yarn install
       - run: yarn run build
       - run: npx cap sync android
@@ -83,8 +76,13 @@ jobs:
           jarsigner -keystore ./upload-keystore.jks -storepass $RELEASE_KEYSTORE_PASSWORD ./app-release-unsigned.apk $RELEASE_KEY_ALIAS && 
           sudo apt-get install zipalign -y &&
           zipalign 4 app-release-unsigned.apk app-release.apk
-      - uses: softprops/action-gh-release@v1
-        with: 
-          files: android/app/build/outputs/apk/release/app-release.apk
+      - name: get-npm-version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@master
+      - uses: ncipollo/release-action@v1
+        with:
+          artifacts: "android/app/build/outputs/apk/release/app-release.apk"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ steps.package-version.outputs.current-version}}
   # TODO: iOS
   # TODO: deploy web app
