@@ -79,7 +79,8 @@ jobs:
           ./gradlew assembleRelease && 
           cd app/build/outputs/apk/release && 
           echo $RELEASE_KEYSTORE | base64 -d > upload-keystore.jks && 
-          jarsigner -keystore upload-keystore.jks -storepass $RELEASE_KEYSTORE_PASSWORD app-release-unsigned.apk $RELEASE_KEY_ALIAS && 
+          ls && 
+          jarsigner -keystore ./upload-keystore.jks -storepass $RELEASE_KEYSTORE_PASSWORD ./app-release-unsigned.apk $RELEASE_KEY_ALIAS && 
           zipalign 4 app-release-unsigned.apk app-release.apk
       - uses: softprops/action-gh-release@v1
         with: 
