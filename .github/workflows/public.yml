@@ -84,5 +84,8 @@ jobs:
           artifacts: "android/app/build/outputs/apk/release/app-release.apk"
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ steps.package-version.outputs.current-version}}
+          allowUpdates: true
+          draft: true
+
   # TODO: iOS
   # TODO: deploy web app
