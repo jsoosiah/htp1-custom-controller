@@ -86,6 +86,7 @@ jobs:
           tag: ${{ steps.package-version.outputs.current-version}}
           allowUpdates: true
           draft: true
+          commit: ${{ github.sha }}
 
   # TODO: iOS
   # TODO: deploy web app
