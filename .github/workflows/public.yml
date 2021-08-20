@@ -16,6 +16,11 @@ jobs:
   draft-release:
     runs-on: ubuntu-20.04
     steps:
+      - name: Checkout source
+        uses: actions/checkout@v2
+      - name: get-npm-version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@master
       - uses: ncipollo/release-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
