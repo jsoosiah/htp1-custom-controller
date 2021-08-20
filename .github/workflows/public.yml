@@ -13,6 +13,16 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
+  draft-release:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: ncipollo/release-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ steps.package-version.outputs.current-version }}
+          allowUpdates: true
+          draft: true
+          commit: ${{ github.sha }}
   build-electron:
     name: Build Electron
     # The type of runner that the job will run on
@@ -84,7 +94,6 @@ jobs:
           artifacts: "android/app/build/outputs/apk/release/app-release.apk"
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ steps.package-version.outputs.current-version }}
-          name: ${{ steps.package-version.outputs.current-version }}
           allowUpdates: true
           draft: true
           commit: ${{ github.sha }}
