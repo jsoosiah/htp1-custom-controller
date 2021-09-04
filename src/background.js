@@ -43,12 +43,6 @@ async function createWindow() {
     icon: path.join(__static, 'htp1-remote-disconnected.ico'),
   });
 
-  mainWindow.webContents.on('did-finish-load', () => {
-    // ipcMain.on('ipListToMain', (e, ipList) => {
-    //   mainWindow.webContents.send('ipListFromMain', ipList);
-    // });
-  });
-
   mainWindow.on('minimize', function (event) {
     event.preventDefault();
     mainWindow.hide();
@@ -131,6 +125,10 @@ app.whenReady().then(async () => {
   ]);
 
   tray.setContextMenu(contextMenu);
+
+  tray.on('click', () => {
+    mainWindow.show();
+  });
 
   ipcMain.on('connected', (e, isConnected) => {
     if (isConnected) {
