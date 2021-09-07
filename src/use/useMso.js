@@ -340,6 +340,10 @@ function applyProductRules() {
     if (!mso.value.cal.zeroPoint) {
       initializeZeroPoint();
     }
+
+    if (!mso.value.secondVolume) {
+      initializeSecondVolume();
+    }
   }
 }
 
@@ -1349,6 +1353,14 @@ function setDefaultZeroPoint() {
   return setZeroPoint(0);
 }
 
+function initializeSecondVolume() {
+  return patchMso('add', '/secondVolume', -20);
+}
+
+function setSecondVolume(secVol) {
+  return patchMso('replace', '/secondVolume', convertInt(secVol, -20, mso.value.cal?.vpl, mso.value.cal?.vph));
+}
+
 function setBassLpf(lpf) {
   let lpfValue = convertInt(lpf, 120, 40, 200);
   bmlfecApplied = false;
@@ -1578,6 +1590,7 @@ export default function useMso() {
     currentlyRecordingSlot, setRecordingStarted, setRecordingStopped,
     dismissAlert, resetDismissedAlerts,
     updateVu, clearVuPeakLevels, setVuPeakMode,
+    setSecondVolume,
     displayVolume,
     state, loading,
     parseMSO, data, eventHash,

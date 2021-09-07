@@ -289,7 +289,53 @@
           </div>
         </div>
       </div>
+      <div class="row mb-3">
+        <table class="small text-muted">
+          <tr>
+            <td>Maximum volume which leaves max. digital headroom:</td>
+            <td class="text-right">
+              {{ 0 - mso.cal?.headroom + 1 }} dB
+            </td>
+          </tr>
+          <tr>
+            <td>Currently available digital headroom:</td>
+            <td class="text-right">
+              {{ Math.min(mso.cal?.headroom, (1 - mso.volume)) }} dB
+            </td>
+          </tr>
+        </table>
+      </div>
       <peak-signal-levels />
+      <!-- <div class="form-group">
+        <label
+          for="inputEmail3"
+          class="col-form-label col-form-label-sm"
+        >Secondary Output Volume</label>
+        <div class="container">
+          <div class="row">
+            <div class="col">
+              <div class="input-group input-group-sm numeric-input">
+                <input
+                  type="number"
+                  class="form-control"
+                  aria-label="Minimum volume"
+                  aria-describedby="basic-addon2"
+                  :value="mso.secondVolume"
+                  :min="mso.vpl"
+                  :max="mso.vph"
+                  @change="({ type, target }) => setSecondVolume(target.value)"
+                >
+                <div class="input-group-append">
+                  <span
+                    id="basic-addon2"
+                    class="input-group-text"
+                  >dB</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> -->
     </template>
   </div>
 </template>
