@@ -668,10 +668,12 @@ function setInput(inpid) {
 
   if (inpid !== mso.value.input) {
     return patchMso('replace', '/input', inpid);
-  } else {
+  } else if (inpid.startsWith('h')) {
     send(`avcui "hpe"`);
     return true;
   }
+
+  return false;
 }
 
 function setUpmix(upmixKey) {
