@@ -55,7 +55,7 @@ jobs:
       - run: yarn release
 
   build-apk:
-    name: Build Capacitor APK
+    name: Build Web and Capacitor APK
     runs-on: ubuntu-20.04
     env:
       GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
@@ -80,6 +80,9 @@ jobs:
 
       - run: yarn install
       - run: yarn run build
+      - uses: montudor/action-zip@v1
+        with:
+          args: zip -qq -r dist.zip dist
       - run: npx cap sync android
       - run: >
           cd android && 
@@ -96,12 +99,11 @@ jobs:
         uses: martinbeentjes/npm-get-version-action@master
       - uses: ncipollo/release-action@v1
         with:
-          artifacts: "android/app/build/outputs/apk/release/app-release.apk"
+          artifacts: "android/app/build/outputs/apk/release/app-release.apk,dist.zip"
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ steps.package-version.outputs.current-version }}
           allowUpdates: true
           draft: true
           commit: ${{ github.sha }}
-
   # TODO: iOS
   # TODO: deploy web app
