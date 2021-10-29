@@ -298,7 +298,7 @@
             </td>
           </tr>
           <tr>
-            <td>Currently available digital headroom:</td>
+            <td>Currently available digital headroom at current volume:</td>
             <td class="text-right">
               {{ Math.min(mso.cal?.headroom, (1 - mso.volume)) }} dB
             </td>

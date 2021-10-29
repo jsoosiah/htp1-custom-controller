@@ -293,6 +293,37 @@
         </tr>
       </tbody>
     </table>
+
+    <h5>  Lipsync Delay</h5>
+    <div class="row">
+      <div class="col-lg-auto">
+        <div class="form-group">
+          <label
+            for="inputPassword3"
+            class="col-form-label col-form-label-sm"
+          >Lipsync Delay</label>
+          <div class="input-group input-group-sm numeric-input">
+            <input
+              type="number"
+              class="form-control"
+              aria-label="Minimum volume"
+              aria-describedby="basic-addon2"
+              :value="mso.cal?.lipsync"
+              min="0"
+              max="340"
+              @change="({ type, target }) => setLipsyncDelay(target.value)"
+            >
+            <div class="input-group-append">
+              <span
+                id="basic-addon2"
+                class="input-group-text"
+              >ms</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <h5>Bluetooth Settings</h5>
     <div class="form-group">
       <label

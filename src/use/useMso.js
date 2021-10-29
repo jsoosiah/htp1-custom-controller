@@ -657,18 +657,21 @@ function setInput(inpid) {
   // caution: test erase video resolution from local MSO only
   // it should be corrected once the new input has been selected
   // only do this when switching to HDMI
-  if (inpid !== mso.value.input) {
-    if (inpid.startsWith('h') && mso.value.input.startsWith('h')) {
-      mso.value.videostat.VideoResolution = '-----';
-      mso.value.videostat.VideoColorSpace = '---';
-      mso.value.videostat.VideoMode = '--';
-      mso.value.videostat.HDRstatus = '--';
-      mso.value.videostat.VideoBitDepth = '--';
-      mso.value.videostat.Video3D = '--';
-    }
-    return patchMso('replace', '/input', inpid);
+  if (inpid.startsWith('h') && mso.value.input.startsWith('h')) {
+    mso.value.videostat.VideoResolution = '-----';
+    mso.value.videostat.VideoColorSpace = '---';
+    mso.value.videostat.VideoMode = '--';
+    mso.value.videostat.HDRstatus = '--';
+    mso.value.videostat.VideoBitDepth = '--';
+    mso.value.videostat.Video3D = '--';
   }
-  return false;
+
+  if (inpid !== mso.value.input) {
+    return patchMso('replace', '/input', inpid);
+  } else {
+    send(`avcui "hpe"`);
+    return true;
+  }
 }
 
 function setUpmix(upmixKey) {

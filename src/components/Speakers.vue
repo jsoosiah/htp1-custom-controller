@@ -42,6 +42,59 @@
         <SpeakerDiagram :class="diagramSpeakerVisibility" />
       </div>
     </div>
+    <div
+      v-if="showCrossoverControls"
+      class="row"
+    >
+      <div class="col">
+        <div class="row">
+          <h5>Bass Manager</h5>
+        </div>
+        <div class="row">
+          <div class="col-lg">
+            <div class="form-group">
+              <label
+                for="inputEmail3"
+                class="col-form-label col-form-label-sm "
+              >LPF for LFE Channel</label>
+              <div class="input-group input-group-sm numeric-input">
+                <input
+                  type="number"
+                  class="form-control"
+                  aria-label="Minimum volume"
+                  aria-describedby="basic-addon2"
+                  :value="mso.bassLpf"
+                  min="40"
+                  max="200"
+                  step="10"
+                  @change="({ type, target }) => setBassLpf(target.value)"
+                >
+                <div class="input-group-append">
+                  <span
+                    id="basic-addon2"
+                    class="input-group-text"
+                  >Hz</span>
+                </div>
+              </div>
+              <small class="form-text text-muted">Sets the center frequency of the low pass filter for the LFE channel.</small>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-auto">
+            <div class="form-group">
+              <two-state-button 
+                :button-text="`Reinforce Bass: ${mso.bassenhance}`" 
+                :state-on="mso.bassenhance === 'on'" 
+                :home-button="false"
+                @click="toggleReinforceBass()"
+              />
+              <small class="form-text text-muted">Adds subwoofer signal to large speakers</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="row speaker-map-container">
       <h5>Speaker Map <small class="text-muted">Click image to zoom</small></h5>
       <dismissable-alert alert-key="speaker-labels">
@@ -64,6 +117,7 @@
   import SpeakerMap from './SpeakerMap.vue';
   import DiracButtonGroup from './buttons/DiracButtonGroup.vue';
   import DismissableAlert from './buttons/DismissableAlert.vue';
+  import TwoStateButton from './buttons/TwoStateButton.vue';
 
   export default {
     name: 'Speakers',
@@ -73,6 +127,7 @@
       SpeakerGroupCrossoverControls,
       SpeakerMap,
       DismissableAlert,
+      TwoStateButton,
     },
     setup() {
 
@@ -180,7 +235,7 @@
     margin-bottom:1rem;
   }
 
-  .col-lg, .col-lg-auto, .col-lg-5, .col-lg-6, .col-lg-7 {
+  .col-lg, .col-lg-auto, .col-md-auto, .col-lg-5, .col-lg-6, .col-lg-7 {
     padding-left: 0;
   }
 
