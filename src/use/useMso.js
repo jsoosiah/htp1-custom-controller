@@ -378,13 +378,26 @@ function sendCommands() {
   console.log('sendCommands', commandsToSend, commandsAwaitingResponse)
   if (commandsToSend.value.length > 0) {
     console.log('changemso', commandsToSend.value.length, commandsToSend.value[0]);
-    // send('changemso ' + JSON.stringify(commandsToSend.value));
-    if (commandsToSend.value.length > 2) {
-      changemso(commandsToSend.value)
+    
+    let useDiracBypassHack = true;
+
+    if (commandsToSend.value.length == 2) {
+      for (const cmd of commandsToSend.value) {
+        if (cmd.path !== '/cal/diracactive') {
+          useDiracBypassHack = false;
+        }
+      }
     } else {
+      useDiracBypassHack = false;
+    }
+
+    if (useDiracBypassHack) {
+      console.log('useDiracBypassHack');
       for (const cmd of commandsToSend.value) { // hack for dirac bypass
         changemso([cmd]);
       }
+    } else {
+      changemso(commandsToSend.value);
     }
     
     commandsToSend.value = [];
@@ -1097,6 +1110,55 @@ function setPEQFilterType(channel, slot, filterType) {
   return patchMso( 'replace', `/peq/slots/${slot}/channels/${channel}/FilterType`, parseInt(filterType));
 }
 
+function setPEQBypassOn(channel, slot) {
+  console.log(mso.value.peq, channel, slot);
+  if (mso.value.peq.slots[slot].channels[channel].bypass === undefined) {
+    // save existing gain so it can be restored on bypass off
+    const preBypassGain = patchMso('add', `/peq/slots/${slot}/channels/${channel}/preBypassGain`,
+      mso.value.peq.slots[slot].channels[channel].gaindB);
+
+    // set bypass flag to true
+    const bypass = patchMso('add', `/peq/slots/${slot}/channels/${channel}/bypass`, true);
+
+    // apply 0 gain to achieve bypass
+    const gain = setPEQGain(channel, slot, 0);
+
+    return preBypassGain && bypass && gain;
+  }
+
+  return false;
+}
+
+function setPEQBypassOff(channel, slot) {
+  if (mso.value.peq.slots[slot].channels[channel].bypass === true) {
+    // restore gain
+    let gainValue = 0;
+    if (mso.value.peq.slots[slot].channels[channel].preBypassGain) {
+      gainValue = mso.value.peq.slots[slot].channels[channel].preBypassGain;
+    } 
+
+    const gain = setPEQGain(channel, slot, gainValue);
+
+    // remove bypass flag
+    const bypass = patchMso('remove', `/peq/slots/${slot}/channels/${channel}/bypass`);
+
+    // remove saved gain
+    const preBypassGain = patchMso('remove', `/peq/slots/${slot}/channels/${channel}/preBypassGain`);
+
+    return gain && bypass && preBypassGain;
+  }
+
+  return false;
+}
+
+function togglePEQBypass(channel, slot) {
+  if (mso.value.peq.slots[slot].channels[channel].bypass) {
+    return setPEQBypassOff(channel, slot);
+  }
+
+  return setPEQBypassOn(channel, slot);
+}
+
 function addBEQFlag(channel, slot) {
   return patchMso('add', `/peq/slots/${slot}/channels/${channel}/beq`, true);
 }
@@ -1572,7 +1634,8 @@ export default function useMso() {
     setBassBoostCutLevel, setTrebleBoostCutLevel, setLoudnessCalibration, setLoudnessCurve,
     toggleGlobalPEQ, setGlobalPEQOff, setGlobalPEQOn,
     setPEQSlot, setPEQCenterFrequency, setPEQGain, 
-    setPEQQuality, setPEQFilterType, resetPEQ, addBEQFlag, resetBEQ,
+    setPEQQuality, setPEQFilterType, resetPEQ, togglePEQBypass,
+    addBEQFlag, resetBEQ,
     addBEQActive, removeBEQActive,
     setInputLabel, toggleInputVisible, setInputFormatDetectOption, toggleInputUHD, 
     setInputDefaultUpmix, setInputVolumeTrim, setInputDelay, setInputDiracSlot,

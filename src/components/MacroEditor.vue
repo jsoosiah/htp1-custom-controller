@@ -129,9 +129,18 @@
               Save
             </button>
           </div>
-          <div class="col-auto">
+          <div
+            class="col-auto"
+          >
             <button
               class="btn btn-sm btn-danger"
+              @click="clearAllCommands"
+            >
+              Clear All Commands
+            </button>
+            <button
+              v-if="isExtraCommand"
+              class="btn btn-sm btn-danger ml-3"
               @click="deleteMacro"
             >
               Delete Macro
@@ -282,9 +291,13 @@
         }
       }
 
+      function clearAllCommands() {
+        currentCommands.value = [];
+      }
+
       return { mso, data, props, toggleRecording, removeRecordedCommand, show, toggleShow,
       currentlyRecordingSlot, currentCommands, unsavedChanges, saveRecordedCommands, touched, save, setTouched,
-      saveExtraRecordedCommands, setMacroName, deleteMacro };
+      saveExtraRecordedCommands, setMacroName, deleteMacro, clearAllCommands };
     }
   }
 </script>

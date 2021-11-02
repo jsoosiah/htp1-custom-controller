@@ -97,13 +97,17 @@
             <th class="text-right">
               Filter Type
             </th>
+            <th>
+              Bypass
+            </th>
           </tr>
         </thead>
         <tbody :class="{'hiding':!tabLoaded, 'showing':tabLoaded}">
           <tr
             v-for="(channame, chanIndex) in activeChannels"
             :key="channame"
-            :class="{'table-warning': mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].beq}"
+            :class="{'table-warning': mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].beq,
+                     'table-danger': mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].bypass}"
           >
             <td>{{ spkName(channame) }}</td>
             <td class="text-right">
@@ -122,7 +126,8 @@
               <input 
                 type="number" 
                 class="form-control form-control-sm text-right" 
-                :value="mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].gaindB" 
+                :value="mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].bypass === true ? mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].preBypassGain : mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].gaindB" 
+                :disabled="mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].bypass === true"
                 min="-20" 
                 max="20" 
                 step=".1" 
@@ -157,6 +162,14 @@
                   {{ filterType.label }}
                 </option>
               </select>
+            </td>
+            <td class="text-right">
+              <two-state-button
+                :button-text="`Bypass: ${mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].bypass ? 'on' : 'off'}`"
+                :state-on="mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].bypass === true"
+                :mute-button="true"
+                @btn-click="togglePEQBypass(activeChannels[chanIndex], mso.peq?.currentpeqslot)"
+              />
             </td>
           </tr>
         </tbody>
@@ -195,13 +208,17 @@
             <th class="text-right">
               Filter Type
             </th>
+            <th class="text-right">
+              Bypass
+            </th>
           </tr>
         </thead>
         <tbody :class="{'hiding':!tabLoaded, 'showing':tabLoaded}">
           <tr
             v-for="(slot, index) in mso.peq?.slots"
             :key="index"
-            :class="{'table-warning': slot.channels[activeChannels[selectedChannel]].beq}"
+            :class="{'table-warning': slot.channels[activeChannels[selectedChannel]].beq,
+                     'table-danger': slot.channels[activeChannels[selectedChannel]].bypass}"
           >
             <td class="text-right">
               {{ index + 1 }}
@@ -214,18 +231,19 @@
                 min="15" 
                 max="20000" 
                 step=".1" 
-                @change="({ type, target }) => { clearAllImports(); setPEQCenterFrequency(activeChannels[selectedChannel], index, target.value) }"
+                @change="({ type, target }) => { handleCenterFreq(activeChannels[selectedChannel], index, target.value) }"
               >
             </td>
             <td class="text-right">
               <input 
                 type="number" 
                 class="form-control form-control-sm text-right" 
-                :value="slot.channels[activeChannels[selectedChannel]].gaindB" 
+                :value="slot.channels[activeChannels[selectedChannel]].bypass === true ? slot.channels[activeChannels[selectedChannel]].preBypassGain : slot.channels[activeChannels[selectedChannel]].gaindB" 
+                :disabled="slot.channels[activeChannels[selectedChannel]].bypass === true"
                 min="-20" 
                 max="20" 
                 step=".1" 
-                @change="({ type, target }) => { clearAllImports(); setPEQGain(activeChannels[selectedChannel], index, target.value) }"
+                @change="({ type, target }) => { handleGain(activeChannels[selectedChannel], index, target.value) }"
               >
             </td>
             <td class="text-right">
@@ -236,13 +254,13 @@
                 min=".1" 
                 max="10" 
                 step=".1" 
-                @change="({ type, target }) => { clearAllImports(); setPEQQuality(activeChannels[selectedChannel], index, target.value) }"
+                @change="({ type, target }) => { handleQ(activeChannels[selectedChannel], index, target.value) }"
               >
             </td>
             <td class="text-right">
               <select 
                 class="form-control form-control-sm" 
-                @change="({ type, target }) => { clearAllImports(); setPEQFilterType(activeChannels[selectedChannel], index, target.value) }"
+                @change="({ type, target }) => { handleFilterType(activeChannels[selectedChannel], index, target.value) }"
               >
                 <option 
                   v-for="filterType in filterTypes" 
@@ -254,12 +272,42 @@
                 </option>
               </select>
             </td>
+            <td class="text-right">
+              <two-state-button
+                :button-text="`Bypass: ${slot.channels[activeChannels[selectedChannel]].bypass ? 'on' : 'off'}`"
+                :state-on="slot.channels[activeChannels[selectedChannel]].bypass === true"
+                :mute-button="true"
+                @btn-click="handleBypass(activeChannels[selectedChannel], index)"
+              />
+            </td>
           </tr>
         </tbody>
       </table>
     </template>
 
-    <!-- eq operations -->
+    <!-- channel groups -->
+    <template v-if="secretSettings">
+      <h6>Channel Groups</h6>
+      <div class="row mb-3">
+        <div class="col-auto">
+          <div class="custom-control custom-switch">
+            <input 
+              id="link-all-channels" 
+              type="checkbox" 
+              class="custom-control-input" 
+              :checked="linkAllChannels" 
+              @change="toggleLinkAllChannels"
+            >
+            <label 
+              class="custom-control-label"
+              for="link-all-channels"
+            >
+              Link All Channels
+            </label>
+          </div>
+        </div>
+      </div>
+    </template>
 
     <!-- export operations -->
     <template v-if="eqGroupBy === 1">
@@ -476,7 +524,8 @@
       const { importJson: fullImportJson, importJsonFileToSelected: fullImportJsonFileToSelected, exportJsonToFile } = useImportExport();
       
       const { eqGroupBy, setEqGroupBy } = useLocalStorage();
-      const { mso, setPEQSlot, resetPEQ, importMsoPatchList, setPEQCenterFrequency, setPEQQuality, setPEQFilterType, setPEQGain } = useMso();
+      const { mso, setPEQSlot, resetPEQ, importMsoPatchList, 
+        setPEQCenterFrequency, setPEQQuality, setPEQFilterType, setPEQGain, togglePEQBypass } = useMso();
       const { getActiveChannels, spkName } = useSpeakerGroups();
 
       const tabLoaded = ref(true);
@@ -497,6 +546,10 @@
       });
 
       const selectedChannel = ref(0);
+
+      const linkAllChannels = ref(false);
+
+      const secretSettings = computed(() => window.location.href.includes('secret'));
 
       function setSelectedChannel(chanNumber, skipLoader) {
 
@@ -699,6 +752,65 @@
         }
       }
 
+      function toggleLinkAllChannels() {
+        linkAllChannels.value = !linkAllChannels.value;
+      }
+
+      function handleCenterFreq(channel, slot, centerFreq) {
+        clearAllImports(); 
+        if (linkAllChannels.value) {
+          for (const channame of activeChannels.value) {
+            setPEQCenterFrequency(channame, slot, centerFreq);
+          }
+        } else {
+          setPEQCenterFrequency(channel, slot, centerFreq);
+        }
+      }
+
+      function handleGain(channel, slot, gain) {
+        clearAllImports(); 
+        if (linkAllChannels.value) {
+          for (const channame of activeChannels.value) {
+            setPEQGain(channame, slot, gain);
+          }
+        } else {
+          setPEQGain(channel, slot, gain);
+        }
+      }
+
+      function handleQ(channel, slot, q) {
+        clearAllImports(); 
+        if (linkAllChannels.value) {
+          for (const channame of activeChannels.value) {
+            setPEQQuality(channame, slot, q);
+          }
+        } else {
+          setPEQQuality(channel, slot, q);
+        }
+      }
+
+      function handleFilterType(channel, slot, filterType) {
+        clearAllImports(); 
+        if (linkAllChannels.value) {
+          for (const channame of activeChannels.value) {
+            setPEQFilterType(channame, slot, filterType);
+          }
+        } else {
+          setPEQFilterType(channel, slot, filterType);
+        }
+      }
+
+      function handleBypass(channel, slot) {
+        clearAllImports(); 
+        if (linkAllChannels.value) {
+          for (const channame of activeChannels.value) {
+            togglePEQBypass(channame, slot);
+          }
+        } else {
+          togglePEQBypass(channel, slot); 
+        }
+      }
+
       return {
         ...useMso(), activeChannels, spkName, selectedChannel, setSelectedChannel, selectableChannels,
         bandHasModifications, channelHasModifications, filterTypes, tabLoaded, setSelectedBand, 
@@ -708,7 +820,9 @@
         confirmImport, clearAllImports, importBandRef, importChannelRef, importFullRef,
         resetPEQsForBand, resetPEQsForChannel, resetAllPEQs,
         eqGroupBy, setGroupBy,
-        cloneSelectedChannelPEQToTargetChannels, targetCloneChannels
+        cloneSelectedChannelPEQToTargetChannels, targetCloneChannels, 
+        secretSettings, linkAllChannels, toggleLinkAllChannels,
+        handleCenterFreq, handleGain, handleQ, handleFilterType, handleBypass
       };
     }
   }
