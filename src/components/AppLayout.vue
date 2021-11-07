@@ -42,7 +42,7 @@
     v-if="state !== 'OPEN'"
     class="connecting-overlay"
   >
-    <ip-select />
+    <ip-select :focus="state !== 'OPEN'" />
   </div>
   <template v-if="mso?.stat?.updateprogmsg.updating !== undefined && mso?.stat?.updateprogmsg.updating">
     <div class="container">

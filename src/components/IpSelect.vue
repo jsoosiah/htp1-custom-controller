@@ -77,11 +77,13 @@
             >IP address</label>
             <input 
               id="select-ip" 
-              v-model="ipAddressText" 
+              ref="ipInput" 
+              v-model="ipAddressText"
               type="text" 
               class="form-control form-control-sm text-white bg-dark"
               aria-describedby="ip-help" 
               placeholder="e.g., 192.168.1.13"
+              @keyup.enter="validateAndSetWebsocketurl(ipAddressText)"
             >
             <small
               id="ip-help"
@@ -106,24 +108,46 @@
 
 <script>
 
-  import { ref } from 'vue';
+  import { ref, watch } from 'vue';
 
   import useWebSocket from '@/use/useWebSocket.js';
 
   export default {
     name: 'IPSelect',
-    setup() {
+    props: {
+      focus: {
+        type: Boolean,
+        default: false,
+      }
+    },
+    setup(props) {
 
       const { websocketIp, websocketurl, setWebsocketIp, state } = useWebSocket();
 
       const ipAddressText = ref('');
+
+      const ipInput = ref(null);
+
+      watch(
+        () => props.focus, 
+        async (newFocus) => {
+          if (newFocus) {
+            setTimeout(() => {
+              ipInput.value?.focus();
+            });
+          }
+        }, 
+        {
+          immediate: true,
+        }
+      );
 
       function validateAndSetWebsocketurl(url) {
         // todo: if valid 
         setWebsocketIp(url);
       }
 
-      return { ipAddressText, websocketIp, websocketurl, state, validateAndSetWebsocketurl };
+      return { ipAddressText, websocketIp, websocketurl, state, validateAndSetWebsocketurl, ipInput };
     }
   }
 </script>
