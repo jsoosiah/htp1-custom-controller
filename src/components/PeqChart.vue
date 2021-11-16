@@ -6,7 +6,7 @@
 
 <script>
 
-  import { ref, onMounted, watch } from 'vue';
+  import { ref, onMounted, watch, computed } from 'vue';
   import { debounce } from 'lodash-es';
   import Chart from 'chart.js';
 
@@ -57,12 +57,18 @@
       spkName: {
         type: Function,
         required: true
+      },
+      darkMode: {
+        type: Boolean, 
+        default: false,
       }
     },
     setup(props) {
 
       const chartRef = ref(null);
       let myChart = null;
+
+      const gridLinesColor = computed(() => props.darkMode ? '#333' : '#ccc');
 
       onMounted(() => {
 
@@ -92,6 +98,9 @@
                   ticks: {
                     suggestedMin: -5,
                     suggestedMax: 5,
+                  },
+                  gridLines: {
+                    color: gridLinesColor.value,
                   }
                 }],
                 xAxes: [{
@@ -123,6 +132,9 @@
                     display: true,
                     labelString: 'Frequency (Hz)'
                   },
+                  gridLines: {
+                    color: gridLinesColor.value
+                  }
                 }]
               },
               tooltips: {
@@ -233,6 +245,8 @@
 
       function updateChart() {
           if (myChart) {
+            myChart.options.scales.yAxes[0].gridLines.color = gridLinesColor.value;
+            myChart.options.scales.xAxes[0].gridLines.color = gridLinesColor.value;
             updateChartData(myChart.chart.config.data.datasets);
             myChart.chart.update();
          }
@@ -408,7 +422,7 @@
         credits: false,
       };
 
-      return { props, chartRef, options };
+      return { props, chartRef, options, gridLinesColor };
     }
   }
 </script>

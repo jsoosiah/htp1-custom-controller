@@ -9,6 +9,7 @@
       :active-channels="activeChannels"
       :selected-channel="selectedChannel"
       :spk-name="spkName"
+      :dark-mode="darkMode"
     />
     <div class="row justify-content-between">
       <div class="col-auto mb-3">
