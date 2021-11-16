@@ -298,7 +298,22 @@
           </tbody>
         </table>
 
-        <h6>Notices</h6>
+        <h6>Settings</h6>
+        <div class="custom-control custom-switch mb-3">
+          <input 
+            id="dark-mode-input" 
+            type="checkbox" 
+            class="custom-control-input" 
+            :checked="darkMode" 
+            @click="toggleDarkMode()"
+          >
+          <label
+            class="custom-control-label"
+            for="dark-mode-input"
+          >
+            Dark Mode
+          </label>
+        </div>
         <button 
           class="btn btn-sm btn-primary mb-3"
           @click="resetDismissedAlerts"
@@ -346,7 +361,7 @@
     },
     setup() {
 
-      const { userCss, setUserCss } = useLocalStorage();
+      const { userCss, setUserCss, darkMode, toggleDarkMode } = useLocalStorage();
       const localUserCss = ref( userCss );
 
       const modes = [
@@ -357,6 +372,7 @@
         {code: 'dialogenh', label: 'Dialog Enhance'},
         {code: 'night', label: 'Night'},
         {code: 'ws', label: 'Wide Synth'},
+        {code: 'lipsync', label: 'Input Delay'}
       ];
 
       const topLabels = [
@@ -382,7 +398,7 @@
       }
 
       return { ...useMso(), ...useInputs(), modes, customizableSettingsRoutes, topLabels, powerButtons,
-        localUserCss, setLocalUserCss  };
+        localUserCss, setLocalUserCss, darkMode, toggleDarkMode  };
     }
   }
 </script>

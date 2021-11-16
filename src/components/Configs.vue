@@ -5,7 +5,10 @@
     <div class="row">
       <div class="col-auto">
         <label>Export Preview</label>
-        <pre class="pre-scrollable bg-light p-2">{{ mso }}</pre>
+        <pre
+          class="pre-scrollable p-2"
+          :class="{'bg-dark': darkMode, 'bg-light': !darkMode}"
+        >{{ mso }}</pre>
         <button 
           class="btn btn-sm btn-primary mb-3"
           @click="downloadMsoAsJson()"
@@ -27,7 +30,8 @@
         
         <pre
           v-if="false"
-          class="pre-scrollable bg-light p-2"
+          class="pre-scrollable p-2"
+          :class="{'bg-dark': darkMode, 'bg-light': !darkMode}"
         >{{ importJson }}</pre>
         
         <mso-importer 
@@ -117,7 +121,7 @@
               importJsonFileToSelected,
               filterCommands } = useImportExport();
 
-      const { maxWaitTimeToSendToMso, setMaxWaitTimeToSendToMso, websocketIp } = useLocalStorage();
+      const { maxWaitTimeToSendToMso, setMaxWaitTimeToSendToMso, websocketIp, darkMode } = useLocalStorage();
 
       const { 
         mso, setUnitName, setFrontPanelBrightness, toggleFastStart, toggleFastStartPassThrough, 
@@ -148,7 +152,8 @@
         setPowerOnVol, toggleVideoStatusHomePage, toggleExtendedAudioStatus, toggleAdvancedInputSettings, 
         toggleSupportTools, importMsoPatchList, maxWaitTimeToSendToMso, setMaxWaitTimeToSendToMso,
         setFastStartOn, setFastStartOff, setFastStartPassThroughOn, setFastStartPassThroughOff,
-        downloadMsoAsJson, importMsoFileSelected, importJson, msoImportPatch, importMso, websocketIp
+        downloadMsoAsJson, importMsoFileSelected, importJson, msoImportPatch, importMso, websocketIp,
+        darkMode
       };
     },
     computed: {

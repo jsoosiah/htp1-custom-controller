@@ -190,7 +190,10 @@
           </div>
         </div>
       </div>
-      <nav class="navbar nav-fill nav-pills bg-light navbar-light">
+      <nav
+        class="navbar nav-fill nav-pills"
+        :class="{'bg-dark navbar-dark': darkMode, 'bg-light navbar-light': !darkMode}"
+      >
         <a 
           v-for="(slot, key) in mso.cal?.slots" 
           :key="key" 
@@ -368,7 +371,7 @@
         diracMismatchedChannels
       } = useMso();
       const { spkName } = useSpeakerGroups();
-      const { showChannelMuteControls, toggleShowChannelMuteControls } = useLocalStorage();
+      const { showChannelMuteControls, toggleShowChannelMuteControls, darkMode } = useLocalStorage();
       const { isMobileMode } = useResponsive();
 
       const currentDiracTab = ref(mso.value.cal?.currentdiracslot);
@@ -396,7 +399,7 @@
         activeChannels, spkName, formatDecimal, currentDiracTab, setDiracTab,
         showChannelMuteControls, toggleShowChannelMuteControls, toggleMuteChannel,
         setMuteAllChannelsOff, setMuteAllChannelsOn, toggleAllMuteChannels, isMobileMode,
-        diracMismatchedChannels
+        diracMismatchedChannels, darkMode
       };
     }
   }

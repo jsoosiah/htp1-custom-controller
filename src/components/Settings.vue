@@ -1,10 +1,11 @@
 <template>
   <div class="container">
-    <div class="background-light" />
+    <div class="background-settings" />
     <div class="row">
       <nav
         id="sidebarMenu"
-        class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse nav-pills"
+        class="col-md-3 col-lg-2 d-md-block sidebar collapse nav-pills"
+        :class="{'bg-dark': darkMode, 'bg-light': !darkMode}"
       >
         <div class="sidebar-sticky">
           <ul class="nav flex-column">
@@ -67,6 +68,7 @@
 <script>
 
 import { settingsRoutes } from '@/router.js';
+import useLocalStorage from '@/use/useLocalStorage.js';
 
 import HomeIcon from './icons/HomeIcon';
 import CalibrationIcon from './icons/CalibrationIcon';
@@ -114,19 +116,21 @@ export default {
   emits: ['power-dialog'],
   setup(props, { emit }) {
 
+    const { darkMode } = useLocalStorage();
+
     function powerOff() {
       emit('power-dialog');
     }
 
-    return { settingsRoutes, powerOff };
+    return { settingsRoutes, powerOff, darkMode };
   },
 }
 </script>
 
 <style scoped>
 
-  div.background-light {
-    background-color: white;
+  div.background-settings {
+    background-color: var(--settings-background);
     width:100vw;
     height:100vh;
     position:fixed;
@@ -154,7 +158,7 @@ export default {
 
   .sidebar svg {
     /* fill: gray; */
-    fill:#007bff;
+    /* fill:#007bff; */
     /* stroke:#007bff; */
     /* max-width: 1.5rem; */
     /* max-height: 1.5rem; */
@@ -162,7 +166,7 @@ export default {
 
   .sidebar a {
     /* fill: gray; */
-    color:#007bff;
+    /* color:#007bff; */
   }
 
   .nav-link {

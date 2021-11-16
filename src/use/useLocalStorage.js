@@ -10,13 +10,15 @@ const settingsActiveTab = ref(localStorage.getItem('settingsActiveTab') ? parseI
 const eqGroupBy = ref(localStorage.getItem('eqGroupBy') ? parseInt(localStorage.getItem('eqGroupBy')) : 0);
 
 // Show channel mute controls on Calibration tab
-const showChannelMuteControls = ref(localStorage.getItem('showChannelMuteControls') ? localStorage.getItem('showChannelMuteControls') : false);
+const showChannelMuteControls = ref(localStorage.getItem('showChannelMuteControls') ? localStorage.getItem('showChannelMuteControls') === 'true' : false);
 
 const maxWaitTimeToSendToMso = ref(375);
 
-const showAdvancedVolumeSettings = ref(localStorage.getItem('showAdvancedVolumeSettings') ? localStorage.getItem('showAdvancedVolumeSettings') : false);
+const showAdvancedVolumeSettings = ref(localStorage.getItem('showAdvancedVolumeSettings') ? localStorage.getItem('showAdvancedVolumeSettings') === 'true' : false);
 
 const userCss = ref(localStorage.getItem('userCss') ? localStorage.getItem('userCss') : '');
+
+const darkMode = ref(localStorage.getItem('darkMode') ? localStorage.getItem('darkMode') === 'true' : false);
 
 export default function useLocalStorage() {
 
@@ -42,6 +44,7 @@ export default function useLocalStorage() {
 
   function toggleShowChannelMuteControls() {
     showChannelMuteControls.value = !showChannelMuteControls.value;
+    console.log('cmc', showChannelMuteControls.value);
     localStorage.setItem('showChannelMuteControls', showChannelMuteControls.value);
   }
 
@@ -53,6 +56,12 @@ export default function useLocalStorage() {
   function setUserCss(newUserCss) {
     userCss.value = newUserCss;
     localStorage.setItem('userCss', newUserCss);
+  }
+
+  function toggleDarkMode() {
+    darkMode.value = !darkMode.value;
+    console.log('dm', darkMode.value);
+    localStorage.setItem('darkMode', darkMode.value);
   }
 
   return {
@@ -70,5 +79,7 @@ export default function useLocalStorage() {
     toggleShowAdvancedVolumeSettings,
     userCss,
     setUserCss,
+    darkMode,
+    toggleDarkMode,
   };
 }

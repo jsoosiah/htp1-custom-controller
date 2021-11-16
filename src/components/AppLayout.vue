@@ -140,6 +140,14 @@
                 />
               </div>
             </li>
+            <li>
+              <a
+                target="_blank"
+                :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`"
+              >
+                User Manual
+              </a>
+            </li>
           </ul>
         </div>
       </div>
@@ -405,7 +413,7 @@ export default {
     const { mso, state } = useMso();
     const { findServers, websocketIp } = useWebSocket();
     const { windowWidth, isMobileMode } = useResponsive();
-    const { userCss } = useLocalStorage();
+    const { userCss, darkMode } = useLocalStorage();
     const route = useRoute();
 
     const showMobileMenu = ref(false);
@@ -454,6 +462,21 @@ export default {
           style.innerHTML = userCss.value;
         }
         
+      },
+      {
+        immediate: true,
+      }
+    )
+
+    watch(
+      darkMode,
+      () => {
+        console.log('dm watch', darkMode.value);
+        if (darkMode.value) {
+          document.documentElement.setAttribute('data-theme', 'darkMode'); // sets the data-theme attribute
+        } else {
+          document.documentElement.removeAttribute('data-theme');
+        }
       },
       {
         immediate: true,
@@ -653,12 +676,12 @@ export default {
 
   .full-nav svg {
     /* fill: gray; */
-    fill:#007bff;
+    /* fill:#007bff; */
   }
 
   .full-nav a {
     /* fill: gray; */
-    color:#007bff;
+    /* color:#007bff; */
   }
 
   .full-nav a.active {

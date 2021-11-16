@@ -69,7 +69,10 @@
     </div>
     <!-- group by band --> 
     <template v-if="eqGroupBy === 1">
-      <nav class="navbar nav-fill nav-pills bg-light navbar-light">
+      <nav
+        class="navbar nav-fill nav-pills"
+        :class="{'bg-dark navbar-dark': darkMode, 'bg-light navbar-light': !darkMode}"
+      >
         <a 
           v-for="(slot, index) in mso.peq?.slots"
           :key="index"
@@ -178,7 +181,10 @@
     
     <!-- group by channel -->
     <template v-else>
-      <nav class="navbar nav-fill nav-pills bg-light navbar-light">
+      <nav
+        class="navbar nav-fill nav-pills"
+        :class="{'bg-dark navbar-dark': darkMode, 'bg-light navbar-light': !darkMode}"
+      >
         <a 
           v-for="(channame, index) in activeChannels"
           :key="channame"
@@ -523,7 +529,7 @@
       const { importJson: bandImportJson, importJsonFileToSelected: bandImportJsonFileToSelected } = useImportExport();
       const { importJson: fullImportJson, importJsonFileToSelected: fullImportJsonFileToSelected, exportJsonToFile } = useImportExport();
       
-      const { eqGroupBy, setEqGroupBy } = useLocalStorage();
+      const { eqGroupBy, setEqGroupBy, darkMode } = useLocalStorage();
       const { mso, setPEQSlot, resetPEQ, importMsoPatchList, 
         setPEQCenterFrequency, setPEQQuality, setPEQFilterType, setPEQGain, togglePEQBypass } = useMso();
       const { getActiveChannels, spkName } = useSpeakerGroups();
@@ -822,7 +828,7 @@
         eqGroupBy, setGroupBy,
         cloneSelectedChannelPEQToTargetChannels, targetCloneChannels, 
         secretSettings, linkAllChannels, toggleLinkAllChannels,
-        handleCenterFreq, handleGain, handleQ, handleFilterType, handleBypass
+        handleCenterFreq, handleGain, handleQ, handleFilterType, handleBypass, darkMode
       };
     }
   }

@@ -315,6 +315,55 @@
               min-width="9rem"
               @click="toggleUpmixWideSynth()"
             />
+
+            <!-- Lipsync Delay -->
+            <div class="row mt-2 justify-content-center">
+              <div
+                class="col-auto text-left"
+                :class="{'px-0': isMobileMode}"
+              >
+                <button 
+                  v-press="handleLipsyncDownPress" 
+                  v-long-press="handleLipsyncDownLongPress" 
+                  v-long-press-up="handleLipsyncLongPressUp"
+                  type="button"
+                  class="btn btn-dark lipsync-btn"
+                >
+                  <font-awesome-icon
+                    :class="{'text-danger':mso.muted}"
+                    size="2x"
+                    :icon="['fas', 'minus']"
+                  />
+                </button>
+              </div>
+              <div
+                class="col-auto text-center"
+                :class="{'px-0': isMobileMode}"
+              >
+                <span 
+                  v-press="handleMute" 
+                  class="lipsync-display" 
+                  :class="{'text-danger':mso.muted}"
+                >
+                  {{ mso.cal?.lipsync }} ms
+                </span>
+              </div>
+              <div class="col-auto text-right pr-0">
+                <button 
+                  v-press="handleLipsyncUpPress" 
+                  v-long-press="handleLipsyncUpLongPress" 
+                  v-long-press-up="handleLipsyncLongPressUp"
+                  type="button"
+                  class="btn btn-dark lipsync-btn"
+                >
+                  <font-awesome-icon
+                    :class="{'text-danger':mso.muted}"
+                    size="2x"
+                    :icon="['fas', 'plus']"
+                  />
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -455,7 +504,7 @@ export default {
       setNightOff, setNightAuto, setNightOn, setLoudnessOff, setLoudnessOn, setDiracSlot,
       setToneControlOff, setToneControlOn, setGlobalPEQOff, setGlobalPEQOn, setDtsDialogEnh,
       currentlyRecordingSlot, visibleRemoteMacros, visibleExtraMacros, executeMacro, toggleUpmixWideSynth,
-      displayVolume
+      displayVolume, setLipsyncDelay
     } = useMso();
 
     onMounted(() => {
@@ -488,6 +537,8 @@ export default {
     // intervals for performing the actual volume adjustments
     let incrementVolumeInterval;
     let decrementVolumeInterval;
+    let incrementLipsyncInterval;
+    let decrementLipsyncInterval;
 
     function handleMute(e) {
       e.preventDefault();
@@ -530,6 +581,44 @@ export default {
       console.log('handleVolumeLongPressUp');
       clearInterval(decrementVolumeInterval);
       clearInterval(incrementVolumeInterval);
+    }
+
+    function incrementLipsync() {
+      setLipsyncDelay(mso.value.cal.lipsync + 1);
+    }
+
+    function decrementLipsync() {
+      setLipsyncDelay(mso.value.cal.lipsync - 1);
+    }
+
+    function handleLipsyncDownPress() {
+      console.log('handleLipsyncDownPress');
+      decrementLipsync();
+    }
+
+    function handleLipsyncUpPress() {
+      console.log('handleLipsyncUpPress');
+      incrementLipsync();
+    }
+
+    function handleLipsyncDownLongPress() {
+      console.log('handleLipsyncDownLongPress');
+      clearInterval(decrementLipsyncInterval);
+      clearInterval(incrementLipsyncInterval);
+      decrementLipsyncInterval = setInterval(decrementLipsync, LONG_PRESS_VOLUME_ADJUST_SPEED);
+    } 
+
+    function handleLipsyncUpLongPress () {
+      console.log('handleLipsyncUpLongPress');
+      clearInterval(decrementLipsyncInterval);
+      clearInterval(incrementLipsyncInterval);
+      incrementLipsyncInterval = setInterval(incrementLipsync, LONG_PRESS_VOLUME_ADJUST_SPEED);
+    }
+
+    function handleLipsyncLongPressUp() {
+      console.log('handleVolumeLongPressUp');
+      clearInterval(decrementLipsyncInterval);
+      clearInterval(incrementLipsyncInterval);
     }
 
     function handleInputClicked(inp) {
@@ -594,7 +683,8 @@ export default {
       currentlyRecordingSlot,
       inputLoaded, inputSelectedAndLoading,
       experimental, isMobileMode, toggleUpmixWideSynth,
-      displayVolume
+      displayVolume,
+      handleLipsyncDownPress, handleLipsyncUpPress, handleLipsyncDownLongPress, handleLipsyncUpLongPress, handleLipsyncLongPressUp
     };
   },
 }
@@ -640,6 +730,24 @@ export default {
     width:6rem;
     height:6rem;
     /* margin:1rem; */
+  }
+
+  .lipsync-display {
+    font-weight: bold;
+    font-size:2rem;
+    cursor: pointer;
+    color:white;
+    line-height: 1.9;
+  }
+
+  .lipsync-btn, .lipsync-btn:focus, .lipsync-btn:active {
+    background-color: rgba(0,0,0,0) !important;
+    box-shadow: none !important;
+    outline:none;
+    border:none;
+    width:6rem;
+    height:3rem;
+    margin:.5rem;
   }
 
   .yellow-text-btn {
@@ -713,8 +821,12 @@ export default {
   }
 
   .card {
-    background-color: rgba(255,255,255,.0);
+    background-color: black;
     min-height:5.5rem;
+  }
+
+  .card .card-body {
+    background-color: black;
   }
 
   .desktop-card {
