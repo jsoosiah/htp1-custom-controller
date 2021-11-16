@@ -317,7 +317,10 @@
             />
 
             <!-- Lipsync Delay -->
-            <div class="row mt-2 justify-content-center">
+            <div
+              v-if="mso.personalize?.modes.lipsync"
+              class="row mt-2 justify-content-center"
+            >
               <div
                 class="col-auto text-left"
                 :class="{'px-0': isMobileMode}"
