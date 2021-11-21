@@ -7,7 +7,7 @@
 <script>
 
   import { ref, onMounted, watch, computed } from 'vue';
-  import { debounce } from 'lodash-es';
+  import { cloneDeep, debounce } from 'lodash-es';
   import Chart from 'chart.js';
 
   const NUM_SAMPLES = 128;
@@ -66,6 +66,7 @@
     setup(props) {
 
       const chartRef = ref(null);
+      const exportData = ref([]);
       let myChart = null;
 
       const gridLinesColor = computed(() => props.darkMode ? '#333' : '#ccc');
@@ -263,7 +264,7 @@
         clearData(tmpSeriesData);
         // console.log('cleared',tmpSeriesData);
 
-        // https://www.earlevel.com/main/2013/10/13/biquad-calculator-v2/
+        // https://arachnoid.com/BiQuadDesigner/index.html
 
         for (let j = 0; j < props.peqSlots.length; j++) {
 
@@ -272,97 +273,108 @@
             let gain = val.gaindB;
             let q = val.Q;
             let filterType = val.FilterType;
-            let sampleRate = 40000.0;
+            let sampleRate = 48000.0;
 
-            let a0,a1,a2,b1,b2,norm;
+            let a0,a1,a2,b0,b1,b2;
             let ymin, ymax, minVal, maxVal;
 
-            let V = Math.pow(10, Math.abs(gain) / 20);
-            let K = Math.tan(Math.PI * center / sampleRate);
+            // let V = Math.pow(10, Math.abs(gain) / 20);
+            // let K = Math.tan(Math.PI * center / sampleRate);
+            let gainAbs = Math.pow(10, gain / 40);
+            let omega = 2 * Math.PI * center / sampleRate;
+            let sn = Math.sin(omega);
+            let cs = Math.cos(omega);
+            let alpha = sn / (2 * q);
+            let beta = Math.sqrt(gainAbs + gainAbs);
+
             let len = NUM_SAMPLES;
 
             switch(filterType) {
               case 0: // peak
-                if (gain >= 0) {
-                  norm = 1 / (1 + 1/q * K + K * K);
-                  a0 = (1 + V/q * K + K * K) * norm;
-                  a1 = 2 * (K * K - 1) * norm;
-                  a2 = (1 - V/q * K + K * K) * norm;
-                  b1 = a1;
-                  b2 = (1 - 1/q * K + K * K) * norm;
-                }
-                else {  
-                  norm = 1 / (1 + V/q * K + K * K);
-                  a0 = (1 + 1/q * K + K * K) * norm;
-                  a1 = 2 * (K * K - 1) * norm;
-                  a2 = (1 - 1/q * K + K * K) * norm;
-                  b1 = a1;
-                  b2 = (1 - V/q * K + K * K) * norm;
-                }
+                  b0 = 1 + (alpha * gainAbs);
+                  b1 = -2 * cs;
+                  b2 = 1 - (alpha * gainAbs);
+                  a0 = 1 + (alpha / gainAbs);
+                  a1 = -2 * cs;
+                  a2 = 1 - (alpha / gainAbs);
                 break;
               case 1: // LS
-                if (gain >= 0) {
-                  norm = 1 / (1 + 1 / q * K + K * K);
-                  a0 = (1 + Math.sqrt(V) / q * K + V * K * K) * norm;
-                  a1 = 2 * (V * K * K - 1) * norm;
-                  a2 = (1 - Math.sqrt(V) / q * K + V * K * K) * norm;
-                  b1 = 2 * (K * K - 1) * norm;
-                  b2 = (1 - 1 / q * K + K * K) * norm;
-                }
-                else {  
-                  norm = 1 / (1 + Math.sqrt(V) / q * K + V * K * K);
-                  a0 = (1 + 1 / q * K + K * K) * norm;
-                  a1 = 2 * (K * K - 1) * norm;
-                  a2 = (1 - 1 / q * K + K * K) * norm;
-                  b1 = 2 * (V * K * K - 1) * norm;
-                  b2 = (1 - Math.sqrt(V) / q * K + V * K * K) * norm;
-                }
+                b0 = gainAbs * ((gainAbs + 1) - (gainAbs - 1) * cs + beta * sn);
+                b1 = 2 * gainAbs * ((gainAbs - 1) - (gainAbs + 1) * cs);
+                b2 = gainAbs * ((gainAbs + 1) - (gainAbs - 1) * cs - beta * sn);
+                a0 = (gainAbs + 1) + (gainAbs - 1) * cs + beta * sn;
+                a1 = -2 * ((gainAbs - 1) + (gainAbs + 1) * cs);
+                a2 = (gainAbs + 1) + (gainAbs - 1) * cs - beta * sn;
                 break;
               case 2: // HS
-                if (gain >= 0) {
-                    norm = 1 / (1 + 1 / q * K + K * K);
-                    a0 = (V + Math.sqrt(V) / q * K + K * K) * norm;
-                    a1 = 2 * (K * K - V) * norm;
-                    a2 = (V - Math.sqrt(V) / q * K + K * K) * norm;
-                    b1 = 2 * (K * K - 1) * norm;
-                    b2 = (1 - 1 / q * K + K * K) * norm;
-                }
-                else {  
-                    norm = 1 / (V + Math.sqrt(V) / q * K + K * K);
-                    a0 = (1 + 1 / q * K + K * K) * norm;
-                    a1 = 2 * (K * K - 1) * norm;
-                    a2 = (1 - 1 / q * K + K * K) * norm;
-                    b1 = 2 * (K * K - V) * norm;
-                    b2 = (V - Math.sqrt(V) / q * K + K * K) * norm;
-                } 
+                b0 = gainAbs * ((gainAbs + 1) + (gainAbs - 1) * cs + beta * sn);
+                b1 = -2 * gainAbs * ((gainAbs - 1) + (gainAbs + 1) * cs);
+                b2 = gainAbs * ((gainAbs + 1) + (gainAbs - 1) * cs - beta * sn);
+                a0 = (gainAbs + 1) - (gainAbs - 1) * cs + beta * sn;
+                a1 = 2 * ((gainAbs - 1) - (gainAbs + 1) * cs);
+                a2 = (gainAbs + 1) - (gainAbs - 1) * cs - beta * sn;
                 break;
             }
 
-            for (let i = 0; i < len; i++) {
-              let w = Math.exp(Math.log(1 / 0.001) * i / (len - 1)) * 0.001 * Math.PI;  // 0.001 to 1, times pi, log scale
-              // let w = i / (len - 1) * Math.PI; // 0 to pi, linear scale
-              let phi = Math.pow(Math.sin(w/2), 2);
-              let y = Math.log(Math.pow(a0+a1+a2, 2) - 4*(a0*a1 + 4*a0*a2 + a1*a2)*phi + 16*a0*a2*phi*phi) - Math.log(Math.pow(1+b1+b2, 2) - 4*(b1 + 4*b2 + b1*b2)*phi + 16*b2*phi*phi);
-              y = y * 10 / Math.LN10;
-              if (y == -Infinity) {
-                y = -200;
-              }
+            // by prescaling filter constants, eliminate one variable
+            b0 /= a0;
+            b1 /= a0;
+            b2 /= a0;
+            a1 /= a0;
+            a2 /= a0;
 
-              tmpSeriesData.data[i] = {
-                // x: i / (len - 1) / 2 ,
-                // x: i / (len - 1) * sampleRate / 2, 
-                x: Math.exp(Math.log(1 / 0.001) * (i / (len - 1) / 2) * 2) * 0.001 * sampleRate * .5,
-                y: (tmpSeriesData.data[i].y) + y
-              };
+            console.log('biquad', a1, a2, b0, b1, b2);
+
+            for (let i = 0; i < len; i++) {
+              let ix = convertLogScale(i, 0, len);
+              let f = ntrp(ix, 0, len, 0, sampleRate / 2);
+              let phi = Math.pow((Math.sin(2.0 * Math.PI * f / (2.0 * sampleRate))), 2.0);
+              let r = (Math.pow(b0 + b1 + b2, 2.0) - 4.0 * (b0 * b1 + 4.0 * b0 * b2 + b1 * b2) * phi + 16.0 * b0 * b2 * phi * phi) / (Math.pow(1.0 + a1 + a2, 2.0) - 4.0 * (a1 + 4.0 * a2 + a1 * a2) * phi + 16.0 * a2 * phi * phi);
+              r = (r < 0)?0:r;
+              r = Math.sqrt(r);
+              try {
+                r = 20 * Math.log10(r)
+              } catch(e) {
+                r = -100;
+              }
+              if(!isFinite(r) || isNaN(r)) {
+                r = -100;
+              }
+              // let w = Math.exp(Math.log(1 / 0.0001) * i / (len - 1)) * 0.0001 * Math.PI;  // 0.0001 to 1, times pi, log scale
+              // let w = i / (len - 1) * Math.PI; // 0 to pi, linear scale
+              // let phi = Math.pow(Math.sin(w/2), 2);
+              // let y = Math.log(Math.pow(a0+a1+a2, 2) - 4*(a0*a1 + 4*a0*a2 + a1*a2)*phi + 16*a0*a2*phi*phi) - Math.log(Math.pow(1+b1+b2, 2) - 4*(b1 + 4*b2 + b1*b2)*phi + 16*b2*phi*phi);
+              // y = y * 10 / Math.LN10;
+
+
+
+              // if (y == -Infinity) {
+              //   y = -200;
+              // }
+
+              // let x = Math.exp(Math.log(1 / 0.0001) * (i / (len - 1))) * 0.0001 * sampleRate * .5;
+
+              // if (x > 19) {
+                tmpSeriesData.data[i] = {
+                  // x: i / (len - 1) / 2 ,
+                  // x: i / (len - 1) * sampleRate / 2, 
+                  // x: x,
+                  // y: (tmpSeriesData.data[i].y) + y
+                  x: f,
+                  y: (tmpSeriesData.data[i].y) + r
+                };
+
+                // console.log('?', i, f, r);
+              // }
 
               if (i == 0) {
-                minVal = maxVal = y;
+                minVal = maxVal = r;
               }
-              else if (y < minVal) {
-                minVal = y;
+              else if (r < minVal) {
+                minVal = r;
               }
-              else if (y > maxVal) {
-                maxVal = y;
+              else if (r > maxVal) {
+                maxVal = r;
               }
             }
 
@@ -376,7 +388,31 @@
             }
         }
 
-        console.log('compute', ch, props.peqSlots, tmpSeriesData);
+        if (props.activeChannels[props.selectedChannel] === ch) {
+          exportData.value = cloneDeep(tmpSeriesData.data);
+          console.log('export', exportData.value, ch)
+        }
+
+        // filter out of bounds points
+
+        // let startIndex = 0;
+        // let minPoint;
+        // for (let i = 0; i < tmpSeriesData.data.length; i++) {
+        //   if (tmpSeriesData.data[i].x > 19) {
+        //     startIndex = i;
+        //     minPoint = tmpSeriesData.data[i];
+        //     break;  
+        //   }
+        // }
+
+        // for (let i = 0; i < startIndex; i++) {
+        //   tmpSeriesData.data[i] = {
+        //     x: minPoint.x,
+        //     y: minPoint.y,
+        //   }
+        // }
+
+        console.log('compute', ch, props.activeChannels[props.selectedChannel], props.peqSlots, tmpSeriesData);
 
         // return tmpSeriesData;
       }
@@ -422,7 +458,20 @@
         credits: false,
       };
 
-      return { props, chartRef, options, gridLinesColor };
+      function ntrp(x,xa,xb,ya,yb) {
+        var q = xb-xa;
+        if(q == 0) return 0;
+        return (x-xa) * (yb-ya)/q + ya;
+      }
+
+      function convertLogScale(x,a,b) {
+        x = ntrp(x,a,b,0,1);
+        x = (Math.pow(x+1,11))/2048;
+        x = ntrp(x,0,1,a,b);
+        return x;
+      }
+
+      return { props, chartRef, options, gridLinesColor, exportData };
     }
   }
 </script>

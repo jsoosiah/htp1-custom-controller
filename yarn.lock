@@ -908,15 +908,15 @@
     "@babel/helper-validator-identifier" "^7.14.9"
     to-fast-properties "^2.0.0"
 
-"@capacitor/android@^3.2.5":
-  version "3.2.5"
-  resolved "https://registry.yarnpkg.com/@capacitor/android/-/android-3.2.5.tgz#fd16b60a03bf15c9c59e118daf5068b93c39438c"
-  integrity sha512-eq9luSS8Bivyp3F46BaUgmPXxMzuUTdZO/bToHIUBu66Ufh4ou/TDg0opMXjuKIYJgjAsddxkPBeREj8KabbSQ==
+"@capacitor/android@^3.3.2":
+  version "3.3.2"
+  resolved "https://registry.yarnpkg.com/@capacitor/android/-/android-3.3.2.tgz#f305626ea185cd2185fab802a2aedbb32bd6e5b0"
+  integrity sha512-TG+tGz0KxkT/BgvSLQfbQwQ9c4Budub5TRijIGdmMbB1ZYB76TFhwvVuwWZ52HFSlKS3sx/UYLlbULL7UQ2aug==
 
-"@capacitor/cli@^3.2.5":
-  version "3.2.5"
-  resolved "https://registry.yarnpkg.com/@capacitor/cli/-/cli-3.2.5.tgz#df2305f529480ec761bebd63be54679016a16223"
-  integrity sha512-UyBYwclNpRlf5FV3fawRc0ZxmlhNzlUe7ugiKkHnNn0REPLU0egHKHWfaQ0hLWWTpA6V7H089AiZM5Pda5Zk9A==
+"@capacitor/cli@^3.3.2":
+  version "3.3.2"
+  resolved "https://registry.yarnpkg.com/@capacitor/cli/-/cli-3.3.2.tgz#3b78c735935cde30677af282ba63ed51f5f69b0e"
+  integrity sha512-LmH3DzuwNL3k995CgAs20KXjQhDWrQCQgur3M8nqIKecZk0xCoSGghht+rEK8/Gqn0XqdBGdgUgop+nep17edg==
   dependencies:
     "@ionic/cli-framework-output" "^2.2.1"
     "@ionic/utils-fs" "^3.1.5"
@@ -935,17 +935,17 @@
     tslib "^2.1.0"
     xml2js "^0.4.23"
 
-"@capacitor/core@^3.2.5":
-  version "3.2.5"
-  resolved "https://registry.yarnpkg.com/@capacitor/core/-/core-3.2.5.tgz#3aee6d68d113f5c043593c2327b0fc827f64e1f4"
-  integrity sha512-sr5ZhbdCUL6FAiyNEDpSKDEzjHCOsCA5R32inRergcPFRpOArsQi/NfhoMLHaZwZ78HAn9bfFV7JkoSr46NDDw==
+"@capacitor/core@^3.3.2":
+  version "3.3.2"
+  resolved "https://registry.yarnpkg.com/@capacitor/core/-/core-3.3.2.tgz#dde52353ad5d261635ef0ec38401e70ffb9722de"
+  integrity sha512-pyI3dQdQjA1L5iEw0jkeKCogx9t5d5kIFTB5M3CJRg9Uj5MIpU2J5CRj+74A7BflvZJo8IBd6IfMJaOArRumaw==
   dependencies:
     tslib "^2.1.0"
 
-"@capacitor/ios@^3.2.5":
-  version "3.2.5"
-  resolved "https://registry.yarnpkg.com/@capacitor/ios/-/ios-3.2.5.tgz#2d988aa08caa3c72de3c20471fc084f0fdf26a40"
-  integrity sha512-z3GU07Dz3SJIfdxk4JaLXDZcWWb4LcvjMz7RzOmN13WOWETWWWUnJJdG14QJewjvXPEBZ/XY7MohClWsgjToEw==
+"@capacitor/ios@^3.3.2":
+  version "3.3.2"
+  resolved "https://registry.yarnpkg.com/@capacitor/ios/-/ios-3.3.2.tgz#18828c3ae88f385982d4c8c84e2f0d35ae4a7cb2"
+  integrity sha512-qXbWo9zTtinIYDxKsLdkXXuZD8H+wlJII3+ZF9QzH+38IYyd+sohOG3NLC8EaX7GRtwCymd+mGotoN420SfQ4Q==
 
 "@develar/schema-utils@~2.6.5":
   version "2.6.5"

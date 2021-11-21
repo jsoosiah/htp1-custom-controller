@@ -1094,7 +1094,7 @@ function setPEQCenterFrequency(channel, slot, centerFreq) {
 
 function setPEQGain(channel, slot, gain) {
 
-  let gainValue = convertFloat(gain, 0.0, -20.0, 20.0);
+  let gainValue = convertFloat(gain, 0.0, -99.0, 20.0);
 
   return patchMso( 'replace', `/peq/slots/${slot}/channels/${channel}/gaindB`, gainValue);
 }

@@ -5,6 +5,7 @@
       Note that a gain of 0dB is equivalent to bypassing the filter; * denotes channels or bands that have been modified and have active PEQ filters.
     </dismissable-alert>
     <peq-chart 
+      ref="chartRef"
       :peq-slots="mso.peq?.slots || []"
       :active-channels="activeChannels"
       :selected-channel="selectedChannel"
@@ -132,7 +133,7 @@
                 class="form-control form-control-sm text-right" 
                 :value="mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].bypass === true ? mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].preBypassGain : mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].gaindB" 
                 :disabled="mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].bypass === true"
-                min="-20" 
+                min="-99" 
                 max="20" 
                 step=".1" 
                 @change="({ type, target }) => { clearAllImports(); setPEQGain(activeChannels[chanIndex], mso.peq?.currentpeqslot, target.value) }"
@@ -247,7 +248,7 @@
                 class="form-control form-control-sm text-right" 
                 :value="slot.channels[activeChannels[selectedChannel]].bypass === true ? slot.channels[activeChannels[selectedChannel]].preBypassGain : slot.channels[activeChannels[selectedChannel]].gaindB" 
                 :disabled="slot.channels[activeChannels[selectedChannel]].bypass === true"
-                min="-20" 
+                min="-99" 
                 max="20" 
                 step=".1" 
                 @change="({ type, target }) => { handleGain(activeChannels[selectedChannel], index, target.value) }"
@@ -339,6 +340,14 @@
             @click="downloadSingleChannelConfig(activeChannels[selectedChannel])"
           >
             Export {{ spkName(activeChannels[selectedChannel]) }} PEQ Configuration to File
+          </button>
+        </div>
+        <div class="col-auto">
+          <button
+            class="btn btn-sm btn-primary mb-3"
+            @click="downloadSingleChannelTargetCurve(activeChannels[selectedChannel])"
+          >
+            Export {{ spkName(activeChannels[selectedChannel]) }} PEQ to Dirac Target Curve
           </button>
         </div>
       </div>
@@ -526,7 +535,8 @@
     },
     setup() {
 
-      const { importJson: channelImportJson, importJsonFileToSelected: channelImportJsonFileToSelected, validationWarnings: channelImportValidationWarnings } = useImportExport();
+      const { importJson: channelImportJson, importJsonFileToSelected: channelImportJsonFileToSelected, 
+        validationWarnings: channelImportValidationWarnings, exportTargetToFile } = useImportExport();
       const { importJson: bandImportJson, importJsonFileToSelected: bandImportJsonFileToSelected } = useImportExport();
       const { importJson: fullImportJson, importJsonFileToSelected: fullImportJsonFileToSelected, exportJsonToFile } = useImportExport();
       
@@ -535,6 +545,7 @@
         setPEQCenterFrequency, setPEQQuality, setPEQFilterType, setPEQGain, togglePEQBypass } = useMso();
       const { getActiveChannels, spkName } = useSpeakerGroups();
 
+      const chartRef = ref(null);
       const tabLoaded = ref(true);
 
       const importChannelRef = ref(null);
@@ -619,6 +630,10 @@
           }})
         );
         exportJsonToFile(singleChannelPeqs, `peq-channel-${channame}`);
+      }
+
+      function downloadSingleChannelTargetCurve(channame) {
+        exportTargetToFile(chartRef.value.exportData, `peq-channel-${channame}-target`);
       }
 
       function channelImportFileSelected(e) {
@@ -829,7 +844,8 @@
         eqGroupBy, setGroupBy,
         cloneSelectedChannelPEQToTargetChannels, targetCloneChannels, 
         secretSettings, linkAllChannels, toggleLinkAllChannels,
-        handleCenterFreq, handleGain, handleQ, handleFilterType, handleBypass, darkMode
+        handleCenterFreq, handleGain, handleQ, handleFilterType, handleBypass, darkMode, chartRef,
+        downloadSingleChannelTargetCurve
       };
     }
   }

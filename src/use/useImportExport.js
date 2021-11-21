@@ -16,6 +16,26 @@ export default function useImportExport() {
     downloadAnchorNode.remove();
   }
 
+  function exportTargetToFile(targetData, filename) {
+    const dataStr = 'data:text/plain;charset=utf-8,'
+                  + 'NAME\n'
+                  + 'Unnamed\n'
+                  + 'DEVICENAME\n'
+                  + 'HTP-1\n'
+                  + 'BREAKPOINTS\n'
+                  + targetData.filter(elt => elt.x > 10).map(elt => `${elt.x} ${elt.y}`).join('\n')
+                  + '\nLOWLIMITHZ\n'
+                  + '10\n'
+                  + 'HIGHLIMITHZ\n'
+                  + '24000\n';
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute('href', dataStr);
+    downloadAnchorNode.setAttribute('download', `${filename}-${currentDateStr()}.txt`);
+    document.body.appendChild(downloadAnchorNode); // required for firefox
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+  }
+
   function parseFile(text) {
     try {
       // parse as JSON
@@ -31,8 +51,12 @@ export default function useImportExport() {
         const jsonResult = [];
         for (const filterLine of filters) {
           const filterArray = filterLine.split(/\s+/);
+          console.log(filterArray);
           if (filterArray[2] === 'ON') {
-            if (filterArray.length !== 12 || !Object.prototype.hasOwnProperty.call(filterTypes,filterArray[3])) {
+            if (filterArray.length > 3 && filterArray[3] === 'None') {
+              // silent skip None filters
+            }
+            else if (filterArray.length !== 12 || !Object.prototype.hasOwnProperty.call(filterTypes,filterArray[3])) {
               warnings.push('Skipping unsupported filter type: ' + filterLine);
             } else if (jsonResult.length === 16) {
               warnings.push(`${maxPeqBands} band limit exceeded; skipping filter: ${filterLine}`);
@@ -105,6 +129,7 @@ export default function useImportExport() {
     filterCommands,
     filterMacroCommands,
     validationWarnings,
+    exportTargetToFile
   };
 }
 
