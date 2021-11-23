@@ -309,35 +309,140 @@
         </tbody>
       </table>
     </template>
-    <div
-      v-if="showChannelMuteControls"
-      class="row"
-    >
-      <div class="col-auto">
-        <button 
-          class="btn btn-sm btn-danger mb-3"
-          @click="setMuteAllChannelsOn()"
-        >
-          Mute All Channels
-        </button>
+    <template v-if="showChannelMuteControls">
+      <h6>Bulk Edit</h6>
+      <div class="row">
+        <div class="col-auto">
+          <div class="form-group">
+            <label for="target-channels">Target Channels</label>
+            <select
+              id="target-channels"
+              v-model="targetChannels"
+              multiple
+              class="form-control"
+            >
+              <option
+                v-for="channel in activeChannels"
+                :key="channel"
+                :value="channel"
+              >
+                {{ spkName(channel) }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="col-auto">
+          <div class="row">
+            <div class="col-auto">
+              <div class="form-group">
+                <label
+                  for="bulk-user-delay"
+                  class="col-form-label col-form-label-sm "
+                >User Delay</label>
+                <div class="input-group input-group-sm numeric-input">
+                  <input
+                    id="bulk-user-delay"
+                    v-model="bulkUserDelay"
+                    type="number"
+                    class="form-control"
+                    aria-label="User delay"
+                    aria-describedby="basic-addon2"
+                    min="0"
+                    max="100"
+                  >
+                  <div class="input-group-append">
+                    <span
+                      id="basic-addon2"
+                      class="input-group-text"
+                    >ms</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-auto">
+              <div class="form-group">
+                <label>&nbsp;</label>
+                <button 
+                  class="btn btn-sm btn-primary d-block mb-3"
+                  :disabled="targetChannels.length === 0"
+                  @click="setUserDelaySelectedChannels"
+                >
+                  Apply User Delay to Selected Channels
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-auto">
+              <div class="form-group">
+                <label
+                  for="bulk-user-trim"
+                  class="col-form-label col-form-label-sm "
+                >User Trim</label>
+                <div class="input-group input-group-sm numeric-input">
+                  <input
+                    id="bulk-user-trim"
+                    v-model="bulkUserTrim"
+                    type="number"
+                    class="form-control"
+                    aria-label="User trim"
+                    aria-describedby="basic-addon2"
+                    min="-99"
+                    max="20"
+                  >
+                  <div class="input-group-append">
+                    <span
+                      id="basic-addon2"
+                      class="input-group-text"
+                    >dB</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-auto">
+              <div class="form-group">
+                <label>&nbsp;</label>
+                <button 
+                  class="btn btn-sm btn-primary d-block mb-3"
+                  :disabled="targetChannels.length === 0"
+                  @click="setUserTrimSelectedChannels"
+                >
+                  Apply User Trim to Selected Channels
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="col-auto">
-        <button 
-          class="btn btn-sm btn-primary mb-3"
-          @click="setMuteAllChannelsOff()"
-        >
-          Unmute All Channels
-        </button>
+        
+      <h6>Mute Channels</h6>
+      <div class="row">
+        <div class="col-auto">
+          <button 
+            class="btn btn-sm btn-danger mb-3"
+            @click="setMuteAllChannelsOn()"
+          >
+            Mute All Channels
+          </button>
+        </div>
+        <div class="col-auto">
+          <button 
+            class="btn btn-sm btn-primary mb-3"
+            @click="setMuteAllChannelsOff()"
+          >
+            Unmute All Channels
+          </button>
+        </div>
+        <div class="col-auto">
+          <button 
+            class="btn btn-sm btn-info mb-3"
+            @click="toggleAllMuteChannels()"
+          >
+            Invert Mute on All Channels
+          </button>
+        </div>
       </div>
-      <div class="col-auto">
-        <button 
-          class="btn btn-sm btn-info mb-3"
-          @click="toggleAllMuteChannels()"
-        >
-          Invert Mute on All Channels
-        </button>
-      </div>
-    </div>
+    </template>
   </div>
 </template>
 
@@ -375,6 +480,9 @@
       const { isMobileMode } = useResponsive();
 
       const currentDiracTab = ref(mso.value.cal?.currentdiracslot);
+      const targetChannels = ref([]);
+      const bulkUserDelay = ref(0);
+      const bulkUserTrim = ref(0);
 
       // const activeChannels = computed(() => {
       //   return getActiveChannels(mso.value.speakers?.groups);
@@ -393,13 +501,26 @@
         }, 100);
       }
 
+      function setUserDelaySelectedChannels() {
+        for (const channel of targetChannels.value) {
+          setUserDelay(channel, bulkUserDelay.value);
+        }
+      }
+
+      function setUserTrimSelectedChannels() {
+        for (const channel of targetChannels.value) {
+          setUserTrim(channel, bulkUserTrim.value);
+        }
+      }
+
       return {
         mso, setDiracSlot, setUserTrim, setUserDelay, 
         setMinVolume, setMaxVolume, setMaxOutputLevel, setLipsyncDelay, currentDiracSlot,
         activeChannels, spkName, formatDecimal, currentDiracTab, setDiracTab,
         showChannelMuteControls, toggleShowChannelMuteControls, toggleMuteChannel,
         setMuteAllChannelsOff, setMuteAllChannelsOn, toggleAllMuteChannels, isMobileMode,
-        diracMismatchedChannels, darkMode
+        diracMismatchedChannels, darkMode, targetChannels, bulkUserDelay, bulkUserTrim,
+        setUserDelaySelectedChannels, setUserTrimSelectedChannels
       };
     }
   }

@@ -119,11 +119,6 @@
     background-color: #191919;
   }
 
-  .btn-off {
-    color: #eee;
-    background-color: #bbb;
-  }
-
   .yellow-text-btn {
     color:yellow;
   }

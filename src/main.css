@@ -19,6 +19,9 @@
 
   --danger-text-color: red;
   --danger-background-color: #f5c6cb;
+
+  --button-off-text-color: #eee;
+  --button-off-background-color: #bbb;
 }
 
 
@@ -43,6 +46,9 @@
 
     --danger-text-color: red;
     --danger-background-color: #7e2d35;
+
+    --button-off-text-color: #888;
+    --button-off-background-color: #333;
 }
 
 a.nav-link, 
@@ -110,6 +116,11 @@ input.form-control:disabled, select.form-control:disabled, textarea.form-control
 #app .btn-success, #app .btn-success:active, #app .btn-success:focus, #app .btn-success:hover {
   background-color: var(--success-background);
   color: var(--success-text);
+}
+
+.btn-off, .btn-off:hover {
+  color: var(--button-off-text-color);
+  background-color: var(--button-off-background-color);
 }
 
 .custom-control-input ~ .custom-control-label::before {
