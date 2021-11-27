@@ -93,9 +93,10 @@ jobs:
         id: sign_app
         with:
           releaseDirectory: android/app/build/outputs/apk/release
-          signingKeyBase64: ${{ secrets.KEYSTORE }}
-          alias: ${{ secrets.KEY_ALIAS }}
-          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
+          signingKeyBase64: ${{ secrets.RELEASE_KEYSTORE }}
+          alias: ${{ secrets.RELEASE_KEY_ALIAS }}
+          keyStorePassword: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
+          keyPassword: ${{ secrets.RELEASE_KEY_PASSWORD }}
       - name: get-npm-version
         id: package-version
         uses: martinbeentjes/npm-get-version-action@master
