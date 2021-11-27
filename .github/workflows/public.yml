@@ -79,7 +79,7 @@ jobs:
           node-version: 14.x
 
       - name: Setup Android SDK
-        uses: android-actions/setup-android@v2
+        uses: r0adkll/sign-android-release@v1
 
       - run: yarn install
       - run: yarn run build
