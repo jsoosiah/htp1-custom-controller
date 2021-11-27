@@ -78,9 +78,6 @@ jobs:
         with:
           node-version: 14.x
 
-      - name: Setup Android SDK
-        uses: r0adkll/sign-android-release@v1
-
       - run: yarn install
       - run: yarn run build
       - uses: montudor/action-zip@v1
