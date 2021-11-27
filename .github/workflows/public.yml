@@ -87,6 +87,7 @@ jobs:
       - run: >
           cd android && 
           chmod +x ./gradlew &&
+          ./gradlew assembleRelease &&
           cd app/build/outputs/apk/release && 
           echo "${RELEASE_KEYSTORE// /}" | base64 --decode > upload-keystore.jks && 
           ls -l && 
