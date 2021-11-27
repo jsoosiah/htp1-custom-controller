@@ -87,13 +87,14 @@ jobs:
       - run: >
           cd android && 
           chmod +x ./gradlew &&
-          ./gradlew assembleRelease && 
-          cd app/build/outputs/apk/release && 
-          echo "${RELEASE_KEYSTORE// /}" | base64 --decode > upload-keystore.jks && 
-          ls -l && 
-          jarsigner -keystore ./upload-keystore.jks -storepass $RELEASE_KEYSTORE_PASSWORD ./app-release-unsigned.apk $RELEASE_KEY_ALIAS && 
-          sudo apt-get install zipalign -y &&
-          zipalign 4 app-release-unsigned.apk app-release.apk
+          ./gradlew assembleRelease
+      - name: Sign APK
+        id: sign_app
+        with:
+          releaseDirectory: app/build/outputs/apk/release
+          signingKeyBase64: ${{ secrets.KEYSTORE }}
+          alias: ${{ secrets.KEY_ALIAS }}
+          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
       - name: get-npm-version
         id: package-version
         uses: martinbeentjes/npm-get-version-action@master
