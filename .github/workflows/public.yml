@@ -93,7 +93,7 @@ jobs:
           ls -l && 
           sudo apt-get update -y &&
           sudo apt-get install apksigner -y &&
-          apksigner sign --ks ./upload-keystore.jks --ks-key-alias $RELEASE_KEY_ALIAS --ks-pass pass:$RELEASE_KEYSTORE_PASSWORD --key-pass pass:$RELEASE_KEY_PASSWORD ./app-release-unsigned.apk
+          apksigner sign --ks ./upload-keystore.jks --ks-key-alias $RELEASE_KEY_ALIAS --ks-pass pass:$RELEASE_KEYSTORE_PASSWORD --out app-release.apk  ./app-release-unsigned.apk
       - name: get-npm-version
         id: package-version
         uses: martinbeentjes/npm-get-version-action@master
