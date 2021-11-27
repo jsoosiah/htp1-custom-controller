@@ -98,9 +98,11 @@ function initialize() {
     }
 
     if (websocketurl.value) {
-        // ws = new WSClient();
-        ws = new ReconnectingWebSocket(websocketurl.value);
-        // ws.open();
+        ws = new ReconnectingWebSocket(websocketurl.value, {
+            maxReconnectionDelay: 5000,
+            minReconnectionDelay: 1000,
+            reconnectionDelayGrowFactor: 1.1,
+        });
 
         ws.addEventListener('open', () => {
             state.value = 'OPEN';
