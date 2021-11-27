@@ -87,16 +87,10 @@ jobs:
       - run: >
           cd android && 
           chmod +x ./gradlew &&
-          ./gradlew assembleRelease
-      - name: Sign APK
-        uses: r0adkll/sign-android-release@v1
-        id: sign_app
-        with:
-          releaseDirectory: android/app/build/outputs/apk/release
-          signingKeyBase64: ${{ secrets.RELEASE_KEYSTORE }}
-          alias: ${{ secrets.RELEASE_KEY_ALIAS }}
-          keyStorePassword: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
-          keyPassword: ${{ secrets.RELEASE_KEY_PASSWORD }}
+          cd app/build/outputs/apk/release && 
+          echo "${RELEASE_KEYSTORE// /}" | base64 --decode > upload-keystore.jks && 
+          ls -l && 
+          apksigner sign --ks ./upload-keystore.jks -storepass $RELEASE_KEYSTORE_PASSWORD ./app-release-unsigned.apk --ks-key-alias $RELEASE_KEY_ALIAS --ks-pass pass:$RELEASE_KEYSTORE_PASSWORD --key-pass pass:$RELEASE_KEY_PASSWORD
       - name: get-npm-version
         id: package-version
         uses: martinbeentjes/npm-get-version-action@master
