@@ -1,6 +1,6 @@
 {
   "name": "htp1-custom-controller",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "private": true,
   "description": "Custom controller for the HTP-1.",
   "author": "Jeff Soosiah",
@@ -23,6 +23,7 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.35",
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
     "@fortawesome/vue-fontawesome": "^3.0.0-4",
+    "@slite/reconnecting-websocket": "^4.4.1",
     "auto-launch": "^5.0.5",
     "bootstrap": "^4.6.0",
     "chart.js": "^2.9.4",
