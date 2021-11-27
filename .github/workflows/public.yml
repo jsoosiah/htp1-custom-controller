@@ -94,6 +94,8 @@ jobs:
           cd app/build/outputs/apk/release && 
           echo "${RELEASE_KEYSTORE// /}" | base64 --decode > upload-keystore.jks && 
           ls -l && 
+          sudo apt-get update -y &&
+          sudo apt-get install apksigner -y &&
           apksigner sign --ks ./upload-keystore.jks -storepass $RELEASE_KEYSTORE_PASSWORD ./app-release-unsigned.apk --ks-key-alias $RELEASE_KEY_ALIAS --ks-pass pass:$RELEASE_KEYSTORE_PASSWORD --key-pass pass:$RELEASE_KEY_PASSWORD
       - name: get-npm-version
         id: package-version
