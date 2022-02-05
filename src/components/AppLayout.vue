@@ -39,7 +39,7 @@
     </router-link>
   </div>
   <div
-    v-if="state !== 'OPEN'"
+    v-if="debouncedState !== 'OPEN'"
     class="connecting-overlay"
   >
     <ip-select :focus="state !== 'OPEN'" />
@@ -503,9 +503,30 @@ export default {
       )
     );
 
+    const debouncedState = ref(state.value);
+
+    let setDebouncedStateTimeout = null;
+
+    watch(
+      state,
+      () => {
+        if (state.value === 'OPEN')  {
+          // only update state with OPEN after the 
+          // connection has stayed open for 250 ms
+          setDebouncedStateTimeout = setTimeout(() => {
+            debouncedState.value = state.value;
+          }, 250);
+        } else {
+          debouncedState.value = state.value;
+          clearTimeout(setDebouncedStateTimeout);
+        }
+      }
+    );
+
     return { settingsRoutes, filteredSettingsRoutes, showMobileMenu, 
       showPowerDialog, toggleShowPowerDialog, personalizePowerDialog,
       toggleShowMobileMenu, isMobileMode, ...useMso(), websocketIp, userCss,
+      debouncedState
     };
   }
 }

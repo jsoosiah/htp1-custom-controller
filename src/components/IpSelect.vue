@@ -18,7 +18,12 @@
           </h4>
         </div>
         <div class="modal-body text-left text-white">
-          <template v-if="websocketIp">
+          <template v-if="isHttps">
+            <p>This web app does not support https. Please open the http version of this website at: <a :href="httpUrl">{{ httpUrl }}</a>.</p> 
+            
+            <p>You will automatically be redirected to the http version in 5 seconds. Please note that some browsers automatically redirect back to https. If you continue to see this message, please update your browser settings to prevent the browser from redirecting to https.</p>
+          </template>
+          <template v-else-if="websocketIp">
             <p v-if="state === 'CONNECTING'">
               Connecting to {{ websocketIp }}...
               <span
@@ -70,36 +75,38 @@
             </p>
           </template>
 
-          <div class="form-group">
-            <label
-              for="select-ip"
-              class="text-white"
-            >IP address</label>
-            <input 
-              id="select-ip" 
-              ref="ipInput" 
-              v-model="ipAddressText"
-              type="text" 
-              class="form-control form-control-sm text-white bg-dark"
-              aria-describedby="ip-help" 
-              placeholder="e.g., 192.168.1.13"
-              @keyup.enter="validateAndSetWebsocketurl(ipAddressText)"
-            >
-            <small
-              id="ip-help"
-              class="form-text"
-            >Your entry will be remembered on this device.</small>
-          </div>
-          <div class="row justify-content-end">
-            <div class="col-auto">
-              <button 
-                class="btn btn-sm btn-primary"
-                @click="validateAndSetWebsocketurl(ipAddressText)"
+          <template v-if="!isHttps">
+            <div class="form-group">
+              <label
+                for="select-ip"
+                class="text-white"
+              >IP address</label>
+              <input 
+                id="select-ip" 
+                ref="ipInput" 
+                v-model="ipAddressText"
+                type="text" 
+                class="form-control form-control-sm text-white bg-dark"
+                aria-describedby="ip-help" 
+                placeholder="e.g., 192.168.1.13"
+                @keyup.enter="validateAndSetWebsocketurl(ipAddressText)"
               >
-                Save
-              </button>
+              <small
+                id="ip-help"
+                class="form-text"
+              >Your entry will be remembered on this device.</small>
             </div>
-          </div>
+            <div class="row justify-content-end">
+              <div class="col-auto">
+                <button 
+                  class="btn btn-sm btn-primary"
+                  @click="validateAndSetWebsocketurl(ipAddressText)"
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          </template>
         </div>
       </div>
     </div>
@@ -108,7 +115,7 @@
 
 <script>
 
-  import { ref, watch } from 'vue';
+  import { ref, watch, computed, onMounted } from 'vue';
 
   import useWebSocket from '@/use/useWebSocket.js';
 
@@ -127,6 +134,18 @@
       const ipAddressText = ref('');
 
       const ipInput = ref(null);
+
+      const isHttps = computed(() => window.location.protocol === 'https:');
+
+      const httpUrl = computed(() => `http:${window.location.href.substring(window.location.protocol.length)}`);
+
+      onMounted(() => {
+        if (isHttps.value === true) {
+          setTimeout(() => {
+            window.location.replace(httpUrl.value);
+          }, 5000);
+        }
+      });
 
       watch(
         () => props.focus, 
@@ -147,7 +166,7 @@
         setWebsocketIp(url);
       }
 
-      return { ipAddressText, websocketIp, websocketurl, state, validateAndSetWebsocketurl, ipInput };
+      return { ipAddressText, websocketIp, websocketurl, state, validateAndSetWebsocketurl, ipInput, isHttps, httpUrl };
     }
   }
 </script>

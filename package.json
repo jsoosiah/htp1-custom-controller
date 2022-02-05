@@ -1,6 +1,6 @@
 {
   "name": "htp1-custom-controller",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "private": true,
   "description": "Custom controller for the HTP-1.",
   "author": "Jeff Soosiah",
@@ -33,7 +33,7 @@
     "hammerjs": "^2.0.8",
     "lodash-es": "^4.17.21",
     "tippy.js": "^6.3.1",
-    "vue": "^3.2.20",
+    "vue": "^3.2.29",
     "vue-draggable-next": "^1.0.8",
     "vue-router": "^4.0.12"
   },
