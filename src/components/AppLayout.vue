@@ -11,6 +11,15 @@
     </div>
   </div>
   <div
+    v-if="isDemoMode"
+    class="fixed-top mx-auto"
+  >
+    <a
+      class="sgen-on-warning"
+      @click="exitDemoMode()"
+    >Currently in Demo Mode - Click to Exit</a>
+  </div>
+  <div
     v-if="mso?.sgen?.sgensw === 'on'"
     class="fixed-top mx-auto"
   >
@@ -411,9 +420,9 @@ export default {
   setup() {
 
     const { mso, state } = useMso();
-    const { findServers, websocketIp } = useWebSocket();
+    const { findServers, websocketIp, setWebsocketIp } = useWebSocket();
     const { windowWidth, isMobileMode } = useResponsive();
-    const { userCss, darkMode } = useLocalStorage();
+    const { userCss, darkMode, isDemoMode } = useLocalStorage();
     const route = useRoute();
 
     const showMobileMenu = ref(false);
@@ -426,7 +435,7 @@ export default {
       window.addEventListener('resize', updateWindowWidth);
 
       if (!websocketIp.value) {
-        findServers(80, '192.168.1.', 1, 255, 20, 4000);
+        findServers(80, '192.168.1.', 2, 255, 20, 4000);
       }
     });
 
@@ -497,6 +506,11 @@ export default {
       showPowerDialog.value = !showPowerDialog.value;
     }
 
+    function exitDemoMode() {
+      setWebsocketIp('');
+      findServers(80, '192.168.1.', 2, 255, 20, 4000);
+    }
+
     const filteredSettingsRoutes = computed(() => 
       settingsRoutes.filter(route => 
         mso.value.personalize && mso.value.personalize.shortcuts[route.path]
@@ -526,7 +540,7 @@ export default {
     return { settingsRoutes, filteredSettingsRoutes, showMobileMenu, 
       showPowerDialog, toggleShowPowerDialog, personalizePowerDialog,
       toggleShowMobileMenu, isMobileMode, ...useMso(), websocketIp, userCss,
-      debouncedState
+      debouncedState, isDemoMode, exitDemoMode,
     };
   }
 }

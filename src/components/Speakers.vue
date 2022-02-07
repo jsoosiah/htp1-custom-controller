@@ -131,7 +131,7 @@
     },
     setup() {
 
-      const { mso, showCrossoverControls, activeChannels } = useMso();
+      const { mso, showCrossoverControls, activeChannels, setBassLpf, toggleReinforceBass } = useMso();
       const { isLg } = useResponsive();
 
       const mainSpeakers = [
@@ -188,6 +188,7 @@
 
       return { 
         mso, showCrossoverControls, mainSpeakers, surroundSpeakers, upperSpeakers, 
+        setBassLpf, toggleReinforceBass,
         diagramSpeakerVisibility, speakerGroups, activeChannels, isLg
       };
     }

@@ -7,7 +7,7 @@
 <script>
 
   import { ref, onMounted, watch, computed } from 'vue';
-  import { cloneDeep, debounce } from 'lodash-es';
+  import { cloneDeep, debounce, isEqual } from 'lodash-es';
   import Chart from 'chart.js';
 
   const NUM_SAMPLES = 128;
@@ -67,6 +67,7 @@
 
       const chartRef = ref(null);
       const exportData = ref([]);
+      const localPeqSlots = ref([]);
       let myChart = null;
 
       const gridLinesColor = computed(() => props.darkMode ? '#333' : '#ccc');
@@ -212,22 +213,31 @@
         props,
         newProps => {
           if (newProps.peqSlots) {
-            debouncedUpdateChart();
+            const channelsToUpdate = new Set(newProps.activeChannels.filter(channel => {
+              for (let band = 0; band < newProps.peqSlots.length; band++) {
+                if (!isEqual(newProps.peqSlots[band].channels[channel], localPeqSlots.value[band]?.channels[channel])) {
+                  return true;
+                }
+              }
+
+              return false;
+            }));
+            debouncedUpdateChart(channelsToUpdate);
+            localPeqSlots.value = cloneDeep(newProps.peqSlots);
           }
         }
       )
 
-      function updateChartData(datasets) {
+      function updateChartData(datasets, channelsToUpdate) {
         if (datasets.length > 0) { // update single channel
           for (let i = 0; i < props.activeChannels.length; i++) {
-            console.log('i', i, props.selectedChannel, i === props.selectedChannel)
             // update line thickness of all channels
             updateChartChannelActive(datasets[i], props.activeChannels[i]);
 
-            if (i === props.selectedChannel) { // update plot for selected channel only
+            if (channelsToUpdate.has(props.activeChannels[i])) {
               computeSingleSeriesData(
-                datasets[props.selectedChannel], 
-                props.activeChannels[props.selectedChannel]
+                datasets[i], 
+                props.activeChannels[i]
               );
             }
           }
@@ -244,11 +254,11 @@
         }
       }
 
-      function updateChart() {
+      function updateChart(channelsToUpdate) {
           if (myChart) {
             myChart.options.scales.yAxes[0].gridLines.color = gridLinesColor.value;
             myChart.options.scales.xAxes[0].gridLines.color = gridLinesColor.value;
-            updateChartData(myChart.chart.config.data.datasets);
+            updateChartData(myChart.chart.config.data.datasets, channelsToUpdate);
             myChart.chart.update();
          }
       }
@@ -323,7 +333,6 @@
             a1 /= a0;
             a2 /= a0;
 
-            console.log('biquad', a1, a2, b0, b1, b2);
 
             for (let i = 0; i < len; i++) {
               let ix = convertLogScale(i, 0, len);
@@ -390,7 +399,7 @@
 
         if (props.activeChannels[props.selectedChannel] === ch) {
           exportData.value = cloneDeep(tmpSeriesData.data);
-          console.log('export', exportData.value, ch)
+          // console.log('export', exportData.value, ch)
         }
 
         // filter out of bounds points
@@ -412,7 +421,7 @@
         //   }
         // }
 
-        console.log('compute', ch, props.activeChannels[props.selectedChannel], props.peqSlots, tmpSeriesData);
+        // console.log('compute', ch, props.activeChannels[props.selectedChannel], props.peqSlots, tmpSeriesData);
 
         // return tmpSeriesData;
       }

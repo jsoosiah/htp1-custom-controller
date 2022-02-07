@@ -56,6 +56,17 @@
       </div>
     </div>
 
+    <h5>Demo Mode</h5>
+    <div class="row">
+      <div class="col-md-auto mb-3">
+        <two-state-button 
+          :button-text="`Demo Mode: ${isDemoMode? 'On' : 'Off'}`"
+          :state-on="isDemoMode"
+          @click="toggleDemoMode()"
+        />
+      </div>
+    </div>
+
     <h5>Power</h5>
     <div class="row">
       <div class="col-md-auto mb-3">
@@ -138,6 +149,7 @@
   import useImportExport from '@/use/useImportExport.js';
   import useWebSocket from '@/use/useWebSocket.js';
   import useMso from '@/use/useMso.js';
+  import useLocalStorage from '@/use/useLocalStorage.js';
 
   import TwoStateButton from './buttons/TwoStateButton.vue';
 
@@ -154,9 +166,9 @@
 
       const { mso } = useMso();
 
-      const { websocketIp, setWebsocketIp } = useWebSocket();
+      const { websocketIp, setWebsocketIp, findServers } = useWebSocket();
 
-    console.log('help?',websocketIp.value)
+      const { isDemoMode } = useLocalStorage();
 
       const ipAddressText = ref(websocketIp.value);
 
@@ -174,6 +186,16 @@
         importJsonFileToSelected(file);
       }
 
+      function toggleDemoMode() {
+        if (isDemoMode.value === true) {
+          // turn off demo mode
+          setWebsocketIp('');
+          findServers(80, '192.168.1.', 2, 255, 20, 4000);
+        } else {
+          setWebsocketIp('jsoosiah.com');
+        }
+      }
+
       const msoImportPatch = computed(() => {
         return compare(mso.value, importJson.value);
       });
@@ -181,7 +203,8 @@
       return { 
         ...useMso(),
         downloadMsoAsJson, importMsoFileSelected, importJson, msoImportPatch,
-        validateAndSetWebsocketurl, ipAddressText, setWebsocketIp
+        validateAndSetWebsocketurl, ipAddressText, setWebsocketIp, 
+        isDemoMode, toggleDemoMode,
       };
     },
     computed: {

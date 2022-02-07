@@ -1,4 +1,4 @@
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 
 // IP address of HTP-1, used to connect to websocket
 const websocketIp = ref(localStorage.getItem('websocketIp'));
@@ -19,6 +19,8 @@ const showAdvancedVolumeSettings = ref(localStorage.getItem('showAdvancedVolumeS
 const userCss = ref(localStorage.getItem('userCss') ? localStorage.getItem('userCss') : '');
 
 const darkMode = ref(localStorage.getItem('darkMode') ? localStorage.getItem('darkMode') === 'true' : false);
+
+const isDemoMode = computed(() => websocketIp.value === 'jsoosiah.com');
 
 export default function useLocalStorage() {
 
@@ -81,5 +83,6 @@ export default function useLocalStorage() {
     setUserCss,
     darkMode,
     toggleDarkMode,
+    isDemoMode,
   };
 }
