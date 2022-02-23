@@ -309,6 +309,21 @@
         </tbody>
       </table>
     </template>
+    <h6>Notes</h6>
+    <div class="row">
+      <div class="col">
+        <div class="form-group">
+          <label :for="`slotNotes${currentDiracTab}`">Notes for {{ currentDiracSlot?.name }}</label>
+          <textarea
+            :id="`slotNotes${currentDiracTab}`"
+            class="form-control"
+            rows="3"
+            :value="currentDiracSlot?.notes"
+            @change="({ type, target }) => setDiracSlotNotes(target.value)"
+          />
+        </div>
+      </div>
+    </div>
     <template v-if="showChannelMuteControls">
       <h6>Bulk Edit</h6>
       <div class="row">
@@ -473,7 +488,7 @@
         setMinVolume, setMaxVolume, setMaxOutputLevel, setLipsyncDelay,
         currentDiracSlot, activeChannels, toggleMuteChannel,
         setMuteAllChannelsOff, setMuteAllChannelsOn, toggleAllMuteChannels,
-        diracMismatchedChannels
+        diracMismatchedChannels, setDiracSlotNotes
       } = useMso();
       const { spkName } = useSpeakerGroups();
       const { showChannelMuteControls, toggleShowChannelMuteControls, darkMode } = useLocalStorage();
@@ -516,7 +531,7 @@
       return {
         mso, setDiracSlot, setUserTrim, setUserDelay, 
         setMinVolume, setMaxVolume, setMaxOutputLevel, setLipsyncDelay, currentDiracSlot,
-        activeChannels, spkName, formatDecimal, currentDiracTab, setDiracTab,
+        activeChannels, spkName, formatDecimal, currentDiracTab, setDiracTab, setDiracSlotNotes,
         showChannelMuteControls, toggleShowChannelMuteControls, toggleMuteChannel,
         setMuteAllChannelsOff, setMuteAllChannelsOn, toggleAllMuteChannels, isMobileMode,
         diracMismatchedChannels, darkMode, targetChannels, bulkUserDelay, bulkUserTrim,

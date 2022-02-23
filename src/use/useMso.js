@@ -344,6 +344,13 @@ function applyProductRules() {
     if (!mso.value.secondVolume) {
       initializeSecondVolume();
     }
+
+    for (let slot = 0; slot < mso.value.cal.slots.length; slot++) {
+      console.log(slot, typeof mso.value.cal.slots[slot].notes)
+      if (typeof mso.value.cal.slots[slot].notes === 'undefined') {
+        initializeDiracSlotNotes(slot);
+      }
+    }
   }
 }
 
@@ -899,6 +906,14 @@ function setUserDelay(channel, delay) {
 
 function setUserTrim(channel, trim) {
   return patchMso( 'replace', `/cal/slots/${mso.value.cal.currentdiracslot}/channels/${channel}/trim`, parseFloat(trim));
+}
+
+function initializeDiracSlotNotes(slotNumber) {
+  return patchMso('add', `/cal/slots/${slotNumber}/notes`, '');
+}
+
+function setDiracSlotNotes(notes) {
+  return patchMso('replace', `/cal/slots/${mso.value.cal.currentdiracslot}/notes`, notes);
 }
 
 function setMuteChannelOn(channel) {
@@ -1616,7 +1631,7 @@ export default function useMso() {
     setAuroMaticPreset, setAuroMaticStrength, setDefaultAuroMaticStrength,
     toggleReinforceBass, setReinforceBassOn, setReinforceBassOff,
     setNextNightMode, setNightMode, toggleDirac, toggleLoudness, setNextDtsDialogEnh, setDtsDialogEnh,
-    setDiracOff, setDiracBypass, setDiracOn,
+    setDiracOff, setDiracBypass, setDiracOn,setDiracSlotNotes,
     setNightOff, setNightAuto, setNightOn,
     setLoudnessOff, setLoudnessOn,
     setToneControlOff, setToneControlOn,

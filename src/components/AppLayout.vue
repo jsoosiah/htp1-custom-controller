@@ -430,6 +430,22 @@ export default {
 
     const personalizePowerDialog = ref(false);
     
+    function onInput() {
+      console.log('oninput', this.scrollHeight);
+      this.style.height = "auto";
+      this.style.height = (this.scrollHeight) + "px";
+    }
+
+    function initializeTextAreas() {
+      // auto resize textareas
+      const tx = document.querySelectorAll("textarea");
+      for (let i = 0; i < tx.length; i++) {
+        tx[i].removeEventListener("input", onInput);
+        tx[i].setAttribute("style", "height:" + (tx[i].scrollHeight) + "px;overflow-y:hidden;");
+        tx[i].addEventListener("input", onInput);
+      }
+    }
+
     onMounted(() => {
       updateWindowWidth();
       window.addEventListener('resize', updateWindowWidth);
@@ -437,6 +453,8 @@ export default {
       if (!websocketIp.value) {
         findServers(80, '192.168.1.', 2, 255, 20, 4000);
       }
+
+      initializeTextAreas();
     });
 
     onUnmounted(() => {
@@ -448,6 +466,7 @@ export default {
       async newPath => {
         setTimeout(() => {
           showMobileMenu.value = false;
+          initializeTextAreas();
         }, 100);
       }
     );
