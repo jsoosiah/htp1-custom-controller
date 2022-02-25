@@ -21,11 +21,13 @@ jobs:
       - name: get-npm-version
         id: package-version
         uses: martinbeentjes/npm-get-version-action@master
-      - uses: softprops/action-gh-release@v1
+      - uses: ncipollo/release-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag_name: ${{ steps.package-version.outputs.current-version }}
+          tag: ${{ steps.package-version.outputs.current-version }}
+          allowUpdates: true
           draft: true
+          commit: ${{ github.sha }}
   build-electron:
     name: Build Electron
     # The type of runner that the job will run on
@@ -95,11 +97,13 @@ jobs:
       - name: get-npm-version
         id: package-version
         uses: martinbeentjes/npm-get-version-action@master
-      - uses: softprops/action-gh-release@v1
+      - uses: ncipollo/release-action@v1
         with:
-          files: "android/app/build/outputs/apk/release/app-release.apk,dist.zip"
+          artifacts: "android/app/build/outputs/apk/release/app-release.apk,dist.zip"
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag_name: ${{ steps.package-version.outputs.current-version }}
+          tag: ${{ steps.package-version.outputs.current-version }}
+          allowUpdates: true
           draft: true
+          commit: ${{ github.sha }}
   # TODO: iOS
   # TODO: deploy web app
