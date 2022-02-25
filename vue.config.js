@@ -1,4 +1,5 @@
 module.exports = {
+  lintOnSave: 'warning',
   productionSourceMap: false,
   publicPath: process.env.VUE_APP_PUBLIC_PATH || '/',
   configureWebpack: config => {
