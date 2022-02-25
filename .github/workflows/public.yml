@@ -23,7 +23,7 @@ jobs:
         uses: martinbeentjes/npm-get-version-action@master
       - uses: ncipollo/release-action@v1
         with:
-          token: ${{ secrets.build }}
+          token: ${{ secrets.PAT }}
           tag: ${{ steps.package-version.outputs.current-version }}
           allowUpdates: true
           draft: true
