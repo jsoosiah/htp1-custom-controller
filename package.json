@@ -14,7 +14,6 @@
     "postuninstall": "electron-builder install-app-deps",
     "release": "vue-cli-service electron:build -p always"
   },
-  "main": "background.js",
   "dependencies": {
     "@capacitor/android": "^3.3.2",
     "@capacitor/cli": "^3.3.2",
@@ -44,11 +43,11 @@
     "@vue/cli-plugin-eslint": "~5.0.1",
     "@vue/cli-service": "~5.0.1",
     "@vue/compiler-sfc": "^3.1.5",
-    "electron": "^13.1.7",
+    "electron": "^17.1.0",
     "electron-devtools-installer": "^3.1.0",
     "eslint": "^7.32.0",
     "eslint-plugin-vue": "^8.0.3",
-    "vue-cli-plugin-electron-builder": "~2.1.1"
+    "vue-cli-plugin-electron-builder": "^3.0.0-alpha.4"
   },
   "repository": {
     "type": "git",
