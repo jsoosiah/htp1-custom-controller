@@ -6,19 +6,22 @@ export default function useImportExport() {
   const validationWarnings = ref([]);
   const maxPeqBands = 16;
 
-  function exportJsonToFile(json, filename){
-    const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(json, null, 2));
+  function exportTextToFile(text, contentType, filename, fileExtension) {
+    const dataStr = `data:${contentType};charset=utf-8,${text}`
     const downloadAnchorNode = document.createElement('a');
     downloadAnchorNode.setAttribute('href', dataStr);
-    downloadAnchorNode.setAttribute('download', `${filename}-${currentDateStr()}.json`);
+    downloadAnchorNode.setAttribute('download', `${filename}-${currentDateStr()}.${fileExtension}`);
     document.body.appendChild(downloadAnchorNode); // required for firefox
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
   }
 
+  function exportJsonToFile(json, filename){
+    exportTextToFile(encodeURIComponent(JSON.stringify(json, null, 2)), 'text/json', filename, 'json');
+  }
+
   function exportTargetToFile(targetData, filename) {
-    const dataStr = 'data:text/plain;charset=utf-8,'
-                  + 'NAME\n'
+    const text = 'NAME\n'
                   + 'Unnamed\n'
                   + 'DEVICENAME\n'
                   + 'HTP-1\n'
@@ -28,12 +31,7 @@ export default function useImportExport() {
                   + '10\n'
                   + 'HIGHLIMITHZ\n'
                   + '24000\n';
-    const downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute('href', dataStr);
-    downloadAnchorNode.setAttribute('download', `${filename}-${currentDateStr()}.txt`);
-    document.body.appendChild(downloadAnchorNode); // required for firefox
-    downloadAnchorNode.click();
-    downloadAnchorNode.remove();
+    exportTextToFile(text, 'text/plain', filename, 'txt');
   }
 
   function parseFile(text) {
@@ -129,7 +127,8 @@ export default function useImportExport() {
     filterCommands,
     filterMacroCommands,
     validationWarnings,
-    exportTargetToFile
+    exportTargetToFile,
+    exportTextToFile
   };
 }
 

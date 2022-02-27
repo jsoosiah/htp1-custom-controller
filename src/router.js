@@ -25,6 +25,8 @@ const Configs = () => import('./components/Configs.vue');
 const About = () => import('./components/About.vue');
 const Help = () => import('./components/Help.vue');
 
+const TargetCurveTransformer = () => import('./components/TargetCurveTransformer.vue');
+
 const settingsRoutes = [
   { path: ''}, // divider
   { path: 'speakers', component: Speakers, meta: { label: 'Speakers', icon: 'speakers-icon' }},
@@ -65,6 +67,10 @@ export default createRouter({
           component: Settings, 
           children: settingsRoutes,
           redirect: '/settings/speakers'
+        },
+        {
+          path: 'target-curve-transformer',
+          component: TargetCurveTransformer,
         },
       ]
     },

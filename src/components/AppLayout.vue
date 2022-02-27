@@ -437,13 +437,16 @@ export default {
     }
 
     function initializeTextAreas() {
-      // auto resize textareas
-      const tx = document.querySelectorAll("textarea");
-      for (let i = 0; i < tx.length; i++) {
-        tx[i].removeEventListener("input", onInput);
-        tx[i].setAttribute("style", "height:" + (tx[i].scrollHeight) + "px;overflow-y:hidden;");
-        tx[i].addEventListener("input", onInput);
-      }
+      setTimeout(() => {
+        // auto resize textareas
+        const tx = document.querySelectorAll("textarea");
+        console.log('initializeTextAreas', tx.length);
+        for (let i = 0; i < tx.length; i++) {
+          tx[i].removeEventListener("input", onInput);
+          tx[i].setAttribute("style", "height:" + (tx[i].scrollHeight) + "px;overflow-y:hidden;");
+          tx[i].addEventListener("input", onInput);
+        }
+      }, 100);
     }
 
     onMounted(() => {
@@ -471,15 +474,14 @@ export default {
       }
     );
 
-    if (window.ipcRenderer) {
-      watch(state, () => {
-        if (state.value === 'OPEN') {
-          window.ipcRenderer.send('connected', true);
-        } else {
-          window.ipcRenderer.send('connected', false);
-        }
-      });
-    }
+    watch(state, () => {
+      if (state.value === 'OPEN') {
+        window.ipcRenderer?.send('connected', true);
+        initializeTextAreas();
+      } else {
+        window.ipcRenderer?.send('connected', false);
+      }
+    });
 
     watch(
       userCss,
