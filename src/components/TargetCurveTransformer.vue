@@ -17,13 +17,13 @@
         </div>
       </div>
       <div class="col">
-        <label>Result</label>
+        <label>New Target Curve</label>
         <pre>{{ transformedTargetCurve }}</pre>
         <button
           class="btn btn-sm btn-primary mb-3"
-          @click="downloadResult"
+          @click="downloadNewTarget"
         >
-          Download Resulting Target Curve
+          Download New Target Curve
         </button>
       </div>
     </div>
@@ -110,11 +110,11 @@ export default {
       return newCols.join('\n');
     });
 
-    function downloadResult() {
+    function downloadNewTarget() {
       exportTextToFile(transformedTargetCurve.value, 'text/plain', 'transformed-target', 'txt');
     }
 
-    return { initialTargetCurve, shiftBy, scaleBy, transformedTargetCurve, downloadResult };
+    return { initialTargetCurve, shiftBy, scaleBy, transformedTargetCurve, downloadNewTarget };
   }
 }
 </script>

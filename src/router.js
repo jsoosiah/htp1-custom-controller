@@ -65,12 +65,13 @@ export default createRouter({
         { 
           path: 'settings', 
           component: Settings, 
-          children: settingsRoutes,
+          children: [...settingsRoutes,         
+            {
+              path: 'target-curve-transformer',
+              component: TargetCurveTransformer,
+            }
+          ],
           redirect: '/settings/speakers'
-        },
-        {
-          path: 'target-curve-transformer',
-          component: TargetCurveTransformer,
         },
       ]
     },
