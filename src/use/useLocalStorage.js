@@ -16,6 +16,8 @@ const maxWaitTimeToSendToMso = ref(375);
 
 const showAdvancedVolumeSettings = ref(localStorage.getItem('showAdvancedVolumeSettings') ? localStorage.getItem('showAdvancedVolumeSettings') === 'true' : false);
 
+const showMacroCodeEditor = ref(localStorage.getItem('showMacroCodeEditor') ? localStorage.getItem('showMacroCodeEditor') === 'true' : false);
+
 const userCss = ref(localStorage.getItem('userCss') ? localStorage.getItem('userCss') : '');
 
 const darkMode = ref(localStorage.getItem('darkMode') ? localStorage.getItem('darkMode') === 'true' : false);
@@ -55,6 +57,11 @@ export default function useLocalStorage() {
     localStorage.setItem('showAdvancedVolumeSettings', showAdvancedVolumeSettings.value);
   }
 
+  function toggleShowMacroCodeEditor() {
+    showMacroCodeEditor.value = !showMacroCodeEditor.value;
+    localStorage.setItem('showMacroCodeEditor', showMacroCodeEditor.value);
+  }
+
   function setUserCss(newUserCss) {
     userCss.value = newUserCss;
     localStorage.setItem('userCss', newUserCss);
@@ -84,5 +91,7 @@ export default function useLocalStorage() {
     darkMode,
     toggleDarkMode,
     isDemoMode,
+    showMacroCodeEditor,
+    toggleShowMacroCodeEditor,
   };
 }

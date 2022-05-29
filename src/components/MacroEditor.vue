@@ -62,6 +62,7 @@
           :state-on="currentlyRecordingSlot === props.commandKey"
           @btn-click="toggleRecording"
         />
+        <!-- Design View -->
         <div class="my-3">
           <div
             v-if="currentCommands.length > 0"
@@ -119,6 +120,21 @@
           </div>
         </div>
         
+        <!-- Code View -->
+        <div
+          v-if="showMacroCodeEditor"
+          class="my-3"
+        >
+          <div class="form-group ">
+            <textarea 
+              v-model="currentCommandsRaw"
+              class="form-control"
+              :class="{'is-invalid': !currentCommandsRawIsValid, 'is-valid': currentCommandsRawIsValid}"
+              rows="3"
+            />
+          </div>
+        </div>
+
         <div class="row justify-content-between">
           <div class="col-auto">
             <button
@@ -155,9 +171,11 @@
 <script>
   import { watch, ref, computed, onMounted, onUnmounted } from 'vue';
   import { compare } from 'fast-json-patch/index.mjs';
-  import { VueDraggableNext } from 'vue-draggable-next'
+  import { isEqual } from 'lodash-es';
+  import { VueDraggableNext } from 'vue-draggable-next';
 
   import useMso from '@/use/useMso.js';
+  import useLocalStorage from '@/use/useLocalStorage.js';
   import useImportExport from '@/use/useImportExport.js';
 
   import TwoStateButton from './buttons/TwoStateButton.vue';
@@ -205,6 +223,41 @@
         // console.log('unsaved changes compare', compare(commands.value[props.commandKey], currentCommands.value));
         return compare(commands.value[props.commandKey], currentCommands.value).length > 0;
       });
+
+      const currentCommandsRawIsValid = ref(true);
+
+      const currentCommandsRaw = ref('');
+
+      watch(
+        () => currentCommands,
+        val => {
+          const newRawVal = JSON.stringify(val.value)
+          if (currentCommandsRaw.value !==  newRawVal) {
+            currentCommandsRaw.value = newRawVal;
+          }
+        },
+        {
+          immediate: true
+        }
+      );
+
+      watch(
+        currentCommandsRaw,
+        val => {
+          try {
+            const newCurrentCommands = JSON.parse(val);
+            currentCommandsRawIsValid.value = true;
+            if (!isEqual(newCurrentCommands, currentCommands.value)) {
+              currentCommands.value = newCurrentCommands;
+            }
+          } catch(e) {
+            currentCommandsRawIsValid.value = false;
+          }
+        },
+        {
+          immediate: true
+        }
+      );
 
       onMounted(() => {
         console.log('macroeditor on mounted');
@@ -296,8 +349,10 @@
       }
 
       return { mso, data, props, toggleRecording, removeRecordedCommand, show, toggleShow,
-      currentlyRecordingSlot, currentCommands, unsavedChanges, saveRecordedCommands, touched, save, setTouched,
-      saveExtraRecordedCommands, setMacroName, deleteMacro, clearAllCommands };
+        currentlyRecordingSlot, currentCommands, currentCommandsRaw, currentCommandsRawIsValid, 
+        unsavedChanges, saveRecordedCommands, touched, save, setTouched,
+        saveExtraRecordedCommands, setMacroName, deleteMacro, clearAllCommands,
+        ...useLocalStorage() };
     }
   }
 </script>

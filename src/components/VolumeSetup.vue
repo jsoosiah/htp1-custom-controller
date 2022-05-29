@@ -17,7 +17,7 @@
             class="custom-control-label"
             for="display-adv-input"
           >
-            Show Advanced Settings
+            Show Advanced Settings and VU meter
           </label>
         </div>
       </div>

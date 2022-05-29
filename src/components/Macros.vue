@@ -1,6 +1,25 @@
 <template>
   <div class="transition-container">
     <h5>Record Macros</h5>
+    <div class="row justify-content-between mb-3">
+      <div class="col-auto">
+        <div class="custom-control custom-switch">
+          <input 
+            id="display-adv-input" 
+            type="checkbox" 
+            class="custom-control-input" 
+            :checked="showMacroCodeEditor" 
+            @click="toggleShowMacroCodeEditor()"
+          >
+          <label
+            class="custom-control-label"
+            for="display-adv-input"
+          >
+            Show Macro Code Editor
+          </label>
+        </div>
+      </div>
+    </div>
     <h6>Remote Buttons</h6>
     <div
       id="accordionExample"
@@ -40,6 +59,7 @@
 <script>
 
   import useMso from '@/use/useMso.js';
+  import useLocalStorage from '@/use/useLocalStorage.js';
 
   import MacroEditor from './MacroEditor.vue';
   import DismissableAlert from './buttons/DismissableAlert.vue';
@@ -53,7 +73,7 @@
     setup() {
 
       return {
-        ...useMso()
+        ...useMso(), ...useLocalStorage()
       };
     }
   }

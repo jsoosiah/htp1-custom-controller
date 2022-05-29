@@ -109,6 +109,10 @@ input.form-control:disabled, select.form-control:disabled, textarea.form-control
   border-color: var(--border-color);
 }
 
+textarea.form-control {
+  min-height: 84px;
+}
+
 input.form-control:disabled, select.form-control:disabled, textarea.form-control:disabled {
   opacity: 0.6;
 }
