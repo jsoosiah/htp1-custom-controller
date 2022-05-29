@@ -269,6 +269,9 @@ function applyProductRules() {
         if (!Object.prototype.hasOwnProperty.call(mso.value.inputs[inputKey], 'diracslot')) {
           initializeInputDiracSlot(inputKey);
         }
+        if (!Object.prototype.hasOwnProperty.call(mso.value.inputs[inputKey], 'macro')) {
+          initializeInputRunMacro(inputKey);
+        }
       }
     }
 
@@ -1259,6 +1262,14 @@ function setInputDiracSlot(input, diracslot) {
   return patchMso('replace', `/inputs/${input}/diracslot`, convertInt(diracslot, null, 0, 6));
 }
 
+function initializeInputRunMacro(input) {
+  return patchMso('add', `/inputs/${input}/macro`, null);
+}
+
+function setInputRunMacro(input, macro) {
+  return patchMso('replace', `/inputs/${input}/macro`, macro);
+}
+
 // Warning: custom attribute
 function setInputVolumeTrim(input, trim) {
   return _setInputVolumeTrim(input, trim, 'replace');
@@ -1653,7 +1664,7 @@ export default function useMso() {
     addBEQFlag, resetBEQ,
     addBEQActive, removeBEQActive,
     setInputLabel, toggleInputVisible, setInputFormatDetectOption, toggleInputUHD, 
-    setInputDefaultUpmix, setInputVolumeTrim, setInputDelay, setInputDiracSlot,
+    setInputDefaultUpmix, setInputVolumeTrim, setInputDelay, setInputDiracSlot, setInputRunMacro,
     setBluetoothDiscoverableTime, enableBluetoothDiscovery,
     toggleCEC, setCECOff, setCECOn,
     setTVSoundSrcDefault, toggleCECAllowPowerKey, toggleCECAllowVolKey, 

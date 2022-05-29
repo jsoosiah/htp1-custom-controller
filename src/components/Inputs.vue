@@ -4,7 +4,7 @@
       <div class="col-auto">
         <h5>Input Setup</h5>
         <dismissable-alert alert-key="inputs-background-service">
-          * Sound Mode, Delay, and Dirac Slot for individual inputs require the <a
+          * Sound Mode, Delay, Dirac Slot, and Run Macro for individual inputs require the <a
             target="_blank"
             href="https://github.com/jsoosiah/htp1-custom-ui-background-service/releases/latest"
           >HTP-1 Custom UI Background Service</a> to be running in the background on a computer in order to function.
@@ -37,6 +37,7 @@
           <th>Sound Mode*</th>
           <th>Delay (ms)*</th>
           <th>Dirac Slot*</th>
+          <th>Run Macro*</th>
           <th>UHD Capable</th>
           <th v-if="mso.stat?.displayAdvancedSettings">
             PCM Detect Sensitivity
@@ -124,6 +125,25 @@
                 :value="key"
               >
                 {{ slot.name }} {{ slot.hasBCFilter ? '*' : '' }}
+              </option>
+            </select>
+          </td>
+          <td>
+            <select 
+              id="runMacro"
+              class="form-control form-control-sm"
+              @change="({ type, target }) => { setInputRunMacro(inpcode, target.value) }"
+            >
+              <option :value="null">
+                None
+              </option>
+              <option
+                v-for="(name, key) in mso.svronly.macroNames"
+                :key="key"
+                :selected="inp.macro === key"
+                :value="key"
+              >
+                {{ name }}
               </option>
             </select>
           </td>
