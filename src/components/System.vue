@@ -192,7 +192,7 @@
           setWebsocketIp('');
           findServers(80, '192.168.1.', 2, 255, 20, 4000);
         } else {
-          setWebsocketIp('jsoosiah.com');
+          setWebsocketIp('htp1.jsoosiah.com');
         }
       }
 

@@ -49,7 +49,7 @@
               <small>
                 Don't have an HTP-1? Try the UI in <a
                   href="#"
-                  @click.prevent="validateAndSetWebsocketurl('jsoosiah.com')"
+                  @click.prevent="validateAndSetWebsocketurl('htp1.jsoosiah.com')"
                 >Demo Mode</a>.
               </small>
             </p>
@@ -69,7 +69,7 @@
               <small>
                 Don't have an HTP-1? Try the UI in <a
                   href="#"
-                  @click.prevent="validateAndSetWebsocketurl('jsoosiah.com')"
+                  @click.prevent="validateAndSetWebsocketurl('htp1.jsoosiah.com')"
                 >Demo Mode</a>.
               </small>
             </p>

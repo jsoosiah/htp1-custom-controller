@@ -22,7 +22,7 @@ const userCss = ref(localStorage.getItem('userCss') ? localStorage.getItem('user
 
 const darkMode = ref(localStorage.getItem('darkMode') ? localStorage.getItem('darkMode') === 'true' : false);
 
-const isDemoMode = computed(() => websocketIp.value === 'jsoosiah.com');
+const isDemoMode = computed(() => websocketIp.value === 'htp1.jsoosiah.com');
 
 export default function useLocalStorage() {
 
