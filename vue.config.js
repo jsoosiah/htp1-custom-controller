@@ -2,6 +2,7 @@ module.exports = {
   lintOnSave: 'warning',
   productionSourceMap: false,
   publicPath: process.env.VUE_APP_PUBLIC_PATH || '/',
+  assetsDir: 'custom',
   configureWebpack: config => {
     config.externals = {
       moment: 'moment'
