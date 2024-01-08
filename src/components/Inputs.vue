@@ -368,7 +368,7 @@
       </div>
     </div>
     <button 
-      class="btn btn-sm btn-primary"
+      class="btn btn-sm btn-primary mb-3"
       @click="enableBluetoothDiscovery()"
     >
       Enable Bluetooth Discovery

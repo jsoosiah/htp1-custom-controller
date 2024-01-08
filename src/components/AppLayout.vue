@@ -59,6 +59,9 @@
   >
     <ip-select :focus="state !== 'OPEN'" />
   </div>
+  <div v-if="btRequestDetails?.type === 'requestconfirmation'">
+    <bluetooth-pairing-request />
+  </div>
   <template v-if="mso?.stat?.updateprogmsg.updating !== undefined && mso?.stat?.updateprogmsg.updating">
     <div class="container">
       <div class="row pt-5">
@@ -358,8 +361,10 @@ import useMso from '@/use/useMso.js';
 import useWebSocket from '@/use/useWebSocket.js';
 import useResponsive from '@/use/useResponsive.js';
 import useLocalStorage from "@/use/useLocalStorage.js";
+import useBluetoothManager from '@/use/useBluetoothManager.js';
 
 import IpSelect from './IpSelect.vue';
+import BluetoothPairingRequest from './BluetoothPairingRequest.vue';
 import PowerDialog from './PowerDialog.vue';
 
 import HomeIcon from './icons/HomeIcon.vue';
@@ -387,6 +392,7 @@ export default {
   components: {
     HomeIcon,
     IpSelect,
+    BluetoothPairingRequest,
     PowerDialog,
     CalibrationIcon,
     PeqIcon,
@@ -562,8 +568,8 @@ export default {
 
     return { settingsRoutes, filteredSettingsRoutes, showMobileMenu, 
       showPowerDialog, toggleShowPowerDialog, personalizePowerDialog,
-      toggleShowMobileMenu, isMobileMode, ...useMso(), websocketIp, userCss,
-      debouncedState, isDemoMode, exitDemoMode,
+      toggleShowMobileMenu, isMobileMode, ...useMso(), ...useBluetoothManager(), 
+      websocketIp, userCss, debouncedState, isDemoMode, exitDemoMode,
     };
   }
 }
