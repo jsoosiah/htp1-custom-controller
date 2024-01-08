@@ -40,6 +40,14 @@
           :mso-import-patch="msoImportPatch"
           @confirm-import="importMso"
         />
+
+        <div
+          v-if="errorMessage"
+          class="alert alert-danger small"
+          role="alert"
+        >
+          Error importing configuration file: {{ errorMessage }}
+        </div>
       </div>
     </div>
     <div class="row">
@@ -133,6 +141,7 @@
       } = useMso();
 
       const file = ref(null);
+      const errorMessage = ref('');
 
       function downloadMsoAsJson(){
         exportJsonToFile(mso.value, 'config');
@@ -148,12 +157,18 @@
       });
 
       async function importMso() {
-        await axios.postForm(`http://${websocketIp.value}/import`, {
-          'myfile': file.value,
-          'upload': 'Import selected file'
-        });
+        try {
+          errorMessage.value = '';
+          await axios.postForm(`http://${websocketIp.value}/import`, {
+            'myfile': file.value,
+            'upload': 'Import selected file'
+          });
 
-        location.reload();
+          location.reload();
+        }
+        catch(error) {
+          errorMessage.value = error.toString();
+        }
       }
 
       return { 
