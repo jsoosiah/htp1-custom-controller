@@ -367,6 +367,11 @@ function patchMso(op, path, value) {
   // block changes if dirac calibration is in progress
   if (!calToolConnected.value) {
 
+    // block cal changes if dirac filter transfer is in progress
+    if (path.includes('/cal/') && diracFilterTransferInProgress.value) {
+      return false;
+    }
+
     // check if patch already matches local mso state
     const oldValue = get(mso.value, singlePatch.path.substring(1).split('/'));
     if (oldValue === singlePatch.value) {
@@ -575,7 +580,7 @@ const currentDiracSlot = computed(() => {
 });
 
 const diracBCEnabled = computed(() => {
-  return mso.value.cal?.slots[mso.value.cal?.currentdiracslot].hasBCFilter;
+  return ['dirac live bass management', 'dirac live bass control', 'dirac active room treatment'].includes(mso.value.cal?.slots[mso.value.cal?.currentdiracslot].filterType?.toLowerCase());
 });
 
 const showCrossoverControls = computed(() => {
@@ -584,6 +589,18 @@ const showCrossoverControls = computed(() => {
 
 const calToolConnected = computed(() => {
   return mso.value.cal?.caltoolconnected;
+});
+
+const diracFilterTransferInProgress = computed(() => {
+  return mso.value.cal?.filterxferinprogress;
+});
+
+const currentLayoutHasMatchingDiracFilter = computed(() => {
+  return mso.value.cal?.availableFilterLayouts?.includes(mso.value.cal?.currentLayout);
+});
+
+const diracNoFilter = computed(() => {
+  return mso?.value?.cal?.slots[mso.value?.cal?.currentdiracslot].checksum === 31802 || !currentLayoutHasMatchingDiracFilter.value;
 });
 
 const activeChannels = computed(() => {
@@ -633,6 +650,25 @@ function setDefaultsBeforePowerDown() {
   }
 
   return [];
+}
+
+function filterTypeToCssClass(filterType, slotName) {
+
+  if (!slotName) {
+    return "";
+  }
+
+  switch (filterType?.toLowerCase()) {
+    case "dirac active room treatment":
+      return "art";
+    case "dirac live bass control":
+      return "bc";
+    case "dirac live bass management":
+      return "bm";
+    case "dirac live":
+    default:
+      return "rc";
+  }
 }
 
 // mso mutators --------------------------------------------
@@ -1642,7 +1678,7 @@ export default function useMso() {
     setAuroMaticPreset, setAuroMaticStrength, setDefaultAuroMaticStrength,
     toggleReinforceBass, setReinforceBassOn, setReinforceBassOff,
     setNextNightMode, setNightMode, toggleDirac, toggleLoudness, setNextDtsDialogEnh, setDtsDialogEnh,
-    setDiracOff, setDiracBypass, setDiracOn,setDiracSlotNotes,
+    setDiracOff, setDiracBypass, setDiracOn,setDiracSlotNotes, filterTypeToCssClass,
     setNightOff, setNightAuto, setNightOn,
     setLoudnessOff, setLoudnessOn,
     setToneControlOff, setToneControlOn,
@@ -1679,8 +1715,9 @@ export default function useMso() {
     setMacroName, commandKeys, executeMacro,
     setTopLeftLabel, setTopRightLabel, toggleShowPowerDialogButton,
     setWifiCountryCode,
-    showCrossoverControls, currentDiracSlot, calToolConnected, activeChannels,
-    diracMismatchedChannels, diracMismatchedChannelGroups,
+    showCrossoverControls, currentDiracSlot, calToolConnected, diracFilterTransferInProgress, 
+    currentLayoutHasMatchingDiracFilter, diracNoFilter,
+    activeChannels, diracMismatchedChannels, diracMismatchedChannelGroups,
     currentlyRecordingSlot, setRecordingStarted, setRecordingStopped,
     dismissAlert, resetDismissedAlerts,
     updateVu, clearVuPeakLevels, setVuPeakMode,

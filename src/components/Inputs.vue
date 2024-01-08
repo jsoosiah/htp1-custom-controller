@@ -124,7 +124,7 @@
                 :selected="inp.diracslot === key"
                 :value="key"
               >
-                {{ slot.name }} {{ slot.hasBCFilter ? '*' : '' }}
+                {{ slot.name }} {{ filterTypeToCssClass(slot.filterType, slot.name).toUpperCase() }}
               </option>
             </select>
           </td>

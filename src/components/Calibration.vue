@@ -34,7 +34,7 @@
             :selected="mso.cal?.currentdiracslot === key"
             :value="key"
           >
-            {{ slot.name }} {{ slot.hasBCFilter ? '*' : '' }}
+            {{ slot.name }} {{ filterTypeToCssClass(slot.filterType, slot.name).toUpperCase() }}
           </option>
         </select>
       </div>
@@ -159,7 +159,10 @@
     <template v-else>
       <h5>Dirac Room Correction Filters <small class="text-muted">up to 6 sets or slots available</small></h5>
       <dismissable-alert alert-key="calibration-dlbc">
-        <span class="italic" /> denotes Dirac Live Room Correction filters with Bass Control.
+        <div><span class="rc" /> denotes standard Dirac Live Room Correction filters.</div>
+        <div><span class="bm" /> denotes Dirac Live Room Correction filters with Bass Management.</div>
+        <div><span class="bc" /> denotes Dirac Live Room Correction filters with Bass Control.</div>
+        <div><span class="art" /> denotes Dirac Live Room Correction filters with Active Room Treatment.</div>
       </dismissable-alert>
       <dismissable-alert
         v-if="mso.cal?.speakerConfigMismatch"
@@ -168,6 +171,20 @@
       >
         The selected Dirac calibration does not match the current speaker configuration. Uncalibrated channels are highlighted.
       </dismissable-alert>
+
+      <div
+        v-if="!currentLayoutHasMatchingDiracFilter"
+        class="alert alert-danger small"
+        role="alert"
+      >
+        <div>Dirac Live is disabled; there are no Dirac filters available for the current speaker layout. </div>
+        <div v-if="mso.cal?.currentLayout">
+          Current Layout: {{ mso.cal?.currentLayout }}
+        </div>
+        <div v-if="mso.cal?.availableFilterLayouts">
+          Layouts with Available Dirac Filters: {{ mso.cal?.availableFilterLayouts?.join(", ") }}
+        </div>
+      </div>
       <div class="row justify-content-between mb-3">
         <div class="col-auto">
           <dirac-button-group :home-button="false" />
@@ -198,11 +215,11 @@
           v-for="(slot, key) in mso.cal?.slots" 
           :key="key" 
           class="nav-link" 
-          :class="{'active': mso.cal?.currentdiracslot === key, 'italic': slot.hasBCFilter}" 
+          :class="[mso.cal?.currentdiracslot === key ? 'active' : '', filterTypeToCssClass(slot.filterType, slot.name), /*slot.valid ? '' : 'disabled'*/]" 
           href="javascript:void(0)"
           @click="setDiracTab(key)"
         >
-          {{ slot.name }}
+          {{ slot.name === "" ? "Uncalibrated" : slot.name }}
         </a>
       </nav>
       <table class="table table-sm table-responsive-md table-striped">
@@ -488,7 +505,8 @@
         setMinVolume, setMaxVolume, setMaxOutputLevel, setLipsyncDelay,
         currentDiracSlot, activeChannels, toggleMuteChannel,
         setMuteAllChannelsOff, setMuteAllChannelsOn, toggleAllMuteChannels,
-        diracMismatchedChannels, setDiracSlotNotes
+        diracMismatchedChannels, setDiracSlotNotes, currentLayoutHasMatchingDiracFilter,
+        filterTypeToCssClass
       } = useMso();
       const { spkName } = useSpeakerGroups();
       const { showChannelMuteControls, toggleShowChannelMuteControls, darkMode } = useLocalStorage();
@@ -508,12 +526,14 @@
       }
 
       async function setDiracTab(tab) {
-        currentDiracTab.value = null;
+        // if (mso.value?.cal?.slots[tab].valid === true) {
+          currentDiracTab.value = null;
         
-        setTimeout(() => {
-          setDiracSlot(tab);
-          currentDiracTab.value = tab;
-        }, 100);
+          setTimeout(() => {
+            setDiracSlot(tab);
+            currentDiracTab.value = tab;
+          }, 100);
+        // }
       }
 
       function setUserDelaySelectedChannels() {
@@ -535,7 +555,8 @@
         showChannelMuteControls, toggleShowChannelMuteControls, toggleMuteChannel,
         setMuteAllChannelsOff, setMuteAllChannelsOn, toggleAllMuteChannels, isMobileMode,
         diracMismatchedChannels, darkMode, targetChannels, bulkUserDelay, bulkUserTrim,
-        setUserDelaySelectedChannels, setUserTrimSelectedChannels
+        setUserDelaySelectedChannels, setUserTrimSelectedChannels, currentLayoutHasMatchingDiracFilter,
+        filterTypeToCssClass
       };
     }
   }
@@ -543,12 +564,29 @@
 
 <style scoped>
 
-  .italic {
-    /* font-style: italic; */
+  .rc:after {
+    content:" RC";
+    font-weight: bold;
+    vertical-align: super;
+    font-size:75%;
   }
 
-  .italic:after {
-    content:" BASS";
+  .bm:after {
+    content:" BM";
+    font-weight: bold;
+    vertical-align: super;
+    font-size:75%;
+  }
+
+  .bc:after {
+    content:" BC";
+    font-weight: bold;
+    vertical-align: super;
+    font-size:75%;
+  }
+
+  .art:after {
+    content:" ART";
     font-weight: bold;
     vertical-align: super;
     font-size:75%;

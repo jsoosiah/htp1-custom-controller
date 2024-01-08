@@ -28,7 +28,7 @@
           <h6>
             Current bass manager: <img
               class="bm-icon"
-              :src="require(`@/assets/${showCrossoverControls?'monolith-logo-small.svg':'dirac3.png'}`)+'#svgView(preserveAspectRatio(xMidYMid))'"
+              :src="bmIconUrl"
             > <span class="bm-status">{{ showCrossoverControls ? 'HTP-1' : 'Dirac' }}</span>
           </h6>
         </div>
@@ -37,6 +37,8 @@
     <div class="row">
       <div class="col-lg-7">
         <speaker-group-crossover-controls :speaker-groups="speakerGroups" />
+        
+        
       </div>
       <div class="col-lg-5">
         <SpeakerDiagram :class="diagramSpeakerVisibility" />
@@ -186,10 +188,14 @@
         return hideSpeakers;
       });
 
+      const bmIconUrl = computed(() => {
+          return new URL(`../assets/${showCrossoverControls.value?'monolith-logo-small.svg':'dirac3.png'}`, import.meta.url).href +'#svgView(preserveAspectRatio(xMidYMid))'
+      });
+
       return { 
         mso, showCrossoverControls, mainSpeakers, surroundSpeakers, upperSpeakers, 
         setBassLpf, toggleReinforceBass,
-        diagramSpeakerVisibility, speakerGroups, activeChannels, isLg
+        diagramSpeakerVisibility, speakerGroups, activeChannels, isLg, bmIconUrl
       };
     }
   }

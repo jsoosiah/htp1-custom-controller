@@ -54,6 +54,7 @@
               <div class="row align-items-center">
                 <div class="col-auto icon-col text-center">
                   <component
+                    v-if="mso.status?.raw?.streamType !== 0"
                     :is="streamTypeIcon(mso.status)"
                     height="52"
                     width="80"

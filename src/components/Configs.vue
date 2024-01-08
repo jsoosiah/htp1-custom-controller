@@ -24,6 +24,7 @@
               type="file" 
               class="form-control-file" 
               @change="importMsoFileSelected"
+              accept="application/json"
             >
           </div>
         </form>
@@ -100,7 +101,8 @@
 
 <script>
 
-  import { computed } from 'vue';
+  import axios from 'axios';
+  import { computed, ref } from 'vue';
   import { compare } from 'fast-json-patch/index.mjs';
 
   import useLocalStorage from '@/use/useLocalStorage.js';
@@ -130,21 +132,28 @@
         setFastStartOn, setFastStartOff, setFastStartPassThroughOn, setFastStartPassThroughOff
       } = useMso();
 
+      const file = ref(null);
+
       function downloadMsoAsJson(){
         exportJsonToFile(mso.value, 'config');
       }
 
       function importMsoFileSelected(e) {
-        const file = e.target.files[0];
-        importJsonFileToSelected(file);
+        file.value = e.target.files[0];
+        importJsonFileToSelected(file.value);
       }
 
       const msoImportPatch = computed(() => {
         return filterCommands(compare(mso.value, importJson.value));
       });
 
-      function importMso() {
-        importMsoPatchList(msoImportPatch.value);
+      async function importMso() {
+        await axios.postForm(`http://${websocketIp.value}/import`, {
+          'myfile': file.value,
+          'upload': 'Import selected file'
+        });
+
+        location.reload();
       }
 
       return { 

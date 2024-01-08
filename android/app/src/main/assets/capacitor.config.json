@@ -1,6 +1,8 @@
 {
 	"appId": "com.jsoosiah.htp1customremote",
-	"appName": "HTP-1 Custom Remote",
+	"appName": "htp1-custom-controller",
 	"webDir": "dist",
-	"bundledWebRuntime": false
+	"server": {
+		"androidScheme": "https"
+	}
 }

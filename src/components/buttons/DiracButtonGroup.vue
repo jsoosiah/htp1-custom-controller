@@ -1,7 +1,7 @@
 <template>
   <multi-state-button-group
-    v-if="mso?.cal?.slots[mso?.cal?.currentdiracslot].checksum !== 31802"
-    :states="[{value: 0, label: 'Dirac Off'}, {value: 2, label: 'Dirac Bypass'}, {value: 1, label: 'Dirac On' + (mso?.cal?.slots[mso?.cal?.currentdiracslot].hasBCFilter ? ' BC' : '   ')}]"
+    v-if="!diracNoFilter"
+    :states="[{value: 0, label: 'Dirac Off'}, {value: 2, label: 'Dirac Bypass'}, {value: 1, label: `Dirac ${(filterTypeToCssClass(mso?.cal?.slots[mso?.cal?.currentdiracslot].filterType, mso?.cal?.slots[mso?.cal?.currentdiracslot].name).toUpperCase())} On`}]"
     :state-value="mso.cal?.diracactive === 'on' ? 1 : mso.cal?.diracactive === 'off' ? 0 : 2"
     :home-button="props.homeButton"
     @set-on="setDiracOn"
@@ -10,7 +10,7 @@
   />
 
   <multi-state-button-group
-    v-if="mso?.cal?.slots[mso?.cal?.currentdiracslot].checksum === 31802"
+    v-if="diracNoFilter"
     :states="[{value: 0, label: 'Dirac No Filter'}]"
     :state-value="0"
     :home-button="props.homeButton"
@@ -34,9 +34,9 @@
     },
     setup(props) {
 
-      const { mso, setDiracOff, setDiracBypass, setDiracOn } = useMso();
+      const { mso, setDiracOff, setDiracBypass, setDiracOn, diracNoFilter, filterTypeToCssClass } = useMso();
 
-      return { mso, setDiracOff, setDiracBypass, setDiracOn, props };
+      return { mso, setDiracOff, setDiracBypass, setDiracOn, diracNoFilter, filterTypeToCssClass, props };
     }
   }
 </script>

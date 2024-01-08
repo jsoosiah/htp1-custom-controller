@@ -32,6 +32,39 @@
       </div>
     </div>
     <div class="row">
+      <h6>
+        Power On
+      </h6>
+    </div>
+    <div class="row">
+      <div class="col-xs-auto">
+        <div class="form-group">
+          <label
+            for="power-on-volume"
+            class="col-form-label col-form-label-sm "
+          >Power On Volume</label>
+          <div class="input-group input-group-sm numeric-input">
+            <input
+              type="number"
+              class="form-control"
+              aria-label="Power On Volume"
+              aria-describedby="basic-addon2"
+              :value="mso.powerOnVol"
+              min="-100"
+              max="0"
+              @change="({ type, target }) => setPowerOnVol(target.value)"
+            >
+            <div class="input-group-append">
+              <span
+                id="basic-addon2"
+                class="input-group-text"
+              >dB</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
       <h6>Volume Limits</h6>
     </div>
     <div class="row">
