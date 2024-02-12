@@ -21,7 +21,7 @@
                 role="alert"
                 style="margin-bottom:0;position:absolute;right:60px"
               >
-                You have unsaved changes. Click Save to apply them. {{ unsavedChanges }}
+                You have unsaved changes. Click Save to apply them.
               </div>
           </div>
         </div>
