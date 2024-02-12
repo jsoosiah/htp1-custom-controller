@@ -41,8 +41,9 @@
             Edit Speaker Layout
         </button>
         <div v-if="showSpeakerLayoutDialog" class="connecting-overlay">
-          <speaker-group-crossover-controls :speaker-groups="speakerGroups" @cancel="toggleShowSpeakerLayoutDialog" />
+          <speaker-group-crossover-controls-dialog :speaker-groups="speakerGroups" @cancel="toggleShowSpeakerLayoutDialog" />
         </div>
+        <speaker-group-crossover-controls :speaker-groups="speakerGroups" />
       </div>
       <div class="col-lg-5">
         <SpeakerDiagram :class="diagramSpeakerVisibility" />
@@ -118,6 +119,7 @@
   import useMso from '@/use/useMso.js';
   import useResponsive from '@/use/useResponsive.js';
 
+  import SpeakerGroupCrossoverControlsDialog from './SpeakerGroupCrossoverControlsDialog.vue';
   import SpeakerGroupCrossoverControls from './SpeakerGroupCrossoverControls.vue';
   import SpeakerDiagram from './SpeakerDiagram.vue';
   import SpeakerMap from './SpeakerMap.vue';
@@ -131,6 +133,7 @@
       SpeakerDiagram,
       DiracButtonGroup,
       SpeakerGroupCrossoverControls,
+      SpeakerGroupCrossoverControlsDialog,
       SpeakerMap,
       DismissableAlert,
       TwoStateButton,
