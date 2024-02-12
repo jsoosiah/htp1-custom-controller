@@ -1661,6 +1661,10 @@ function clearVuPeakLevels() {
   setVuPeakMode();
 }
 
+function commitSpeakerLayout () {
+  send('avcui "commit lm"');
+}
+
 /**
 * Composition function which exposes the MSO state, as well 
 * as an API to interact with MSO, abstracting away all 
@@ -1683,6 +1687,7 @@ export default function useMso() {
     setLoudnessOff, setLoudnessOn,
     setToneControlOff, setToneControlOn,
     toggleSpeakerGroup, setSpeakerSize, setCenterFreq, setBassLpf,
+    commitSpeakerLayout,
     setMinVolume, setMaxVolume, setDefaultMinVolume, setDefaultMaxVolume,
     setMaxOutputLevel, setDefaultMaxOutputLevel, 
     setHeadroom, setDefaultHeadroom, setZeroPoint, setDefaultZeroPoint,

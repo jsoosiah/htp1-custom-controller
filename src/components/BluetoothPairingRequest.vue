@@ -27,7 +27,7 @@
             </div>
             <div class="col-auto">
               <button 
-                class="btn btn-sm btn-primary"
+                class="btn btn-sm btn-success"
                 @click="acceptPair()"
               >
                 Pair

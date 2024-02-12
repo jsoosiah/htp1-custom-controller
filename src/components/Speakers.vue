@@ -36,9 +36,13 @@
     </div>
     <div class="row">
       <div class="col-lg-7">
-        <speaker-group-crossover-controls :speaker-groups="speakerGroups" />
-        
-        
+        <button class="btn btn-sm btn-primary mb-3"
+          @click="toggleShowSpeakerLayoutDialog">
+            Edit Speaker Layout
+        </button>
+        <div v-if="showSpeakerLayoutDialog" class="connecting-overlay">
+          <speaker-group-crossover-controls :speaker-groups="speakerGroups" @cancel="toggleShowSpeakerLayoutDialog" />
+        </div>
       </div>
       <div class="col-lg-5">
         <SpeakerDiagram :class="diagramSpeakerVisibility" />
@@ -109,7 +113,7 @@
 
 <script>
 
-  import { computed } from 'vue';
+  import { computed, ref } from 'vue';
 
   import useMso from '@/use/useMso.js';
   import useResponsive from '@/use/useResponsive.js';
@@ -135,6 +139,7 @@
 
       const { mso, showCrossoverControls, activeChannels, setBassLpf, toggleReinforceBass } = useMso();
       const { isLg } = useResponsive();
+      const showSpeakerLayoutDialog = ref(false);
 
       const mainSpeakers = [
         {'label': 'Left / Right', code: 'lr'},
@@ -192,10 +197,16 @@
           return new URL(`../assets/${showCrossoverControls.value?'monolith-logo-small.svg':'dirac3.png'}`, import.meta.url).href +'#svgView(preserveAspectRatio(xMidYMid))'
       });
 
+      function toggleShowSpeakerLayoutDialog() {
+        console.log('toggleShowSpeakerLayoutDialog');
+        showSpeakerLayoutDialog.value = !showSpeakerLayoutDialog.value;
+      }
+
       return { 
         mso, showCrossoverControls, mainSpeakers, surroundSpeakers, upperSpeakers, 
         setBassLpf, toggleReinforceBass,
-        diagramSpeakerVisibility, speakerGroups, activeChannels, isLg, bmIconUrl
+        diagramSpeakerVisibility, speakerGroups, activeChannels, isLg, bmIconUrl,
+        showSpeakerLayoutDialog, toggleShowSpeakerLayoutDialog
       };
     }
   }
@@ -273,5 +284,24 @@
 
   .alert-secondary h6 {
     margin-bottom: 0;
+  }
+
+
+  .modal {
+    display: block;
+  }
+
+  .modal-header {
+    border-bottom:1px solid #212529;
+  }
+
+  .connecting-overlay {
+    width:200%;
+    height:200%;
+    background: rgba(0,0,0,0.5);
+    z-index: 9999;
+    position:fixed;
+    top:0;
+    left:0;
   }
 </style>

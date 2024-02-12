@@ -1,119 +1,175 @@
 <template>
-  <table class="table table-sm table-striped table-responsive-sm">
-    <tbody
-      v-for="speakerGroup in props.speakerGroups"
-      :key="speakerGroup.header"
-    >
-      <tr />
-      <tr>
-        <th colspan="3">
-          {{ speakerGroup.header }} <small
-            v-if="speakerGroup.subtitle"
-            class="text-muted"
-          >{{ speakerGroup.subtitle }}</small>
-        </th>
-      </tr>
-      <tr
-        v-for="spk in speakerGroup.speakers"
-        :key="spk.code"
-        :class="{'table-warning': mso.cal?.speakerConfigMismatch && diracMismatchedChannelGroups.includes(spk.code)}"
-      >
-        <td>
-          <div class="custom-control custom-switch">
-            <input 
-              :id="'check-'+spk.code" 
-              type="checkbox" 
-              class="custom-control-input" 
-              :checked="mso.speakers?.groups[spk.code]?.present" 
-              :disabled="!allSpeakerToggles[spk.code].enabled"
-              @change="toggleSpeakerGroup(spk.code)"
-            >
-            <label 
-              :id="'tooltip-container-' + spk.code" 
-              v-tooltip="allSpeakerToggles[spk.code]"
-              :class="{'custom-control-label':spk.code !== 'lr', 'hidden-switch-label': spk.code === 'lr'}"
-              :for="'check-'+spk.code"
-            >
-              {{ spk.label }} 
-              <font-awesome-icon 
-                v-if="!allSpeakerToggles[spk.code].enabled && allSpeakerToggles[spk.code].message"
-                :icon="['fas', 'question-circle']"
-              /></label>
+  <div 
+    id="power-dialog" 
+    class="modal fade show" 
+    tabindex="-1" 
+    aria-labelledby="settingsModalLabel"
+  >
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">
+            Edit Speaker Layout
+          </h4>
+          <div>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="handleCancel">
+              <span aria-hidden="true">&times;</span>
+            </button>
+              <div
+                v-show="hasUnsavedChanges"
+                class="alert alert-warning small"
+                role="alert"
+                style="margin-bottom:0;position:absolute;right:60px"
+              >
+                You have unsaved changes. Click Save to apply them. {{ unsavedChanges }}
+              </div>
           </div>
-        </td>
-        <td class="text-right">
-          <template v-if="showCenterFreqControlsForSpeaker(spk.code)">
-            <label
-              class="sr-only"
-              :for="'xo-'+spk.code"
-            >Crossover Frequency Center (Hz)</label>
-            <div class="input-group input-group-sm numeric-input float-right">
-              <div class="input-group-prepend">
-                <div class="input-group-text">
-                  fc
-                </div>
-              </div>
-              <input
-                :id="'xo-'+spk.code"
-                type="number"
-                step="10"
-                min="40"
-                max="200"
-                class="form-control"
-                :value="mso.speakers?.groups[spk.code]?.fc"
-                @change="({ type, target }) => setCenterFreq(spk.code, target.value)"
-              >
-              <div class="input-group-append">
-                <div class="input-group-text">
-                  Hz
-                </div>
-              </div>
-            </div>
-          </template>
-        </td>
-        <td class="text-right">
-          <template v-if="showCrossoverControlsForSpeaker(spk.code)">
-            <div
-              class="btn-group btn-group-sm"
-              role="group"
-              aria-label="Speaker Size"
+        </div>
+        <div class="modal-body text-left">
+          <table class="table table-sm table-striped table-responsive-sm">
+            <tbody
+              v-for="speakerGroup in props.speakerGroups"
+              :key="speakerGroup.header"
             >
-              <button
-                v-if="showDolby(spk.code)"
-                type="button"
-                class="btn"
-                :class="{'btn-primary': mso.speakers?.groups[spk.code].size === 'd', 'btn-secondary': mso.speakers?.groups[spk.code].size !== 'd'}"
-                @click="setSpeakerSize(spk.code, 'd')"
+              <tr />
+              <tr>
+                <th colspan="3">
+                  {{ speakerGroup.header }} <small
+                    v-if="speakerGroup.subtitle"
+                    class="text-muted"
+                  >{{ speakerGroup.subtitle }}</small>
+                </th>
+              </tr>
+              <tr
+                v-for="spk in speakerGroup.speakers"
+                :key="spk.code"
+                :class="{'table-warning': msoCopy?.cal?.speakerConfigMismatch && diracMismatchedChannelGroups.includes(spk.code)}"
               >
-                Dolby
-              </button>
-              <button
-                type="button"
-                class="btn"
-                :class="{'btn-primary': mso.speakers?.groups[spk.code].size === 's', 'btn-secondary': mso.speakers?.groups[spk.code].size !== 's'}"
-                @click="setSpeakerSize(spk.code, 's')"
-              >
-                Small
-              </button>
-              <button
-                type="button"
-                class="btn"
-                :class="{'btn-primary': mso.speakers?.groups[spk.code].size === 'l', 'btn-secondary': mso.speakers?.groups[spk.code].size !== 'l'}"
-                @click="setSpeakerSize(spk.code, 'l')"
-              >
-                Large
-              </button>
+                <td>
+                  <div class="form-check">
+                    <input 
+                      :id="'check-'+spk.code" 
+                      type="checkbox" 
+                      class="form-check-input" 
+                      :checked="msoCopy?.speakers?.groups[spk.code]?.present" 
+                      :disabled="!allSpeakerToggles[spk.code].enabled"
+                      @change="toggleSpeakerGroupLocal(spk.code)"
+                    >
+                    <label 
+                      :id="'tooltip-container-' + spk.code" 
+                      v-tooltip="allSpeakerToggles[spk.code]"
+                      :class="{'form-check-label':spk.code !== 'lr', 'hidden-switch-label': spk.code === 'lr'}"
+                      :for="'check-'+spk.code"
+                    >
+                      {{ spk.label }} 
+                      <font-awesome-icon 
+                        v-if="!allSpeakerToggles[spk.code].enabled && allSpeakerToggles[spk.code].message"
+                        :icon="['fas', 'question-circle']"
+                      /></label>
+                  </div>
+                </td>
+                <td class="text-right">
+                  <template v-if="showCenterFreqControlsForSpeaker(spk.code)">
+                    <label
+                      class="sr-only"
+                      :for="'xo-'+spk.code"
+                    >Crossover Frequency Center (Hz)</label>
+                    <div class="input-group input-group-sm numeric-input float-right">
+                      <div class="input-group-prepend">
+                        <div class="input-group-text">
+                          fc
+                        </div>
+                      </div>
+                      <input
+                        :id="'xo-'+spk.code"
+                        type="number"
+                        step="10"
+                        min="40"
+                        max="200"
+                        class="form-control"
+                        :value="msoCopy?.speakers?.groups[spk.code]?.fc"
+                        @change="({ type, target }) => setCenterFreqLocal(spk.code, target.value)"
+                      >
+                      <div class="input-group-append">
+                        <div class="input-group-text">
+                          Hz
+                        </div>
+                      </div>
+                    </div>
+                  </template>
+                </td>
+                <td class="text-right">
+                  <template v-if="showCrossoverControlsForSpeaker(spk.code)">
+                    <div
+                      class="btn-group btn-group-sm"
+                      role="group"
+                      aria-label="Speaker Size"
+                    >
+                      <button
+                        v-if="showDolby(spk.code)"
+                        type="button"
+                        class="btn"
+                        :class="{'btn-primary': msoCopy?.speakers?.groups[spk.code].size === 'd', 'btn-secondary': msoCopy?.speakers?.groups[spk.code].size !== 'd'}"
+                        @click="setSpeakerSizeLocal(spk.code, 'd')"
+                      >
+                        Dolby
+                      </button>
+                      <button
+                        type="button"
+                        class="btn"
+                        :class="{'btn-primary': msoCopy?.speakers?.groups[spk.code].size === 's', 'btn-secondary': msoCopy?.speakers?.groups[spk.code].size !== 's'}"
+                        @click="setSpeakerSizeLocal(spk.code, 's')"
+                      >
+                        Small
+                      </button>
+                      <button
+                        type="button"
+                        class="btn"
+                        :class="{'btn-primary': msoCopy?.speakers?.groups[spk.code].size === 'l', 'btn-secondary': msoCopy?.speakers?.groups[spk.code].size !== 'l'}"
+                        @click="setSpeakerSizeLocal(spk.code, 'l')"
+                      >
+                        Large
+                      </button>
+                    </div>
+                  </template>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="modal-footer">
+            <div class="row justify-content-end">
+              <div class="col-auto">
+                <button 
+                  class="btn btn-sm btn-secondary"
+                  @click="handleCancel"
+                >
+                  Cancel
+                </button>
+              </div>
+              <div class="col-auto">
+                <button 
+                  class="btn btn-sm btn-primary"
+                  :disabled="!hasUnsavedChanges"
+                  @click="save"
+                >
+                  Save
+                </button>
+              </div>
             </div>
-          </template>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </template>
 
 <script>
 
-  import { computed } from 'vue';
+  import { computed, onMounted, ref } from 'vue';
+  import { commit, get } from 'lodash-es';
+  import { applyPatch, deepClone, compare } from 'fast-json-patch/index.mjs';
   import { Tooltip } from '@/directives/Tooltip.js';
 
   import useMso from '@/use/useMso.js';
@@ -126,17 +182,23 @@
     'props': {
       speakerGroups: Array
     },
-    setup(props) {
+    setup(props, { emit }) {
 
-      const { mso, showCrossoverControls, toggleSpeakerGroup, 
-        setSpeakerSize, setCenterFreq, activeChannels, diracMismatchedChannelGroups } = useMso();
+      const { mso, showCrossoverControls, calToolConnected,
+        executeMacro, commitSpeakerLayout, activeChannels, diracMismatchedChannelGroups } = useMso();
+
+      const msoCopy = ref(null);
+
+      onMounted(() => {
+        msoCopy.value = deepClone(mso.value);
+      });
 
       // rule states the conditions for which the toggle should be enabled
       // all rules in the array will be combined with AND
       // if the toggle is disabled, message is displayed to the user as the reason 
       const speakerGroupValidations = computed(() => {
 
-        const groups = mso.value.speakers?.groups;
+        const groups = msoCopy.value?.speakers?.groups;
 
         return {
           'lr': [
@@ -203,7 +265,7 @@
           message: ''
         };
 
-        const groups = mso.value.speakers?.groups;
+        const groups = msoCopy.value?.speakers?.groups;
 
         if (groups && !groups[spkCode].present) {
           // if 16 channels are already set, disable toggles that are off to prevent adding more speakers
@@ -243,17 +305,83 @@
       }
 
       function showCenterFreqControlsForSpeaker(spkCode) {
-        return showCrossoverControlsForSpeaker(spkCode) && mso.value.speakers?.groups[spkCode].size !== 'l';
+        return showCrossoverControlsForSpeaker(spkCode) && msoCopy.value?.speakers?.groups[spkCode].size !== 'l';
       }
 
       function showDolby(spkCode) {
         return spkCode.includes('t'); // top
       }
 
+      function handleCancel() {
+        emit('cancel');
+      }
+
+      // TODO refactor into reusable component
+      function toggleSpeakerGroupLocal(spkCode) {
+        return patchMsoLocal( 'replace', `/speakers/groups/${spkCode}/present`, !msoCopy.value.speakers.groups[spkCode].present);
+      }
+
+      function setCenterFreqLocal(spkCode, centerFreq) {
+        return patchMsoLocal( 'replace', `/speakers/groups/${spkCode}/fc`, parseInt(centerFreq));
+      }
+
+      function setSpeakerSizeLocal(spkCode, sizeCode) {
+        return patchMsoLocal( 'replace', `/speakers/groups/${spkCode}/size`, sizeCode);
+      }
+
+      // TODO refactor into reusable component
+      function patchMsoLocal(op, path, value) {
+        const singlePatch = {
+          'op': op,
+          'path': path,
+          'value': value,
+        };
+
+        // block changes if dirac calibration is in progress
+        if (!calToolConnected.value) {
+
+          // block cal changes if dirac filter transfer is in progress
+          if (path.includes('/cal/') && diracFilterTransferInProgress.value) {
+            return false;
+          }
+
+          // check if patch already matches local mso state
+          const oldValue = get(msoCopy.value, singlePatch.path.substring(1).split('/'));
+          if (oldValue === singlePatch.value) {
+            return false;
+          }
+
+          // update local mso copy state
+          applyPatch(msoCopy.value, [singlePatch]);
+          return true;
+        }
+
+        return false;
+      }
+
+      function save() {
+        console.log('save', unsavedChanges.value);
+        executeMacro(unsavedChanges.value);
+        commitSpeakerLayout();
+        emit('cancel');
+      }
+
+      const unsavedChanges = computed(() => {
+        if (!msoCopy.value?.speakers?.groups) {
+          return false;
+        }
+        return compare(mso.value, msoCopy.value).filter(x => x.path.startsWith('/speakers/groups'))
+      });
+
+      const hasUnsavedChanges = computed(() => {
+        return unsavedChanges.value.length > 0;
+      });
+
       return { 
-        mso, showCrossoverControls, toggleSpeakerGroup, setSpeakerSize, setCenterFreq,
+        msoCopy, showCrossoverControls, setSpeakerSizeLocal, setCenterFreqLocal,
         showCrossoverControlsForSpeaker, showCenterFreqControlsForSpeaker, showDolby,
-        props, allSpeakerToggles, diracMismatchedChannelGroups
+        props, allSpeakerToggles, diracMismatchedChannelGroups, handleCancel, toggleSpeakerGroupLocal,
+        hasUnsavedChanges, unsavedChanges, save
       };
     }
   }
