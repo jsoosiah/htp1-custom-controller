@@ -62,6 +62,12 @@
                       :for="'check-'+spk.code"
                     >
                       {{ spk.label }} 
+
+                      <font-awesome-icon
+                        v-if="spk.code === seatShakerChannelLocal"
+                        :icon="['fas', 'couch']"
+                      />
+
                       <font-awesome-icon 
                         v-if="!allSpeakerToggles[spk.code].enabled && allSpeakerToggles[spk.code].message"
                         :icon="['fas', 'question-circle']"
@@ -109,7 +115,7 @@
                         v-if="showDolby(spk.code)"
                         type="button"
                         class="btn"
-                        :class="{'btn-primary': msoCopy?.speakers?.groups[spk.code].size === 'd', 'btn-secondary': msoCopy?.speakers?.groups[spk.code].size !== 'd'}"
+                        :class="{'btn-primary': msoCopy?.speakers?.groups[spk.code]?.size === 'd', 'btn-secondary': msoCopy?.speakers?.groups[spk.code]?.size !== 'd'}"
                         @click="setSpeakerSizeLocal(spk.code, 'd')"
                       >
                         Dolby
@@ -117,7 +123,7 @@
                       <button
                         type="button"
                         class="btn"
-                        :class="{'btn-primary': msoCopy?.speakers?.groups[spk.code].size === 's', 'btn-secondary': msoCopy?.speakers?.groups[spk.code].size !== 's'}"
+                        :class="{'btn-primary': msoCopy?.speakers?.groups[spk.code]?.size === 's', 'btn-secondary': msoCopy?.speakers?.groups[spk.code]?.size !== 's'}"
                         @click="setSpeakerSizeLocal(spk.code, 's')"
                       >
                         Small
@@ -125,7 +131,7 @@
                       <button
                         type="button"
                         class="btn"
-                        :class="{'btn-primary': msoCopy?.speakers?.groups[spk.code].size === 'l', 'btn-secondary': msoCopy?.speakers?.groups[spk.code].size !== 'l'}"
+                        :class="{'btn-primary': msoCopy?.speakers?.groups[spk.code]?.size === 'l', 'btn-secondary': msoCopy?.speakers?.groups[spk.code]?.size !== 'l'}"
                         @click="setSpeakerSizeLocal(spk.code, 'l')"
                       >
                         Large
@@ -136,6 +142,25 @@
               </tr>
             </tbody>
           </table>
+
+          <div class="form-check">
+            <input 
+              id="check-shaker" 
+              type="checkbox" 
+              class="form-check-input" 
+              :checked="msoCopy?.speakers?.groups?.seatshaker?.present" 
+              :disabled="!msoCopy?.speakers?.groups?.sub1?.present"
+              @change="toggleSeatShakerLocal()"
+            >
+            <label 
+              class="form-check-label"
+              for="check-shaker"
+            >
+              Enable Seat Shaker
+              </label>
+          </div>
+          <small class="form-text text-muted">Enables seat shakers. The last enabled subwoofer channel becomes the seat shaker channel. This channel will be excluded from Dirac calibrations and will not have any filter corrections while Dirac is enabled.</small>
+
         </div>
 
         <div class="modal-footer" :class="{'text-white': darkMode}">
@@ -265,16 +290,31 @@
         return result;
       });
 
+      const seatShakerChannelLocal = computed(() => {
+        console.log('seatShakerChannelLocal?', msoCopy.value, msoCopy.value?.speakers?.groups?.seatshaker?.present);
+        if (msoCopy.value?.speakers?.groups?.seatshaker?.present) {
+          console.log('YES');
+          for (let i = 5; i >= 1; i--) {
+            console.log(i);
+            if (msoCopy.value?.speakers?.groups[`sub${i}`]?.present) {
+              return `sub${i}`;
+            }
+          }
+        }
+
+        return null;
+      });
+
       function enableSpeakerToggle(spkCode) {
 
         const result = {
           enabled: true,
-          message: ''
+          message: '',
         };
 
         const groups = msoCopy.value?.speakers?.groups;
 
-        if (groups && !groups[spkCode].present) {
+        if (groups && groups[spkCode] && !groups[spkCode].present) {
           // if 16 channels are already set, disable toggles that are off to prevent adding more speakers
 
           let limit = 16;
@@ -303,6 +343,12 @@
           }
         }
 
+        if (spkCode === seatShakerChannelLocal.value) {
+          result.enabled = true;
+          result.message = 'Seat shaker channel. This channel will be excluded from Dirac calibrations and will not have any filter corrections while Dirac is enabled.';
+          return result;
+        }
+
         return result;
       }
 
@@ -312,7 +358,7 @@
       }
 
       function showCenterFreqControlsForSpeaker(spkCode) {
-        return showCrossoverControlsForSpeaker(spkCode) && msoCopy.value?.speakers?.groups[spkCode].size !== 'l';
+        return showCrossoverControlsForSpeaker(spkCode) && msoCopy.value?.speakers?.groups[spkCode]?.size !== 'l';
       }
 
       function showDolby(spkCode) {
@@ -325,7 +371,7 @@
 
       // TODO refactor into reusable component
       function toggleSpeakerGroupLocal(spkCode) {
-        return patchMsoLocal( 'replace', `/speakers/groups/${spkCode}/present`, !msoCopy.value.speakers.groups[spkCode].present);
+        return patchMsoLocal( 'replace', `/speakers/groups/${spkCode}/present`, !msoCopy.value.speakers.groups[spkCode]?.present);
       }
 
       function setCenterFreqLocal(spkCode, centerFreq) {
@@ -334,6 +380,10 @@
 
       function setSpeakerSizeLocal(spkCode, sizeCode) {
         return patchMsoLocal( 'replace', `/speakers/groups/${spkCode}/size`, sizeCode);
+      }
+
+      function toggleSeatShakerLocal() {
+        return patchMsoLocal('replace', '/speakers/groups/seatshaker/present', !msoCopy.value?.speakers?.groups?.seatshaker?.present);
       }
 
       // TODO refactor into reusable component
@@ -390,7 +440,7 @@
         msoCopy, showCrossoverControls, setSpeakerSizeLocal, setCenterFreqLocal,
         showCrossoverControlsForSpeaker, showCenterFreqControlsForSpeaker, showDolby,
         props, allSpeakerToggles, diracMismatchedChannelGroups, handleCancel, toggleSpeakerGroupLocal,
-        hasUnsavedChanges, unsavedChanges, save, darkMode
+        hasUnsavedChanges, unsavedChanges, save, darkMode, seatShakerChannelLocal, toggleSeatShakerLocal
       };
     }
   }

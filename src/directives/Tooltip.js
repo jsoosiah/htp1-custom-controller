@@ -10,7 +10,7 @@ function updateTippies(el, binding) {
       tippies[el.id].destroy();
     }
   
-    if (!binding.value.enabled && binding.value.message) {
+    if (binding.value.message) {
       tippies[el.id] = tippy(el, {
         content: binding.value.message,
         placement: 'right'

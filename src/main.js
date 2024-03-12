@@ -7,14 +7,14 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { faVolumeUp, faVolumeDown, faPowerOff, faCog, 
   faPlus, faTimes, faQuestionCircle, faExclamationCircle, 
   faGripLines, faHome, faExternalLinkAlt, faTv, faPlusCircle, 
-  faMinusCircle, faFilm, faMinus } from '@fortawesome/free-solid-svg-icons'
+  faMinusCircle, faFilm, faMinus, faCouch } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 library.add(faVolumeUp, faVolumeDown, faPowerOff, 
   faCog, faPlus, faTimes, faQuestionCircle, 
   faExclamationCircle, faGripLines, faHome, 
   faExternalLinkAlt, faTv, faMinusCircle, faPlusCircle,
-  faFilm, faMinus );
+  faFilm, faMinus, faCouch );
 
 createApp(App)
 .component('font-awesome-icon', FontAwesomeIcon)

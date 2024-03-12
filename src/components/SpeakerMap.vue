@@ -12,7 +12,9 @@
       class="speaker-label" 
       :class="{'speaker-label-enlarged': enlarged, 
                'speaker-label-standard': !enlarged, 
-               'hot': mso.speakers?.groups[reverseBmg[speakerLabels[spk?.trim()].toLowerCase()]].present !== false}"
+               'hot': mso.speakers?.groups[reverseBmg[speakerLabels[spk?.trim()].toLowerCase()]].present !== false,
+               'shaker': reverseBmg[speakerLabels[spk?.trim()].toLowerCase()] === seatShakerChannel ? '*' : ''}"
+               
       :style="{left: 3.25 + (100 * i/19) + '%'}"
     >{{ speakerLabels[spk?.trim()] }}</span>
   </div>
@@ -31,7 +33,7 @@
     name: 'SpeakerMap',
     setup() {
       
-      const { mso } = useMso();
+      const { mso, seatShakerChannel } = useMso();
       const { reverseBmg } = useSpeakerGroups();
 
       const enlarged = ref(false);
@@ -76,7 +78,7 @@
 
 //{{speakerLabels[spk?.trim()].toLowerCase()}} {{reverseBmg[speakerLabels[spk?.trim()].toLowerCase()]
 
-      return { mso, reverseBmg, enlarged, toggleEnlarged, speakerLabels, speakerMapUrl };
+      return { mso, reverseBmg, enlarged, toggleEnlarged, speakerLabels, speakerMapUrl, seatShakerChannel };
     }
   }
 </script>
@@ -109,5 +111,9 @@
   .speaker-label-standard {
     font-weight: normal;
     font-size:min(1vw,1rem);
+  }
+
+  .shaker {
+    color: yellow;
   }
 </style>

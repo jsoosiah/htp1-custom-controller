@@ -5,6 +5,7 @@ import { cloneDeep, debounce, get, isArray, isEqual, maxBy } from 'lodash-es';
 import useWebSocket from './useWebSocket.js';
 import useLocalStorage from './useLocalStorage.js';
 import useSpeakerGroups from './useSpeakerGroups.js';
+import { faL } from '@fortawesome/free-solid-svg-icons';
 
 // map upmix codes to labels,
 // used internally by visibleUpmixers
@@ -354,6 +355,10 @@ function applyProductRules() {
         initializeDiracSlotNotes(slot);
       }
     }
+
+    if (!mso.value.speakers.groups.seatshaker) {
+      initializeSeatShaker();
+    }
   }
 }
 
@@ -581,6 +586,19 @@ const currentDiracSlot = computed(() => {
 
 const diracBCEnabled = computed(() => {
   return ['dirac live bass management', 'dirac live bass control', 'dirac active room treatment'].includes(mso.value.cal?.slots[mso.value.cal?.currentdiracslot].filterType?.toLowerCase());
+});
+
+const seatShakerChannel = computed(() => {
+
+  if (mso.value?.speakers?.groups?.seatshaker?.present) {
+    for (let i = 5; i >= 1; i--) {
+      if (mso.value?.speakers?.groups[`sub${i}`]?.present) {
+        return `sub${i}`;
+      }
+    }
+  }
+
+  return null;
 });
 
 const showCrossoverControls = computed(() => {
@@ -949,6 +967,10 @@ function setUserTrim(channel, trim) {
 
 function initializeDiracSlotNotes(slotNumber) {
   return patchMso('add', `/cal/slots/${slotNumber}/notes`, '');
+}
+
+function initializeSeatShaker() {
+  return patchMso('add', `/speakers/groups/seatshaker`, {'present': false});
 }
 
 function setDiracSlotNotes(notes) {
@@ -1721,7 +1743,7 @@ export default function useMso() {
     setTopLeftLabel, setTopRightLabel, toggleShowPowerDialogButton,
     setWifiCountryCode,
     showCrossoverControls, currentDiracSlot, calToolConnected, diracFilterTransferInProgress, 
-    currentLayoutHasMatchingDiracFilter, diracNoFilter,
+    currentLayoutHasMatchingDiracFilter, diracNoFilter, seatShakerChannel,
     activeChannels, diracMismatchedChannels, diracMismatchedChannelGroups,
     currentlyRecordingSlot, setRecordingStarted, setRecordingStopped,
     dismissAlert, resetDismissedAlerts,
