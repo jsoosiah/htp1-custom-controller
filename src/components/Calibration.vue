@@ -113,6 +113,7 @@
                   style="float:right"
                 >
                   <input 
+                    v-if="enableUserTrim(channame)"
                     type="number" 
                     class="form-control form-control-sm text-right" 
                     :value="currentDiracSlot?.channels[channame].mute === true ? currentDiracSlot?.channels[channame].preMuteTrim : currentDiracSlot?.channels[channame].trim" 
@@ -122,6 +123,12 @@
                     step=".5" 
                     @change="({ type, target }) => setUserTrim(channame, target.value)"
                   >
+                  <input v-else 
+                    type="number"
+                    class="form-control form-control-sm text-right" 
+                    value="0"
+                    :disabled="true"
+                    />
                   <div class="input-group-append">
                     <span
                       id="basic-addon2"
@@ -137,7 +144,7 @@
               Total Trim
             </div>
             <div class="col text-right">
-              {{ formatDecimal((mso.cal?.diracactive=='off' ? 0 : currentDiracSlot?.channels[channame].caltrim) + (currentDiracSlot?.channels[channame].mute === true ? currentDiracSlot?.channels[channame].preMuteTrim : currentDiracSlot?.channels[channame].trim)) }} dB
+              {{ getTotalTrim(channame) }} dB
             </div>
           </div>
           <div
@@ -294,7 +301,7 @@
               {{ formatDecimal(currentDiracSlot?.channels[channame].caltrim) }}
             </td>
             <td class="text-right">
-              <input 
+              <input v-if="enableUserTrim(channame)"
                 type="number" 
                 class="form-control form-control-sm text-right" 
                 :value="currentDiracSlot?.channels[channame].mute === true ? currentDiracSlot?.channels[channame].preMuteTrim : currentDiracSlot?.channels[channame].trim" 
@@ -303,13 +310,24 @@
                 max="12" 
                 step=".5" 
                 @change="({ type, target }) => setUserTrim(channame, target.value)"
-              >
+              />
+              <div v-else v-tooltip="{'message': 'When DLBC or ART are active, trim is applied before Dirac and is not editable for subwoofers as doing so would invalidate the calibration.'}" :id="`tooltip-${channame}`">
+                <font-awesome-icon style="position:absolute;"
+                        :icon="['fas', 'question-circle']"
+                      />
+                <input 
+                  type="number"
+                  class="form-control form-control-sm text-right" 
+                  value="0"
+                  :disabled="true"
+                  />
+              </div>
             </td>
             <td
               class="text-right"
               :title="currentDiracSlot?.channels[channame].caltrim + currentDiracSlot?.channels[channame].trim"
             >
-              {{ formatDecimal((mso.cal?.diracactive=='off' ? 0 : currentDiracSlot?.channels[channame].caltrim) + (currentDiracSlot?.channels[channame].mute === true ? currentDiracSlot?.channels[channame].preMuteTrim : currentDiracSlot?.channels[channame].trim)) }}
+              {{ getTotalTrim(channame) }}
             </td>
             <td
               v-if="showChannelMuteControls"
@@ -491,8 +509,13 @@
   import TwoStateButton from './buttons/TwoStateButton.vue';
   import DismissableAlert from './buttons/DismissableAlert.vue';
 
+  import { Tooltip } from '@/directives/Tooltip.js';
+
   export default {
     name: 'Calibration',
+    directives: {
+      Tooltip
+    },
     components: {
       DiracButtonGroup,
       TwoStateButton,
@@ -506,7 +529,7 @@
         currentDiracSlot, activeChannels, toggleMuteChannel,
         setMuteAllChannelsOff, setMuteAllChannelsOn, toggleAllMuteChannels,
         diracMismatchedChannels, setDiracSlotNotes, currentLayoutHasMatchingDiracFilter,
-        filterTypeToCssClass
+        filterTypeToCssClass, showCrossoverControls,
       } = useMso();
       const { spkName } = useSpeakerGroups();
       const { showChannelMuteControls, toggleShowChannelMuteControls, darkMode } = useLocalStorage();
@@ -536,6 +559,25 @@
         }
       }
 
+      function getTotalTrim(channel) {
+        console.log('help!!!');
+        let calTrim = mso.value?.cal?.diracactive=='off' ? 0 : currentDiracSlot.value?.channels[channel].caltrim;
+        let userTrim = 0;
+
+        if (showCrossoverControls.value) {
+          userTrim = (currentDiracSlot.value?.channels[channel].mute === true ? currentDiracSlot.value?.channels[channel].preMuteTrim : currentDiracSlot.value?.channels[channel].trim);
+        }
+        
+
+        console.log('getTotalTrim', channel, calTrim, userTrim);
+
+        return formatDecimal(calTrim + userTrim);
+      }
+
+      function enableUserTrim(channel) {
+        return !channel.includes('sub') || showCrossoverControls.value;
+      }
+
       function setUserDelaySelectedChannels() {
         for (const channel of targetChannels.value) {
           setUserDelay(channel, bulkUserDelay.value);
@@ -556,7 +598,7 @@
         setMuteAllChannelsOff, setMuteAllChannelsOn, toggleAllMuteChannels, isMobileMode,
         diracMismatchedChannels, darkMode, targetChannels, bulkUserDelay, bulkUserTrim,
         setUserDelaySelectedChannels, setUserTrimSelectedChannels, currentLayoutHasMatchingDiracFilter,
-        filterTypeToCssClass
+        filterTypeToCssClass, showCrossoverControls, enableUserTrim, getTotalTrim
       };
     }
   }
