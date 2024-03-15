@@ -18,13 +18,30 @@
         :key="spk.code"
         :class="{'table-warning': mso?.cal?.speakerConfigMismatch && diracMismatchedChannelGroups.includes(spk.code)}"
       >
-        <td :class="{'text-muted': mso?.speakers?.groups[spk.code]?.present === false}">
-          
-            
-          
-              {{ spk.label }} 
-            
-          
+        <td class="cursor-pointer" :class="{'opacity-50': mso?.speakers?.groups[spk.code]?.present === false}" @click="show()">
+          <div class="form-check">
+                    <input 
+                      :id="'check-'+spk.code" 
+                      type="checkbox" 
+                      class="form-check-input" 
+                      :checked="mso?.speakers?.groups[spk.code]?.present || spk.code === 'lr'" 
+                      :disabled="true"
+                      @change="toggleSpeakerGroupLocal(spk.code)"
+                    >
+                    <label 
+                      :id="'tooltip-container-' + spk.code" 
+                      v-tooltip="allSpeakerToggles[spk.code]"
+                      class="hidden-switch-label"
+                      :for="'check-'+spk.code"
+                    >
+                      {{ spk.label }} 
+
+                    <font-awesome-icon
+                        v-if="spk.code === seatShakerChannelLocal"
+                        :icon="['fas', 'couch']"
+                      />
+                      </label>
+                  </div>
         </td>
         <td class="text-right">
           <template v-if="showCenterFreqControlsForSpeaker(spk.code)">
@@ -235,10 +252,14 @@
         return spkCode.includes('t'); // top
       }
 
+      function show() {
+        emit('show');
+      }
+
       return { 
         mso, showCrossoverControls, setSpeakerSize, setCenterFreq,
         showCrossoverControlsForSpeaker, showCenterFreqControlsForSpeaker, showDolby,
-        props, allSpeakerToggles, diracMismatchedChannelGroups, toggleSpeakerGroup
+        props, allSpeakerToggles, diracMismatchedChannelGroups, toggleSpeakerGroup, show
       };
     }
   }
@@ -277,6 +298,18 @@
 
   .modal-footer.text-white {
     border-top:1px solid #212529;
+  }
+
+  .text-active {
+    color:#007bff;
+  }
+
+  .opacity-50 {
+    opacity: 0.5;
+  }
+
+  .cursor-pointer {
+    cursor: pointer;
   }
 
 </style>

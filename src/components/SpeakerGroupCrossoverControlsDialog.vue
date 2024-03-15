@@ -53,7 +53,7 @@
                       class="form-check-input" 
                       :checked="msoCopy?.speakers?.groups[spk.code]?.present || spk.code === 'lr'" 
                       :disabled="!allSpeakerToggles[spk.code].enabled"
-                      @change="toggleSpeakerGroupLocal(spk.code)"
+                      @change="toggleSpeakerGroupLocal(spk.code); applyProductRulesLocal()"
                     >
                     <label 
                       :id="'tooltip-container-' + spk.code" 
@@ -386,7 +386,6 @@
         return patchMsoLocal('replace', '/speakers/groups/seatshaker/present', !msoCopy.value?.speakers?.groups?.seatshaker?.present);
       }
 
-      // TODO refactor into reusable component
       function patchMsoLocal(op, path, value) {
         const singlePatch = {
           'op': op,
@@ -416,6 +415,79 @@
         return false;
       }
 
+      function setSpeakerGroupPresentLocal(spkCode, present) {
+        return patchMsoLocal( 'replace', `/speakers/groups/${spkCode}/present`, present);
+      }
+
+      function applyProductRulesLocal() {
+        const groups = ['c', 'lrs', 'lrb', 'lrw', 'lrtf', 'lrtm', 'lrtr', 'lrhf', 'lrhr', 'sub1', 'sub2', 'sub3', 'sub4', 'sub5'];
+        const spg = msoCopy.value.speakers?.groups;
+
+        if (spg) {
+
+          // too many channels, disable speaker groups until under 16
+          if (activeChannelsCopy.value.length > 16) {
+            let over = activeChannelsCopy.value.length - 16;
+            // iterate speaker groups in reverse order, 
+            // excluding subs, so starting at index 8 = lrhr
+            // and disable them until the total channel count <= 16
+            for (let i = 8; i >= 0; i--) { 
+              if (spg[groups[i]].present) {
+                setSpeakerGroupPresentLocal(groups[i], false);
+                over -= 2;
+              }
+              
+              // total channels is now 16 or less
+              if (over <= 0) {
+                break;
+              }
+            }
+          }
+
+          setSpeakerGroupPresentLocal('lrb', spg.lrb.present && spg.lrs.present); // No backs when no surround
+          setSpeakerGroupPresentLocal('lrw', spg.lrw.present && spg.lrb.present); // No wides when no backs
+          console.log('lrhf?', spg.lrhf.present && (!spg.lrtf.present));
+          setSpeakerGroupPresentLocal('lrhf', spg.lrhf.present && (!spg.lrtf.present)); // No height front if top front present
+
+          if ((!spg.lrs.present) && (spg.lrtm.present) && (spg.lrtf.present || spg.lrtr.present || spg.lrhf.present || spg.lrhr.present)) {
+              setSpeakerGroupPresentLocal('lrtf', false);
+              setSpeakerGroupPresentLocal('lrtr', false);
+              setSpeakerGroupPresentLocal('lrhf', false);
+              setSpeakerGroupPresentLocal('lrhr', false);
+          }
+          if ((!spg.lrs.present) && (!spg.lrtm.present) && (spg.lrtr.present || spg.lrhr.present)) {
+              setSpeakerGroupPresentLocal('lrtf', spg.lrtf.present && (!spg.lrhf.present));
+              setSpeakerGroupPresentLocal('lrtr', false);
+              setSpeakerGroupPresentLocal('lrhr', false);
+          }
+          if ((!spg.c.present) && (!spg.lrb.present)) {
+              setSpeakerGroupPresentLocal('lrtm', false);
+          }
+          spg.lrtf.present = spg.lrtf.present && (!spg.lrhf.present); // only one front allowed
+          spg.lrtr.present = spg.lrtr.present && (!spg.lrhr.present); // only one rear allowed
+          if ((!spg.lrtf.present) && (!spg.lrhf.present)) {
+              setSpeakerGroupPresentLocal('lrhr', false); // no fronts . clear rears
+              setSpeakerGroupPresentLocal('lrtr', false);
+          }
+          // No top middle when top front present but top rear not present
+          if (spg.lrtm.present && spg.lrtf.present) {
+              if ((!spg.lrtr.present) && (!spg.lrhr.present)) {
+                  setSpeakerGroupPresentLocal('lrtm', false);
+              }
+          }
+          if (spg.lrtm.present && spg.lrhf.present) {
+              if ((!spg.lrtr.present) && (!spg.lrhr.present)) {
+                  setSpeakerGroupPresentLocal('lrtm', false);
+              }
+          }
+
+          setSpeakerGroupPresentLocal('sub2', spg.sub2.present && spg.sub1.present); // No sub2 without sub
+          setSpeakerGroupPresentLocal('sub3', spg.sub3.present && spg.sub2.present); // No sub3 without sub2
+          setSpeakerGroupPresentLocal('sub4', spg.sub4.present && spg.sub3.present); // No sub4 without sub3
+          setSpeakerGroupPresentLocal('sub5', spg.sub5.present && spg.sub4.present); // No sub5 without sub4
+        }
+      }
+
       function save() {
         console.log('save', unsavedChanges.value);
         executeMacro(unsavedChanges.value);
@@ -440,7 +512,8 @@
         msoCopy, showCrossoverControls, setSpeakerSizeLocal, setCenterFreqLocal,
         showCrossoverControlsForSpeaker, showCenterFreqControlsForSpeaker, showDolby,
         props, allSpeakerToggles, diracMismatchedChannelGroups, handleCancel, toggleSpeakerGroupLocal,
-        hasUnsavedChanges, unsavedChanges, save, darkMode, seatShakerChannelLocal, toggleSeatShakerLocal
+        hasUnsavedChanges, unsavedChanges, save, darkMode, seatShakerChannelLocal, toggleSeatShakerLocal,
+        applyProductRulesLocal
       };
     }
   }

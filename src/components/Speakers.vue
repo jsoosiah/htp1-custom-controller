@@ -43,7 +43,7 @@
         <div v-if="showSpeakerLayoutDialog" class="connecting-overlay">
           <speaker-group-crossover-controls-dialog :speaker-groups="speakerGroups" @cancel="toggleShowSpeakerLayoutDialog" />
         </div>
-        <speaker-group-crossover-controls :speaker-groups="speakerGroups" />
+        <speaker-group-crossover-controls :speaker-groups="speakerGroups" @show="toggleShowSpeakerLayoutDialog" />
       </div>
       <div class="col-lg-5">
         <SpeakerDiagram :class="diagramSpeakerVisibility" />
