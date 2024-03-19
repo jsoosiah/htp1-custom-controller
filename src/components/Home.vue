@@ -558,11 +558,15 @@ export default {
 
     function handleVolumeDownPress() {
       console.log('handleVolumeDownPress');
+      clearInterval(decrementVolumeInterval);
+      clearInterval(incrementVolumeInterval);
       decrementVolume();
     }
 
     function handleVolumeUpPress() {
       console.log('handleVolumeUpPress');
+      clearInterval(decrementVolumeInterval);
+      clearInterval(incrementVolumeInterval);
       incrementVolume();
     }
 
@@ -695,6 +699,16 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+
+* {
+    /* make no text selectable on home page - attempt to fix stuck volume button */
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
 
   .current-input-label {
     line-height: 1;
