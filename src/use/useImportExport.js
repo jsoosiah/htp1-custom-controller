@@ -102,8 +102,7 @@ export default function useImportExport() {
       const reader = new FileReader();
       reader.readAsText(event.target.files[0]);
       reader.onload = e => {
-          // importJson.value = JSON.parse(e.target.result);
-          importJson.value = parseFile(e.target.result);
+        importJson.value = parseFile(e.target.result);
       }
     }
   }

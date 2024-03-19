@@ -372,9 +372,9 @@
       <div class="row">
         <div class="col-auto">
           <div class="form-group">
-            <label for="import=file">Select Band PEQ Configuration File</label>
+            <label for="import-file-band">Select Band PEQ Configuration File</label>
             <input 
-              id="import=file"
+              id="import-file-band"
               ref="importBandRef" 
               type="file" 
               class="form-control-file" 
@@ -395,9 +395,9 @@
       <div class="row">
         <div class="col-auto">
           <div class="form-group">
-            <label for="import=file">Select Channel PEQ Configuration File or REW filter file</label>
+            <label for="import-file-channel">Select Channel PEQ Configuration File or REW filter file</label>
             <input 
-              id="import=file"
+              id="import-file-channel"
               ref="importChannelRef" 
               type="file" 
               class="form-control-file" 
@@ -418,9 +418,9 @@
     <div class="row">
       <div class="col-auto">
         <div class="form-group">
-          <label for="import=file">Select Full PEQ Configuration File</label>
+          <label for="import-file-full">Select Full PEQ Configuration File</label>
           <input 
-            id="import=file"
+            id="import-file-full"
             ref="importFullRef" 
             type="file" 
             class="form-control-file" 
@@ -732,14 +732,13 @@
 
       // TODO validate
       const fullImportPatch = computed(() => {
-
-        if (!fullImportPatch.value) {
+        if (!fullImportJson.value) {
           return [];
         }
 
         // fix relative paths
         return compare(mso.value.peq?.slots, fullImportJson.value)
-          .map(patch => ({...patch, path: `/peq/slots${patch.path}`}));
+         .map(patch => ({...patch, path: `/peq/slots${patch.path}`}));
       });
 
       function confirmImport(patchList) {
