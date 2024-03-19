@@ -21,7 +21,8 @@
                 role="alert"
                 style="margin-bottom:0;position:absolute;right:60px"
               >
-                You have unsaved changes. Click Save to apply them.
+                You have unsaved changes. Click Save to apply them.<br/>
+                Updating speaker layout may take up to 5 minutes.
               </div>
           </div>
         </div>
