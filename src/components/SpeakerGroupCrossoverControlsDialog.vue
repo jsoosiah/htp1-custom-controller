@@ -27,6 +27,19 @@
           </div>
         </div>
         <div class="modal-body text-left">
+          <div
+            v-if="!currentLayoutHasMatchingDiracFilter"
+            class="alert alert-danger small"
+            role="alert"
+          >
+            <div>Dirac Live is disabled; there are no Dirac filters available for the current speaker layout. </div>
+            <div v-if="mso.cal?.currentLayout">
+              Current Layout: {{ mso.cal?.currentLayout }}
+            </div>
+            <div v-if="mso.cal?.availableFilterLayouts">
+              Layouts with Available Dirac Filters: {{ mso.cal?.availableFilterLayouts?.join(", ") }}
+            </div>
+          </div>
           <table class="table table-sm table-striped table-responsive-sm">
             <tbody
               v-for="speakerGroup in props.speakerGroups"
@@ -212,7 +225,8 @@
     setup(props, { emit }) {
 
       const { mso, showCrossoverControls, calToolConnected,
-        executeMacro, commitSpeakerLayout, diracMismatchedChannelGroups } = useMso();
+        executeMacro, commitSpeakerLayout, diracMismatchedChannelGroups,
+        currentLayoutHasMatchingDiracFilter } = useMso();
       const { darkMode } = useLocalStorage();
       const { getActiveChannels, reverseBmg } = useSpeakerGroups();
 
@@ -510,11 +524,11 @@
       });
 
       return { 
-        msoCopy, showCrossoverControls, setSpeakerSizeLocal, setCenterFreqLocal,
+        mso, msoCopy, showCrossoverControls, setSpeakerSizeLocal, setCenterFreqLocal,
         showCrossoverControlsForSpeaker, showCenterFreqControlsForSpeaker, showDolby,
         props, allSpeakerToggles, diracMismatchedChannelGroups, handleCancel, toggleSpeakerGroupLocal,
         hasUnsavedChanges, unsavedChanges, save, darkMode, seatShakerChannelLocal, toggleSeatShakerLocal,
-        applyProductRulesLocal
+        applyProductRulesLocal, currentLayoutHasMatchingDiracFilter
       };
     }
   }

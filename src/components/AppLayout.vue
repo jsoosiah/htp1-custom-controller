@@ -38,9 +38,9 @@
   </div>
   <div
     v-if="diracFilterTransferInProgress"
-    class="fixed-top mx-auto"
+    class="connecting-overlay"
   >
-    <span class="sgen-on-warning">Dirac Filter Transfer in Progress - Please Wait</span>
+    <filter-transfer-in-progress />
   </div>
   <div
     v-if="currentlyRecordingSlot"
@@ -364,6 +364,7 @@ import useLocalStorage from "@/use/useLocalStorage.js";
 import useBluetoothManager from '@/use/useBluetoothManager.js';
 
 import IpSelect from './IpSelect.vue';
+import FilterTransferInProgress from './FilterTransferInProgress.vue';
 import BluetoothPairingRequest from './BluetoothPairingRequest.vue';
 import PowerDialog from './PowerDialog.vue';
 
@@ -392,6 +393,7 @@ export default {
   components: {
     HomeIcon,
     IpSelect,
+    FilterTransferInProgress,
     BluetoothPairingRequest,
     PowerDialog,
     CalibrationIcon,
