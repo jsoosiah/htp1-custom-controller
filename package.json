@@ -24,6 +24,7 @@
     "hammerjs": "^2.0.8",
     "lodash-es": "^4.17.21",
     "progressbar.js": "^1.1.1",
+    "simple-eta": "^3.0.2",
     "tippy.js": "^6.3.7",
     "vue": "^3.3.11",
     "vue-draggable-next": "^2.2.1",

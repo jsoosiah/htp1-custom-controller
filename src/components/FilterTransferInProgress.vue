@@ -30,7 +30,7 @@
             </div>
           </p>
           <p class="small">
-            Estimated time remaining: 2 minutes 23 seconds
+            Estimated time remaining: {{ formattedEtr }}
           </p>
         </div>
       </div>
@@ -42,6 +42,7 @@
 
   import { ref, watch, computed, onMounted } from 'vue';
   import ProgressBar from 'progressbar.js';
+  import makeEta from 'simple-eta';
 
   import useMso from '@/use/useMso.js';
 
@@ -50,10 +51,16 @@
     setup(props) {
       let progressBar = null;
       const { mso } = useMso();
-
-      const progress = ref(0);
+      let eta = null;
+      const etr = ref(0);
+      let previousProgress = 0;
 
       onMounted(() => {
+        console.log('FilterTransferInProgress onMounted', mso?.value.cal.filterxferpercentage);
+        eta = makeEta({ min: mso?.value.cal.filterxferpercentage, max: 100, historyTimeConstant: 2.5 });
+        eta.reset();
+        eta.start();
+
         progressBar = new ProgressBar.Circle('.progressbarjs', {
           strokeWidth: 8,
           color: '#007bff',
@@ -75,27 +82,45 @@
           },
         });
 
-        setInterval(() => {
-          if (progress.value < 100) {
-            progress.value += 10;
-          }
-          
-        }, 1000);
-      });
+        watch(() => mso?.value.cal.filterxferpercentage, (newProgress) => {
+          if (newProgress !== null) {
+            if (newProgress < previousProgress) {
+              eta = makeEta({ min: mso?.value.cal.filterxferpercentage, max: 100, historyTimeConstant: 2.5 });
+              eta.reset();
+              eta.start();
+            }
 
-      watch(() => progress.value, (newProgress) => {
-        progressBar.animate(newProgress / 100);
+            previousProgress = newProgress;
+            progressBar?.animate(newProgress / 100);
+            eta.report(newProgress);
+            etr.value = eta.estimate();
+            console.log(`newProgress, progress=${newProgress}, etr=${etr.value}`);
+          }
+        }, {
+          immediate: true
+        });
       });
 
       const loading1 = computed(() => {
-        return `rotate(${Math.round(Math.min(progress.value, 50) / 50  * 180)}deg)`;
+        return `rotate(${Math.round(Math.min(mso?.value.cal.filterxferpercentage, 50) / 50  * 180)}deg)`;
       });
 
       const loading2 = computed(() => {
-        return `rotate(${Math.round(Math.min(Math.max(progress.value - 50, 0), 50) / 50  * 180)}deg)`;
-      })
+        return `rotate(${Math.round(Math.min(Math.max(mso?.value.cal.filterxferpercentage - 50, 0), 50) / 50  * 180)}deg)`;
+      });
 
-      return { mso, progress, loading1, loading2 };
+      const formattedEtr = computed(() => {
+        if (isFinite(etr.value)) {
+          const roundedSeconds = Math.round(etr.value);
+          const minutes = Math.floor(roundedSeconds / 60);
+          const seconds = roundedSeconds % 60;
+          return `${minutes} minutes, ${seconds} seconds`;
+        }
+
+        return 'Please wait';
+      });
+
+      return { mso, loading1, loading2, etr, formattedEtr };
     }
   }
 </script>
