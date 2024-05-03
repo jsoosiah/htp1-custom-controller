@@ -268,7 +268,13 @@
               'table-danger': currentDiracSlot?.channels[channame].mute === true
             }"
           >
-            <td>{{ spkName(channame) }}</td>
+            <td>
+              {{ spkName(channame) }}
+              <font-awesome-icon
+              v-if="channame === seatShakerChannel"
+              :icon="['fas', 'couch']"
+            />
+            </td>
             <td
               class="text-right"
               :class="{'text-muted':mso.cal?.diracactive=='off'}"
@@ -529,7 +535,7 @@
         currentDiracSlot, activeChannels, toggleMuteChannel,
         setMuteAllChannelsOff, setMuteAllChannelsOn, toggleAllMuteChannels,
         diracMismatchedChannels, setDiracSlotNotes, currentLayoutHasMatchingDiracFilter,
-        filterTypeToCssClass, showCrossoverControls,
+        filterTypeToCssClass, showCrossoverControls, seatShakerChannel,
       } = useMso();
       const { spkName } = useSpeakerGroups();
       const { showChannelMuteControls, toggleShowChannelMuteControls, darkMode } = useLocalStorage();
@@ -575,7 +581,7 @@
       }
 
       function enableUserTrim(channel) {
-        return !channel.includes('sub') || showCrossoverControls.value;
+        return (!channel.includes('sub') || channel === seatShakerChannel.value) || showCrossoverControls.value;
       }
 
       function setUserDelaySelectedChannels() {
@@ -598,7 +604,7 @@
         setMuteAllChannelsOff, setMuteAllChannelsOn, toggleAllMuteChannels, isMobileMode,
         diracMismatchedChannels, darkMode, targetChannels, bulkUserDelay, bulkUserTrim,
         setUserDelaySelectedChannels, setUserTrimSelectedChannels, currentLayoutHasMatchingDiracFilter,
-        filterTypeToCssClass, showCrossoverControls, enableUserTrim, getTotalTrim
+        filterTypeToCssClass, showCrossoverControls, enableUserTrim, getTotalTrim, seatShakerChannel
       };
     }
   }

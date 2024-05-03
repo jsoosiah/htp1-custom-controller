@@ -68,6 +68,7 @@
                       :checked="msoCopy?.speakers?.groups[spk.code]?.present || spk.code === 'lr'" 
                       :disabled="!allSpeakerToggles[spk.code].enabled"
                       @change="toggleSpeakerGroupLocal(spk.code); applyProductRulesLocal()"
+                      v-if="spk.code !== seatShakerChannelLocal"
                     >
                     <label 
                       :id="'tooltip-container-' + spk.code" 
@@ -163,7 +164,7 @@
               type="checkbox" 
               class="form-check-input" 
               :checked="msoCopy?.speakers?.groups?.seatshaker?.present" 
-              :disabled="!msoCopy?.speakers?.groups?.sub1?.present"
+              :disabled="msoCopy?.speakers?.groups?.sub5?.present"
               @change="toggleSeatShakerLocal()"
             >
             <label 
@@ -173,7 +174,7 @@
               Enable Seat Shaker
               </label>
           </div>
-          <small class="form-text text-muted">Enables seat shakers. The last enabled subwoofer channel becomes the seat shaker channel. This channel will be excluded from Dirac calibrations and will not have any filter corrections while Dirac is enabled.</small>
+          <small class="form-text text-muted">Enables seat shakers. The first unused subwoofer channel becomes the seat shaker channel. This channel will be excluded from Dirac calibrations and will not have any filter corrections while Dirac is enabled.</small>
 
         </div>
 
@@ -312,7 +313,7 @@
           for (let i = 5; i >= 1; i--) {
             console.log(i);
             if (msoCopy.value?.speakers?.groups[`sub${i}`]?.present) {
-              return `sub${i}`;
+              return `sub${i+1}`;
             }
           }
         }

@@ -27,6 +27,7 @@
                       :checked="mso?.speakers?.groups[spk.code]?.present || spk.code === 'lr'" 
                       :disabled="true"
                       @change="toggleSpeakerGroupLocal(spk.code)"
+                      v-if="spk.code !== seatShakerChannel"
                     >
                     <label 
                       :id="'tooltip-container-' + spk.code" 
@@ -37,7 +38,7 @@
                       {{ spk.label }} 
 
                     <font-awesome-icon
-                        v-if="spk.code === seatShakerChannelLocal"
+                        v-if="spk.code === seatShakerChannel"
                         :icon="['fas', 'couch']"
                       />
                       </label>
@@ -130,7 +131,7 @@
     },
     setup(props, { emit }) {
 
-      const { mso, showCrossoverControls, calToolConnected, 
+      const { mso, showCrossoverControls, calToolConnected, seatShakerChannel,
         toggleSpeakerGroup, setSpeakerSize, setCenterFreq, activeChannels, diracMismatchedChannelGroups } = useMso();
 
       // rule states the conditions for which the toggle should be enabled
@@ -259,7 +260,8 @@
       return { 
         mso, showCrossoverControls, setSpeakerSize, setCenterFreq,
         showCrossoverControlsForSpeaker, showCenterFreqControlsForSpeaker, showDolby,
-        props, allSpeakerToggles, diracMismatchedChannelGroups, toggleSpeakerGroup, show
+        props, allSpeakerToggles, diracMismatchedChannelGroups, toggleSpeakerGroup, show,
+        seatShakerChannel,
       };
     }
   }

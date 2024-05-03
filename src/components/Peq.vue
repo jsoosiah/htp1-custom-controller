@@ -196,6 +196,10 @@
           @click="setSelectedChannel(index)" 
         >
           {{ spkName(channame) }}
+          <font-awesome-icon
+                        v-if="channame === seatShakerChannel"
+                        :icon="['fas', 'couch']"
+                      />
         </a>
       </nav>
       <table class="table table-sm table-responsive-md table-striped">
@@ -541,9 +545,11 @@
       const { importJson: fullImportJson, importJsonFileToSelected: fullImportJsonFileToSelected, exportJsonToFile } = useImportExport();
       
       const { eqGroupBy, setEqGroupBy, darkMode } = useLocalStorage();
-      const { mso, setPEQSlot, resetPEQ, importMsoPatchList, 
+      const { mso, setPEQSlot, resetPEQ, importMsoPatchList, activeChannels,
         setPEQCenterFrequency, setPEQQuality, setPEQFilterType, setPEQGain, togglePEQBypass } = useMso();
       const { getActiveChannels, spkName } = useSpeakerGroups();
+
+
 
       const chartRef = ref(null);
       const tabLoaded = ref(true);
@@ -554,9 +560,9 @@
 
       const targetCloneChannels = ref([]);
 
-      const activeChannels = computed(() => {
-        return getActiveChannels(mso.value.speakers?.groups);
-      });
+      // const activeChannels = computed(() => {
+      //   return getActiveChannels(mso.value.speakers?.groups);
+      // });
 
       const selectableChannels = computed(() => {
         console.log('selectable',activeChannels)

@@ -593,7 +593,7 @@ const seatShakerChannel = computed(() => {
   if (mso.value?.speakers?.groups?.seatshaker?.present) {
     for (let i = 5; i >= 1; i--) {
       if (mso.value?.speakers?.groups[`sub${i}`]?.present) {
-        return `sub${i}`;
+        return `sub${i+1}`;
       }
     }
   }
@@ -622,7 +622,7 @@ const diracNoFilter = computed(() => {
 });
 
 const activeChannels = computed(() => {
-  return getActiveChannels(mso.value.speakers?.groups);
+  return getActiveChannels(mso.value.speakers?.groups, seatShakerChannel.value);
 });
 
 const diracMismatchedChannels = computed(() => {

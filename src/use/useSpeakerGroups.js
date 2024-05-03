@@ -115,10 +115,11 @@ export default function useSpeakerGroups() {
     return spg.flat().map(x => bmg[x]).flat().filter(x => x);
   }
 
-  function getActiveChannels(spg) {
+  function getActiveChannels(spg, seatshakerChannel) {
     var allKeys = Object.keys(bmg);
     var filterFn = (spgName) => {
       if (spgName == 'lr') return true;
+      if (spgName === seatshakerChannel) return true;
       return spg && spg[spgName]?.present;
     };
     var filtered = allKeys.filter(filterFn);
