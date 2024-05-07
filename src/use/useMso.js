@@ -1290,6 +1290,11 @@ function _setInputDefaultUpmix(input, defaultUpmix, op) {
 }
 
 function setInputDefaultUpmix(input, defaultUpmix) {
+
+  if (input === mso.value?.input && defaultUpmix !== 'Last Used') {
+    setUpmix(defaultUpmix);
+  }
+
   return _setInputDefaultUpmix(input, defaultUpmix, 'replace');
 }
 
@@ -1308,6 +1313,11 @@ function initializeInputDelay(input) {
 
 function setInputDelay(input, delayStr) {
   let delay = convertInt(delayStr, 0, 0, 200);
+
+  if (input === mso.value?.input) {
+    setLipsyncDelay(delay);
+  }
+
   return patchMso( 'replace', `/inputs/${input}/delay`, delay);
 }
 
@@ -1317,6 +1327,11 @@ function initializeInputDiracSlot(input) {
 }
 
 function setInputDiracSlot(input, diracslot) {
+
+  if (input === mso.value?.input) {
+    setDiracSlot(diracslot);
+  }
+
   return patchMso('replace', `/inputs/${input}/diracslot`, convertInt(diracslot, null, 0, 6));
 }
 

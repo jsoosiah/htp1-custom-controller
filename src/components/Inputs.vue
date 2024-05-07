@@ -3,12 +3,6 @@
     <div class="row justify-content-between">
       <div class="col-auto">
         <h5>Input Setup</h5>
-        <dismissable-alert alert-key="inputs-background-service">
-          * Sound Mode, Delay, Dirac Slot, and Run Macro for individual inputs require the <a
-            target="_blank"
-            href="https://github.com/jsoosiah/htp1-custom-ui-background-service/releases/latest"
-          >HTP-1 Custom UI Background Service</a> to be running in the background on a computer in order to function.
-        </dismissable-alert>
       </div>
       <div class="col-auto">
         <div class="custom-control custom-switch">
@@ -314,7 +308,7 @@
       </tbody>
     </table>
 
-    <h5>  Lipsync Delay</h5>
+    <h5>Lipsync Delay</h5>
     <div class="row">
       <div class="col-lg-auto">
         <div class="form-group">
