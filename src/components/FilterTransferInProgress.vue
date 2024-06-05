@@ -110,7 +110,8 @@
       });
 
       const formattedEtr = computed(() => {
-        if (isFinite(etr.value)) {
+        // don't show estimate until stable, at least 10% is reached
+        if (isFinite(etr.value) && mso?.value.cal.filterxferpercentage >= 10) {
           const roundedSeconds = Math.round(etr.value);
           const minutes = Math.floor(roundedSeconds / 60);
           const seconds = roundedSeconds % 60;
