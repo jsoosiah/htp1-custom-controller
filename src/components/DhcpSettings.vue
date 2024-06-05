@@ -181,10 +181,14 @@
       Apply Network Settings
     </button>
     <small class="form-text text-muted">May affect connectivity</small>
+    <p class="text-success" v-show="showSuccess">Settings sent.</p>
   </div>
 </template>
 
 <script>
+
+  import { ref, onDeactivated } from 'vue';
+
   export default {
     name: 'DhcpSettings',
     props: {
@@ -209,6 +213,9 @@
       'apply-network-config'
     ], 
     setup(props, { emit }) {
+
+      const showSuccess = ref(false);
+
       function addIPAddress() {
         emit('add-ip-address', props.network);
       }
@@ -227,9 +234,15 @@
 
       function applyNetworkConfig() {
         emit('apply-network-config', props.network);
+        showSuccess.value = true;
       }
 
-      return { props, addIPAddress, removeIPAddress, addNameserver, removeNameserver, applyNetworkConfig };
+      onDeactivated(() => {
+        console.log('DhcpSettings onDeactivated');
+        showSuccess.value = false;
+      });
+
+      return { props, addIPAddress, removeIPAddress, addNameserver, removeNameserver, applyNetworkConfig, showSuccess };
     }
   }
 </script>
