@@ -158,24 +158,25 @@
             </tbody>
           </table>
 
-          <div class="form-check">
-            <input 
-              id="check-shaker" 
-              type="checkbox" 
-              class="form-check-input" 
-              :checked="msoCopy?.speakers?.groups?.seatshaker?.present" 
-              :disabled="msoCopy?.speakers?.groups?.sub5?.present"
-              @change="toggleSeatShakerLocal()"
-            >
-            <label 
-              class="form-check-label"
-              for="check-shaker"
-            >
-              Enable Seat Shaker
-              </label>
+          <div v-if="displaySeatShakerOptions">
+            <div class="form-check">
+              <input 
+                id="check-shaker" 
+                type="checkbox" 
+                class="form-check-input" 
+                :checked="msoCopy?.speakers?.seatshaker?.present" 
+                :disabled="msoCopy?.speakers?.groups?.sub5?.present"
+                @change="toggleSeatShakerLocal()"
+              >
+              <label 
+                class="form-check-label"
+                for="check-shaker"
+              >
+                Enable Seat Shaker
+                </label>
+            </div>
+            <small class="form-text text-muted">Enables seat shakers. The first unused subwoofer channel becomes the seat shaker channel. This channel will be excluded from Dirac calibrations and will not have any filter corrections while Dirac is enabled.</small>
           </div>
-          <small class="form-text text-muted">Enables seat shakers. The first unused subwoofer channel becomes the seat shaker channel. This channel will be excluded from Dirac calibrations and will not have any filter corrections while Dirac is enabled.</small>
-
         </div>
 
         <div class="modal-footer" :class="{'text-white': darkMode}">
@@ -293,6 +294,14 @@
           };
       });
 
+      const displaySeatShakerOptions = computed(() => {
+        if (mso.value?.speakers?.seatshaker) {
+          return true;
+        }
+
+        return false;
+      });
+
       const allSpeakerToggles = computed(() => {
 
         const result = {};
@@ -307,11 +316,8 @@
       });
 
       const seatShakerChannelLocal = computed(() => {
-        console.log('seatShakerChannelLocal?', msoCopy.value, msoCopy.value?.speakers?.groups?.seatshaker?.present);
-        if (msoCopy.value?.speakers?.groups?.seatshaker?.present) {
-          console.log('YES');
+        if (msoCopy.value?.speakers?.seatshaker?.present) {
           for (let i = 5; i >= 1; i--) {
-            console.log(i);
             if (msoCopy.value?.speakers?.groups[`sub${i}`]?.present) {
               return `sub${i+1}`;
             }
@@ -349,7 +355,6 @@
 
           if (validations && validations.length > 0) {
             for (const validation of validations) {
-              // console.log('validations', spkCode, validations)
               if (!validation.rule) {
                 result.enabled = false;
                 result.message = validation.message;
@@ -369,7 +374,6 @@
       }
 
       function showCrossoverControlsForSpeaker(spkCode) {
-        // console.log('showCrossoverControls', showCrossoverControls)
         return showCrossoverControls.value && !spkCode?.startsWith('sub');
       }
 
@@ -399,7 +403,7 @@
       }
 
       function toggleSeatShakerLocal() {
-        return patchMsoLocal('replace', '/speakers/groups/seatshaker/present', !msoCopy.value?.speakers?.groups?.seatshaker?.present);
+        return patchMsoLocal('replace', '/speakers/seatshaker/present', !msoCopy.value?.speakers?.seatshaker?.present);
       }
 
       function patchMsoLocal(op, path, value) {
@@ -462,7 +466,6 @@
 
           setSpeakerGroupPresentLocal('lrb', spg.lrb.present && spg.lrs.present); // No backs when no surround
           setSpeakerGroupPresentLocal('lrw', spg.lrw.present && spg.lrb.present); // No wides when no backs
-          console.log('lrhf?', spg.lrhf.present && (!spg.lrtf.present));
           setSpeakerGroupPresentLocal('lrhf', spg.lrhf.present && (!spg.lrtf.present)); // No height front if top front present
 
           if ((!spg.lrs.present) && (spg.lrtm.present) && (spg.lrtf.present || spg.lrtr.present || spg.lrhf.present || spg.lrhr.present)) {
@@ -529,7 +532,7 @@
         showCrossoverControlsForSpeaker, showCenterFreqControlsForSpeaker, showDolby,
         props, allSpeakerToggles, diracMismatchedChannelGroups, handleCancel, toggleSpeakerGroupLocal,
         hasUnsavedChanges, unsavedChanges, save, darkMode, seatShakerChannelLocal, toggleSeatShakerLocal,
-        applyProductRulesLocal, currentLayoutHasMatchingDiracFilter
+        applyProductRulesLocal, currentLayoutHasMatchingDiracFilter, displaySeatShakerOptions
       };
     }
   }

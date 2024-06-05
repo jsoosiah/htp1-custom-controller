@@ -355,10 +355,6 @@ function applyProductRules() {
         initializeDiracSlotNotes(slot);
       }
     }
-
-    if (!mso.value.speakers.groups.seatshaker) {
-      initializeSeatShaker();
-    }
   }
 }
 
@@ -590,7 +586,7 @@ const diracBCEnabled = computed(() => {
 
 const seatShakerChannel = computed(() => {
 
-  if (mso.value?.speakers?.groups?.seatshaker?.present) {
+  if (mso.value?.speakers?.seatshaker?.present) {
     for (let i = 5; i >= 1; i--) {
       if (mso.value?.speakers?.groups[`sub${i}`]?.present) {
         return `sub${i+1}`;
@@ -950,7 +946,8 @@ function setDefaultHeadroom() {
 
 function setLipsyncDelay(lipsyncDelay) {
   let delay = convertInt(lipsyncDelay, 0, 0, 340);
-  return patchMso( 'replace', '/cal/lipsync', delay);
+
+  return patchMso( 'replace', '/cal/lipsync', delay) && patchMso('replace', `/inputs/${mso.value?.input}/delay`, delay);
 }
 
 function setDiracSlot(slotNumber) {
@@ -967,10 +964,6 @@ function setUserTrim(channel, trim) {
 
 function initializeDiracSlotNotes(slotNumber) {
   return patchMso('add', `/cal/slots/${slotNumber}/notes`, '');
-}
-
-function initializeSeatShaker() {
-  return patchMso('add', `/speakers/groups/seatshaker`, {'present': false});
 }
 
 function setDiracSlotNotes(notes) {
@@ -1315,10 +1308,11 @@ function setInputDelay(input, delayStr) {
   let delay = convertInt(delayStr, 0, 0, 200);
 
   if (input === mso.value?.input) {
-    setLipsyncDelay(delay);
+    return setLipsyncDelay(delay);
   }
-
-  return patchMso( 'replace', `/inputs/${input}/delay`, delay);
+  else {
+    return patchMso('replace', `/inputs/${input}/delay`, delay);
+  }
 }
 
 function initializeInputDiracSlot(input) {
