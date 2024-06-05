@@ -390,7 +390,8 @@
             <two-state-button 
               v-for="(slot, key) in visibleDiracSlots"
               :key="key"
-              :button-text="slot.name"
+              :button-text="slot.valid ? slot.name : 'Uncalibrated'"
+              :disabled="!slot.valid"
               :state-on="parseInt(key) === mso.cal?.currentdiracslot"
               :home-button="true"
               :show-state-indicators="true" 

@@ -6,7 +6,9 @@
                [props.homeButton?'btn-dark':'btn-secondary']: !props.stateOn && !props.stateLoading, 
         
                'btn-progress-bar-animated': props.stateLoading,
-               'home-btn': props.homeButton}"
+               'home-btn': props.homeButton,
+               'disabled': props.disabled}"
+      :disabled="props.disabled"
       :style="{'min-width': props.minWidth}"
       @click="clicked"
     >
@@ -68,6 +70,10 @@
         default: false,
       },
       singleIndicator: {
+        type: Boolean,
+        default: false,
+      },
+      disabled: {
         type: Boolean,
         default: false,
       }

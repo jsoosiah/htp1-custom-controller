@@ -257,7 +257,7 @@
                   <label
                     class="custom-control-label"
                     :for="'showdiracslot-'+key"
-                  >{{ slot.name }}</label>
+                  >{{ slot.valid ? slot.name : 'Uncalibrated' }}</label>
                 </div>
               </td>
             </tr>
