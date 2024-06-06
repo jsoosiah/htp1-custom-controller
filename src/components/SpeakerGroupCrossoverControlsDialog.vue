@@ -520,7 +520,7 @@
         if (!msoCopy.value?.speakers?.groups) {
           return false;
         }
-        return compare(mso.value, msoCopy.value).filter(x => x.path.startsWith('/speakers/groups'))
+        return compare(mso.value, msoCopy.value).filter(x => x.path.startsWith('/speakers/groups') || x.path.startsWith('/speakers/seatshaker'))
       });
 
       const hasUnsavedChanges = computed(() => {
