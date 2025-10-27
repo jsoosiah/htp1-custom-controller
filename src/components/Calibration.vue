@@ -67,13 +67,14 @@
                   class="input-group input-group-sm numeric-input"
                   style="float:right"
                 >
-                  <input 
+                  <input
                     type="number" 
                     class="form-control form-control-sm text-right" 
                     :value="currentDiracSlot?.channels[channame].delay" 
                     min="0" 
                     max="100" 
                     step=".1" 
+                    :disabled="!enableUserDelay(channame) && !showChannelMuteControls"
                     @change="({ type, target }) => setUserDelay(channame, target.value)"
                   >
                   <div class="input-group-append">
@@ -113,7 +114,7 @@
                   style="float:right"
                 >
                   <input 
-                    v-if="enableUserTrim(channame)"
+                    v-if="enableUserTrim(channame) || showChannelMuteControls"
                     type="number" 
                     class="form-control form-control-sm text-right" 
                     :value="currentDiracSlot?.channels[channame].mute === true ? currentDiracSlot?.channels[channame].preMuteTrim : currentDiracSlot?.channels[channame].trim" 
@@ -176,7 +177,7 @@
         alert-key="calibration-filter-mismatch"
         class="alert-warning"
       >
-        The selected Dirac calibration does not match the current speaker configuration. Uncalibrated channels are highlighted.
+        The selected Dirac calibration does not match the current speaker configuration. Uncalibrated speakers are highlighted.
       </dismissable-alert>
 
       <div
@@ -232,7 +233,7 @@
       <table class="table table-sm table-responsive-md table-striped">
         <thead>
           <tr>
-            <th>Channel</th>
+            <th>Speaker</th>
             <th class="text-right">
               Dirac Calibration<br>Delay (ms)
             </th>
@@ -255,7 +256,7 @@
               v-if="showChannelMuteControls"
               class="text-right"
             >
-              Mute Channel
+              Mute Speaker
             </th>
           </tr>
         </thead>
@@ -285,6 +286,7 @@
             <td class="text-right">
               <input 
                 type="number" 
+                v-if="enableUserDelay(channame)"
                 class="form-control form-control-sm text-right" 
                 :value="currentDiracSlot?.channels[channame].delay" 
                 min="0" 
@@ -292,6 +294,21 @@
                 step=".1" 
                 @change="({ type, target }) => setUserDelay(channame, target.value)"
               >
+              <div v-else v-tooltip="{'message': warningMessage}" :id="`tooltipdelay-${channame}`">
+                <font-awesome-icon style="position:absolute;"
+                        :icon="['fas', 'question-circle']"
+                      />
+                <input 
+                  type="number"
+                  class="form-control form-control-sm text-right" 
+                  :value="currentDiracSlot?.channels[channame].delay"
+                  min="0" 
+                  max="100" 
+                  step=".1" 
+                  @change="({ type, target }) => setUserDelay(channame, target.value)"
+                  :disabled="!enableUserDelay(channame) && !showChannelMuteControls"
+                  />
+              </div>
             </td>
             <td 
               class="text-right"
@@ -317,15 +334,19 @@
                 step=".5" 
                 @change="({ type, target }) => setUserTrim(channame, target.value)"
               />
-              <div v-else v-tooltip="{'message': 'When DLBC or ART are active, trim is applied before Dirac and is not editable for subwoofers as doing so would invalidate the calibration.'}" :id="`tooltip-${channame}`">
+              <div v-if="!enableUserTrim(channame)" v-tooltip="{'message': warningMessage}" :id="`tooltip-${channame}`">
                 <font-awesome-icon style="position:absolute;"
                         :icon="['fas', 'question-circle']"
                       />
                 <input 
                   type="number"
                   class="form-control form-control-sm text-right" 
-                  value="0"
-                  :disabled="true"
+                  :value="currentDiracSlot?.channels[channame].mute === true ? currentDiracSlot?.channels[channame].preMuteTrim : currentDiracSlot?.channels[channame].trim" 
+                  :disabled="currentDiracSlot?.channels[channame].mute || (!enableUserTrim(channame) && !showChannelMuteControls)"
+                  min="-12"
+                  max="12" 
+                  step=".5" 
+                  @change="({ type, target }) => setUserTrim(channame, target.value)"
                   />
               </div>
             </td>
@@ -423,7 +444,7 @@
                   :disabled="targetChannels.length === 0"
                   @click="setUserDelaySelectedChannels"
                 >
-                  Apply User Delay to Selected Channels
+                  Apply User Delay to Selected Speakers
                 </button>
               </div>
             </div>
@@ -463,22 +484,21 @@
                   :disabled="targetChannels.length === 0"
                   @click="setUserTrimSelectedChannels"
                 >
-                  Apply User Trim to Selected Channels
+                  Apply User Trim to Selected Speakers
                 </button>
               </div>
             </div>
           </div>
         </div>
       </div>
-        
-      <h6>Mute Channels</h6>
+      <h6>Mute Speakers</h6>
       <div class="row">
         <div class="col-auto">
           <button 
             class="btn btn-sm btn-danger mb-3"
             @click="setMuteAllChannelsOn()"
           >
-            Mute All Channels
+            Mute All Speakers
           </button>
         </div>
         <div class="col-auto">
@@ -486,7 +506,7 @@
             class="btn btn-sm btn-primary mb-3"
             @click="setMuteAllChannelsOff()"
           >
-            Unmute All Channels
+            Unmute All Speakers
           </button>
         </div>
         <div class="col-auto">
@@ -494,7 +514,7 @@
             class="btn btn-sm btn-info mb-3"
             @click="toggleAllMuteChannels()"
           >
-            Invert Mute on All Channels
+            Invert Mute on All Speakers
           </button>
         </div>
       </div>
@@ -504,7 +524,7 @@
 
 <script>
 
-  import { ref } from 'vue';
+  import { ref, computed } from 'vue';
 
   import useMso from '@/use/useMso.js';
   import useLocalStorage from '@/use/useLocalStorage.js';
@@ -535,7 +555,7 @@
         currentDiracSlot, activeChannels, toggleMuteChannel,
         setMuteAllChannelsOff, setMuteAllChannelsOn, toggleAllMuteChannels,
         diracMismatchedChannels, setDiracSlotNotes, currentLayoutHasMatchingDiracFilter,
-        filterTypeToCssClass, showCrossoverControls, seatShakerChannel,
+        filterTypeToCssClass, showCrossoverControls, seatShakerChannel, diracFilterType,
       } = useMso();
       const { spkName } = useSpeakerGroups();
       const { showChannelMuteControls, toggleShowChannelMuteControls, darkMode } = useLocalStorage();
@@ -549,6 +569,13 @@
       // const activeChannels = computed(() => {
       //   return getActiveChannels(mso.value.speakers?.groups);
       // });
+
+      const warningMessage = computed(() => {
+        if (showChannelMuteControls.value) {
+          return `When Dirac ${filterTypeToCssClass(diracFilterType.value, true).toUpperCase()} is active, trim is applied before Dirac and should not be edited as doing so would invalidate the calibration. Edit at your own risk.`;
+        }
+        return `When Dirac ${filterTypeToCssClass(diracFilterType.value, true).toUpperCase()} is active, trim is applied before Dirac and is not editable as doing so would invalidate the calibration.`;
+      });
 
       function formatDecimal(num) {
         return num?.toFixed(1);
@@ -580,8 +607,27 @@
         return formatDecimal(calTrim + userTrim);
       }
 
+      function enableUserDelay(channel) {
+        if (channel === seatShakerChannel.value) {
+          return true;
+        }
+
+        if (mso.value.cal.diracactive === 'on') {
+          if (diracFilterType.value.toLowerCase() === "dirac active room treatment") {
+            return false;
+          }
+
+          if (diracFilterType.value.toLowerCase() === "dirac live bass control") {
+            return !channel.includes('sub');
+          }
+        }
+
+        return true;
+
+      }
+
       function enableUserTrim(channel) {
-        return (!channel.includes('sub') || channel === seatShakerChannel.value) || showCrossoverControls.value;
+        return enableUserDelay(channel);
       }
 
       function setUserDelaySelectedChannels() {
@@ -604,7 +650,8 @@
         setMuteAllChannelsOff, setMuteAllChannelsOn, toggleAllMuteChannels, isMobileMode,
         diracMismatchedChannels, darkMode, targetChannels, bulkUserDelay, bulkUserTrim,
         setUserDelaySelectedChannels, setUserTrimSelectedChannels, currentLayoutHasMatchingDiracFilter,
-        filterTypeToCssClass, showCrossoverControls, enableUserTrim, getTotalTrim, seatShakerChannel
+        filterTypeToCssClass, showCrossoverControls, enableUserTrim, enableUserDelay, getTotalTrim, seatShakerChannel,
+        diracFilterType, warningMessage
       };
     }
   }

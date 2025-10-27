@@ -85,6 +85,7 @@ export default function useSpeakerGroups() {
   function spkName(spkId) {
     if (spkId == 'c') return "Center";
     if (spkId == 'cs') return "Center Surround";
+    if (spkId == 'lfe') return "LFE";
     if (spkId.startsWith('sub')) return 'Subwoofer ' + spkId.slice(-1);
     var side = (spkId.startsWith('l') ? 'Lef' : 'Righ') + 't ';
     spkId = spkId.slice(1);

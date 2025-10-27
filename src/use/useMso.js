@@ -394,27 +394,7 @@ function sendCommands() {
   console.log('sendCommands', commandsToSend, commandsAwaitingResponse)
   if (commandsToSend.value.length > 0) {
     console.log('changemso', commandsToSend.value.length, commandsToSend.value[0]);
-    
-    let useDiracBypassHack = true;
-
-    if (commandsToSend.value.length == 2) {
-      for (const cmd of commandsToSend.value) {
-        if (cmd.path !== '/cal/diracactive') {
-          useDiracBypassHack = false;
-        }
-      }
-    } else {
-      useDiracBypassHack = false;
-    }
-
-    if (useDiracBypassHack) {
-      console.log('useDiracBypassHack');
-      for (const cmd of commandsToSend.value) { // hack for dirac bypass
-        changemso([cmd]);
-      }
-    } else {
-      changemso(commandsToSend.value);
-    }
+    changemso(commandsToSend.value);
     
     commandsToSend.value = [];
   }
@@ -576,12 +556,16 @@ const allUpmixers = computed(() => {
   return filtered;
 });
 
+const diracFilterType = computed(() => {
+  return currentDiracSlot.value?.filterType;
+})
+
 const currentDiracSlot = computed(() => {
   return mso.value.cal?.slots[mso.value.cal?.currentdiracslot];
 });
 
 const diracBCEnabled = computed(() => {
-  return ['dirac live bass management', 'dirac live bass control', 'dirac active room treatment'].includes(mso.value.cal?.slots[mso.value.cal?.currentdiracslot].filterType?.toLowerCase());
+  return ['dirac live bass management', 'dirac live bass control', 'dirac active room treatment'].includes(diracFilterType.value?.toLowerCase());
 });
 
 const seatShakerChannel = computed(() => {
@@ -620,6 +604,21 @@ const diracNoFilter = computed(() => {
 const activeChannels = computed(() => {
   return getActiveChannels(mso.value.speakers?.groups, seatShakerChannel.value);
 });
+
+const activeChannelsForTrim = computed(() => {
+  const out = [];
+  let hasSub = false;
+
+  for (const x of activeChannels.value) {
+    if (x.startsWith('sub')) {
+      hasSub = true;
+    } else {
+      out.push(x);
+    }
+  }
+  if (hasSub) out.push('lfe');
+  return out;
+})
 
 const diracMismatchedChannels = computed(() => {
   return activeChannels.value.filter(chan => 
@@ -747,6 +746,10 @@ function setInput(inpid) {
   }
 
   return false;
+}
+
+function toggleSeatShaker() {
+  return patchMso('replace', '/speakers/seatshaker/present', !mso.value?.speakers?.seatshaker?.present);
 }
 
 function setUpmix(upmixKey) {
@@ -960,6 +963,10 @@ function setUserDelay(channel, delay) {
 
 function setUserTrim(channel, trim) {
   return patchMso( 'replace', `/cal/slots/${mso.value.cal.currentdiracslot}/channels/${channel}/trim`, parseFloat(trim));
+}
+
+function setChannelTrim(channel, trim) {
+  return patchMso( 'replace', `/channeltrim/channels/${channel}`, parseFloat(trim));
 }
 
 function initializeDiracSlotNotes(slotNumber) {
@@ -1723,7 +1730,7 @@ export default function useMso() {
     setMaxOutputLevel, setDefaultMaxOutputLevel, 
     setHeadroom, setDefaultHeadroom, setZeroPoint, setDefaultZeroPoint,
     setLipsyncDelay, setDiracSlot,
-    setUserDelay, setUserTrim, toggleMuteChannel,
+    setUserDelay, setUserTrim, toggleMuteChannel, setChannelTrim,
     setMuteAllChannelsOff, setMuteAllChannelsOn, toggleAllMuteChannels,
     toggleSignalGenerator, setSignalGeneratorOff, setSignalGeneratorOn,
     setSignalGeneratorChannel, setSignalGeneratorChannel2, setSignalGeneratorSignalType,
@@ -1750,14 +1757,15 @@ export default function useMso() {
     toggleShortcut, toggleShowMode, toggleShowDiracSlot, toggleShowMacro,
     setMacroName, commandKeys, executeMacro,
     setTopLeftLabel, setTopRightLabel, toggleShowPowerDialogButton,
-    setWifiCountryCode,
+    setWifiCountryCode, diracFilterType,
     showCrossoverControls, currentDiracSlot, calToolConnected, diracFilterTransferInProgress, 
     currentLayoutHasMatchingDiracFilter, diracNoFilter, seatShakerChannel,
     activeChannels, diracMismatchedChannels, diracMismatchedChannelGroups,
+    activeChannelsForTrim,
     currentlyRecordingSlot, setRecordingStarted, setRecordingStopped,
     dismissAlert, resetDismissedAlerts,
     updateVu, clearVuPeakLevels, setVuPeakMode,
-    setSecondVolume,
+    setSecondVolume, toggleSeatShaker,
     displayVolume,
     state, loading,
     parseMSO, data, eventHash,

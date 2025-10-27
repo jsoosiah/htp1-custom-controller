@@ -33,6 +33,56 @@
     </div>
     <div class="row">
       <h6>
+        Channel Trim
+      </h6>
+    </div>
+    <div class="row">
+      <table class="table table-sm table-responsive table-striped">
+        <thead>
+          <tr>
+            <th>Channel</th>
+            <th class="text-right">
+              Channel Trim
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr 
+            v-for="channame in activeChannelsForTrim" 
+            :key="channame"
+          >
+            <td style="padding-right: 1rem">
+              {{ spkName(channame) }}
+              <font-awesome-icon
+              v-if="channame === seatShakerChannel"
+              :icon="['fas', 'couch']"
+            />
+            </td>
+            <td class="text-right">
+              <div class="input-group input-group-sm numeric-input">
+              <input
+                type="number" 
+                class="form-control form-control-sm text-right" 
+                :value="mso.channeltrim.channels[channame]" 
+                min="-12"
+                max="12" 
+                step=".5" 
+                @change="({ type, target }) => setChannelTrim(channame, target.value)"
+              />
+            <div class="input-group-append">
+              <span
+                id="basic-addon2"
+                class="input-group-text"
+              >dB</span>
+            </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="row">
+      <h6>
         Power On
       </h6>
     </div>
@@ -377,17 +427,28 @@
 
 import useMso from '@/use/useMso';
 import useLocalStorage from '@/use/useLocalStorage';
+import useSpeakerGroups from '@/use/useSpeakerGroups.js';
 
 import DismissableAlert from './buttons/DismissableAlert.vue';
 import PeakSignalLevels from './PeakSignalLevels.vue';
+
+import TwoStateButton from './buttons/TwoStateButton.vue';
 
 export default {
   components: {
     DismissableAlert,
     PeakSignalLevels,
+    TwoStateButton
   },
   setup() {
-    return { ...useMso(), ...useLocalStorage() };
+
+    function formatDecimal(num) {
+      return num?.toFixed(1);
+    }
+
+
+    const { spkName } = useSpeakerGroups();
+    return { ...useMso(), ...useLocalStorage(), spkName, formatDecimal };
   }
 }
 </script>
@@ -395,5 +456,9 @@ export default {
 <style scoped>
   .col-auto, .col, .col-xs-auto {
     padding-left: 0;
+  }
+
+  .table-sm td {
+    padding:0 0.3rem;
   }
 </style>

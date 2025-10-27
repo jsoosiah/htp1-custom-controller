@@ -102,6 +102,26 @@
         </div>
       </div>
     </div>
+    <div class="row mb-3" v-if="displaySeatShakerOptions">
+        <div class="custom-control custom-switch">
+          <input 
+            id="shaker-input" 
+            type="checkbox" 
+            class="custom-control-input" 
+            :checked="mso?.sepakers?.seatshaker?.present" 
+            :disabled="mso?.speakers?.groups?.sub5?.present"
+            @click="toggleSeatShaker()"
+          >
+          <label
+            class="custom-control-label"
+            for="shaker-input"
+          >
+            Enable Seat Shaker
+          </label>
+        </div>
+        <small class="form-text text-muted">Enables seat shakers. The first unused subwoofer channel becomes the seat shaker channel. This channel will be excluded from Dirac calibrations and will not have any filter corrections while Dirac is enabled.</small>
+      
+    </div>
     <div class="row speaker-map-container">
       <h5>Speaker Map <small class="text-muted">Click image to zoom</small></h5>
       <dismissable-alert alert-key="speaker-labels">
@@ -140,7 +160,7 @@
     },
     setup() {
 
-      const { mso, showCrossoverControls, activeChannels, setBassLpf, toggleReinforceBass } = useMso();
+      const { mso, showCrossoverControls, activeChannels, setBassLpf, toggleReinforceBass, toggleSeatShaker } = useMso();
       const { isLg } = useResponsive();
       const showSpeakerLayoutDialog = ref(false);
 
@@ -186,6 +206,14 @@
         }
       ];
 
+      const displaySeatShakerOptions = computed(() => {
+        if (mso.value?.speakers?.seatshaker) {
+          return true;
+        }
+
+        return false;
+      });
+
       const diagramSpeakerVisibility = computed(() => {
         const hideSpeakers = {};
         for (const spk of [...mainSpeakers, ...surroundSpeakers, ...upperSpeakers]) {
@@ -207,9 +235,9 @@
 
       return { 
         mso, showCrossoverControls, mainSpeakers, surroundSpeakers, upperSpeakers, 
-        setBassLpf, toggleReinforceBass,
+        setBassLpf, toggleReinforceBass, toggleSeatShaker,
         diagramSpeakerVisibility, speakerGroups, activeChannels, isLg, bmIconUrl,
-        showSpeakerLayoutDialog, toggleShowSpeakerLayoutDialog
+        showSpeakerLayoutDialog, toggleShowSpeakerLayoutDialog, displaySeatShakerOptions
       };
     }
   }

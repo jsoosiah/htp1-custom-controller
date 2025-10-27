@@ -68,7 +68,7 @@
                       :checked="msoCopy?.speakers?.groups[spk.code]?.present || spk.code === 'lr'" 
                       :disabled="!allSpeakerToggles[spk.code].enabled"
                       @change="toggleSpeakerGroupLocal(spk.code); applyProductRulesLocal()"
-                      v-if="spk.code !== seatShakerChannelLocal"
+                      
                     >
                     <label 
                       :id="'tooltip-container-' + spk.code" 
@@ -158,25 +158,7 @@
             </tbody>
           </table>
 
-          <div v-if="displaySeatShakerOptions">
-            <div class="form-check">
-              <input 
-                id="check-shaker" 
-                type="checkbox" 
-                class="form-check-input" 
-                :checked="msoCopy?.speakers?.seatshaker?.present" 
-                :disabled="msoCopy?.speakers?.groups?.sub5?.present"
-                @change="toggleSeatShakerLocal()"
-              >
-              <label 
-                class="form-check-label"
-                for="check-shaker"
-              >
-                Enable Seat Shaker
-                </label>
-            </div>
-            <small class="form-text text-muted">Enables seat shakers. The first unused subwoofer channel becomes the seat shaker channel. This channel will be excluded from Dirac calibrations and will not have any filter corrections while Dirac is enabled.</small>
-          </div>
+
         </div>
 
         <div class="modal-footer" :class="{'text-white': darkMode}">
@@ -292,14 +274,6 @@
               {rule: groups.lrtf.present || groups.lrhf.present, message: 'L/R Top Front or L/R Front Height must be enabled before L/R Top Rear.'}
             ]
           };
-      });
-
-      const displaySeatShakerOptions = computed(() => {
-        if (mso.value?.speakers?.seatshaker) {
-          return true;
-        }
-
-        return false;
       });
 
       const allSpeakerToggles = computed(() => {
@@ -532,7 +506,7 @@
         showCrossoverControlsForSpeaker, showCenterFreqControlsForSpeaker, showDolby,
         props, allSpeakerToggles, diracMismatchedChannelGroups, handleCancel, toggleSpeakerGroupLocal,
         hasUnsavedChanges, unsavedChanges, save, darkMode, seatShakerChannelLocal, toggleSeatShakerLocal,
-        applyProductRulesLocal, currentLayoutHasMatchingDiracFilter, displaySeatShakerOptions
+        applyProductRulesLocal, currentLayoutHasMatchingDiracFilter
       };
     }
   }
