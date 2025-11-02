@@ -66,7 +66,7 @@
                 :value="mso.channeltrim.channels[channame]" 
                 min="-12"
                 max="12" 
-                step=".5" 
+                step=".25" 
                 @change="({ type, target }) => setChannelTrim(channame, target.value)"
               />
             <div class="input-group-append">

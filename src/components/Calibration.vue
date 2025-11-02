@@ -223,7 +223,7 @@
           v-for="(slot, key) in mso.cal?.slots" 
           :key="key" 
           class="nav-link" 
-          :class="[mso.cal?.currentdiracslot === key ? 'active' : '', filterTypeToCssClass(slot.filterType, slot.name), slot.valid ? '' : 'disabled']" 
+          :class="[mso.cal?.currentdiracslot === key ? 'active' : '', filterTypeToCssClass(slot.filterType, slot.name), slot.valid ? '' : '']" 
           href="javascript:void(0)"
           @click="setDiracTab(key)"
         >
@@ -582,14 +582,14 @@
       }
 
       async function setDiracTab(tab) {
-        if (mso.value?.cal?.slots[tab].valid === true) {
+        // if (mso.value?.cal?.slots[tab].valid === true) {
           currentDiracTab.value = null;
         
           setTimeout(() => {
             setDiracSlot(tab);
             currentDiracTab.value = tab;
           }, 100);
-        }
+        // }
       }
 
       function getTotalTrim(channel) {
