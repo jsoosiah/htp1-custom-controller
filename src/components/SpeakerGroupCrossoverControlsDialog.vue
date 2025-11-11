@@ -66,7 +66,7 @@
                       {{ spk.label }} 
 
                       <font-awesome-icon
-                        v-if="spk.code === seatShakerChannel"
+                        v-if="spk.code === seatShakerChannelLocal"
                         :icon="['fas', 'couch']"
                       />
 
@@ -224,7 +224,7 @@
 
       const { mso, showCrossoverControls, calToolConnected,
         executeMacro, commitSpeakerLayout, diracMismatchedChannelGroups,
-        currentLayoutHasMatchingDiracFilter, seatShakerChannel } = useMso();
+        currentLayoutHasMatchingDiracFilter } = useMso();
       const { darkMode } = useLocalStorage();
       const { getActiveChannels, reverseBmg, spgFromGroupsString } = useSpeakerGroups();
 
@@ -239,7 +239,7 @@
       })
 
       const activeChannelsCopy = computed(() => {
-        return getActiveChannels(msoCopy.value.speakers?.groups);
+        return getActiveChannels(msoCopy.value.speakers?.groups, seatShakerChannelLocal.value);
       });
 
       const selectedLayoutHasMatchingDiracFilter = computed(() => {
@@ -312,8 +312,21 @@
         return result;
       });
 
-      function enableSpeakerToggle(spkCode) {
+      const seatShakerChannelLocal = computed(() => {
+        if (mso.value?.speakers?.seatshaker?.present) {
+          for (let i = 5; i >= 1; i--) {
+            if (msoCopy.value?.speakers?.groups[`sub${i}`]?.present) {
+              return `sub${i+1}`;
+            }
+          }
+          return "sub1";
+        }
 
+        return null;
+      });
+
+      function enableSpeakerToggle(spkCode) {
+        
         const result = {
           enabled: true,
           message: '',
@@ -326,13 +339,13 @@
 
           let limit = 16;
           if (spkCode !== 'c' && !spkCode.startsWith('sub')) {
-            limit = 15;
+            limit--;
           }
 
           if (activeChannelsCopy.value.length >= limit && spkCode !== 'lr') {
-            // return false;
+            const seatShakerMessage = seatShakerChannelLocal.value ? " (including seat shaker)" : "";
             result.enabled = false;
-            result.message = 'A maximum of 16 speakers is allowed.';
+            result.message = `A maximum of 16 speakers${seatShakerMessage} is allowed.`;
             return result;
           }
 
@@ -349,7 +362,7 @@
           }
         }
 
-        if (spkCode === seatShakerChannel.value) {
+        if (spkCode === seatShakerChannelLocal.value) {
           result.enabled = spkCode !== 'sub5';
           result.message = 'Seat shaker channel. This channel will be excluded from Dirac calibrations and will not have any filter corrections while Dirac is enabled. ';
           if (!result.enabled) {
@@ -515,7 +528,7 @@
         mso, msoCopy, showCrossoverControls, setSpeakerSizeLocal, setCenterFreqLocal,
         showCrossoverControlsForSpeaker, showCenterFreqControlsForSpeaker, showDolby,
         props, allSpeakerToggles, diracMismatchedChannelGroups, handleCancel, toggleSpeakerGroupLocal,
-        hasUnsavedChanges, unsavedChanges, save, darkMode, seatShakerChannel,
+        hasUnsavedChanges, unsavedChanges, save, darkMode, seatShakerChannelLocal,
         applyProductRulesLocal, currentLayoutHasMatchingDiracFilter, selectedLayoutHasMatchingDiracFilter,
         selectedLayout
       };

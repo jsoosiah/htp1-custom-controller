@@ -109,18 +109,24 @@
             type="checkbox" 
             class="custom-control-input" 
             :checked="mso?.speakers?.seatshaker?.present" 
-            :disabled="mso?.speakers?.groups?.sub5?.present"
+            :disabled="!seatShakerValidation.enabled"
             @click="toggleSeatShaker()"
           >
           <label
+            id="tooltip-container-seat-shaker"
+            v-tooltip="seatShakerValidation"
             class="custom-control-label"
             for="shaker-input"
           >
             Enable Seat Shaker
+
+            <font-awesome-icon 
+              v-if="!seatShakerValidation.enabled && seatShakerValidation.message"
+              :icon="['fas', 'question-circle']"
+            />
           </label>
         </div>
         <small class="form-text text-muted">Enables seat shakers. The first unused subwoofer channel becomes the seat shaker channel. This channel will be excluded from Dirac calibrations and will not have any filter corrections while Dirac is enabled.</small>
-      
     </div>
     <div class="row speaker-map-container">
       <h5>Speaker Map <small class="text-muted">Click image to zoom</small></h5>
@@ -138,6 +144,7 @@
 
   import useMso from '@/use/useMso.js';
   import useResponsive from '@/use/useResponsive.js';
+  import { Tooltip } from '@/directives/Tooltip.js';
 
   import SpeakerGroupCrossoverControlsDialog from './SpeakerGroupCrossoverControlsDialog.vue';
   import SpeakerGroupCrossoverControls from './SpeakerGroupCrossoverControls.vue';
@@ -149,6 +156,9 @@
 
   export default {
     name: 'Speakers',
+    directives: {
+      Tooltip,
+    },
     components: {
       SpeakerDiagram,
       DiracButtonGroup,
@@ -160,7 +170,7 @@
     },
     setup() {
 
-      const { mso, showCrossoverControls, activeChannels, setBassLpf, toggleReinforceBass, toggleSeatShaker } = useMso();
+      const { mso, showCrossoverControls, activeChannels, seatShakerChannel, setBassLpf, toggleReinforceBass, toggleSeatShaker, } = useMso();
       const { isLg } = useResponsive();
       const showSpeakerLayoutDialog = ref(false);
 
@@ -228,6 +238,30 @@
           return new URL(`../assets/${showCrossoverControls.value?'monolith-logo-small.svg':'dirac3.png'}`, import.meta.url).href +'#svgView(preserveAspectRatio(xMidYMid))'
       });
 
+      const seatShakerValidation = computed(() => {
+        const result = {
+          enabled: true,
+          message: '',
+        };
+
+        let seatShakerCount = 0;
+        if (seatShakerChannel.value) {
+          seatShakerCount++;
+        }
+
+        if ((activeChannels.value.length + seatShakerCount) === 16) {
+          result.enabled = false;
+          result.message = "Seat shaker cannot be enabled when 16 speakers are enabled. Reduce the number of enabled speakers to enable seat shaker."
+        }
+
+        if (mso?.value?.speakers?.groups?.sub5?.present) {
+          result.enabled = false;
+          result.message = "Seat shaker cannot be enabled when 5 subwoofers are enabled. Disable subwoofer 5 to enable seat shaker."
+        }
+
+        return result;
+      });
+
       function toggleShowSpeakerLayoutDialog() {
         console.log('toggleShowSpeakerLayoutDialog');
         showSpeakerLayoutDialog.value = !showSpeakerLayoutDialog.value;
@@ -237,7 +271,8 @@
         mso, showCrossoverControls, mainSpeakers, surroundSpeakers, upperSpeakers, 
         setBassLpf, toggleReinforceBass, toggleSeatShaker,
         diagramSpeakerVisibility, speakerGroups, activeChannels, isLg, bmIconUrl,
-        showSpeakerLayoutDialog, toggleShowSpeakerLayoutDialog, displaySeatShakerOptions
+        showSpeakerLayoutDialog, toggleShowSpeakerLayoutDialog, displaySeatShakerOptions, seatShakerValidation,
+        seatShakerChannel
       };
     }
   }

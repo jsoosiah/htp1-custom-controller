@@ -20,7 +20,7 @@
         class="btn btn-sm btn-primary float-right"
         @click="clearVuPeakLevels"
       >
-        Clear Peak Levels
+        Clear Levels
       </button>
     </div>
   </div>

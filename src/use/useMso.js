@@ -569,15 +569,14 @@ const diracBCEnabled = computed(() => {
 });
 
 const seatShakerChannel = computed(() => {
-
   if (mso.value?.speakers?.seatshaker?.present) {
     for (let i = 5; i >= 1; i--) {
       if (mso.value?.speakers?.groups[`sub${i}`]?.present) {
         return `sub${i+1}`;
       }
     }
+    return "sub1";
   }
-
   return null;
 });
 
