@@ -128,5 +128,77 @@ export default function useSpeakerGroups() {
     return (translated);
   }
 
-  return { bmg, reverseBmg, bmgNames, spkName, spgToSp, getActiveChannels, allChannelCodes, reverseAllChannelCodes };
+  function spgFromGroupsString(spg){
+      if (!spg) {
+        return "";
+      }
+      // Generate lm command, but without the "lm"
+      // Compile list of active speaker groups.
+      let mains = 2; // The 'lr' group is always present.
+      let subs = 0;
+      let frontTops = 0;
+      let frontHeights =0;
+      let middleTop = 0;
+      let rearTops = 0;
+      let rearHeights =0;
+      let uppers = 0;
+      let suffix = " ";
+      Object.keys(spg).forEach(x=>
+      {
+        switch(x)
+        {
+            case 'lr':
+                break;
+            case 'c':
+                mains+=spg[x].present?1:0;
+                break;
+            case 'lrs':
+            case 'lrb':
+            case 'lrw':
+                mains+=spg[x].present?2:0;
+                break;
+            case 'lrtf':
+                frontTops+=spg[x].present?2:0;
+                break;
+            case 'lrtm':
+                middleTop+=spg[x].present?2:0;
+                break;
+            case 'lrtr':
+                rearTops+=spg[x].present?2:0;
+                break;
+            case 'lrhf':
+                frontHeights+=spg[x].present?2:0;
+                break;
+            case 'lrhr':
+                rearHeights+=spg[x].present?2:0;
+                break;
+            case 'sub1':
+            case 'sub2':
+            case 'sub3':
+            case 'sub4':
+            case 'sub5':
+                subs+=spg[x].present?1:0;
+                break;
+        }
+      });
+      uppers = frontTops + middleTop + rearTops + frontHeights + rearHeights;
+      if (uppers > 2){
+          if ((frontTops !== 0) && (rearHeights !== 0)) { suffix = "\\"; }
+          if ((frontHeights !== 0) && (rearTops !== 0)) { suffix = "/"; }
+      }
+      if (uppers !== 0){
+          if((frontTops + rearTops) === 0) {suffix = "h";}
+      }
+      if (uppers !== 0){
+          if((frontHeights + rearHeights) === 0) {
+              suffix = "t";
+              if (middleTop !== 0) {
+                  suffix = "";
+              }
+          }
+      }
+      return(mains + '.' + subs + '.' + uppers + suffix).trim();
+  } // end definition of function spgFromGroups
+
+  return { bmg, reverseBmg, bmgNames, spkName, spgToSp, getActiveChannels, allChannelCodes, reverseAllChannelCodes, spgFromGroupsString };
 }

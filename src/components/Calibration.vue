@@ -223,7 +223,7 @@
           v-for="(slot, key) in mso.cal?.slots" 
           :key="key" 
           class="nav-link" 
-          :class="[mso.cal?.currentdiracslot === key ? 'active' : '', filterTypeToCssClass(slot.filterType, slot.name), slot.valid ? '' : '']" 
+          :class="[mso.cal?.currentdiracslot === key ? 'active' : '', filterTypeToCssClass(slot.filterType, slot.name), slot.valid ? '' : 'disabled']" 
           href="javascript:void(0)"
           @click="setDiracTab(key)"
         >
@@ -294,7 +294,7 @@
                 step=".1" 
                 @change="({ type, target }) => setUserDelay(channame, target.value)"
               >
-              <div v-else v-tooltip="{'message': warningMessage}" :id="`tooltipdelay-${channame}`">
+              <div v-else v-tooltip="{'message': warningMessageDelay}" :id="`tooltipdelay-${channame}`">
                 <font-awesome-icon style="position:absolute;"
                         :icon="['fas', 'question-circle']"
                       />
@@ -334,7 +334,7 @@
                 step=".5" 
                 @change="({ type, target }) => setUserTrim(channame, target.value)"
               />
-              <div v-if="!enableUserTrim(channame)" v-tooltip="{'message': warningMessage}" :id="`tooltip-${channame}`">
+              <div v-if="!enableUserTrim(channame)" v-tooltip="{'message': warningMessageTrim}" :id="`tooltip-${channame}`">
                 <font-awesome-icon style="position:absolute;"
                         :icon="['fas', 'question-circle']"
                       />
@@ -416,22 +416,27 @@
                   for="bulk-user-delay"
                   class="col-form-label col-form-label-sm "
                 >User Delay</label>
-                <div class="input-group input-group-sm numeric-input">
-                  <input
-                    id="bulk-user-delay"
-                    v-model="bulkUserDelay"
-                    type="number"
-                    class="form-control"
-                    aria-label="User delay"
-                    aria-describedby="basic-addon2"
-                    min="0"
-                    max="100"
-                  >
-                  <div class="input-group-append">
-                    <span
-                      id="basic-addon2"
-                      class="input-group-text"
-                    >ms</span>
+                <div v-tooltip="{'message': warningMessageDelay}" :id="`tooltipdelay-adv`">
+                  <div class="input-group input-group-sm numeric-input">
+                    <font-awesome-icon style="position:absolute;right:-1rem"
+                      :icon="['fas', 'question-circle']"
+                    />
+                    <input
+                      id="bulk-user-delay"
+                      v-model="bulkUserDelay"
+                      type="number"
+                      class="form-control"
+                      aria-label="User delay"
+                      aria-describedby="basic-addon2"
+                      min="0"
+                      max="100"
+                    >
+                    <div class="input-group-append">
+                      <span
+                        id="basic-addon2"
+                        class="input-group-text"
+                      >ms</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -456,22 +461,27 @@
                   for="bulk-user-trim"
                   class="col-form-label col-form-label-sm "
                 >User Trim</label>
-                <div class="input-group input-group-sm numeric-input">
-                  <input
-                    id="bulk-user-trim"
-                    v-model="bulkUserTrim"
-                    type="number"
-                    class="form-control"
-                    aria-label="User trim"
-                    aria-describedby="basic-addon2"
-                    min="-99"
-                    max="20"
-                  >
-                  <div class="input-group-append">
-                    <span
-                      id="basic-addon2"
-                      class="input-group-text"
-                    >dB</span>
+                <div v-tooltip="{'message': warningMessageTrim}" :id="`tooltiptrim-adv`">
+                  <div class="input-group input-group-sm numeric-input">
+                    <font-awesome-icon style="position:absolute;right:-1rem"
+                      :icon="['fas', 'question-circle']"
+                    />
+                    <input
+                      id="bulk-user-trim"
+                      v-model="bulkUserTrim"
+                      type="number"
+                      class="form-control"
+                      aria-label="User trim"
+                      aria-describedby="basic-addon2"
+                      min="-99"
+                      max="20"
+                    >
+                    <div class="input-group-append">
+                      <span
+                        id="basic-addon2"
+                        class="input-group-text"
+                      >dB</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -570,11 +580,18 @@
       //   return getActiveChannels(mso.value.speakers?.groups);
       // });
 
-      const warningMessage = computed(() => {
+      const warningMessageTrim = computed(() => {
         if (showChannelMuteControls.value) {
           return `When Dirac ${filterTypeToCssClass(diracFilterType.value, true).toUpperCase()} is active, trim is applied before Dirac and should not be edited as doing so would invalidate the calibration. Edit at your own risk.`;
         }
         return `When Dirac ${filterTypeToCssClass(diracFilterType.value, true).toUpperCase()} is active, trim is applied before Dirac and is not editable as doing so would invalidate the calibration.`;
+      });
+
+      const warningMessageDelay = computed(() => {
+        if (showChannelMuteControls.value) {
+          return `When Dirac ${filterTypeToCssClass(diracFilterType.value, true).toUpperCase()} is active, delay is applied before Dirac and should not be edited as doing so would invalidate the calibration. Edit at your own risk.`;
+        }
+        return `When Dirac ${filterTypeToCssClass(diracFilterType.value, true).toUpperCase()} is active, delay is applied before Dirac and is not editable as doing so would invalidate the calibration.`;
       });
 
       function formatDecimal(num) {
@@ -582,14 +599,14 @@
       }
 
       async function setDiracTab(tab) {
-        // if (mso.value?.cal?.slots[tab].valid === true) {
+        if (mso.value?.cal?.slots[tab].valid === true) {
           currentDiracTab.value = null;
         
           setTimeout(() => {
             setDiracSlot(tab);
             currentDiracTab.value = tab;
           }, 100);
-        // }
+        }
       }
 
       function getTotalTrim(channel) {
@@ -651,7 +668,7 @@
         diracMismatchedChannels, darkMode, targetChannels, bulkUserDelay, bulkUserTrim,
         setUserDelaySelectedChannels, setUserTrimSelectedChannels, currentLayoutHasMatchingDiracFilter,
         filterTypeToCssClass, showCrossoverControls, enableUserTrim, enableUserDelay, getTotalTrim, seatShakerChannel,
-        diracFilterType, warningMessage
+        diracFilterType, warningMessageTrim, warningMessageDelay
       };
     }
   }

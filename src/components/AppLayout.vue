@@ -370,6 +370,7 @@ import PowerDialog from './PowerDialog.vue';
 
 import HomeIcon from './icons/HomeIcon.vue';
 import CalibrationIcon from './icons/CalibrationIcon.vue';
+import BalanceIcon from './icons/BalanceIcon.vue';
 import FilteredBassEqIcon from './icons/FilteredBassEqIcon.vue';
 import PeqIcon from './icons/PeqIcon.vue';
 import ToneControlIcon from './icons/ToneControlIcon.vue';
@@ -397,6 +398,7 @@ export default {
     BluetoothPairingRequest,
     PowerDialog,
     CalibrationIcon,
+    BalanceIcon,
     PeqIcon,
     ToneControlIcon,
     LoudnessIcon,
@@ -691,6 +693,7 @@ export default {
     /* width:auto; */
     /* background: rgba(255,0,0,.5); */
     text-align:center;
+    z-index:999999999;
   }
 
   .menu-btn {

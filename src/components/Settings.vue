@@ -72,6 +72,7 @@ import useLocalStorage from '@/use/useLocalStorage.js';
 
 import HomeIcon from './icons/HomeIcon.vue';
 import CalibrationIcon from './icons/CalibrationIcon.vue';
+import BalanceIcon from './icons/BalanceIcon.vue';
 import FilteredBassEqIcon from './icons/FilteredBassEqIcon.vue';
 import PeqIcon from './icons/PeqIcon.vue';
 import ToneControlIcon from './icons/ToneControlIcon.vue';
@@ -95,6 +96,7 @@ export default {
   components: {
     HomeIcon,
     CalibrationIcon,
+    BalanceIcon,
     PeqIcon,
     ToneControlIcon,
     LoudnessIcon,

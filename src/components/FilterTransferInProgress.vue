@@ -14,7 +14,12 @@
         </div>
         <div class="modal-body text-center text-white">
           <p>
-            Dirac Live filter transfer is currently in progress for speaker layout {{ mso.cal?.currentLayout }}.
+            <template v-if="mso.cal?.busy_status_message">
+              {{ mso.cal?.busy_status_message }}
+            </template>
+            <template v-else>
+              Dirac Live filter transfer is currently in progress for speaker layout {{ mso.cal?.currentLayout }}.
+            </template>
 
             <div class="progress-outer-container">
               <div class="progress-inner-container">

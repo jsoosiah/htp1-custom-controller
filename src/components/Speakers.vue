@@ -108,7 +108,7 @@
             id="shaker-input" 
             type="checkbox" 
             class="custom-control-input" 
-            :checked="mso?.sepakers?.seatshaker?.present" 
+            :checked="mso?.speakers?.seatshaker?.present" 
             :disabled="mso?.speakers?.groups?.sub5?.present"
             @click="toggleSeatShaker()"
           >

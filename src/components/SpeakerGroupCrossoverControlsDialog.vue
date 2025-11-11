@@ -1,6 +1,6 @@
 <template>
   <div 
-    id="power-dialog" 
+    id="layout-dialog" 
     class="modal fade show" 
     tabindex="-1" 
     aria-labelledby="settingsModalLabel"
@@ -27,19 +27,6 @@
           </div>
         </div>
         <div class="modal-body text-left">
-          <div
-            v-if="!currentLayoutHasMatchingDiracFilter"
-            class="alert alert-danger small"
-            role="alert"
-          >
-            <div>Dirac Live is disabled; there are no Dirac filters available for the current speaker layout. </div>
-            <div v-if="mso.cal?.currentLayout">
-              Current Layout: {{ mso.cal?.currentLayout }}
-            </div>
-            <div v-if="mso.cal?.availableFilterLayouts">
-              Layouts with Available Dirac Filters: {{ mso.cal?.availableFilterLayouts?.join(", ") }}
-            </div>
-          </div>
           <table class="table table-sm table-striped table-responsive-sm">
             <tbody
               v-for="speakerGroup in props.speakerGroups"
@@ -79,7 +66,7 @@
                       {{ spk.label }} 
 
                       <font-awesome-icon
-                        v-if="spk.code === seatShakerChannelLocal"
+                        v-if="spk.code === seatShakerChannel"
                         :icon="['fas', 'couch']"
                       />
 
@@ -158,7 +145,34 @@
             </tbody>
           </table>
 
+          <div
+            v-if="!currentLayoutHasMatchingDiracFilter && !hasUnsavedChanges"
+            class="alert alert-danger small"
+            role="alert"
+          >
+            <div>Dirac Live is disabled; there are no Dirac filters available for the current speaker layout. </div>
+            <div v-if="mso.cal?.currentLayout">
+              Current Layout: <strong>{{ mso.cal?.currentLayout }}</strong>
+            </div>
+            <div v-if="mso.cal?.availableFilterLayouts">
+              Layouts with Available Dirac Filters: <strong>{{ mso.cal?.availableFilterLayouts?.join(", ") }}</strong>
+            </div>
+          </div>
+        
 
+          <div
+            v-else-if="!selectedLayoutHasMatchingDiracFilter"
+            class="alert alert-danger small"
+            role="alert"
+          >
+            <div>The selected speaker layout has no Dirac calibrations. Saving will result in an empty layout. This is a necessary first step to calibrating that layout. </div>
+            <div v-if="selectedLayout">
+              Selected Layout: <strong>{{ selectedLayout }}</strong>
+            </div>
+            <div v-if="mso.cal?.availableFilterLayouts">
+              Layouts with Available Dirac Filters: <strong>{{ mso.cal?.availableFilterLayouts?.join(", ") }}</strong>
+            </div>
+          </div>
         </div>
 
         <div class="modal-footer" :class="{'text-white': darkMode}">
@@ -210,9 +224,9 @@
 
       const { mso, showCrossoverControls, calToolConnected,
         executeMacro, commitSpeakerLayout, diracMismatchedChannelGroups,
-        currentLayoutHasMatchingDiracFilter } = useMso();
+        currentLayoutHasMatchingDiracFilter, seatShakerChannel } = useMso();
       const { darkMode } = useLocalStorage();
-      const { getActiveChannels, reverseBmg } = useSpeakerGroups();
+      const { getActiveChannels, reverseBmg, spgFromGroupsString } = useSpeakerGroups();
 
       const msoCopy = ref(null);
 
@@ -220,8 +234,17 @@
         msoCopy.value = deepClone(mso.value);
       });
 
+      const selectedLayout = computed(() => {
+        return spgFromGroupsString(msoCopy.value?.speakers?.groups);
+      })
+
       const activeChannelsCopy = computed(() => {
         return getActiveChannels(msoCopy.value.speakers?.groups);
+      });
+
+      const selectedLayoutHasMatchingDiracFilter = computed(() => {
+        console.log(msoCopy.value?.cal?.availableFilterLayouts,selectedLayout.value)
+        return msoCopy.value?.cal?.availableFilterLayouts?.includes(selectedLayout.value);
       });
 
       // rule states the conditions for which the toggle should be enabled
@@ -289,18 +312,6 @@
         return result;
       });
 
-      const seatShakerChannelLocal = computed(() => {
-        if (msoCopy.value?.speakers?.seatshaker?.present) {
-          for (let i = 5; i >= 1; i--) {
-            if (msoCopy.value?.speakers?.groups[`sub${i}`]?.present) {
-              return `sub${i+1}`;
-            }
-          }
-        }
-
-        return null;
-      });
-
       function enableSpeakerToggle(spkCode) {
 
         const result = {
@@ -338,9 +349,12 @@
           }
         }
 
-        if (spkCode === seatShakerChannelLocal.value) {
-          result.enabled = true;
-          result.message = 'Seat shaker channel. This channel will be excluded from Dirac calibrations and will not have any filter corrections while Dirac is enabled.';
+        if (spkCode === seatShakerChannel.value) {
+          result.enabled = spkCode !== 'sub5';
+          result.message = 'Seat shaker channel. This channel will be excluded from Dirac calibrations and will not have any filter corrections while Dirac is enabled. ';
+          if (!result.enabled) {
+            result.message += 'Subwoofer 5 is used by seat shaker channel. Disable seat shaker to enable subwoofer 5.';
+          }
           return result;
         }
 
@@ -374,10 +388,6 @@
 
       function setSpeakerSizeLocal(spkCode, sizeCode) {
         return patchMsoLocal( 'replace', `/speakers/groups/${spkCode}/size`, sizeCode);
-      }
-
-      function toggleSeatShakerLocal() {
-        return patchMsoLocal('replace', '/speakers/seatshaker/present', !msoCopy.value?.speakers?.seatshaker?.present);
       }
 
       function patchMsoLocal(op, path, value) {
@@ -505,8 +515,9 @@
         mso, msoCopy, showCrossoverControls, setSpeakerSizeLocal, setCenterFreqLocal,
         showCrossoverControlsForSpeaker, showCenterFreqControlsForSpeaker, showDolby,
         props, allSpeakerToggles, diracMismatchedChannelGroups, handleCancel, toggleSpeakerGroupLocal,
-        hasUnsavedChanges, unsavedChanges, save, darkMode, seatShakerChannelLocal, toggleSeatShakerLocal,
-        applyProductRulesLocal, currentLayoutHasMatchingDiracFilter
+        hasUnsavedChanges, unsavedChanges, save, darkMode, seatShakerChannel,
+        applyProductRulesLocal, currentLayoutHasMatchingDiracFilter, selectedLayoutHasMatchingDiracFilter,
+        selectedLayout
       };
     }
   }
