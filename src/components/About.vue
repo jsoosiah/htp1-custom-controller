@@ -148,15 +148,6 @@
             >Discussion</a>
           </td>
         </tr>
-        <tr>
-          <th>PayPal</th>
-          <td>
-            <a
-              target="_blank"
-              href="https://www.paypal.com/donate?hosted_button_id=RYBMWSE6SH6WC"
-            >Donate</a>
-          </td>
-        </tr>
       </tbody>
     </table>
   </div>

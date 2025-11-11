@@ -135,7 +135,7 @@
 
       const peakSignalMonitoringEnabled = ref(false);
 
-      let VU_REFRESH_INTERVAL = 2000; // ms
+      let VU_REFRESH_INTERVAL = 500; // ms
       let lastVuReceived = 0;
 
       const vuValToDBFS = [
