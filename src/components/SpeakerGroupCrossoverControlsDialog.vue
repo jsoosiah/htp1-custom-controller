@@ -173,6 +173,13 @@
               Layouts with Available Dirac Filters: <strong>{{ mso.cal?.availableFilterLayouts?.join(", ") }}</strong>
             </div>
           </div>
+
+          <div v-else>
+              <div v-if="selectedLayout">
+                Selected Layout: <strong>{{ selectedLayout }}</strong>
+              </div>
+          </div>
+
         </div>
 
         <div class="modal-footer" :class="{'text-white': darkMode}">

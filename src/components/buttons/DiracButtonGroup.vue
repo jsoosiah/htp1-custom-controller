@@ -16,7 +16,13 @@
     :home-button="props.homeButton"
   />
   <span class="ml-2">
-    <template v-if="diracErrorState === 'GREEN'">
+    <template v-if="diracErrorState === 'INACTIVE'">
+      <span v-tooltip="{'message': 'Dirac filter is not active.'}" :id="`tooltipinactive`">
+        <span class="badge badge-secondary">Inactive</span>
+        <font-awesome-icon class="ml-1" :icon="['fas', 'question-circle']" />
+      </span>
+    </template>
+    <template v-else-if="diracErrorState === 'GREEN'">
       <span v-tooltip="{'message': 'Dirac calibration is active and filters are operating as expected.'}" :id="`tooltipsuccess`">
         <span class="badge badge-success">Active</span>
       </span>

@@ -569,6 +569,11 @@ const diracBCEnabled = computed(() => {
 });
 
 const diracErrorState = computed(() => {
+
+  if (diracNoFilter.value || mso.value?.cal?.diracactive !== "on") {
+    return "INACTIVE";
+  }
+
   if (mso.value?.status?.raw?.DiracError) {
     return "RED";
   }
