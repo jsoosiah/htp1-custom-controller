@@ -196,7 +196,7 @@ function applyProductRules() {
 
     setSpeakerGroupPresent('lrb', spg.lrb.present && spg.lrs.present); // No backs when no surround
     setSpeakerGroupPresent('lrw', spg.lrw.present && spg.lrb.present); // No wides when no backs
-    console.log('lrhf?', spg.lrhf.present && (!spg.lrtf.present));
+    // console.log('lrhf?', spg.lrhf.present && (!spg.lrtf.present));
     setSpeakerGroupPresent('lrhf', spg.lrhf.present && (!spg.lrtf.present)); // No height front if top front present
 
     if ((!spg.lrs.present) && (spg.lrtm.present) && (spg.lrtf.present || spg.lrtr.present || spg.lrhf.present || spg.lrhr.present)) {
@@ -350,7 +350,7 @@ function applyProductRules() {
     }
 
     for (let slot = 0; slot < mso.value.cal.slots.length; slot++) {
-      console.log(slot, typeof mso.value.cal.slots[slot].notes)
+      // console.log(slot, typeof mso.value.cal.slots[slot].notes)
       if (typeof mso.value.cal.slots[slot].notes === 'undefined') {
         initializeDiracSlotNotes(slot);
       }
@@ -566,6 +566,18 @@ const currentDiracSlot = computed(() => {
 
 const diracBCEnabled = computed(() => {
   return ['dirac live bass management', 'dirac live bass control', 'dirac active room treatment'].includes(diracFilterType.value?.toLowerCase());
+});
+
+const diracErrorState = computed(() => {
+  if (mso.value?.status?.raw?.DiracError) {
+    return "RED";
+  }
+
+  if (mso.value?.status?.DiracState && mso.value?.cal?.diracactive && mso.value?.status?.DiracState !== mso.value?.cal?.diracactive) {
+    return "YELLOW";
+  }
+
+  return "GREEN";
 });
 
 const seatShakerChannel = computed(() => {
@@ -1764,7 +1776,7 @@ export default function useMso() {
     currentlyRecordingSlot, setRecordingStarted, setRecordingStopped,
     dismissAlert, resetDismissedAlerts,
     updateVu, clearVuPeakLevels, setVuPeakMode,
-    setSecondVolume, toggleSeatShaker,
+    setSecondVolume, toggleSeatShaker, diracErrorState,
     displayVolume,
     state, loading,
     parseMSO, data, eventHash,

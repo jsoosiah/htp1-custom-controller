@@ -513,7 +513,7 @@ export default {
     watch(
       darkMode,
       () => {
-        console.log('dm watch', darkMode.value);
+        // console.log('dm watch', darkMode.value);
         if (darkMode.value) {
           document.documentElement.setAttribute('data-theme', 'darkMode'); // sets the data-theme attribute
         } else {

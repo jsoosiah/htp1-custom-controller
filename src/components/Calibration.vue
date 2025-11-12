@@ -54,7 +54,7 @@
               Dirac Calibration Delay
             </div>
             <div class="col text-right">
-              {{ formatDecimal(currentDiracSlot?.channels[channame].caldelay) }} ms
+              {{ formatDecimal(getCalDelay(channame)) }} ms
             </div>
           </div>
           <div class="row">
@@ -92,7 +92,7 @@
               Total Delay
             </div>
             <div class="col text-right">
-              {{ formatDecimal((mso.cal?.diracactive=='off' ? 0 : currentDiracSlot?.channels[channame].caldelay) + currentDiracSlot?.channels[channame].delay) }} ms
+              {{ getTotalTrim(channame) }} ms
             </div>
           </div>
           <div class="row">
@@ -100,7 +100,7 @@
               Dirac Calibration Trim 
             </div>
             <div class="col text-right">
-              {{ formatDecimal(currentDiracSlot?.channels[channame].caltrim) }} dB
+              {{ formatDecimal(getCalTrim(channame)) }} dB
             </div>
           </div>
           <div class="row">
@@ -279,9 +279,9 @@
             <td
               class="text-right"
               :class="{'text-muted':mso.cal?.diracactive=='off'}"
-              :title="currentDiracSlot?.channels[channame].caldelay"
+              :title="getCalDelay(channame)"
             >
-              {{ formatDecimal(currentDiracSlot?.channels[channame].caldelay) }}
+              {{ formatDecimal(getCalDelay(channame)) }}
             </td>
             <td class="text-right">
               <input 
@@ -312,16 +312,16 @@
             </td>
             <td 
               class="text-right"
-              :title="currentDiracSlot?.channels[channame].caldelay + currentDiracSlot?.channels[channame].delay"
+              :title="getTotalDelay(channame)"
             >
-              {{ formatDecimal((mso.cal?.diracactive=='off' ? 0 : currentDiracSlot?.channels[channame].caldelay) + currentDiracSlot?.channels[channame].delay) }}
+              {{ getTotalDelay(channame) }}
             </td>
             <td
               class="text-right"
               :class="{'text-muted':mso.cal?.diracactive=='off'}"
-              :title="currentDiracSlot?.channels[channame].caltrim"
+              :title="getCalTrim(channame)"
             >
-              {{ formatDecimal(currentDiracSlot?.channels[channame].caltrim) }}
+              {{ formatDecimal(getCalTrim(channame)) }}
             </td>
             <td class="text-right">
               <input v-if="enableUserTrim(channame)"
@@ -352,7 +352,7 @@
             </td>
             <td
               class="text-right"
-              :title="currentDiracSlot?.channels[channame].caltrim + currentDiracSlot?.channels[channame].trim"
+              :title="getTotalTrim(channame)"
             >
               {{ getTotalTrim(channame) }}
             </td>
@@ -609,17 +609,28 @@
         }
       }
 
+      function getCalDelay(channel) {
+        return (mso.value?.cal?.diracactive=='off' || channel === seatShakerChannel.value) ? 0 : currentDiracSlot.value?.channels[channel].caldelay;
+      }
+
+      function getTotalDelay(channel) {
+        return formatDecimal(getCalDelay(channel) + currentDiracSlot?.value?.channels[channel].delay);
+      }
+
+      function getCalTrim(channel) {
+        return (mso.value?.cal?.diracactive=='off' || channel === seatShakerChannel.value) ? 0 : currentDiracSlot.value?.channels[channel].caltrim;
+      }
+
       function getTotalTrim(channel) {
-        console.log('help!!!');
-        let calTrim = mso.value?.cal?.diracactive=='off' ? 0 : currentDiracSlot.value?.channels[channel].caltrim;
+        let calTrim = getCalTrim(channel);
         let userTrim = 0;
 
-        if (showCrossoverControls.value) {
+        // if (showCrossoverControls.value) {
           userTrim = (currentDiracSlot.value?.channels[channel].mute === true ? currentDiracSlot.value?.channels[channel].preMuteTrim : currentDiracSlot.value?.channels[channel].trim);
-        }
+        // }
         
 
-        console.log('getTotalTrim', channel, calTrim, userTrim);
+        // console.log('getTotalTrim', channel, calTrim, userTrim);
 
         return formatDecimal(calTrim + userTrim);
       }
@@ -668,7 +679,7 @@
         diracMismatchedChannels, darkMode, targetChannels, bulkUserDelay, bulkUserTrim,
         setUserDelaySelectedChannels, setUserTrimSelectedChannels, currentLayoutHasMatchingDiracFilter,
         filterTypeToCssClass, showCrossoverControls, enableUserTrim, enableUserDelay, getTotalTrim, seatShakerChannel,
-        diracFilterType, warningMessageTrim, warningMessageDelay
+        diracFilterType, warningMessageTrim, warningMessageDelay, getCalTrim, getCalDelay, getTotalDelay
       };
     }
   }

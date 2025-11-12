@@ -15,16 +15,39 @@
     :state-value="0"
     :home-button="props.homeButton"
   />
+  <span class="ml-2">
+    <template v-if="diracErrorState === 'GREEN'">
+      <span v-tooltip="{'message': 'Dirac calibration is active and filters are operating as expected.'}" :id="`tooltipsuccess`">
+        <span class="badge badge-success">Active</span>
+      </span>
+    </template>
+    <template v-else-if="diracErrorState === 'YELLOW'">
+      <span v-tooltip="{'message': 'Dirac calibration is in an unexpected state. Try toggling Dirac off and back on to fix it.'}" :id="`tooltipwarning`">
+        <span class="badge badge-warning">Warning</span>
+        <font-awesome-icon class="ml-1" :icon="['fas', 'question-circle']" />
+      </span>
+    </template>
+    <template v-else>
+      <span v-tooltip="{'message': 'Dirac filter has failed to load. Try rebooting the HTP-1 to fix it.'}" :id="`tooltiperror`">
+        <span class="badge badge-danger">Error</span>
+        <font-awesome-icon class="ml-1" :icon="['fas', 'question-circle']" />
+      </span>
+    </template>
+  </span>
 </template>
 
 <script>
 
+  import { Tooltip } from '@/directives/Tooltip.js';
   import useMso from '@/use/useMso.js';
 
   import MultiStateButtonGroup from './MultiStateButtonGroup.vue';
 
   export default {
     name: 'DiracButtonGroup',
+    directives: {
+      Tooltip,
+    },
     components: {
       MultiStateButtonGroup
     },
@@ -34,9 +57,9 @@
     },
     setup(props) {
 
-      const { mso, setDiracOff, diracFilterType, setDiracBypass, setDiracOn, diracNoFilter, filterTypeToCssClass } = useMso();
+      const { mso, setDiracOff, diracFilterType, setDiracBypass, setDiracOn, diracNoFilter, filterTypeToCssClass, diracErrorState } = useMso();
 
-      return { mso, setDiracOff, diracFilterType, setDiracBypass, setDiracOn, diracNoFilter, filterTypeToCssClass, props };
+      return { mso, setDiracOff, diracFilterType, setDiracBypass, setDiracOn, diracNoFilter, filterTypeToCssClass, diracErrorState, props };
     }
   }
 </script>
