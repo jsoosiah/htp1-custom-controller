@@ -387,6 +387,18 @@
       </div>
     </div>
     <template v-if="showChannelMuteControls">
+      <h6>Advanced PEQ Options</h6>
+      <div class="row">
+        <div class="col-auto">
+          <button class="btn btn-sm btn-primary mb-3"
+            @click="toggleShowAdvancedPeqOptionsDialog">
+              Change PEQ Configuration
+          </button>
+          <template v-if="showAdvancedPeqOptionsDialog">
+            <advanced-peq-options-dialog @cancel="toggleShowAdvancedPeqOptionsDialog" />
+          </template>
+        </div>
+      </div>
       <h6>Bulk Edit</h6>
       <div class="row">
         <div class="col-auto">
@@ -544,6 +556,7 @@
   import DiracButtonGroup from './buttons/DiracButtonGroup.vue';
   import TwoStateButton from './buttons/TwoStateButton.vue';
   import DismissableAlert from './buttons/DismissableAlert.vue';
+  import AdvancedPeqOptionsDialog from './AdvancedPeqOptionsDialog.vue';
 
   import { Tooltip } from '@/directives/Tooltip.js';
 
@@ -555,7 +568,8 @@
     components: {
       DiracButtonGroup,
       TwoStateButton,
-      DismissableAlert
+      DismissableAlert,
+      AdvancedPeqOptionsDialog
     },
     setup() {
 
@@ -575,6 +589,7 @@
       const targetChannels = ref([]);
       const bulkUserDelay = ref(0);
       const bulkUserTrim = ref(0);
+      const showAdvancedPeqOptionsDialog = ref(false);
 
       // const activeChannels = computed(() => {
       //   return getActiveChannels(mso.value.speakers?.groups);
@@ -670,6 +685,10 @@
         }
       }
 
+      function toggleShowAdvancedPeqOptionsDialog() {
+        showAdvancedPeqOptionsDialog.value = !showAdvancedPeqOptionsDialog.value;
+      }
+
       return {
         mso, setDiracSlot, setUserTrim, setUserDelay, 
         setMinVolume, setMaxVolume, setMaxOutputLevel, setLipsyncDelay, currentDiracSlot,
@@ -679,7 +698,8 @@
         diracMismatchedChannels, darkMode, targetChannels, bulkUserDelay, bulkUserTrim,
         setUserDelaySelectedChannels, setUserTrimSelectedChannels, currentLayoutHasMatchingDiracFilter,
         filterTypeToCssClass, showCrossoverControls, enableUserTrim, enableUserDelay, getTotalTrim, seatShakerChannel,
-        diracFilterType, warningMessageTrim, warningMessageDelay, getCalTrim, getCalDelay, getTotalDelay
+        diracFilterType, warningMessageTrim, warningMessageDelay, getCalTrim, getCalDelay, getTotalDelay,
+        showAdvancedPeqOptionsDialog, toggleShowAdvancedPeqOptionsDialog
       };
     }
   }
@@ -754,6 +774,10 @@
 
   .card-body .row {
     min-height:2rem;
+  }
+
+  .modal {
+    display: block;
   }
 
 </style>

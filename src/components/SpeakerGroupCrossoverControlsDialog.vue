@@ -220,7 +220,7 @@
   import useSpeakerGroups from '@/use/useSpeakerGroups';
 
   export default {
-    'name': 'SpeakerGroupCrossoverControls',
+    'name': 'SpeakerGroupCrossoverControlsDialog',
     directives: {
       Tooltip
     },
