@@ -92,7 +92,7 @@
               Total Delay
             </div>
             <div class="col text-right">
-              {{ getTotalTrim(channame) }} ms
+              {{ getTotalDelay(channame) }} ms
             </div>
           </div>
           <div class="row">
@@ -580,6 +580,7 @@
         setMuteAllChannelsOff, setMuteAllChannelsOn, toggleAllMuteChannels,
         diracMismatchedChannels, setDiracSlotNotes, currentLayoutHasMatchingDiracFilter,
         filterTypeToCssClass, showCrossoverControls, seatShakerChannel, diracFilterType,
+        diracErrorState
       } = useMso();
       const { spkName } = useSpeakerGroups();
       const { showChannelMuteControls, toggleShowChannelMuteControls, darkMode } = useLocalStorage();
@@ -625,7 +626,7 @@
       }
 
       function getCalDelay(channel) {
-        return (mso.value?.cal?.diracactive=='off' || channel === seatShakerChannel.value) ? 0 : currentDiracSlot.value?.channels[channel].caldelay;
+        return (diracErrorState.value === 'INACTIVE' || channel === seatShakerChannel.value) ? 0 : currentDiracSlot.value?.channels[channel].caldelay;
       }
 
       function getTotalDelay(channel) {
@@ -633,7 +634,7 @@
       }
 
       function getCalTrim(channel) {
-        return (mso.value?.cal?.diracactive=='off' || channel === seatShakerChannel.value) ? 0 : currentDiracSlot.value?.channels[channel].caltrim;
+        return (diracErrorState.value === 'INACTIVE' || channel === seatShakerChannel.value) ? 0 : currentDiracSlot.value?.channels[channel].caltrim;
       }
 
       function getTotalTrim(channel) {
