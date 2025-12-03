@@ -1711,7 +1711,7 @@ function setVuPeakMode() {
 }
 
 function clearVuPeakLevels() {
-  send('avcui "vud 0"');
+  send('avcui "vuc"');
   setVuPeakMode();
 }
 
