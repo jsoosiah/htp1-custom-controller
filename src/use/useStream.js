@@ -48,95 +48,87 @@ const SysPlaybackMode_dolbyAtmos    = 31;
 const SysPlaybackMode_dtsX          = 32;
 const SysPlaybackMode_AuroMatic     = 33;  // replace SysPlaybackMode_Auro3DCodec
 
+const dictionaryDecoder = { // Interpreted playback modes from avController/controller/mso.cpp and /SysUi.cpp
+    "unknown"                                           : ["\xa0",              "",        10],
+    "none"                                              : ["\xa0",              "",        10],
+    "PCM"                                               : ["PCM",               "pcm-icon",          85],
+    "Dolby Digital"                                     : ["Dolby Digital",     "dolby-audio-icon",  143],
+    "Dolby AC3"                                         : ["AC-3",              "dolby-audio-icon",  143], // ?
+    "Dolby Digital Plus (ATMOS, decoded as legacy)"     : ["DD+ Atmos",         "dolby-atmos-icon",  143],
+    "Dolby Digital Plus (ATMOS)"                        : ["DD+ Atmos",         "dolby-atmos-icon",  143],
+    "Dolby Digital Plus"                                : ["DD+",               "dolby-audio-icon",  143],
+    "Dolby Digital Plus (Legacy)"                       : ["DD+",               "dolby-audio-icon",  143], // ?
+    "Dolby TrueHD (ATMOS, decoded as legacy)"           : ["TrueHD Atmos",      "dolby-atmos-icon",  143],
+    "Dolby TrueHD (ATMOS)"                              : ["TrueHD Atmos",      "dolby-atmos-icon",  143],
+    "Dolby TrueHD"                                      : ["TrueHD",            "dolby-audio-icon",  143],
+    "Dolby TrueHD (Legacy)"                             : ["TrueHD",            "dolby-audio-icon",  143], // ?
+    "DTS"                                               : ["DTS",               "dts-icon",          178],
+    "DTS12"                                             : ["DTS",               "dts-icon",          178],
+    "DTS13"                                             : ["DTS",               "dts-icon",          178],
+    "DTS14"                                             : ["DTS",               "dts-icon",          178],
+    "DTS16"                                             : ["DTS",               "dts-icon",          178],
+    "DTS-HD"                                            : ["DTS HD",            "dts-hd-icon",       215],
+    "DTS HD"                                            : ["DTS HD",            "dts-hd-icon",       215], // ?
+    "DTS Legacy"                                        : ["DTS",               "dts-icon",          178],
+    "DTS Matrix"                                        : ["Matrix",            "dts-icon",          178],
+    "DTS Discrete"                                      : ["Discrete",          "dts-icon",          178],
+    "DTS 9624"                                          : ["96/24",             "dts-icon",          178],
+    "DTS 8 channel discrete"                            : ["8 channel",         "dts-icon",          178],
+    "DTS 8 channel"                                     : ["8 channel",         "dts-icon",          178], // ?
+    "DTS HiRes"                                         : ["High Resolution",   "dts-hd-icon",       215],
+    "DTS MA"                                            : ["Master Audio",      "dts-hdma-icon",     169],
+    "DTS Low Bit Rate"                                  : ["Low Bit Rate",      "dts-icon",          178],
+    "DTS Lossless"                                      : ["Lossless",          "dts-icon",          178],
+    "DTS:X"                                             : ["DTS:X",             "dts-x-icon",        153],
+    "DTS:X MA"                                          : ["DTS:X MA",          "dts-x-icon",        153],
+    "DTS: Game"                                         : ["DTS Game",          "dts-icon",          178],
+    "DTS Game"                                          : ["DTS Game",          "dts-icon",          178], // ?
+    "Dolby MAT/PCM"                                     : ["MAT/PCM",           "dolby-atmos-icon",  143],
+    "unknown"                                           : ["\xa0",              "",        10],
+    "Unknown"                                           : ["\xa0",              "",        10], // ?
+    "Auro3D"                                            : ["AURO-3D",           "auro-codec-icon",   70], // ?
+    "LhRh"                                              : ["LhRh",              "",        10], // ?
+    "LtRt"                                              : ["LtRt",              "",        10], // ?
+    "DDEX"                                              : ["DDEX",              "dolby-audio-icon",  143], // ?
+    "DRC"                                               : ["DRC",               "",        10] // ? 
+}
+
+const dictionaryUpmixer = { // Interpreted upmix modes from avController/controller/mso.cpp and /SysUi.cpp
+    "Direct"                : ["Direct",            "pcm-icon",          85],
+    "Dolby Surround"        : ["Dolby Surround",    "dolby-audio-icon",  143],
+    "DTS Neural:X"          : ["Neural:X",          "dts-icon",          178],
+    "Auro3D"                : ["AURO-3D",           "auro-codec-icon",         112],
+    "AuroMatic"             : ["Auromatic",         "auromatic-cropped-icon",    102],
+    "AuroMatic upmixed"     : ["Auromatic",         "auromatic-cropped-icon",    102], // ?
+    "Auro3D decoded"        : ["AURO-3D",           "auro-codec-icon",         112], // ?
+    "MultiChannel Stereo"   : ["All Stereo",        "stereo-icon",       85],
+    "MultiChannel Mono"     : ["All Mono",          "mono-icon",         85],
+    "Native"                : ["Native",            "pcm-icon",          85],
+    "Native Dolby"          : ["Native",            "dolby-audio-icon",  143],
+    "Native DTS"            : ["Native",            "dts-icon",          178],
+    "Wide Synth"            : ["Wide Synth",        "",        10],
+    "Native Dolby ATMOS"    : ["Native Atmos",      "dolby-atmos-icon",  143],
+    "Native DTS:X"          : ["Native DTS:X",      "dts-x-icon",        153],
+    "unrecognized"          : ["None",              "",        10],
+    "None"                  : ["None",              "",        10] // ?
+}
+
 export default function useStream() {
     // Exports
     function streamTypeIcon(arg) {
-        if (!arg) return '';
-        if (!arg.raw) return '';
-
-        switch (arg.raw.streamType) {
-            case DAE_DECODE_PCM:
-                return 'pcm-icon';
-            case DAE_DECODE_AC3:
-                return 'dolby-audio-white-icon'; // Dolby Digital
-            case DAE_DECODE_DDP:
-                if (arg.raw.streamInfoBytes[0] & STREAM_INFO_FLAGS_DA_ATMOS) {
-                    if (arg.raw.streamInfoBytes[0] & STREAM_INFO_FLAGS_DD_CANT_DECODE_ATMOS)
-                        return 'dolby-atmos-white-icon'; // Legacy
-                    else
-                        return 'dolby-atmos-white-icon';
-                }
-                else
-                    return 'dolby-audio-white-icon'; // Dolby Digital Plus
-            case DAE_DECODE_THD:
-                if (arg.raw.streamInfoBytes[0] & STREAM_INFO_FLAGS_DA_ATMOS) {
-                    if (arg.raw.streamInfoBytes[0] & STREAM_INFO_FLAGS_DD_CANT_DECODE_ATMOS)
-                        return 'dolby-atmos-white-icon'; // Legacy
-                    else
-                        return 'dolby-atmos-white-icon';
-                }
-                else
-                    return 'dolby-audio-white-icon'; // Dolby TrueHD
-            case DAE_DECODE_STREAM_TYPE_MAT_PCM_CHANNEL:       // Dolby MAT
-                return 'pcm-icon';
-            case DAE_DECODE_STREAM_TYPE_MAT_PCM_OBJECT:       // Dolby Atmos
-                return 'dolby-atmos-white-icon';  
-
-            case DAE_DECODE_DTS_STREAM_TYPE_DTS_X:
-            case DAE_DECODE_DTS_STREAM_TYPE_DTS_X_MA:
-            case DAE_DECODE_DTS_STREAM_TYPE_DTS_X_GAME:
-                return 'dts-x-white-icon';
-            case DAE_DECODE_DTS_STREAM_TYPE_MA:
-                return 'dts-hdma-white-icon';
-            case DAE_DECODE_DTSHD:
-            case DAE_DECODE_DTS_STREAM_TYPE_HIRES:
-                return 'dts-hd-white-icon';
-            case DAE_DECODE_DTS:
-            case DAE_DECODE_DTS12:
-            case DAE_DECODE_DTS13:
-            case DAE_DECODE_DTS14:
-            case DAE_DECODE_DTS16:
-            case DAE_DECODE_DTS_STREAM_TYPE_LEGACY:
-            case DAE_DECODE_DTS_STREAM_TYPE_ES_MATRIX:
-            case DAE_DECODE_DTS_STREAM_TYPE_ES_DISCRETE:
-            case DAE_DECODE_DTS_STREAM_TYPE_9624:
-            case DAE_DECODE_DTS_STREAM_TYPE_ES_8CH_DISCRETE:
-            case DAE_DECODE_DTS_STREAM_TYPE_LBR:
-            case DAE_DECODE_DTS_STREAM_TYPE_LOSSLESS:
-                // DTS "other" image.
-                return 'dts-white-icon';
-            default:
-                return '';
+        if (Object.prototype.hasOwnProperty.call(dictionaryDecoder, arg?.DECSourceProgram)) {
+            return dictionaryDecoder[arg.DECSourceProgram][1];
         }
+
+        return '';
     }
     function upmixerIcon(arg) {
-        if (!arg) return '';
-        if (!arg.raw) return '';
-        switch (arg.raw.streamInfoBytes[1])             {
-            case SysPlaybackMode_none:
-            case SysPlaybackMode_multiChStereo:
-            case SysPlaybackMode_mono:
-            case SysPlaybackMode_multiChMono:
-            case SysPlaybackMode_direct:
-                return 'direct-icon'
-            case SysPlaybackMode_Native:
-                return '';
-            case SysPlaybackMode_stereo:
-                return 'stereo-icon';
-            case SysPlaybackMode_dolbySurround:
-                return 'dolby-audio-white-icon';
-            case SysPlaybackMode_dolbyAtmos:
-                return 'dolby-atmos-white-icon';
-            case SysPlaybackMode_dtsX:
-            case SysPlaybackMode_dtsNeuralX:
-                return 'dts-white-icon';
-            case SysPlaybackMode_Auro3D:
-                return 'auro-codec-icon';
-            case SysPlaybackMode_AuroMatic:
-                return 'auromatic-cropped-icon';
-        default:
-                return '';
+        if (Object.prototype.hasOwnProperty.call(dictionaryUpmixer, arg?.SurroundMode)) {
+            return dictionaryUpmixer[arg.SurroundMode][1];
         }
+
+        return '';
+
     }
 
     return { streamTypeIcon, upmixerIcon };
