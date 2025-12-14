@@ -604,11 +604,11 @@
       const targetCloneChannels = ref([]);
 
       const peqEnabled = computed(() => {
-        return mso?.value?.location === "pre" || delayPeqAllowed.value !== 'blocked' || mso.value.cal.diracactive !== 'on';
+        return mso?.value?.peq.location === "pre" || delayPeqAllowed.value !== 'blocked' || mso.value.cal.diracactive !== 'on';
       });
 
       const peqWarning = computed(() => {
-        return mso?.value?.location !== "pre" && delayPeqAllowed.value !== 'OK' && mso.value.cal.diracactive === 'on';
+        return mso?.value?.peq.location !== "pre" && delayPeqAllowed.value !== 'OK' && mso.value.cal.diracactive === 'on';
       });
 
       // const activeChannels = computed(() => {
@@ -897,7 +897,6 @@
 
       function bandInvalid(channel, slot) {
         // slot.channels[activeChannels[selectedChannel]].bypass
-        console.log(channel, slot)
         return !peqEnabled.value && (mso?.value?.peq?.slots[slot].channels[channel].FilterType === 3 || mso?.value?.peq?.slots[slot].channels[channel].gaindB !== 0);
       }
 
