@@ -1,4 +1,4 @@
-<template>{{ delayPeqAllowed }} {{ trimAllowed }}
+<template>
   <div class="transition-container">
     <template v-if="isMobileMode">
       <h5>Dirac Live Filters <br><small class="text-muted ">up to {{ mso?.cal?.num_dirac_slots }} slots available</small></h5>
@@ -631,7 +631,7 @@
       });
 
       const warningMessageTrim = computed(() => {
-        const baseMsg = `Trim is applied after the Dirac Live ${filterTypeToCssClass(diracFilterType.value, true).toUpperCase()} filter runs. Changing the trim value here damages the Dirac Live ${filterTypeToCssClass(diracFilterType.value, true).toUpperCase()} filter. Look to the balance page where channel trims are safely adjusted.`;
+        const baseMsg = `The Dirac Live ${filterTypeToCssClass(diracFilterType.value, true).toUpperCase()} filter carefully calibrates the trim. Changing the trim here destroys the Dirac Live ${filterTypeToCssClass(diracFilterType.value, true).toUpperCase()} effect. Look to the balance page where channel trims are safely adjusted pre-Dirac Live.`;
         if (trimAllowed.value === 'warn') {
           return baseMsg + " Edit at your own risk.";
         }
