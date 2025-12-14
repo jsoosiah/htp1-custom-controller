@@ -46,7 +46,10 @@
         <speaker-group-crossover-controls :speaker-groups="speakerGroups" @show="toggleShowSpeakerLayoutDialog" />
       </div>
       <div class="col-lg-5">
-        <SpeakerDiagram :class="diagramSpeakerVisibility" />
+        <speaker-diagram :class="diagramSpeakerVisibility" />
+            <div v-if="mso.cal?.currentLayout" class="text-center">
+              Current Layout: <strong>{{ mso.cal?.currentLayout }}</strong>
+            </div>
       </div>
     </div>
     <div
