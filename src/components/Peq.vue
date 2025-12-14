@@ -67,7 +67,7 @@
           alert-key="peq-pre"
           class="alert-warning"
         >
-          PEQ is applied pre-Dirac. PEQ controls on subwoofer channels will have no effect. 
+          PEQ is applied pre-Dirac. PEQ controls on Subwoofer 1 will act on the LFE channel and controls on other subwoofer channels will have no effect. 
         </dismissable-alert>
       </div>
     </div>

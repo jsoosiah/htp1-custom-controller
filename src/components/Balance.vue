@@ -5,6 +5,18 @@
         <h5>Balance</h5>
       </div>
     </div>
+    <div
+      class="row"
+    >
+      <div class="col">
+        <dismissable-alert
+          alert-key="balance-info"
+          class="alert-info"
+        >
+          Balance controls are applied pre-Dirac and pre-bass-management.
+        </dismissable-alert>
+      </div>
+    </div>
     <div class="row">
       <h6>
         Channel Trim
@@ -65,10 +77,12 @@ import useLocalStorage from '@/use/useLocalStorage';
 import useSpeakerGroups from '@/use/useSpeakerGroups.js';
 
 import TwoStateButton from './buttons/TwoStateButton.vue';
+import DismissableAlert from './buttons/DismissableAlert.vue';
 
 export default {
   components: {
-    TwoStateButton
+    TwoStateButton,
+    DismissableAlert
   },
   setup() {
 
