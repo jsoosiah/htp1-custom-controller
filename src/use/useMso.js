@@ -568,6 +568,18 @@ const diracBCEnabled = computed(() => {
   return ['dirac live bass management', 'dirac live bass control', 'dirac active room treatment'].includes(diracFilterType.value?.toLowerCase());
 });
 
+const currentDiracFilterType = computed(() => {
+  const filterType = filterTypeToCssClass(currentDiracSlot?.value?.filterType, true).toUpperCase();
+  if (filterType === 'RC' || 'BC' || 'ART') {
+    return filterType;
+  }
+  return 'RC';
+});
+
+const delayPeqAllowed = computed(() => {
+  return mso?.value?.cal.post_delay_peq[currentDiracFilterType.value];
+});
+
 const diracErrorState = computed(() => {
 
   if (diracNoFilter.value || mso.value?.cal?.diracactive !== "on") {
@@ -1192,14 +1204,24 @@ function setPEQGain(channel, slot, gain) {
 }
 
 function setPEQQuality(channel, slot, q) {
-
-  let qValue = convertFloat(q, 1.0, .1, 10.0);
+  const filterType = mso?.value?.peq.slots[slot].channels[channel].FilterType;
+  const minQ = filterType === 3 ? 0 : 0.1;
+  let qValue = convertFloat(q, 1.0, minQ, 10.0);
 
   return patchMso( 'replace', `/peq/slots/${slot}/channels/${channel}/Q`, qValue);
 }
 
 function setPEQFilterType(channel, slot, filterType) {
-  return patchMso( 'replace', `/peq/slots/${slot}/channels/${channel}/FilterType`, parseInt(filterType));
+  let setQ = true;
+  const currentQ = mso?.value?.peq.slots[slot].channels[channel].Q;
+  console.log("cq", currentQ)
+  if (filterType !== 3 && currentQ <= 0.1) {
+    setQ = setPEQQuality(channel, slot, 0.1);
+  }
+
+  const setFilterType = patchMso( 'replace', `/peq/slots/${slot}/channels/${channel}/FilterType`, parseInt(filterType));
+
+  return setQ && setFilterType;
 }
 
 function setPEQBypassOn(channel, slot) {
@@ -1782,6 +1804,7 @@ export default function useMso() {
     dismissAlert, resetDismissedAlerts,
     updateVu, clearVuPeakLevels, setVuPeakMode,
     setSecondVolume, toggleSeatShaker, diracErrorState,
+    delayPeqAllowed, currentDiracFilterType,
     displayVolume,
     state, loading,
     parseMSO, data, eventHash,
