@@ -150,12 +150,12 @@
             class="alert alert-danger small"
             role="alert"
           >
-            <div>Dirac Live is disabled; there are no Dirac filters available for the current speaker layout. </div>
+            <div>Dirac Live is disabled; there are no Dirac Live filters available for the current speaker layout. </div>
             <div v-if="mso.cal?.currentLayout">
               Current Layout: <strong>{{ mso.cal?.currentLayout }}</strong>
             </div>
             <div v-if="mso.cal?.availableFilterLayouts">
-              Layouts with Available Dirac Filters: <strong>{{ mso.cal?.availableFilterLayouts?.join(", ") }}</strong>
+              Layouts with Available Dirac Live Filters: <strong>{{ mso.cal?.availableFilterLayouts?.join(", ") }}</strong>
             </div>
           </div>
         
@@ -165,12 +165,12 @@
             class="alert alert-danger small"
             role="alert"
           >
-            <div>The selected speaker layout has no Dirac calibrations. Saving will result in an empty layout. This is a necessary first step to calibrating that layout. </div>
+            <div>The selected speaker layout has no Dirac Live calibrations. Saving will result in an empty layout. This is a necessary first step to calibrating that layout. </div>
             <div v-if="selectedLayout">
               Selected Layout: <strong>{{ selectedLayout }}</strong>
             </div>
             <div v-if="mso.cal?.availableFilterLayouts">
-              Layouts with Available Dirac Filters: <strong>{{ mso.cal?.availableFilterLayouts?.join(", ") }}</strong>
+              Layouts with Available Dirac Live Filters: <strong>{{ mso.cal?.availableFilterLayouts?.join(", ") }}</strong>
             </div>
           </div>
 
@@ -371,7 +371,7 @@
 
         if (spkCode === seatShakerChannelLocal.value) {
           result.enabled = spkCode !== 'sub5';
-          result.message = 'Seat shaker channel. This channel will be excluded from Dirac calibrations and will not have any filter corrections while Dirac is enabled. ';
+          result.message = 'Seat shaker channel. This channel will be excluded from Dirac Live calibrations and will not have any filter corrections while Dirac Live is enabled. ';
           if (!result.enabled) {
             result.message += 'Subwoofer 5 is used by seat shaker channel. Disable seat shaker to enable subwoofer 5.';
           }

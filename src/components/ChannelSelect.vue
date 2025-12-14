@@ -34,7 +34,7 @@
                 :id="`tooltip-container-left-${channame}-${secondChannel}`"
                 v-tooltip="{
                   enabled: !(showTooltip(channame)),
-                  message: 'Individual subwoofer channels are unavailable when Dirac Bass Control is enabled; Subwoofer 1 sends signal to all subwoofers.'
+                  message: 'Individual subwoofer channels are unavailable when Dirac Live Bass Control is enabled; Subwoofer 1 sends signal to all subwoofers.'
                 }"
                 :icon="['fas', 'question-circle']"
               />

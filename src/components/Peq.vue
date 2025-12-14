@@ -67,7 +67,7 @@
           alert-key="peq-pre"
           class="alert-warning"
         >
-          PEQ is applied pre-Dirac. PEQ controls on Subwoofer 1 will act on the LFE channel and controls on other subwoofer channels will have no effect. 
+          PEQ is applied pre-Dirac Live. PEQ controls on Subwoofer 1 will act on the LFE channel and controls on other subwoofer channels will have no effect. 
         </dismissable-alert>
       </div>
     </div>
@@ -386,7 +386,7 @@
             class="btn btn-sm btn-primary mb-3"
             @click="downloadSingleChannelTargetCurve(activeChannels[selectedChannel])"
           >
-            Export {{ spkName(activeChannels[selectedChannel]) }} PEQ to Dirac Target Curve
+            Export {{ spkName(activeChannels[selectedChannel]) }} PEQ to Dirac Live Target Curve
           </button>
         </div>
       </div>
@@ -901,7 +901,7 @@
       }
 
       const warningMessagePeq = computed(() => {
-        const baseMsg = `The Dirac ${filterTypeToCssClass(diracFilterType.value, true).toUpperCase()} filter carefully aligns the phase. Applying PEQ destroys the ART effect.`
+        const baseMsg = `The Dirac Live ${filterTypeToCssClass(diracFilterType.value, true).toUpperCase()} filter carefully aligns the phase. Applying PEQ destroys the Dirac Live ${filterTypeToCssClass(diracFilterType.value, true).toUpperCase()} effect.`
         if (delayPeqAllowed.value === 'warn') {
           return baseMsg + " Edit at your own risk.";
         }

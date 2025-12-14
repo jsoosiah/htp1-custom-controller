@@ -30,7 +30,7 @@
           <th>Visible on Homepage</th>
           <th>Sound Mode*</th>
           <th>Delay (ms)*</th>
-          <th>Dirac Slot*</th>
+          <th>Dirac Live Slot*</th>
           <th>Run Macro*</th>
           <th>UHD Capable</th>
           <th v-if="mso.stat?.displayAdvancedSettings">

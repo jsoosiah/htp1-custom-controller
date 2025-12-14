@@ -5,7 +5,7 @@
     </div>
     <div class="row">
       <dismissable-alert alert-key="speaker-bm">
-        If the current Dirac Filter Slot has Bass Control and Dirac is On, speaker size and crossover controls are unavailable and must be configured using the Dirac software. Speaker sizes and crossovers can be changed if Dirac is off or in bypass mode.
+        If the current Dirac Live Filter Slot has Bass Control and Dirac Live is On, speaker size and crossover controls are unavailable and must be configured using the Dirac Live software. Speaker sizes and crossovers can be changed if Dirac Live is off or in bypass mode.
       </dismissable-alert>
     </div>
     <div class="row">
@@ -14,7 +14,7 @@
         alert-key="speaker-filter-mismatch"
         class="alert-warning"
       >
-        The selected Dirac calibration does not match the current speaker configuration. Uncalibrated channels are highlighted.
+        The selected Dirac Live calibration does not match the current speaker configuration. Uncalibrated channels are highlighted.
       </dismissable-alert>
     </div>
     <div class="row alert-row">
@@ -29,7 +29,7 @@
             Current bass manager: <img
               class="bm-icon"
               :src="bmIconUrl"
-            > <span class="bm-status">{{ showCrossoverControls ? 'HTP-1' : 'Dirac' }}</span>
+            > <span class="bm-status">{{ showCrossoverControls ? 'HTP-1' : 'Dirac Live' }}</span>
           </h6>
         </div>
       </div>
@@ -129,7 +129,7 @@
             />
           </label>
         </div>
-        <small class="form-text text-muted">Enables seat shakers. The first unused subwoofer channel becomes the seat shaker channel. This channel will be excluded from Dirac calibrations and will not have any filter corrections while Dirac is enabled.</small>
+        <small class="form-text text-muted">Enables seat shakers. The first unused subwoofer channel becomes the seat shaker channel. This channel will be excluded from Dirac Live calibrations and will not have any filter corrections while Dirac Live is enabled.</small>
     </div>
     <div class="row speaker-map-container">
       <h5>Speaker Map <small class="text-muted">Click image to zoom</small></h5>

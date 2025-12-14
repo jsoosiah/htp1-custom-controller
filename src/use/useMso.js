@@ -1373,7 +1373,6 @@ function setInputDelay(input, delayStr) {
 }
 
 function initializeInputDiracSlot(input) {
-  console.log('init dirac?')
   return patchMso('add', `/inputs/${input}/diracslot`, null);
 }
 

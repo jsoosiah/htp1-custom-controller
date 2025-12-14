@@ -276,7 +276,7 @@
       <div class="row">
         <h6>Headroom</h6>
         <dismissable-alert alert-key="volume-headroom">
-          When the analog volume is as high as it can go, the digital volume begins to be turned up.  Eventually loud passages may clip.  When the volume is turned down, the digital volume is reduced until the specified amount of headroom is available.  Then the analog volume control takes over.  The default headroom is 12dB.  If your system includes a lot of bass boost from Dirac or PEQ you may want to specify more headroom.
+          When the analog volume is as high as it can go, the digital volume begins to be turned up.  Eventually loud passages may clip.  When the volume is turned down, the digital volume is reduced until the specified amount of headroom is available.  Then the analog volume control takes over.  The default headroom is 12dB.  If your system includes a lot of bass boost from Dirac Live or PEQ you may want to specify more headroom.
         </dismissable-alert>
       </div>
       <div class="row">

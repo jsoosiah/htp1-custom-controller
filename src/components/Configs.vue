@@ -52,9 +52,9 @@
     </div>
     <div class="row">
       <div class="col-auto">
-        <h5>Import/Export Dirac Filters</h5>
+        <h5>Import/Export Dirac Live Filters</h5>
         <p>
-          Follow this link to the <a :href="`http://${websocketIp}/dirac.html`">Dirac Filters Export/Import Tools</a>.
+          Follow this link to the <a :href="`http://${websocketIp}/dirac.html`">Dirac Live Filters Export/Import Tools</a>.
         </p>
       </div>
     </div>

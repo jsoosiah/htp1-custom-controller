@@ -34,7 +34,7 @@
     v-if="calToolConnected"
     class="fixed-top mx-auto"
   >
-    <span class="sgen-on-warning">Dirac Calibration in Progress - Currently in Readonly Mode</span>
+    <span class="sgen-on-warning">Dirac Live Calibration in Progress - Currently in Readonly Mode</span>
   </div>
   <div
     v-if="diracFilterTransferInProgress"

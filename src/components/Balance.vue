@@ -13,7 +13,7 @@
           alert-key="balance-info"
           class="alert-info"
         >
-          Balance controls are applied pre-Dirac and pre-bass-management.
+          Balance controls are applied pre-Dirac Live and pre-bass-management.
         </dismissable-alert>
       </div>
     </div>

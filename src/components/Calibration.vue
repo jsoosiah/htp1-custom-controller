@@ -22,7 +22,7 @@
       </div>
 
       <div class="form-group">
-        <label for="diracSlot">Dirac Slot</label>
+        <label for="diracSlot">Dirac Live Slot</label>
         <select
           id="diracSlot"
           class="form-control"
@@ -52,7 +52,7 @@
         <div class="card-body">
           <div class="row">
             <div class="col small">
-              Dirac Calibration Delay
+              Dirac Live Calibration Delay
             </div>
             <div class="col text-right">
               {{ formatDecimal(getCalDelay(channame)) }} ms
@@ -98,7 +98,7 @@
           </div>
           <div class="row">
             <div class="col small">
-              Dirac Calibration Trim 
+              Dirac Live Calibration Trim 
             </div>
             <div class="col text-right">
               {{ formatDecimal(getCalTrim(channame)) }} dB
@@ -178,7 +178,7 @@
         alert-key="calibration-filter-mismatch"
         class="alert-warning"
       >
-        The selected Dirac calibration does not match the current speaker configuration. Uncalibrated speakers are highlighted.
+        The selected Dirac Live calibration does not match the current speaker configuration. Uncalibrated speakers are highlighted.
       </dismissable-alert>
 
       <div
@@ -186,12 +186,12 @@
         class="alert alert-danger small"
         role="alert"
       >
-        <div>Dirac Live is disabled; there are no Dirac filters available for the current speaker layout. </div>
+        <div>Dirac Live is disabled; there are no Dirac Live filters available for the current speaker layout. </div>
         <div v-if="mso.cal?.currentLayout">
           Current Layout: {{ mso.cal?.currentLayout }}
         </div>
         <div v-if="mso.cal?.availableFilterLayouts">
-          Layouts with Available Dirac Filters: {{ mso.cal?.availableFilterLayouts?.join(", ") }}
+          Layouts with Available Dirac Live Filters: {{ mso.cal?.availableFilterLayouts?.join(", ") }}
         </div>
       </div>
       <div class="row justify-content-between mb-3">
@@ -237,7 +237,7 @@
           <tr>
             <th>Speaker</th>
             <th class="text-right">
-              Dirac Calibration<br>Delay (ms)
+              Dirac Live Calibration<br>Delay (ms)
             </th>
             <th class="text-right">
               User Delay (ms)
@@ -246,7 +246,7 @@
               Total Delay (ms)
             </th>
             <th class="text-right">
-              Dirac Calibration<br>Trim (dB)
+              Dirac Live Calibration<br>Trim (dB)
             </th>
             <th class="text-right">
               User Trim (dB)
@@ -589,8 +589,7 @@
       });
 
       const warningMessageTrim = computed(() => {
-        const baseMsg = `Trim is applied after the Dirac ${filterTypeToCssClass(diracFilterType.value, true).toUpperCase()} filter runs. Changing the trim value here damages the Dirac ${filterTypeToCssClass(diracFilterType.value, true).toUpperCase()} filter. Look to the balance page where channel trims are safely adjusted.`;
-        console.log("trimAllowed?", trimAllowed.value);
+        const baseMsg = `Trim is applied after the Dirac Live ${filterTypeToCssClass(diracFilterType.value, true).toUpperCase()} filter runs. Changing the trim value here damages the Dirac Live ${filterTypeToCssClass(diracFilterType.value, true).toUpperCase()} filter. Look to the balance page where channel trims are safely adjusted.`;
         if (trimAllowed.value === 'warn') {
           return baseMsg + " Edit at your own risk.";
         }
@@ -598,8 +597,7 @@
       });
 
       const warningMessageDelay = computed(() => {
-        const baseMsg = `The Dirac ${filterTypeToCssClass(diracFilterType.value, true).toUpperCase()} filter carefully calibrates the delay. Changing the delay destroys the ART effect.`
-        console.log("delayPeqAllowed?", delayPeqAllowed.value);
+        const baseMsg = `The Dirac Live ${filterTypeToCssClass(diracFilterType.value, true).toUpperCase()} filter carefully calibrates the delay. Changing the delay destroys the Dirac Live ${filterTypeToCssClass(diracFilterType.value, true).toUpperCase()} effect.`
         if (delayPeqAllowed.value === 'warn') {
           return baseMsg + " Edit at your own risk.";
         }

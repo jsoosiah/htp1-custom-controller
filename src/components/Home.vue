@@ -383,7 +383,7 @@
               class="settings-link"
               :to="`/settings/calibration`"
             >
-              Dirac Slot Select
+              Dirac Live Slot Select
             </router-link>
           </h5>
           <div class="diracslot-container my-3">
