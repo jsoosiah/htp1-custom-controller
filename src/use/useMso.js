@@ -577,7 +577,7 @@ const currentDiracFilterType = computed(() => {
 });
 
 const delayPeqAllowed = computed(() => {
-  return mso?.value?.cal.post_delay_peq[currentDiracFilterType.value];
+  return mso?.value?.cal.post_delay_peq[currentDiracSlot?.value?.filterType];
 });
 
 const diracErrorState = computed(() => {

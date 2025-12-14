@@ -1,4 +1,4 @@
-<template>
+<template>{{ delayPeqAllowed }} {{ trimAllowed }}
   <div class="transition-container">
     <template v-if="isMobileMode">
       <h5>Dirac Live Filters <br><small class="text-muted ">up to {{ mso?.cal?.num_dirac_slots }} slots available</small></h5>
@@ -418,7 +418,7 @@
                   for="bulk-user-delay"
                   class="col-form-label col-form-label-sm "
                 >User Delay</label>
-                <div v-tooltip="{'message': warningMessageDelay}" :id="`tooltipdelay-adv`">
+                <div v-tooltip="{'message': warningMessageDelay}" :id="`tooltipdelay-adv`" v-if="delayPeqAllowed !== 'OK'">
                   <div class="input-group input-group-sm numeric-input">
                     <font-awesome-icon style="position:absolute;right:-1rem"
                       :icon="['fas', 'question-circle']"
@@ -442,6 +442,27 @@
                     </div>
                   </div>
                 </div>
+
+                  <div v-else class="input-group input-group-sm numeric-input">
+                    <input
+                      id="bulk-user-delay"
+                      v-model="bulkUserDelay"
+                      type="number"
+                      class="form-control"
+                      aria-label="User delay"
+                      aria-describedby="basic-addon2"
+                      min="0"
+                      max="100"
+                      :disabled="!enableUserDelayBulk()"
+                    >
+                    <div class="input-group-append">
+                      <span
+                        id="basic-addon2"
+                        class="input-group-text"
+                      >ms</span>
+                    </div>
+                  </div>
+
               </div>
             </div>
             <div class="col-auto">
@@ -464,7 +485,7 @@
                   for="bulk-user-trim"
                   class="col-form-label col-form-label-sm "
                 >User Trim</label>
-                <div v-tooltip="{'message': warningMessageTrim}" :id="`tooltiptrim-adv`">
+                <div v-tooltip="{'message': warningMessageTrim}" :id="`tooltiptrim-adv`" v-if="trimAllowed !== 'OK'">
                   <div class="input-group input-group-sm numeric-input">
                     <font-awesome-icon style="position:absolute;right:-1rem"
                       :icon="['fas', 'question-circle']"
@@ -478,7 +499,7 @@
                       aria-describedby="basic-addon2"
                       min="-99"
                       max="20"
-                      :disabled="!enableUserDelayBulk()"
+                      :disabled="!enableUserTrimBulk()"
                     >
                     <div class="input-group-append">
                       <span
@@ -488,6 +509,27 @@
                     </div>
                   </div>
                 </div>
+
+                <div v-else class="input-group input-group-sm numeric-input">
+                  <input
+                    id="bulk-user-trim"
+                    v-model="bulkUserTrim"
+                    type="number"
+                    class="form-control"
+                    aria-label="User trim"
+                    aria-describedby="basic-addon2"
+                    min="-99"
+                    max="20"
+                    :disabled="!enableUserTrimBulk()"
+                  >
+                  <div class="input-group-append">
+                    <span
+                      id="basic-addon2"
+                      class="input-group-text"
+                    >dB</span>
+                  </div>
+                </div>
+
               </div>
             </div>
             <div class="col-auto">
@@ -585,7 +627,7 @@
       const showAdvancedPeqOptionsDialog = ref(false);
 
       const trimAllowed = computed(() => {
-        return mso?.value?.cal.post_trim[currentDiracFilterType.value];
+        return mso?.value?.cal.post_trim[currentDiracSlot?.value?.filterType];
       });
 
       const warningMessageTrim = computed(() => {
@@ -654,35 +696,16 @@
       }
 
       function enableUserDelayBulk() {
-        if (mso.value.cal.diracactive === 'on') {
-          if (diracFilterType.value.toLowerCase() === "dirac active room treatment" || diracFilterType.value.toLowerCase() === "dirac live bass control") {
-            return delayPeqAllowed.value;
-          }
-        }
-
-        return true;
+        return delayPeqAllowed.value !== 'blocked';
       }
 
       function enableUserTrimBulk() {
-        if (mso.value.cal.diracactive === 'on') {
-          if (diracFilterType.value.toLowerCase() === "dirac active room treatment" || diracFilterType.value.toLowerCase() === "dirac live bass control") {
-            return trimAllowed.value && showChannelMuteControls.value;
-          }
-        }
-
-        return true;
+        return trimAllowed.value !== 'blocked';
       }
 
       function enableUserDelay(channel) {
         if (mso.value.cal.diracactive === 'on' && channel !== seatShakerChannel.value) {
           return delayPeqAllowed.value !== 'blocked';
-        //   if (diracFilterType.value.toLowerCase() === "dirac active room treatment") {
-        //     return false;
-        //   }
-
-        //   if (diracFilterType.value.toLowerCase() === "dirac live bass control") {
-        //     return !channel.includes('sub');
-        //   }
         }
 
         return true;
