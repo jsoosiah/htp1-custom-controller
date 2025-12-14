@@ -570,7 +570,7 @@ const diracBCEnabled = computed(() => {
 
 const currentDiracFilterType = computed(() => {
   const filterType = filterTypeToCssClass(currentDiracSlot?.value?.filterType, true).toUpperCase();
-  if (filterType === 'RC' || 'BC' || 'ART') {
+  if (['RC', 'BC', 'ART'].includes(filterType)) {
     return filterType;
   }
   return 'RC';
