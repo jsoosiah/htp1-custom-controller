@@ -1230,14 +1230,17 @@ function setPEQBypassOn(channel, slot) {
     // save existing gain so it can be restored on bypass off
     const preBypassGain = patchMso('add', `/peq/slots/${slot}/channels/${channel}/preBypassGain`,
       mso.value.peq.slots[slot].channels[channel].gaindB);
+    const preBypassFilterType = patchMso('add', `/peq/slots/${slot}/channels/${channel}/preBypassFilterType`,
+      mso.value.peq.slots[slot].channels[channel].FilterType);
 
     // set bypass flag to true
     const bypass = patchMso('add', `/peq/slots/${slot}/channels/${channel}/bypass`, true);
 
     // apply 0 gain to achieve bypass
     const gain = setPEQGain(channel, slot, 0);
+    const filterType = setPEQFilterType(channel, slot, 0);
 
-    return preBypassGain && bypass && gain;
+    return preBypassGain && preBypassFilterType && bypass && gain && filterType;
   }
 
   return false;
@@ -1253,13 +1256,22 @@ function setPEQBypassOff(channel, slot) {
 
     const gain = setPEQGain(channel, slot, gainValue);
 
+    // restore filter type
+    let filterTypeValue = 0;
+    if (mso.value.peq.slots[slot].channels[channel].preBypassFilterType) {
+      filterTypeValue = mso.value.peq.slots[slot].channels[channel].preBypassFilterType;
+    }
+
+    const filterType = setPEQFilterType(channel, slot, filterTypeValue);
+
     // remove bypass flag
     const bypass = patchMso('remove', `/peq/slots/${slot}/channels/${channel}/bypass`);
 
     // remove saved gain
     const preBypassGain = patchMso('remove', `/peq/slots/${slot}/channels/${channel}/preBypassGain`);
+    const preBypassFilterType = patchMso('remove', `/peq/slots/${slot}/channels/${channel}/preBypassFilterType`);
 
-    return gain && bypass && preBypassGain;
+    return gain && filterType && bypass && preBypassGain && preBypassFilterType;
   }
 
   return false;

@@ -1,4 +1,4 @@
-<template>delay={{ delayPeqAllowed }}; trim={{ trimAllowed }}
+<template>
   <div class="transition-container">
     <template v-if="isMobileMode">
       <h5>Dirac Room Correction Filters <br><small class="text-muted ">up to 6 sets or slots available</small></h5>
@@ -588,30 +588,22 @@
         return mso?.value?.cal.post_trim[currentDiracFilterType.value];
       });
 
-      // const trimAllowed = computed(() => {
-      //   return mso?.value?.cal.post_trim[currentDiracFilterType.value] !== 'blocked';
-      // });
-
-      // const delayPeqAllowed = computed(() => {
-      //   return mso?.value?.cal.post_delay_peq[currentDiracFilterType.value] !== 'blocked';
-      // });
-
-      // const activeChannels = computed(() => {
-      //   return getActiveChannels(mso.value.speakers?.groups);
-      // });
-
       const warningMessageTrim = computed(() => {
-        if (trimAllowed.value) {
-          return `When Dirac ${filterTypeToCssClass(diracFilterType.value, true).toUpperCase()} is active, trim is applied before Dirac and should not be edited as doing so would invalidate the calibration. Edit at your own risk.`;
+        const baseMsg = `Trim is applied after the Dirac ${filterTypeToCssClass(diracFilterType.value, true).toUpperCase()} filter runs. Changing the trim value here damages the Dirac ${filterTypeToCssClass(diracFilterType.value, true).toUpperCase()} filter. Look to the balance page where channel trims are safely adjusted.`;
+        console.log("trimAllowed?", trimAllowed.value);
+        if (trimAllowed.value === 'warn') {
+          return baseMsg + " Edit at your own risk.";
         }
-        return `When Dirac ${filterTypeToCssClass(diracFilterType.value, true).toUpperCase()} is active, trim is applied before Dirac and is not editable as doing so would invalidate the calibration. However, channel trim may be edited on the Balance page.`;
+        return baseMsg;
       });
 
       const warningMessageDelay = computed(() => {
-        if (delayPeqAllowed.value) {
-          return `When Dirac ${filterTypeToCssClass(diracFilterType.value, true).toUpperCase()} is active, delay is applied before Dirac and should not be edited as doing so would invalidate the calibration. Edit at your own risk.`;
+        const baseMsg = `The Dirac ${filterTypeToCssClass(diracFilterType.value, true).toUpperCase()} filter carefully calibrates the delay. Changing the delay destroys the ART effect.`
+        console.log("delayPeqAllowed?", delayPeqAllowed.value);
+        if (delayPeqAllowed.value === 'warn') {
+          return baseMsg + " Edit at your own risk.";
         }
-        return `When Dirac ${filterTypeToCssClass(diracFilterType.value, true).toUpperCase()} is active, delay is applied before Dirac and is not editable as doing so would invalidate the calibration.`;
+        return baseMsg;
       });
 
       function formatDecimal(num) {

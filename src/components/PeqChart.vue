@@ -283,6 +283,10 @@
             let gain = val.gaindB;
             let q = val.Q;
             let filterType = val.FilterType;
+            if (filterType === 3) { // all pass: render as PEQ with 0 gain
+              filterType = 0;
+              gain = 0;
+            }
             let sampleRate = 48000.0;
 
             let a0,a1,a2,b0,b1,b2;

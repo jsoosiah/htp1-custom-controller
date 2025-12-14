@@ -58,6 +58,19 @@
         </dismissable-alert>
       </div>
     </div>
+    <div
+      v-show="mso.peq.location === 'pre' && mso.cal.diracactive === 'on'"
+      class="row"
+    >
+      <div class="col">
+        <dismissable-alert
+          alert-key="peq-pre"
+          class="alert-warning"
+        >
+          PEQ is applied pre-Dirac. PEQ controls on subwoofer channels will have no effect. 
+        </dismissable-alert>
+      </div>
+    </div>
     <div class="row">
       <div class="col">
         <dismissable-alert
@@ -102,7 +115,7 @@
             <th class="text-right">
               Filter Type
             </th>
-            <th>
+            <th class="text-right">
               Bypass
             </th>
           </tr>
@@ -112,7 +125,7 @@
             v-for="(channame, chanIndex) in activeChannels"
             :key="channame"
             :class="{'table-warning': mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].beq,
-                     'table-danger': mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].bypass}"
+                     'table-danger': mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].bypass || channelInvalid(chanIndex)}"
           >
             <td>
               <span v-if="!peqWarning">
@@ -133,7 +146,7 @@
                 step=".1" 
                 @change="({ type, target }) => { clearAllImports(); setPEQCenterFrequency(activeChannels[chanIndex], mso.peq?.currentpeqslot, target.value) }"
                 @focus="setSelectedChannel(chanIndex, true)"
-                :disabled="!peqEnabled"
+                :disabled="mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].bypass === true || !peqEnabled"
               >
             </td>
             <td class="text-right">
@@ -147,6 +160,7 @@
                 step=".1" 
                 @change="({ type, target }) => { clearAllImports(); setPEQGain(activeChannels[chanIndex], mso.peq?.currentpeqslot, target.value) }"
                 @focus="setSelectedChannel(chanIndex, true)"
+                v-show="!(mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].bypass === true && mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].preBypassFilterType === 3 || mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].FilterType === 3)"
               >
             </td>
             <td class="text-right">
@@ -159,7 +173,7 @@
                 step=".1" 
                 @change="({ type, target }) => { clearAllImports(); setPEQQuality(activeChannels[chanIndex], mso.peq?.currentpeqslot, target.value) }"
                 @focus="setSelectedChannel(chanIndex, true)"
-                :disabled="!peqEnabled"
+                :disabled="mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].bypass === true || !peqEnabled"
               >
             </td>
             <td class="text-right">
@@ -167,14 +181,14 @@
                 class="form-control form-control-sm" 
                 @change="({ type, target }) => { clearAllImports(); setPEQFilterType(activeChannels[chanIndex], mso.peq?.currentpeqslot, target.value) }"
                 @focus="setSelectedChannel(chanIndex, true)"
-                :disabled="!peqEnabled"
+                :disabled="mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].bypass === true || !peqEnabled"
               >
                 <option 
                   v-for="filterType in filterTypes" 
                   :key="filterType.value"
                   :value="filterType.value"
-                  :selected="filterType.value === mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].FilterType"
-                  :disabled="!peqEnabled"
+                  
+                  :selected="mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].bypass === true ? mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].preBypassFilterType : mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].FilterType"
                 >
                   {{ filterType.label }}
                 </option>
@@ -242,7 +256,7 @@
             v-for="(slot, index) in mso.peq?.slots"
             :key="index"
             :class="{'table-warning': slot.channels[activeChannels[selectedChannel]].beq,
-                     'table-danger': slot.channels[activeChannels[selectedChannel]].bypass}"
+                     'table-danger': slot.channels[activeChannels[selectedChannel]].bypass || bandInvalid(activeChannels[selectedChannel], index)}"
           >
             <td class="text-right">
               <span v-if="!peqWarning">{{ index + 1 }}</span>
@@ -260,7 +274,7 @@
                 max="20000" 
                 step=".1" 
                 @change="({ type, target }) => { handleCenterFreq(activeChannels[selectedChannel], index, target.value) }"
-                :disabled="!peqEnabled"
+                :disabled="slot.channels[activeChannels[selectedChannel]].bypass === true || !peqEnabled"
               >
             </td>
             <td class="text-right">
@@ -273,7 +287,7 @@
                 max="20" 
                 step=".1" 
                 @change="({ type, target }) => { handleGain(activeChannels[selectedChannel], index, target.value) }"
-                v-show="slot.channels[activeChannels[selectedChannel]].FilterType !== 3"
+                v-show="!(slot.channels[activeChannels[selectedChannel]].bypass === true && slot.channels[activeChannels[selectedChannel]].preBypassFilterType === 3 || slot.channels[activeChannels[selectedChannel]].FilterType === 3)"
               >
             </td>
             <td class="text-right">
@@ -285,20 +299,20 @@
                 max="10" 
                 step=".1" 
                 @change="({ type, target }) => { handleQ(activeChannels[selectedChannel], index, target.value) }"
-                :disabled="!peqEnabled"
+                :disabled="slot.channels[activeChannels[selectedChannel]].bypass === true || !peqEnabled"
               >
             </td>
             <td class="text-right">
               <select 
                 class="form-control form-control-sm" 
                 @change="({ type, target }) => { handleFilterType(activeChannels[selectedChannel], index, target.value) }"
-                :disabled="!peqEnabled"
+                :disabled="slot.channels[activeChannels[selectedChannel]].bypass === true || !peqEnabled"
               >
                 <option 
                   v-for="filterType in filterTypes" 
                   :key="filterType.value"
                   :value="filterType.value"
-                  :selected="filterType.value === slot.channels[activeChannels[selectedChannel]].FilterType"
+                  :selected="filterType.value === (slot.channels[activeChannels[selectedChannel]].bypass === true ? slot.channels[activeChannels[selectedChannel]].preBypassFilterType : slot.channels[activeChannels[selectedChannel]].FilterType)"
                 >
                   {{ filterType.label }}
                 </option>
@@ -876,11 +890,22 @@
         }
       }
 
+      function channelInvalid(chanIndex) {
+        // TODO handle bypass
+        return !peqEnabled.value && (mso?.value?.peq?.slots[mso?.value?.peq?.currentpeqslot].channels[activeChannels.value[chanIndex]].FilterType === 3 || mso?.value?.peq?.slots[mso?.value?.peq?.currentpeqslot].channels[activeChannels.value[chanIndex]].gaindB !== 0);
+      }
+
+      function bandInvalid(channel, slot) {
+        // slot.channels[activeChannels[selectedChannel]].bypass
+        console.log(channel, slot)
+        return !peqEnabled.value && (mso?.value?.peq?.slots[slot].channels[channel].FilterType === 3 || mso?.value?.peq?.slots[slot].channels[channel].gaindB !== 0);
+      }
+
       const warningMessagePeq = computed(() => {
+        const baseMsg = `The Dirac ${filterTypeToCssClass(diracFilterType.value, true).toUpperCase()} filter carefully aligns the phase. Applying PEQ destroys the ART effect.`
         if (delayPeqAllowed.value === 'warn') {
-          return `When Dirac ${filterTypeToCssClass(diracFilterType.value, true).toUpperCase()} is active, PEQ is applied before Dirac and should not be edited as doing so would invalidate the calibration. Edit at your own risk.`;
+          return baseMsg + " Edit at your own risk.";
         }
-        return `When Dirac ${filterTypeToCssClass(diracFilterType.value, true).toUpperCase()} is active, PEQ is applied before Dirac and is not editable as doing so would invalidate the calibration.`;
       });
 
       return {
@@ -895,7 +920,7 @@
         cloneSelectedChannelPEQToTargetChannels, targetCloneChannels, 
         secretSettings, linkAllChannels, toggleLinkAllChannels,
         handleCenterFreq, handleGain, handleQ, handleFilterType, handleBypass, darkMode, chartRef,
-        downloadSingleChannelTargetCurve, peqWarning, peqEnabled, warningMessagePeq
+        downloadSingleChannelTargetCurve, peqWarning, peqEnabled, warningMessagePeq, channelInvalid, bandInvalid
       };
     }
   }
