@@ -59,7 +59,7 @@
       </div>
     </div>
     <div
-      v-show="mso.peq.location === 'pre' && mso.cal.diracactive === 'on'"
+      v-show="mso.peq.location === 'pre' && diracErrorState === 'GREEN'"
       class="row"
     >
       <div class="col">
@@ -591,7 +591,7 @@
       const { eqGroupBy, setEqGroupBy, darkMode } = useLocalStorage();
       const { mso, setPEQSlot, resetPEQ, importMsoPatchList, activeChannels,
         setPEQCenterFrequency, setPEQQuality, setPEQFilterType, setPEQGain, togglePEQBypass,
-        delayPeqAllowed, diracFilterType, filterTypeToCssClass } = useMso();
+        delayPeqAllowed, diracFilterType, filterTypeToCssClass, diracErrorState } = useMso();
       const { getActiveChannels, spkName } = useSpeakerGroups();
 
       const chartRef = ref(null);
@@ -604,11 +604,11 @@
       const targetCloneChannels = ref([]);
 
       const peqEnabled = computed(() => {
-        return mso?.value?.peq.location === "pre" || delayPeqAllowed.value !== 'blocked' || mso.value.cal.diracactive !== 'on';
+        return mso?.value?.peq.location === "pre" || delayPeqAllowed.value !== 'blocked' || diracErrorState.value !== 'GREEN';
       });
 
       const peqWarning = computed(() => {
-        return mso?.value?.peq.location !== "pre" && delayPeqAllowed.value !== 'OK' && mso.value.cal.diracactive === 'on';
+        return mso?.value?.peq.location !== "pre" && delayPeqAllowed.value !== 'OK' && diracErrorState.value === 'GREEN';
       });
 
       // const activeChannels = computed(() => {
@@ -919,7 +919,8 @@
         cloneSelectedChannelPEQToTargetChannels, targetCloneChannels, 
         secretSettings, linkAllChannels, toggleLinkAllChannels,
         handleCenterFreq, handleGain, handleQ, handleFilterType, handleBypass, darkMode, chartRef,
-        downloadSingleChannelTargetCurve, peqWarning, peqEnabled, warningMessagePeq, channelInvalid, bandInvalid
+        downloadSingleChannelTargetCurve, peqWarning, peqEnabled, warningMessagePeq, channelInvalid, bandInvalid,
+        diracErrorState
       };
     }
   }
