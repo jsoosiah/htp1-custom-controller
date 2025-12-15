@@ -9,7 +9,7 @@
       :peq-slots="mso.peq?.slots || []"
       :active-channels="activeChannels"
       :selected-channel="selectedChannel"
-      :spk-name="spkName"
+      :spk-name="spkNamePre"
       :dark-mode="darkMode"
     />
     <div class="row justify-content-between">
@@ -46,6 +46,19 @@
       </div>
     </div>
     <div
+      v-show="mso.peq.location === 'pre' && diracErrorState === 'GREEN'"
+      class="row"
+    >
+      <div class="col">
+        <dismissable-alert
+          alert-key="peq-pre"
+          class="alert-info"
+        >
+          PEQ is applied pre-Dirac Live. PEQ controls are available on the LFE channel rather than individual subwoofer channels. 
+        </dismissable-alert>
+      </div>
+    </div>
+    <div
       v-show="!mso.peq?.peqsw"
       class="row"
     >
@@ -55,19 +68,6 @@
           class="alert-warning"
         >
           Parametric equalization is currently turned off. The following PEQ settings may be modified, but they will not have any effect until PEQ is turned on.
-        </dismissable-alert>
-      </div>
-    </div>
-    <div
-      v-show="mso.peq.location === 'pre' && diracErrorState === 'GREEN'"
-      class="row"
-    >
-      <div class="col">
-        <dismissable-alert
-          alert-key="peq-pre"
-          class="alert-warning"
-        >
-          PEQ is applied pre-Dirac Live. PEQ controls on Subwoofer 1 will act on the LFE channel and controls on other subwoofer channels will have no effect. 
         </dismissable-alert>
       </div>
     </div>
@@ -126,13 +126,14 @@
             :key="channame"
             :class="{'table-warning': mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].beq,
                      'table-danger': mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].bypass || channelInvalid(chanIndex)}"
+            v-show="channelVisible(channame)"
           >
             <td>
               <span v-if="!peqWarning">
-                {{ spkName(channame) }}
+                {{ spkNamePre(channame) }}
               </span>
               <span v-else v-tooltip="{'message': warningMessagePeq}" :id="`peqbyband-${channame}`">
-                {{ spkName(channame) }}
+                {{ spkNamePre(channame) }}
                 <font-awesome-icon :icon="['fas', 'question-circle']" />
               </span>
             </td>
@@ -220,8 +221,9 @@
           :class="{'active': selectedChannel === index, 'italic': channelHasModifications(channame)}" 
           href="javascript:void(0)" 
           @click="setSelectedChannel(index)" 
+          v-show="channelVisible(channame)"
         >
-          {{ spkName(channame) }}
+          {{ spkNamePre(channame) }}
           <font-awesome-icon
                         v-if="channame === seatShakerChannel"
                         :icon="['fas', 'couch']"
@@ -371,14 +373,14 @@
       </div>
     </template>
     <template v-else>
-      <h6>Export Channel {{ spkName(activeChannels[selectedChannel]) }}</h6>
+      <h6>Export Channel {{ spkNamePre(activeChannels[selectedChannel]) }}</h6>
       <div class="row">
         <div class="col-auto">
           <button 
             class="btn btn-sm btn-primary mb-3"
             @click="downloadSingleChannelConfig(activeChannels[selectedChannel])"
           >
-            Export {{ spkName(activeChannels[selectedChannel]) }} PEQ Configuration to File
+            Export {{ spkNamePre(activeChannels[selectedChannel]) }} PEQ Configuration to File
           </button>
         </div>
         <div class="col-auto">
@@ -386,7 +388,7 @@
             class="btn btn-sm btn-primary mb-3"
             @click="downloadSingleChannelTargetCurve(activeChannels[selectedChannel])"
           >
-            Export {{ spkName(activeChannels[selectedChannel]) }} PEQ to Dirac Live Target Curve
+            Export {{ spkNamePre(activeChannels[selectedChannel]) }} PEQ to Dirac Live Target Curve
           </button>
         </div>
       </div>
@@ -431,7 +433,7 @@
     </template>
     <!-- import operations for channel -->
     <template v-else>
-      <h6>Import Channel PEQ Configuration or REW Filter to Channel {{ spkName(activeChannels[selectedChannel]) }}</h6>
+      <h6>Import Channel PEQ Configuration or REW Filter to Channel {{ spkNamePre(activeChannels[selectedChannel]) }}</h6>
       <div class="row">
         <div class="col-auto">
           <div class="form-group">
@@ -479,7 +481,7 @@
     
     <!-- clone operations --> 
     <template v-if="eqGroupBy === 0">
-      <h6>Clone Channel {{ spkName(activeChannels[selectedChannel]) }} PEQ to Other Channels</h6>
+      <h6>Clone Channel {{ spkNamePre(activeChannels[selectedChannel]) }} PEQ to Other Channels</h6>
       <div class="form-group">
         <label for="target-channels">Target Channels</label>
         <select
@@ -494,7 +496,7 @@
             :key="channel"
             :value="channel"
           >
-            {{ spkName(channel) }}
+            {{ spkNamePre(channel) }}
           </option>
         </select>
       </div>
@@ -505,7 +507,7 @@
             :disabled="targetCloneChannels.length === 0 || !peqEnabled"
             @click="cloneSelectedChannelPEQToTargetChannels"
           >
-            Clone {{ spkName(activeChannels[selectedChannel]) }} PEQ to Selected Channels
+            Clone {{ spkNamePre(activeChannels[selectedChannel]) }} PEQ to Selected Channels
           </button>
         </div>
       </div>
@@ -534,7 +536,7 @@
             class="btn btn-sm btn-warning mb-3"
             @click="resetPEQsForChannel(activeChannels[selectedChannel])"
           >
-            Reset Settings for Channel {{ spkName(activeChannels[selectedChannel]) }}
+            Reset Settings for Channel {{ spkNamePre(activeChannels[selectedChannel]) }}
           </button>
         </div>
       </div>
@@ -816,7 +818,7 @@
       } 
 
       function cloneSelectedChannelPEQToTargetChannels() {
-        if (confirm(`The PEQ for channel ${spkName(activeChannels.value[selectedChannel.value])} will be cloned to the following channels, overwriting their existing PEQ filters: ${toListSentence(targetCloneChannels.value.map(ch => spkName(ch)))}`)) {
+        if (confirm(`The PEQ for channel ${spkNamePre(activeChannels.value[selectedChannel.value])} will be cloned to the following channels, overwriting their existing PEQ filters: ${toListSentence(targetCloneChannels.value.map(ch => spkNamePre(ch)))}`)) {
           for (const channel of targetCloneChannels.value) {
             for (let band = 0; band < 16; band++) {
               const currentPEQ = mso.value.peq?.slots[band].channels[activeChannels.value[selectedChannel.value]];
@@ -909,8 +911,24 @@
         return baseMsg;
       });
 
+      function channelVisible(channame) {
+        return mso?.value?.peq?.location === 'post' || !(channame !== 'sub1' && channame.startsWith('sub'))
+      }
+
+      function spkNamePre(spkId) {
+
+        if (mso?.value.peq?.location === 'post') {
+          return spkName(spkId);
+        }
+
+        if (spkId === 'sub1') {
+          return 'LFE';
+        }
+        return spkName(spkId);
+      }
+
       return {
-        ...useMso(), activeChannels, spkName, selectedChannel, setSelectedChannel, selectableChannels,
+        ...useMso(), activeChannels, spkNamePre, selectedChannel, setSelectedChannel, selectableChannels,
         bandHasModifications, channelHasModifications, filterTypes, tabLoaded, setSelectedBand, 
         downloadSingleChannelConfig, downloadSingleBandConfig, downloadFullConfig, 
         channelImportFileSelected, bandImportFileSelected, fullImportFileSelected, channelImportValidationWarnings,
@@ -922,7 +940,7 @@
         secretSettings, linkAllChannels, toggleLinkAllChannels,
         handleCenterFreq, handleGain, handleQ, handleFilterType, handleBypass, darkMode, chartRef,
         downloadSingleChannelTargetCurve, peqWarning, peqEnabled, warningMessagePeq, channelInvalid, bandInvalid,
-        diracErrorState
+        diracErrorState, channelVisible,
       };
     }
   }
