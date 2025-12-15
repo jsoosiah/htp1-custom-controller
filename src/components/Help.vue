@@ -44,9 +44,8 @@
                 here to access a PDF copy of the user guide</a>.
             </div>
             <p>
-              This page is the main interface to the system. It looks much like
-              the front panel, but while the front panel is only a display, this
-              web page is interactive. The system is designed to be configured from this set of web pages.
+              This page is the main interface to the system. While it looks similar to the front panel
+              it is designed to allow configuration of the whole system.
             </p>
             <ul>
               <li>
@@ -54,7 +53,7 @@
                 on the front panel.
               </li>
               <li>
-                The gear in the upper right allows you to configure the
+                The gear icon in the upper left allows you to configure the
                 system.
               </li>
               <li>
@@ -68,13 +67,11 @@
               </li>
               <li>
                 The input configuration page sets which inputs are available
-                on buttons. Clicking in the upper left allows you to choose
-                from the full input list.
+                on buttons.
               </li>
               <li>
                 The upmix page sets which upmixers are available
-                on buttons. The help on the upmix page explains
-                the upmixers in more detail.
+                on buttons.
               </li>
               <li>
                 Night mode engages any available Dolby or DTS functions to
@@ -82,15 +79,15 @@
                 subwoofer by 6dB.
               </li>
               <li>
-                The Dirac button allows you to quickly hear the effect of
-                the Dirac calibration filters. <i>You must perform a Dirac
+                The Dirac Live button allows you to quickly hear the effect of
+                the Dirac Live calibration filters. <i>You must perform a Dirac
                   calibration for this feature to be active.</i><br>
               </li>
               <li>
-                The loudness button engages a filter that turns up the bass
+                The loudness button engages a filter that turns up the bass and treble
                 as the volume goes down. Actually, it is a bit more
                 complicated. The loudness button engages processing to closely
-                follow the Fletcher-Munson equal loudness curves, as described
+                follow the Fletcher-Munson equal loudness curve changes, as described
                 on Wikipedia.
               </li>
               <li>
@@ -163,17 +160,17 @@
                 are where.
               </li>
               <li>
-                A Dirac calibration allows you to see the measured cutoff
+                A Dirac Live calibration allows you to see the measured cutoff
                 frequencies for the small speakers. Other procedures, including
-                a noise source from a test disk are also used, but a Dirac
+                a noise source from a test disk are also used, but a Dirac Live
                 calibration is really accurate. Set the cutoff frequencies based
                 on these measurements.
               </li>
               <li>
                 The user guide contains more information about Dirac
                 calibration. You can download the Dirac Live tool here: <a
-                  href="https://live.dirac.com/download/"
-                >https://live.dirac.com/download/</a>
+                  href="https://www.dirac.com/resources/downloads"
+                >https://www.dirac.com/resources/downloads</a>
               </li>
             </ul>
           </div>
@@ -206,6 +203,11 @@
           data-parent="#accordionExample"
         >
           <div class="card-body">
+            <div class="alert alert-info small alert-box" role="alert">
+              <b>Update 12/2025:</b> Support for Dirac Live ART has been added.<a
+                :href="`http://${websocketIp}/HTP-1_User_Manual_ART_Addendum.pdf`"
+                target="_blank">Click here to access a PDF copy of the ART addendum</a>.
+            </div>
             <div
               class="alert alert-info small alert-box"
               role="alert"
@@ -218,65 +220,7 @@
             </div>
             <ul>
               <li>
-                <b>Min. volume</b>: This number sets the lowest level of
-                volume possible using any volume control. Set it so that
-                you can barely hear the audio.
-              </li>
-              <li>
-                <b>Max. listening volume</b>: This number limits the upper
-                range of the volume control. The user guide gives more
-                background. This control can be usefully adjusted to
-                limit the volume of a system that is in fact capable of much
-                higher volumes.
-              </li>
-              <li>
-                <b>Max. Output Level</b>: The maximum Output Level,
-                specified in volts, sets the level at which the output of the
-                HTP-1 saturates. It should represent the loudest volume
-                the system can achieve. Amplifier manufacturers
-                typically specify this number as the "amplifier
-                sensitivity". The user guide discusses what to do if you
-                don't know the amplifier sensitivity. It suggests starting at
-                1 volt and then adjusting by ear.<br>
-              </li>
-              <li>
-                <b>Lipsync</b><b> Delay</b>: The audio is delayed by the
-                specified number of milliseconds. Begin system setup with this
-                set to zero and do a Dirac calibration. Then check the sync
-                between the audio and the video using a local source that you
-                trust. Note that the surround modes add delay. The
-                shortest delay will be achieved in direct mode.
-              </li>
-              <li>
-                <b>Dirac Room Calibration Active</b>: This switch allows you
-                to completely disable Dirac room calibration. It is
-                appropriate to turn this off if you have never done a Dirac
-                calibration. The user guide has more information on performing
-                a Dirac Live calibration. You can download the Dirac Live tool
-                here. <a href="https://live.dirac.com/download/">https://live.dirac.com/download/</a>
-              </li>
-              <li>
-                <b>Dirac Filters: </b>Dirac filters are created using the
-                Dirac Live tool to calibrate the system. The user guide gives
-                a more detailed explanation.
-              </li>
-              <li>
-                <b>Delay and Trim</b>: A Dirac calibration measures the room
-                and determines the amount of delay and trim required to align
-                the speakers in the room. The trim matches the levels. The
-                delay accounts for the different distances of the speakers as
-                sound travels at approximately one millisecond per foot. A
-                properly executed Dirac calibration will automatically choose
-                the optimal delay and trim. The user delay and trim should be
-                zero after a Dirac calibration is completed.
-              </li>
-              <li>
-                <b>User Trim and Delay</b>: These user controls can be used
-                if a Dirac calibration is not desired. They can also be used
-                to modify the values determined by the Dirac calibration. The
-                user values add to the values determined by Dirac to make the
-                total delay and trim. You should be aware that setting very
-                high trim values can lead to digital clipping.
+                TODO
               </li>
             </ul>
           </div>
@@ -329,16 +273,16 @@
                 mimics an off-board signal generator.  That is to say the 
                 generator once turned on, remains on until it is turned off.
                 This means it remains turned on when you visit other configuration 
-                pages such as Calibration and EQ, or even change to different inputs.
-                This also means the generator outputs are processed by the Dirac 
+                pages such as Calibration and PEQ, or even change to different inputs.
+                This also means the generator outputs are processed by the Dirac Live
                 room correction filters, tone controls, as well as the PEQ filters.
               </li>
               <li>
                 <b>Signal Selection</b>: The Signal Generator support a number of signal generations:
                 <ul>
                   <li>
-                    <b>"THX_like" band limited noise</b>: 
-                    "THX_like" band limited noise
+                    <b>"THX-like" band limited noise</b>: 
+                    "THX-like" band limited noise
                   </li>
                   <li>
                     <b>Louder reference noise</b>: A band limited noise 
@@ -358,6 +302,13 @@
                   <li>
                     <b>Right input as signal</b>: 
                     Sends the Right input to the selected speaker.
+                    Allows third party tools such as Room Equalization
+                    Wizard to measure speaker inaccessible through HDMI PCM 
+                    inputs.
+                  </li>
+                  <li>
+                    <b>Left and right input as signal</b>: 
+                    Sends the left input to the left speaker and the right input to the selected speaker.
                     Allows third party tools such as Room Equalization
                     Wizard to measure speaker inaccessible through HDMI PCM 
                     inputs.
@@ -417,11 +368,18 @@
                 response of the room.
               </li>
               <li>
-                The tone and PEQ features are automatically disabled when a
-                Dirac calibration is run. These filters are used to
-                adjust a room that is already calibrated. There is discussion
-                about allowing the PEQ to run before the Dirac filter to allow
-                for a pre-calibration EQ. This is not yet exposed.<br>
+                If Dirac Live is off or Dirac Live RC is active PEQ is located post bass managment but
+                pre Dirac Live filters.
+              </li>
+              <li>
+                If Dirac Live BM, Dirac Live BC or Dirac Live ART is active PEQ is located pre Dirac Live filters
+                and its bass management.
+              </li>
+              <li>
+                PEQ can be on when a Dirac Live calibration is run. If PEQ is located post the Dirac Live filter
+                block the Dirac Live measurement signal will see PEQ as part of the room response. This behavior is
+                desirable for speaker pre-optimization but it also means that PEQ should not be changed after Dirac Live calibration
+                as this will destroy calibration results.
               </li>
             </ul>
             <blockquote>
@@ -469,24 +427,12 @@
                 here to access a PDF copy of the user guide</a>.
             </div>
             <p>
-              The controls for tone controls and loudness compensation are found here.
-            </p>
-            <ul>
-              <li>
-                <b>Tone Control</b>: Traditional tone controls can be
+              Traditional tone controls can be
                 enabled. When enabled the boost or cut can be specified as
                 well as the corner frequencies.
-              </li>
-              <li>
-                The tone and PEQ features are automatically disabled when a
-                Dirac calibration is run. These filters are used to
-                adjust a room that is already calibrated. There is discussion
-                about allowing the PEQ to run before the Dirac filter to allow
-                for a pre-calibration EQ. This is not yet exposed.<br>
-              </li>
-            </ul>
+            </p>
             <blockquote>
-              Note that applying large boost in the equalization can
+              Note that applying large boosts can
               lead to digital clipping.
             </blockquote>
           </div>
@@ -534,6 +480,11 @@
             </p>
             <ul>
               <li>
+                <b>Loudness Curve</b>: Select between different curve shapes for
+                loudness compensation. ISO 226:2003 follows the standard equal loudness curve whereas
+                Vintage follows compensation curves of early analog home audio equipment.
+              </li>
+              <li>
                 <b>Loudness Calibration</b>: The loudness calibration number
                 corresponds roughly to the sound pressure level at which you
                 want a flat response. That would be the “normal
@@ -542,15 +493,13 @@
                 number decreases the amount of bass boost.<br>
               </li>
               <li>
-                The tone and PEQ features are automatically disabled when a
-                Dirac calibration is run. These filters are used to
-                adjust a room that is already calibrated. There is discussion
-                about allowing the PEQ to run before the Dirac filter to allow
-                for a pre-calibration EQ. This is not yet exposed.<br>
+                <b>Night Mode</b>: Night mode engages any available Dolby or DTS functions to
+                reduce the dynamic range of the program. It also lowers the
+                subwoofer by 6dB.
               </li>
             </ul>
             <blockquote>
-              Note that applying large boost in the equalization can
+              Note that applying large boost can
               lead to digital clipping.
             </blockquote>
           </div>
@@ -601,7 +550,7 @@
               help older source material (stereo or 5.1) drive the wide set of
               speakers that are supported here. Controls are provided for each
               algorithm to choose whether or not it is visible on the homepage.
-              A radio button allows you to choose one to listen to as you
+              Buttons allow you to choose one to listen to as you
               adjust. And some of the algorithms have more controls that you can
               access.
             </p>
@@ -634,13 +583,13 @@
                 enabled the material found for the center channel is also
                 added to the left and right channels, hence <i>spreading</i>
                 the center channel sound. The Dolby Surround upmixer can
-                support any combination of speakers provide here. There may
+                support any combination of speakers provided here. There may
                 not be anything in some of the channels. For instance, a mono
                 input will result in sound only from the center channel.
               </li>
               <li>
                 <b>DTS Neural-X</b>: When this is selected, the DTS Neural-X
-                algorithm is enabled to analyzer the input stream and process
+                algorithm is enabled to analyze the input stream and process
                 it for presentation across the available speaker set. This is
                 an evolution of the previous DTS NEO. One control is provided,
                 namely <i>wide synth</i>. Since the Neural-X code only
@@ -671,6 +620,9 @@
                 to stereo and with the left signal going to all left speakers
                 and the right to all right speakers. The center speaker gets a
                 mono mix.
+              </li>
+              <li>
+                <b>Wide Synth</b>: Synthesizes wide speakers when possible.
               </li>
             </ul>
             <p>
@@ -726,7 +678,7 @@
             <p>
               The input page allows you to assign a human readable name to each
               input. It also allows you to choose which input buttons will be
-              present on the homepage of the web UI. 
+              present on the homepage of this web UI. 
             </p>
             <ul>
               <li>
@@ -738,7 +690,17 @@
                 more ideas of what to try if this fixes the connection.
               </li>
               <li>
-                CEC stands for Consumer Electronic Control. It is designed
+                When Show Advanced Input Settings is enabled, another switch is
+                exposed for the digital inputs. The PCM Detector
+                Sensitivity has three settings. "Auto" is the default
+                setting and this is usually correct. The "Biased"
+                setting is biased toward PCM material. This might be
+                appropriate for a player playing a CD. The "indicated"
+                setting relies on the audio format indicated by the HDMI
+                stream.
+              </li>
+              <li>
+                <b>HDMI CEC</b>: CEC stands for Consumer Electronic Control. It is designed
                 to simplify the connection of devices like amplifiers and
                 players with TV sets. The entries on the connectivity page
                 allow you to configure CEC to work best in your system. 
@@ -747,19 +709,16 @@
                 devices than with others.
               </li>
               <li>
-                Nearly the last entry on the page is the BlueTooth device.
-                The controls necessary to discover and pair with a BlueTooth
-                device are found here.
+                <b>Lipsync Delay</b>: The audio is delayed by the
+                specified number of milliseconds. Begin system setup with this
+                set to zero and do a Dirac Live calibration. Then check the sync
+                between the audio and the video using a local source that you
+                trust. Note that the surround modes add delay. The
+                shortest delay will be achieved in direct mode.
               </li>
               <li>
-                When Show Advanced Input Settings is enabled, another switch is
-                exposed for the digital inputs. The PCM Detector
-                Sensitivity has three settings. "Auto" is the default
-                setting and this is usually correct. The "Biased"
-                setting is biased toward PCM material. This might be
-                appropriate for a player playing a CD. The "indicated"
-                setting relies on the audio format indicated by the HDMI
-                stream.<br>
+                <b>Bluetooth Settings</b>: The controls necessary to discover and pair with a Bluetooth
+                device are found here.
               </li>
             </ul>
           </div>
@@ -816,7 +775,7 @@
               <li>
                 When WiFi is enabled the system scans to find available
                 networks. These are displayed on the left. Choose
-                a network, enter the password, and click on "CONFIGURE".
+                a network, enter the password, and click on "CONFIGURE NETWORK".
                 After a brief delay the network should appear in the list of
                 configured networks on the right.
               </li>
@@ -851,7 +810,7 @@
           data-parent="#accordionExample"
         >
           <div class="card-body">
-            <p>The Macros page allows you to record your actions and save them to the CMD A/B/C/D and PRESET 1/2/3/4 buttons.</p>
+            <p>The Macros page allows you to record your actions and save them to the CMD A/B/C/D and PRESET 1/2/3/4 buttons of the remote control.</p>
             <ul>
               <li>Select one of the 8 slots to record your actions.</li>
               <li>Click the Recording button to start recording, and then perform the actions you wish to record, using either the remote or the web interface.</li>
@@ -909,8 +868,75 @@
               <li>You can select shortcuts to settings pages which will appear on the top right of the screen.</li>
               <li>You can select which buttons appear under the Modes section of the homepage.</li>
               <li>You can select which macro buttons appear under the Macros section of the homepage.</li>
-              <li>You can select which Dirac slots appear under the Dirac slots section of the homepage.</li>
+              <li>You can select which Dirac Live slots appear under the Dirac Live slots section of the homepage.</li>
               <li>Notices are small info boxes that appear on various settings pages. You can restore all dismissed notices.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div
+          id="headingThree"
+          class="card-header"
+          @click="toggleOpened(2)"
+        >
+          <h2 class="mb-0">
+            <button
+              class="btn btn-link btn-block text-left collapsed"
+              type="button"
+              data-toggle="collapse"
+              data-target="#collapseThree"
+              aria-expanded="false"
+              aria-controls="collapseThree"
+            >
+              Volume Setup
+            </button>
+          </h2>
+        </div>
+        <div
+          id="collapseThree"
+          class="collapse"
+          :class="{'show': opened[2]}"
+          aria-labelledby="headingThree"
+          data-parent="#accordionExample"
+        >
+          <div class="card-body">
+            <div
+              class="alert alert-info small alert-box"
+              role="alert"
+            >
+              The user guide has more information. <a
+                :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`"
+                target="_blank"
+              >Click
+                here to access a PDF copy of the user guide</a>.
+            </div>
+            <ul>
+              <li>
+                <b>Power On Volume volume</b>: This number sets the default volume after restart.
+              </li>
+              <li>
+                <b>Min. volume</b>: This number sets the lowest level of
+                volume possible using any volume control. Set it so that
+                you can barely hear the audio.
+              </li>
+              <li>
+                <b>Max. volume</b>: This number limits the upper
+                range of the volume control. The user guide gives more
+                background. This control can be usefully adjusted to
+                limit the volume of a system that is in fact capable of much
+                higher volumes.
+              </li>
+              <li>
+                <b>Max. Output Level</b>: The maximum Output Level,
+                specified in volts, sets the level at which the output of the
+                HTP-1 saturates. It should represent the loudest volume
+                the system can achieve. Amplifier manufacturers
+                typically specify this number as the "amplifier
+                sensitivity". The user guide discusses what to do if you
+                don't know the amplifier sensitivity. It suggests starting at
+                1 volt and then adjusting by ear.<br>
+              </li>
             </ul>
           </div>
         </div>
@@ -952,11 +978,6 @@
               >Click
                 here to access a PDF copy of the user guide</a>.
             </div>
-            <p>
-              In addition to a few system level controls, this page also
-              displays some helpful information like the IP address and the
-              current output video resolution.<br>
-            </p>
             <ul>
               <li>
                 The unit name is displayed by to the outside world.
@@ -965,44 +986,19 @@
               <ul>
                 <li>The Dirac calibration tool.</li>
                 <li>Bluetooth devices.</li>
-                <li>
-                  Roon player.<br>
-                </li>
+                <li>Roon player.</li>
               </ul>
-              <li>The unit can be powered down from this page.</li>
               <li>
-                When fast start is on the unit will not completely power
+                When Fast Start is on the unit will not completely power
                 down and hence it will start up very quickly. You have the
-                option of keeping video pass through alive. When fast
-                start is off, powering back up will take somewhat longer. CEC
-                based power up will not work when fast start is off.<br>
-              </li>
-              <li>
-                You can set the volume you would like to have when the unit
-                boots up.<br>
+                option of keeping video pass through alive. When Fast
+                Start is off, powering back up will take somewhat longer. CEC
+                based power up will not work when fast start is off.
               </li>
               <li>
                 Front panel brightness can be adjusted here. The "dim"
                 button on the remote also works.
               </li>
-              <li>The volume control can use a slider or buttons.</li>
-              <li>
-                You can export and import settings. It's a good idea
-                to export the configuration when you are happy with your
-                settings. Then you can re-import them if the settings
-                are lost or damaged.<br>
-              </li>
-              <li>Several check-boxes enable features:</li>
-              <ul>
-                <li>
-                  You can cause video status (resolution, color depth, etc)
-                  to be displayed on the homepage.
-                </li>
-                <li>
-                  You can cause audio sample rates to be displayed on the
-                  homepage.
-                </li>
-              </ul>
             </ul>
           </div>
         </div>
