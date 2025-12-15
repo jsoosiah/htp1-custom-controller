@@ -44,7 +44,7 @@
                 here to access a PDF copy of the user guide</a>.
             </div>
             <p>
-              This page is the main interface to the system. While it looks similar to the front panel
+              The home page is the main interface to the system. While it looks similar to the front panel
               it is designed to allow configuration of the whole system.
             </p>
             <ul>
@@ -80,7 +80,7 @@
               </li>
               <li>
                 The Dirac Live button allows you to quickly hear the effect of
-                the Dirac Live calibration filters. <i>You must perform a Dirac
+                the Dirac Live calibration filters. <i>You must perform a Dirac Live
                   calibration for this feature to be active.</i><br>
               </li>
               <li>
@@ -167,7 +167,7 @@
                 on these measurements.
               </li>
               <li>
-                The user guide contains more information about Dirac
+                The user guide contains more information about Dirac Live
                 calibration. You can download the Dirac Live tool here: <a
                   href="https://www.dirac.com/resources/downloads"
                 >https://www.dirac.com/resources/downloads</a>
@@ -204,7 +204,7 @@
         >
           <div class="card-body">
             <div class="alert alert-info small alert-box" role="alert">
-              <b>Update 12/2025:</b> Support for Dirac Live ART has been added.<a
+              <b>Update 12/2025:</b> Support for Dirac Live Active Room Treatment (ART) has been added. <a
                 :href="`http://${websocketIp}/HTP-1_User_Manual_ART_Addendum.pdf`"
                 target="_blank">Click here to access a PDF copy of the ART addendum</a>.
             </div>
@@ -220,7 +220,36 @@
             </div>
             <ul>
               <li>
-                TODO
+                <b>Dirac Live Room Calibration Active</b>: This switch allows you
+                to completely disable Dirac Live room calibration. It is
+                appropriate to turn this off if you have never done a Dirac Live
+                calibration. The user guide has more information on performing
+                a Dirac Live calibration. You can download the Dirac Live tool
+                here. <a href="https://live.dirac.com/download/">https://live.dirac.com/download/</a>
+              </li>
+              <li>
+                <b>Dirac LiveFilters: </b>Dirac Live filters are created using the
+                Dirac Live tool to calibrate the system. The user guide gives
+                a more detailed explanation.
+              </li>
+              <li>
+                <b>Delay and Trim</b>: A Dirac Live calibration measures the room
+                and determines the amount of delay and trim required to align
+                the speakers in the room. The trim matches the levels. The
+                delay accounts for the different distances of the speakers as
+                sound travels at approximately one millisecond per foot. A
+                properly executed Dirac Live calibration will automatically choose
+                the optimal delay and trim. The user delay and trim should be
+                zero after a Dirac Live calibration is completed.
+              </li>
+              <li>
+                <b>User Trim and Delay</b>: These user controls can be used
+                if a Dirac Live calibration is not desired. They can also be used
+                to modify the values determined by the Dirac Live calibration. The
+                user values add to the values determined by Dirac Live to make the
+                total delay and trim. You should be aware that setting very
+                high trim values can lead to digital clipping.<br>
+With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no longer allows changes to trim and delay settings after calibration. This also applies to <b>Dirac Live Bass Control (BC)</b>. Although trim settings are still possible with BC, this is not recommended.
               </li>
             </ul>
           </div>
@@ -269,8 +298,8 @@
             <ul>
               <li>
                 <b>Signal Generator</b>: Toggles between ON and OFF to 
-                turn on or off the signal generator.  The signal generator
-                mimics an off-board signal generator.  That is to say the 
+                turn on or off the signal generator. The signal generator
+                mimics an off-board signal generator. That is to say the 
                 generator once turned on, remains on until it is turned off.
                 This means it remains turned on when you visit other configuration 
                 pages such as Calibration and PEQ, or even change to different inputs.
@@ -984,7 +1013,7 @@
                 Examples include:
               </li>
               <ul>
-                <li>The Dirac calibration tool.</li>
+                <li>The Dirac Live calibration tool.</li>
                 <li>Bluetooth devices.</li>
                 <li>Roon player.</li>
               </ul>
