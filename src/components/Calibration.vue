@@ -159,6 +159,7 @@
                 :state-on="currentDiracSlot?.channels[channame].mute === true" 
                 :mute-button="true"
                 @btn-click="toggleMuteChannel(channame)"
+                :disabled="!enableUserTrimBulk()"
               />
             </div>
           </div>
@@ -367,6 +368,7 @@
                 :state-on="currentDiracSlot?.channels[channame].mute === true" 
                 :mute-button="true"
                 @btn-click="toggleMuteChannel(channame)"
+                :disabled="!enableUserTrimBulk()"
               />
             </td>
           </tr>
@@ -470,7 +472,7 @@
                 <label>&nbsp;</label>
                 <button 
                   class="btn btn-sm btn-primary d-block mb-3"
-                  :disabled="targetChannels.length === 0"
+                  :disabled="targetChannels.length === 0 || !enableUserDelayBulk()"
                   @click="setUserDelaySelectedChannels"
                 >
                   Apply User Delay to Selected Speakers
@@ -537,7 +539,7 @@
                 <label>&nbsp;</label>
                 <button 
                   class="btn btn-sm btn-primary d-block mb-3"
-                  :disabled="targetChannels.length === 0"
+                  :disabled="targetChannels.length === 0 || !enableUserTrimBulk()"
                   @click="setUserTrimSelectedChannels"
                 >
                   Apply User Trim to Selected Speakers
@@ -553,6 +555,7 @@
           <button 
             class="btn btn-sm btn-danger mb-3"
             @click="setMuteAllChannelsOn()"
+            :disabled="!enableUserTrimBulk()"
           >
             Mute All Speakers
           </button>
@@ -561,6 +564,7 @@
           <button 
             class="btn btn-sm btn-primary mb-3"
             @click="setMuteAllChannelsOff()"
+            :disabled="!enableUserTrimBulk()"
           >
             Unmute All Speakers
           </button>
@@ -569,6 +573,7 @@
           <button 
             class="btn btn-sm btn-info mb-3"
             @click="toggleAllMuteChannels()"
+            :disabled="!enableUserTrimBulk()"
           >
             Invert Mute on All Speakers
           </button>
@@ -696,15 +701,15 @@
       }
 
       function enableUserDelayBulk() {
-        return delayPeqAllowed.value !== 'blocked';
+        return diracErrorState.value !== 'GREEN' || delayPeqAllowed.value !== 'blocked';
       }
 
       function enableUserTrimBulk() {
-        return trimAllowed.value !== 'blocked';
+        return diracErrorState.value !== 'GREEN' || trimAllowed.value !== 'blocked';
       }
 
       function enableUserDelay(channel) {
-        if (mso.value.cal.diracactive === 'on' && channel !== seatShakerChannel.value) {
+        if (diracErrorState.value === 'GREEN' && channel !== seatShakerChannel.value) {
           return delayPeqAllowed.value !== 'blocked';
         }
 
@@ -712,14 +717,14 @@
       }
 
       function enableUserTrim(channel) {
-        if (mso.value.cal.diracactive === 'on' && channel !== seatShakerChannel.value) {
+        if (diracErrorState.value === 'GREEN' && channel !== seatShakerChannel.value) {
           return trimAllowed.value !== 'blocked';
         }
         return true;
       }
 
       function warnUserDelay(channel) {
-        if (mso.value.cal.diracactive !== 'on' || channel === seatShakerChannel.value) {
+        if (diracErrorState.value !== 'GREEN' || channel === seatShakerChannel.value) {
           return false;
         }
 
@@ -727,7 +732,7 @@
       }
 
       function warnUserTrim(channel) {
-        if (mso.value.cal.diracactive !== 'on' || channel === seatShakerChannel.value) {
+        if (diracErrorState.value !== 'GREEN' || channel === seatShakerChannel.value) {
           return false;
         }
 
