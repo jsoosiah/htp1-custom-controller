@@ -228,7 +228,7 @@
                 here. <a href="https://live.dirac.com/download/">https://live.dirac.com/download/</a>
               </li>
               <li>
-                <b>Dirac LiveFilters: </b>Dirac Live filters are created using the
+                <b>Dirac Live Filters: </b>Dirac Live filters are created using the
                 Dirac Live tool to calibrate the system. The user guide gives
                 a more detailed explanation.
               </li>
