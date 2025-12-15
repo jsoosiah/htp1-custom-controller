@@ -878,7 +878,7 @@
         <div
           id="headingThree"
           class="card-header"
-          @click="toggleOpened(2)"
+          @click="toggleOpened(12)"
         >
           <h2 class="mb-0">
             <button
@@ -896,7 +896,7 @@
         <div
           id="collapseThree"
           class="collapse"
-          :class="{'show': opened[2]}"
+          :class="{'show': opened[12]}"
           aria-labelledby="headingThree"
           data-parent="#accordionExample"
         >
@@ -945,7 +945,7 @@
         <div
           id="headingThree"
           class="card-header"
-          @click="toggleOpened(12)"
+          @click="toggleOpened(13)"
         >
           <h2 class="mb-0">
             <button
@@ -963,7 +963,7 @@
         <div
           id="collapseThree"
           class="collapse"
-          :class="{'show': opened[12]}"
+          :class="{'show': opened[13]}"
           aria-labelledby="headingThree"
           data-parent="#accordionExample"
         >
@@ -1007,7 +1007,7 @@
         <div
           id="headingThree"
           class="card-header"
-          @click="toggleOpened(13)"
+          @click="toggleOpened(14)"
         >
           <h2 class="mb-0">
             <button
@@ -1025,7 +1025,7 @@
         <div
           id="collapseThree"
           class="collapse"
-          :class="{'show': opened[13]}"
+          :class="{'show': opened[14]}"
           aria-labelledby="headingThree"
           data-parent="#accordionExample"
         >
