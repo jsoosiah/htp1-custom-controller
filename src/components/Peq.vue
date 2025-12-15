@@ -905,6 +905,8 @@
         if (delayPeqAllowed.value === 'warn') {
           return baseMsg + " Edit at your own risk.";
         }
+
+        return baseMsg;
       });
 
       return {
