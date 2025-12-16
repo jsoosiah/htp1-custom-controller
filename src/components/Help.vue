@@ -190,7 +190,7 @@
                 >https://www.dirac.com/resources/downloads</a>
               </li>
               <li>
-                <b>Enable Seat Shaker>/b>: When enabled the first unused subwoofer channel becomes the seat shaker channel. This channel will be excluded from Dirac Live calibrations and will not have any filter corrections while Dirac Live is enabled.
+                <b>Enable Seat Shaker</b>: When enabled the first unused subwoofer channel becomes the seat shaker channel. This channel will be excluded from Dirac Live calibrations and will not have any filter corrections while Dirac Live is enabled.
               </li>
             </ul>
           </div>

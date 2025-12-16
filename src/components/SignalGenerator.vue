@@ -149,14 +149,14 @@
         </div>
       </div>
       <div class="col-auto">
-        <ChannelSelect :title="'Channel Select' + (mso.sgen?.signalType === 'both' ? ' - for left input' : '')" />
+        <ChannelSelect :title="'Speaker Select' + (mso.sgen?.signalType === 'both' ? ' - for left input' : '')" />
       </div>
       <div
         v-if="mso.sgen?.signalType === 'both'"
         class="col-auto"
       >
         <ChannelSelect
-          title="Channel Select - for right input"
+          title="Speaker Select - for right input"
           :show-levels="false"
           :second-channel="true"
         />
