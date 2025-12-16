@@ -6,19 +6,19 @@
               role="alert"
             >
               The user guide has more information. <a
-                :href="'http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf'"
+                :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`"
                 target="_blank"
               >Click
                 here to access a PDF copy of the user guide</a>.
             </div>
             <div class="alert alert-info small alert-box" role="alert">
               <b>Update 12/2025:</b> Support for Dirac Live Active Room Treatment (ART) has been added. <a
-                :href="'http://${websocketIp}/HTP-1_User_Manual_ART_Addendum.pdf'"
+                :href="`http://${websocketIp}/HTP-1_User_Manual_ART_Addendum.pdf`"
                 target="_blank">Click here to access a PDF copy of the ART addendum</a>.
             </div>
             <div class="alert alert-info small alert-box" role="alert">
               <b>Update 12/2025:</b> The front panel has been completely redesigned. <a
-                :href="'http://${websocketIp}/HTP-1-Front-Panel.pdf'"
+                :href="`http://${websocketIp}/HTP-1-Front-Panel.pdf`"
                 target="_blank">Click here to access a PDF copy of the front panel manual</a>.
             </div>
     <div
@@ -58,7 +58,7 @@
               role="alert"
             >
               The user guide has more information. <a
-                :href="'http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf'"
+                :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`"
                 target="_blank"
               >Click
                 here to access a PDF copy of the user guide</a>.
@@ -107,8 +107,8 @@
                 The loudness button engages a filter that turns up the bass and treble
                 as the volume goes down. Actually, it is a bit more
                 complicated. The loudness button engages processing to closely
-                follow the equal loudness curve changes, as <a href="https://en.wikipedia.org/wiki/Equal-loudness_contour" target="_blank">described
-                on Wikipedia</a>.
+                follow the <a href="https://en.wikipedia.org/wiki/Equal-loudness_contour" target="_blank">equal loudness</a> 
+                curve changes.
               </li>
               <li>
                 The dialog enhancement button is designed to make it easier
@@ -153,7 +153,7 @@
               role="alert"
             >
               The user guide has more information. <a
-                :href="'http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf'"
+                :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`"
                 target="_blank"
               >Click
                 here to access a PDF copy of the user guide</a>.
@@ -228,14 +228,14 @@
               role="alert"
             >
               The user guide has more information. <a
-                :href="'http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf'"
+                :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`"
                 target="_blank"
               >Click
                 here to access a PDF copy of the user guide</a>.
             </div>
             <div class="alert alert-info small alert-box" role="alert">
               <b>Update 12/2025:</b> Support for Dirac Live Active Room Treatment (ART) has been added. <a
-                :href="'http://${websocketIp}/HTP-1_User_Manual_ART_Addendum.pdf'"
+                :href="`http://${websocketIp}/HTP-1_User_Manual_ART_Addendum.pdf`"
                 target="_blank">Click here to access a PDF copy of the ART addendum</a>.
             </div>
             <ul>
@@ -250,7 +250,9 @@
                 appropriate to turn this off if you have never done a Dirac Live
                 calibration. The user guide has more information on performing
                 a Dirac Live calibration. You can download the Dirac Live tool
-                here. <a href="https://live.dirac.com/download/" target="_blank">https://live.dirac.com/download/</a>
+                here: <a
+                  href="https://www.dirac.com/resources/downloads"
+                >https://www.dirac.com/resources/downloads</a>
               </li>
               <li>
                 <b>Delay and Trim</b>: A Dirac Live calibration measures the room
@@ -307,15 +309,16 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
               role="alert"
             >
               The user guide has more information. <a
-                :href="'http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf'"
+                :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`"
                 target="_blank"
               >Click
                 here to access a PDF copy of the user guide</a>.
             </div>
-            <ul>
-              <li>TODO
-              </li>
-            </ul>
+            <p>
+              Balance allows individual level adjustments to input channels. 
+              It is implemented pre bass management, Dirac Live filters, tone control or loudness 
+              so as not to interfere with calibrations or other processing.
+            </p>
           </div>
         </div>
       </div>
@@ -351,7 +354,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
               role="alert"
             >
               The user guide has more information. <a
-                :href="'http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf'"
+                :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`"
                 target="_blank"
               >Click
                 here to access a PDF copy of the user guide</a>.
@@ -451,7 +454,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
               role="alert"
             >
               The user guide has more information. <a
-                :href="'http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf'"
+                :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`"
                 target="_blank"
               >Click
                 here to access a PDF copy of the user guide</a>.
@@ -518,13 +521,13 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
               role="alert"
             >
               The user guide has more information. <a
-                :href="'http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf'"
+                :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`"
                 target="_blank"
               >Click
                 here to access a PDF copy of the user guide</a>.
             </div>
             <p>
-              Bass EQ (BEQ) tries to recover low frequency content that has been filtered out during post production. It uses PEQ. The equalization values are available from the <a href="https://beqcatalogue.readthedocs.io/en/latest/" target="_blank">BEQ Catalog</a>.
+              Bass EQ (BEQ) attempts to restore low frequency components that were filtered out during post-production. It uses PEQ for this purpose. PEQ settings are downloaded from the <a href="https://beqcatalogue.readthedocs.io/en/latest/" target="_blank">BEQ Catalog</a>.
             </p>
           </div>
         </div>
@@ -561,7 +564,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
               role="alert"
             >
               The user guide has more information. <a
-                :href="'http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf'"
+                :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`"
                 target="_blank"
               >Click
                 here to access a PDF copy of the user guide</a>.
@@ -610,7 +613,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
               role="alert"
             >
               The user guide has more information. <a
-                :href="'http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf'"
+                :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`"
                 target="_blank"
               >Click
                 here to access a PDF copy of the user guide</a>.
@@ -677,7 +680,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
               role="alert"
             >
               The user guide has more information. <a
-                :href="'http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf'"
+                :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`"
                 target="_blank"
               >Click
                 here to access a PDF copy of the user guide</a>.
@@ -810,7 +813,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
               role="alert"
             >
               The user guide has more information. <a
-                :href="'http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf'"
+                :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`"
                 target="_blank"
               >Click
                 here to access a PDF copy of the user guide</a>.
@@ -896,7 +899,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
               role="alert"
             >
               The user guide has more information. <a
-                :href="'http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf'"
+                :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`"
                 target="_blank"
               >Click
                 here to access a PDF copy of the user guide</a>.
@@ -957,6 +960,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
               <li>Your actions will be recorded on the Macros page. You may delete any undesirable entries, or drag rows to rearrange the order of entries.</li>
               <li>When you are finished, click the save button to save your recordings to the slot that you selected.</li>
               <li>Click the button you selected on the remote to play back your recordings.</li>
+              <li>You can create additional macros which can be added to the home page from the Personalize tab.</li>
             </ul>
           </div>
         </div>
@@ -1046,7 +1050,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
               role="alert"
             >
               The user guide has more information. <a
-                :href="'http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf'"
+                :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`"
                 target="_blank"
               >Click
                 here to access a PDF copy of the user guide</a>.
@@ -1113,7 +1117,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
               role="alert"
             >
               The user guide has more information. <a
-                :href="'http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf'"
+                :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`"
                 target="_blank"
               >Click
                 here to access a PDF copy of the user guide</a>.
@@ -1124,12 +1128,12 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
                 Examples include:
               </li>
               <ul>
-                <li>The Dirac Live calibration tool.</li>
-                <li>Bluetooth devices.</li>
-                <li>Roon player.</li>
+                <li>The Dirac Live calibration tool</li>
+                <li>Bluetooth devices</li>
+                <li>Roon player</li>
               </ul>
               <li>
-                When Fast Start is on the unit will not completely power
+                When &quot;Fast Start&quot; is on the unit will not completely power
                 down and hence it will start up very quickly. You have the
                 option of keeping video pass through alive. When &quot;Fast
                 Start&quot; is off, powering back up will take somewhat longer. CEC
@@ -1175,7 +1179,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
               role="alert"
             >
               The user guide has more information. <a
-                :href="'http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf'"
+                :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`"
                 target="_blank"
               >Click
                 here to access a PDF copy of the user guide</a>.
