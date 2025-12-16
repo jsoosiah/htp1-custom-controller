@@ -37,7 +37,7 @@
     <dismissable-alert
       alert-key="macros-extra"
     >
-      Additional macros beyond the 8 standard slots may be added or removed. These extra macros can only be run from this web UI and are not accessible from the remote.
+      Additional macros beyond the 8 standard slots may be added or removed. These extra macros can only be run from this web UI and are not accessible from the remote. You can add these macros to the home page from the Personalize tab.
     </dismissable-alert>
     <div class="accordion mb-3">
       <macro-editor
