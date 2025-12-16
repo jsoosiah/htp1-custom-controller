@@ -240,17 +240,17 @@
             </div>
             <ul>
               <li>
+                <b>Dirac Live Filters: </b>Dirac Live filters are created using the
+                Dirac Live tool to calibrate the system. The user guide gives
+                a more detailed explanation.
+              </li>
+              <li>
                 <b>Dirac Live Off</b>: This switch allows you
                 to completely disable Dirac Live room calibration. It is
                 appropriate to turn this off if you have never done a Dirac Live
                 calibration. The user guide has more information on performing
                 a Dirac Live calibration. You can download the Dirac Live tool
                 here. <a href="https://live.dirac.com/download/" target="_blank">https://live.dirac.com/download/</a>
-              </li>
-              <li>
-                <b>Dirac Live filters: </b>Dirac Live filters are created using the
-                Dirac Live tool to calibrate the system. The user guide gives
-                a more detailed explanation.
               </li>
               <li>
                 <b>Delay and Trim</b>: A Dirac Live calibration measures the room
