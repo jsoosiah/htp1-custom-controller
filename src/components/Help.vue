@@ -839,7 +839,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
                 stream.
               </li>
               <li>
-                <b>HDMI CEC</b>: CEC stands for <i>onsumer Electronics Control</i>. It is designed
+                <b>HDMI CEC</b>: CEC stands for <i>Consumer Electronics Control</i>. It is designed
                 to simplify the connection of devices like amplifiers and
                 players with TV sets. The entries on the connectivity page
                 allow you to configure CEC to work best in your system. 

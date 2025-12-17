@@ -20,7 +20,7 @@
     <div class="row alert-row">
       <div class="col-lg-auto">
         <div :class="{'mb-3': !isLg}">
-          <dirac-button-group :home-button="false" />
+          <dirac-button-group :home-button="false" tooltip-id="speakers" />
         </div>
       </div>
       <div class="col-lg">

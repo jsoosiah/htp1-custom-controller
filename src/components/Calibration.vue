@@ -3,7 +3,7 @@
     <template v-if="isMobileMode">
       <h5>Dirac Live Filters <br><small class="text-muted ">up to {{ mso?.cal?.num_dirac_slots }} slots available</small></h5>
       <div class="mb-3">
-        <dirac-button-group :home-button="false" />
+        <dirac-button-group tooltip-id="calibration-mobile" :home-button="false" />
       </div>
       <div class="custom-control custom-switch mb-3">
         <input 
@@ -197,7 +197,7 @@
       </div>
       <div class="row justify-content-between mb-3">
         <div class="col-auto">
-          <dirac-button-group :home-button="false" />
+          <dirac-button-group tooltip-id="calibration-desktop" :home-button="false" />
         </div>
         <div class="col-auto">
           <div class="custom-control custom-switch">

@@ -244,6 +244,7 @@
             <tr
               v-for="(slot, key) in mso.cal?.slots"
               :key="key"
+              v-show="key < mso?.cal?.num_dirac_slots"
             >
               <td>
                 <div class="custom-control custom-switch">
