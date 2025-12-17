@@ -241,21 +241,21 @@
             <ul>
               <li>
                 Dirac Live filters are created using the
-                Dirac Live tool to calibrate the system. The user guide gives
-                a more detailed explanation.
+                Dirac Live calibration tool to calibrate the system. The user guide has more information on performing
+                a Dirac Live calibration. You can download the Dirac Live calibration tool
+                here: <a
+                  href="https://www.dirac.com/resources/downloads" target="_blank"
+                >https://www.dirac.com/resources/downloads</a>
               </li>
               <li>
-                <b>Dirac Live Slot: </b>Multiple Dirac Live filters can be transferred to the HTP-1 and arranged into individual slots.
+                <b>Dirac Live Slot: </b>Multiple Dirac Live filters can be transferred from the Dirac Live calibration tool to the HTP-1 and arranged into individual slots.
               </li>
               <li>
                 <b>Dirac Live Off</b>: This switch allows you
                 to completely disable Dirac Live room calibration. It is
                 appropriate to turn this off if you have never done a Dirac Live
                 calibration. The user guide has more information on performing
-                a Dirac Live calibration. You can download the Dirac Live tool
-                here: <a
-                  href="https://www.dirac.com/resources/downloads" target="_blank"
-                >https://www.dirac.com/resources/downloads</a>
+                a Dirac Live calibration.
               </li>
               <li>
                 <b>Delay and Trim</b>: A Dirac Live calibration measures the room
@@ -411,10 +411,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
                   </li>
                   <li>
                     <b>Left and right input as signal</b>: 
-                    Sends the left input to the left speaker and the right input to the selected speaker.
-                    Allows third party tools such as <i>Room Equalization
-                    Wizard</i> to measure speakers inaccessible through HDMI PCM 
-                    inputs. The left speaker can be used as an acoustic timing reference in <i>REW</i>.
+                    Sends the left and right inputs independently to any selectable speaker output. This allows the same speaker to be used as an acoustic timing reference in <i>REW</i>.
                   </li>
                 </ul>
               </li>
