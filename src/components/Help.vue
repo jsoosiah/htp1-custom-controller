@@ -251,13 +251,6 @@
                 <b>Dirac Live Slot: </b>Multiple Dirac Live filters can be transferred from the Dirac Live calibration tool to the HTP-1 and arranged into individual slots.
               </li>
               <li>
-                <b>Dirac Live Off</b>: This switch allows you
-                to completely disable Dirac Live room calibration. It is
-                appropriate to turn this off if you have never done a Dirac Live
-                calibration. The user guide has more information on performing
-                a Dirac Live calibration.
-              </li>
-              <li>
                 <b>Delay and Trim</b>: A Dirac Live calibration measures the room
                 and determines the amount of delay and trim required to align
                 the speakers in the room with the listening position. The trim matches the levels. The
