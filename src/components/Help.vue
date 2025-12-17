@@ -73,7 +73,7 @@
                 on the front panel.
               </li>
               <li>
-                The gear icon in the upper left allows you to configure the
+                The gear icon (desktop) or hamburger menu icon (mobile device) in the upper left allows you to configure the
                 system.
               </li>
               <li>
@@ -86,32 +86,32 @@
                 upmixer.<br>
               </li>
               <li>
-                The input configuration page sets which inputs are available
+                The <i>Inputs</i> configuration page sets which inputs are available
                 on buttons.
               </li>
               <li>
-                The upmix page sets which upmixers are available
+                The <i>Upmix</i> page sets which upmixers are available
                 on buttons.
               </li>
               <li>
-                Night mode engages any available Dolby or DTS functions to
+                <i>Night Mode</i> engages any available Dolby or DTS functions to
                 reduce the dynamic range of the program. It also lowers the
                 subwoofer by 6dB.
               </li>
               <li>
-                The Dirac Live button allows you to quickly hear the effect of
+                The <i>Dirac Live</i> button allows you to quickly hear the effect of
                 the Dirac Live calibration filters. <i>You must perform a Dirac Live
                   calibration for this feature to be active.</i><br>
               </li>
               <li>
-                The loudness button engages a filter that turns up the bass and treble
+                The <i>Loudness</i> button engages a filter that turns up the bass and treble
                 as the volume goes down. Actually, it is a bit more
-                complicated. The loudness button engages processing to closely
+                complicated. The <i>Loudness</i> button engages processing to closely
                 follow the <a href="https://en.wikipedia.org/wiki/Equal-loudness_contour" target="_blank">equal loudness</a> 
                 curve changes.
               </li>
               <li>
-                The dialog enhancement button is designed to make it easier
+                The <i>Dialog Enhancement</i> button is designed to make it easier
                 to hear the dialog. Some DTS-X streams have a feature to
                 adjust dialog directly and this control is connected to that
                 feature. If the stream does not have this feature then the
@@ -164,7 +164,7 @@
             </p>
             <ul>
               <li>
-                The speaker setup page allows you to specify which speakers
+                The <i>Speakers</i> setup page allows you to specify which speakers
                 are present. It also allows you to describe them for the purpose
                 of <a href="https://en.wikipedia.org/wiki/Bass_management" target="_blank">bass
                   management</a>.
@@ -186,7 +186,7 @@
               <li>
                 The user guide contains more information about Dirac Live
                 calibration. You can download the Dirac Live tool here: <a
-                  href="https://www.dirac.com/resources/downloads"
+                  href="https://www.dirac.com/resources/downloads" target="_blank"
                 >https://www.dirac.com/resources/downloads</a>
               </li>
               <li>
@@ -240,19 +240,15 @@
             </div>
             <ul>
               <li>
-                <b>Dirac Live Filters: </b>Dirac Live filters are created using the
-                Dirac Live tool to calibrate the system. The user guide gives
-                a more detailed explanation.
+                Dirac Live filters are created using the
+                Dirac Live calibration tool to calibrate the system. The user guide has more information on performing
+                a Dirac Live calibration. You can download the Dirac Live calibration tool
+                here: <a
+                  href="https://www.dirac.com/resources/downloads" target="_blank"
+                >https://www.dirac.com/resources/downloads</a>
               </li>
               <li>
-                <b>Dirac Live Off</b>: This switch allows you
-                to completely disable Dirac Live room calibration. It is
-                appropriate to turn this off if you have never done a Dirac Live
-                calibration. The user guide has more information on performing
-                a Dirac Live calibration. You can download the Dirac Live tool
-                here: <a
-                  href="https://www.dirac.com/resources/downloads"
-                >https://www.dirac.com/resources/downloads</a>
+                <b>Dirac Live Slot: </b>Multiple Dirac Live filters can be transferred from the Dirac Live calibration tool to the HTP-1 and arranged into individual slots.
               </li>
               <li>
                 <b>Delay and Trim</b>: A Dirac Live calibration measures the room
@@ -271,7 +267,7 @@
                 user values add to the values determined by Dirac Live to make the
                 total delay and trim. You should be aware that setting very
                 high trim values can lead to digital clipping.<br>
-With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no longer allows changes to trim and delay settings after calibration. This also applies to <b>Dirac Live Bass Control (BC)</b>. Although trim settings are still possible with BC, this is not recommended.
+With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no longer allows changes to trim and delay settings after calibration. This also applies to Dirac Live <b>Bass Control (BC)</b>. Although trim settings are still possible with BC, this is not recommended.
               </li>
             </ul>
           </div>
@@ -315,7 +311,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
                 here to access a PDF copy of the user guide</a>.
             </div>
             <p>
-              Balance allows individual level adjustments to input channels. 
+              <i>Balance</i> allows individual level adjustments to input channels. 
               It is implemented pre bass management, Dirac Live filters, tone control or loudness 
               so as not to interfere with calibrations or other processing.
             </p>
@@ -369,24 +365,24 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
                 mimics an off-board signal generator. That is to say the 
                 generator once turned on, remains on until it is turned off.
                 This means it remains turned on when you visit other configuration 
-                pages such as Calibration and PEQ, or even change to different inputs.
+                pages such as <i>Calibration</i> and <i>PEQ</i>, or even change to different inputs.
                 This also means the generator outputs are processed by the Dirac Live
                 room correction filters, tone controls, as well as the PEQ filters.
               </li>
               <li>
-                <b>Signal Select</b>: The Signal Generator support a number of signal generations:
+                <b>Signal Select</b>: The signal generator supports a number of signal generations:
                 <ul>
                   <li>
                     <b>"THX-like" band limited noise</b>: 
-                    "THX-like" band limited noise at -30dBFS
+                    "THX-like" band limited noise at -30dBFS.
                   </li>
                   <li>
                     <b>Louder reference noise</b>: A -20dBFS band limited noise 
-                    with energy between 300 Hz and 3 kHz and peak at 1 kHz
+                    with energy between 300 Hz and 3 kHz and peak at 1 kHz.
                   </li>
                   <li>
                     <b>Polarity pulse</b>: 
-                    A positive impluse
+                    A positive impluse.
                   </li>
                   <li>
                     <b>Sine wave</b>: 
@@ -395,23 +391,20 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
                   <li>
                     <b>Left input as signal</b>: 
                     Sends the Left input to the selected speaker.
-                    Allows third party tools such as Room Equalization
-                    Wizard to measure speaker inaccessible through HDMI PCM 
+                    Allows third party tools such as <i>Room Equalization
+                    Wizard (REW)</i> to measure speakers inaccessible through HDMI PCM 
                     inputs.
                   </li>
                   <li>
                     <b>Right input as signal</b>: 
                     Sends the Right input to the selected speaker.
-                    Allows third party tools such as Room Equalization
-                    Wizard to measure speaker inaccessible through HDMI PCM 
+                    Allows third party tools such as <i>Room Equalization
+                    Wizard</i> to measure speakers inaccessible through HDMI PCM 
                     inputs.
                   </li>
                   <li>
                     <b>Left and right input as signal</b>: 
-                    Sends the left input to the left speaker and the right input to the selected speaker.
-                    Allows third party tools such as Room Equalization
-                    Wizard to measure speaker inaccessible through HDMI PCM 
-                    inputs.
+                    Sends the left and right inputs independently to any selectable speaker output. This allows the same speaker to be used as an acoustic timing reference in <i>REW</i>.
                   </li>
                 </ul>
               </li>
@@ -480,6 +473,9 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
                 block the Dirac Live measurement signal will see PEQ as part of the room response. This behavior is
                 desirable for speaker pre-optimization but it also means that PEQ should not be changed after Dirac Live calibration
                 as this will destroy calibration results.
+              </li>
+              <li>
+                For optimal results with <i>BEQ</i> PEQ should be located pre Dirac Live filters and bass management.
               </li>
             </ul>
             <blockquote>
@@ -624,8 +620,8 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
             <ul>
               <li>
                 <b>Loudness Curve</b>: Select between different curve shapes for
-                loudness compensation. &quot;ISO 226:2003&quot; follows the standard equal loudness curve whereas
-                &quot;Vintage&quot; follows compensation curves of vintage analog home audio equipment.
+                loudness compensation. <i>ISO 226:2003</i> follows the standard equal loudness curve while
+                <i>Vintage</i> follows compensation curves very similar to those of vintage analog home audio equipment.
               </li>
               <li>
                 <b>Loudness Calibration</b>: The loudness calibration number
@@ -686,8 +682,8 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
                 here to access a PDF copy of the user guide</a>.
             </div>
             <p>
-              The system supports a number of algorithms designed to <i>make it
-                sound better</i>. These are in fact <i>upmixers</i>. We
+              The system supports a number of algorithms designed to <i>make it 
+              sound better</i>. These are in fact <i>upmixers</i>. We
               sometimes refer to these as <i>sound modes</i>. They make more
               channels from fewer channels. They are designed in particular to
               help older source material (stereo or 5.1) drive the wide set of
@@ -835,15 +831,15 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
               <li>
                 When <i>Show Advanced Input Settings</i> is enabled, another switch is
                 exposed for the digital inputs. <i>PCM Detect
-                Sensitivity</i> has three settings. &quot;Auto&quot; is the default
-                setting and this is usually correct. The &quot;Biased&quot;
+                Sensitivity</i> has three settings. <i>Auto</i> is the default
+                setting and this is usually correct. The <i>Biased</i>
                 setting is biased toward PCM material. This might be
-                appropriate for a player playing a CD. The "indicated"
+                appropriate for a player playing a CD. The <i>Indicated</i>
                 setting relies on the audio format indicated by the HDMI
                 stream.
               </li>
               <li>
-                <b>HDMI CEC</b>: CEC stands for &quot;Consumer Electronics Control&quot;. It is designed
+                <b>HDMI CEC</b>: CEC stands for <i>onsumer Electronics Control</i>. It is designed
                 to simplify the connection of devices like amplifiers and
                 players with TV sets. The entries on the connectivity page
                 allow you to configure CEC to work best in your system. 
@@ -913,12 +909,12 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
               <li>
                 Ethernet settings are displayed. If a static IP
                 address is desired, turn off DHCP and provide the required
-                information. Then &quot;APPLY&quot; the network settings.
+                information. Then <i>APPLY</i> the network settings.
               </li>
               <li>
                 When Wi-Fi is enabled the system scans to find available
                 networks. These are displayed on the left. Choose
-                a network, enter the password, and click on &quot;CONFIGURE NETWORK&quot;.
+                a network, enter the password, and click on <i>CONFIGURE NETWORK</i>.
                 After a brief delay the network should appear in the list of
                 configured networks on the right.
               </li>
@@ -953,14 +949,14 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
           data-parent="#accordionExample"
         >
           <div class="card-body">
-            <p>The Macros page allows you to record your actions and save them to the CMD A/B/C/D and PRESET 1/2/3/4 buttons of the remote control.</p>
+            <p>The <i>Macros</i> page allows you to record your actions and save them to the CMD A/B/C/D and PRESET 1/2/3/4 buttons of the remote control.</p>
             <ul>
               <li>Select one of the 8 slots to record your actions.</li>
               <li>Click the Recording button to start recording, and then perform the actions you wish to record, using either the remote or the web interface.</li>
               <li>Your actions will be recorded on the Macros page. You may delete any undesirable entries, or drag rows to rearrange the order of entries.</li>
               <li>When you are finished, click the save button to save your recordings to the slot that you selected.</li>
               <li>Click the button you selected on the remote to play back your recordings.</li>
-              <li>You can create additional macros which can be added to the home page from the Personalize tab.</li>
+              <li>You can create additional macros which can be added to the home page from the <i>Personalize</i> tab.</li>
             </ul>
           </div>
         </div>
@@ -993,7 +989,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
         >
           <div class="card-body">
             <p>
-              The Personalize page allows you to customize this user interface.
+              The <i>Personalize</i> page allows you to customize the home page.
             </p>
             <ul>
               <li>
@@ -1010,9 +1006,9 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
                 </ul>
               </li>
               <li>You can select shortcuts to settings pages which will appear on the top right of the screen.</li>
-              <li>You can select which buttons appear under the Modes section of the homepage.</li>
-              <li>You can select which macro buttons appear under the Macros section of the homepage.</li>
-              <li>You can select which Dirac Live slots appear under the Dirac Live slots section of the homepage.</li>
+              <li>You can select which buttons appear under the <i>Modes</i> section of the homepage.</li>
+              <li>You can select which macro buttons appear under the <i>Macros</i> section of the homepage.</li>
+              <li>You can select which Dirac Live slots appear under the <i>Dirac Live Slot</i> section of the homepage.</li>
               <li>Notices are small info boxes that appear on various settings pages. You can restore all dismissed notices.</li>
             </ul>
           </div>
@@ -1057,7 +1053,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
             </div>
             <ul>
               <li>
-                <b>Power On Volume volume</b>: This number sets the default volume after restart.
+                <b>Power On Volume</b>: This number sets the default volume after restart.
               </li>
               <li>
                 <b>Min. volume</b>: This number sets the lowest level of
@@ -1076,8 +1072,8 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
                 specified in volts, sets the level at which the output of the
                 HTP-1 saturates. It should represent the loudest volume
                 the system can achieve. Amplifier manufacturers
-                typically specify this number as the &quot;amplifier
-                sensitivity&quot;. The user guide discusses what to do if you
+                typically specify this number as the <i>amplifier
+                sensitivity</i>. The user guide discusses what to do if you
                 don't know the amplifier sensitivity. It suggests starting at
                 1 volt and then adjusting by ear.<br>
               </li>
@@ -1124,7 +1120,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
             </div>
             <ul>
               <li>
-                The unit name is displayed by to the outside world.
+                The <i>Unit Name</i> is displayed by to the outside world.
                 Examples include:
               </li>
               <ul>
@@ -1133,14 +1129,14 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
                 <li>Roon player</li>
               </ul>
               <li>
-                When &quot;Fast Start&quot; is on the unit will not completely power
+                When <i>Fast Start</i> is on the unit will not completely power
                 down and hence it will start up very quickly. You have the
-                option of keeping video pass through alive. When &quot;Fast
-                Start&quot; is off, powering back up will take somewhat longer. CEC
-                based power up will not work when fast start is off.
+                option of keeping <i>Video Pass Through</i> alive. When <i>Fast
+                Start</i> is off, powering back up will take somewhat longer. CEC
+                based power up will not work when <i>Fast Start</i> is off.
               </li>
               <li>
-                Front panel brightness can be adjusted here. The "dim"
+                Front panel brightness can be adjusted here. The <i>DIM</i>
                 button on the remote also works.
               </li>
             </ul>
@@ -1189,7 +1185,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
                 You can export and import settings. It's a good idea
                 to export the configuration when you are happy with your
                 settings. Then you can re-import them if the settings
-                are lost or damaged.<br>
+                are lost or damaged.
               </li>
             </ul>
           </div>
