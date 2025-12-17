@@ -46,7 +46,7 @@
       </div>
     </div>
     <div
-      v-show="mso.peq.location === 'pre' && diracErrorState === 'GREEN'"
+      v-show="isPeqPre"
       class="row"
     >
       <div class="col">
@@ -605,6 +605,10 @@
 
       const targetCloneChannels = ref([]);
 
+      const isPeqPre = computed(() => {
+        return mso?.value?.peq?.location === "pre" && diracErrorState.value === 'GREEN';
+      });
+
       const peqEnabled = computed(() => {
         return mso?.value?.peq.location === "pre" || delayPeqAllowed.value !== 'blocked' || diracErrorState.value !== 'GREEN';
       });
@@ -912,12 +916,12 @@
       });
 
       function channelVisible(channame) {
-        return mso?.value?.peq?.location === 'post' || !(channame !== 'sub1' && channame.startsWith('sub'))
+        return !isPeqPre.value || !(channame !== 'sub1' && channame.startsWith('sub'));
       }
 
       function spkNamePre(spkId) {
 
-        if (mso?.value.peq?.location === 'post') {
+        if (!isPeqPre.value) {
           return spkName(spkId);
         }
 
@@ -940,7 +944,7 @@
         secretSettings, linkAllChannels, toggleLinkAllChannels,
         handleCenterFreq, handleGain, handleQ, handleFilterType, handleBypass, darkMode, chartRef,
         downloadSingleChannelTargetCurve, peqWarning, peqEnabled, warningMessagePeq, channelInvalid, bandInvalid,
-        diracErrorState, channelVisible,
+        diracErrorState, channelVisible, isPeqPre
       };
     }
   }
