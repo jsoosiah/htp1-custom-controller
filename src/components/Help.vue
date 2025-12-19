@@ -313,7 +313,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
             <p>
               <i>Balance</i> allows individual level adjustments to input channels. 
               It is implemented pre bass management, Dirac Live filters, tone control or loudness 
-              so as not to interfere with calibrations or other processing.
+              so as not to interfere with calibrations or other processing. <i>Balance</i> is where you can safely adjust center if dialog is too low or increase the volume for sounds from the surround channels.
             </p>
           </div>
         </div>
@@ -568,7 +568,8 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
             <p>
               Traditional tone controls can be
                 enabled. When enabled the boost or cut can be specified as
-                well as the corner frequencies.
+                well as the corner frequencies.<br>
+              The bass control is particularly useful for compensating for the relatively large differences in the low frequency range that typically occur between different mixes.
             </p>
             <blockquote>
               Note that applying large boosts can
@@ -708,9 +709,9 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
                 <b>Native</b>: In native mode, the Dolby Surround upmixer is
                 applied only to material decoded from Dolby sources. The DTS
                 Neural-X upmixer is applied only to native DTS sources. And
-                the Auro3D decoder is enabled to handle any Auro3D encoded
+                the AURO-3D decoder is enabled to handle any AURO-3D encoded
                 sources. No upmixer is applied to PCM sources. The
-                AuroMatic upmixer cannot be applied to material sampled at
+                Auro-Matic upmixer cannot be applied to material sampled at
                 192kHz.
               </li>
               <li>
@@ -731,22 +732,22 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
                 algorithm is enabled to analyze the input stream and process
                 it for presentation across the available speaker set. This is
                 an evolution of the previous DTS NEO. One control is provided,
-                namely <i>wide synth</i>. Since the Neural-X code only
+                namely <i>Wide Synth</i>. Since the Neural-X code only
                 produces data for 12 channels (7.1.4), enabling the wide synth
                 control will populate the rest of the channels.
               </li>
               <li>
-                <b>Auro3D</b>: When this is selected, the Auro Technology
+                <b>AURO-3D</b>: When this is selected, the Auro Technology
                 Engine is engaged to analyzer the input stream and process it
-                for presentation across the available speaker set. The Auro3D
+                for presentation across the available speaker set. The AURO-3D
                 engine provides an alternative to the Dolby and DTS systems.
-                When sources are encoded using the Auro3D algorithm the engine
+                When sources are encoded using the AURO-3D algorithm the engine
                 detects this and decodes more channels. For instance, it is
-                common to find program material recorded using Auro3D to
+                common to find program material recorded using AURO-3D to
                 capture 14 channels (7.1.6a) but encoded with 8 channels
                 (7.1). BlueRay disks with such content are clearly labeled.
-                The Auro3D engine can also function as an upmixer when the
-                source material is not encoded. Then the <i>AuroMatic</i>
+                The AURO-3D engine can also function as an upmixer when the
+                source material is not encoded. Then the <i>Auro-Matic</i>
                 algorithm is deployed to upmix. Auro Technologies provides a
                 number of controls to adjust this algorithm.
               </li>
@@ -902,8 +903,8 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
             </div>
             <p>
               The network page allows you to 
-              enable or disable WiFi as well as configure automatic (DHCP)
-              address assignment or manual configuration. 
+              enable or disable Wi-Fi as well as configure automatic
+              IP address assignment (DHCP) or manual configuration. 
             </p>
             <ul>
               <li>
@@ -949,11 +950,11 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
           data-parent="#accordionExample"
         >
           <div class="card-body">
-            <p>The <i>Macros</i> page allows you to record your actions and save them to the CMD A/B/C/D and PRESET 1/2/3/4 buttons of the remote control.</p>
+            <p>The <i>Macros</i> page allows you to record your actions and save them to the <i>CMD A/B/C/D</i> and <i>PRESET 1/2/3/4</i> buttons of the remote control.</p>
             <ul>
               <li>Select one of the 8 slots to record your actions.</li>
               <li>Click the Recording button to start recording, and then perform the actions you wish to record, using either the remote or the web interface.</li>
-              <li>Your actions will be recorded on the Macros page. You may delete any undesirable entries, or drag rows to rearrange the order of entries.</li>
+              <li>Your actions will be recorded on the <i>Macros</i> page. You may delete any undesirable entries, or drag rows to rearrange the order of entries.</li>
               <li>When you are finished, click the save button to save your recordings to the slot that you selected.</li>
               <li>Click the button you selected on the remote to play back your recordings.</li>
               <li>You can create additional macros which can be added to the home page from the <i>Personalize</i> tab.</li>
@@ -993,7 +994,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
             </p>
             <ul>
               <li>
-                Homepage status display
+                <i>Homepage Status Display</i>
                 <ul>
                   <li>
                     You can cause video status (resolution, color depth, etc)
@@ -1005,7 +1006,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
                   </li>
                 </ul>
               </li>
-              <li>You can select shortcuts to settings pages which will appear on the top right of the screen.</li>
+              <li>You can select <i>Shortcuts</i> to settings pages which will appear on the top right of the screen.</li>
               <li>You can select which buttons appear under the <i>Modes</i> section of the homepage.</li>
               <li>You can select which macro buttons appear under the <i>Macros</i> section of the homepage.</li>
               <li>You can select which Dirac Live slots appear under the <i>Dirac Live Slot</i> section of the homepage.</li>
@@ -1132,8 +1133,8 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
                 When <i>Fast Start</i> is on the unit will not completely power
                 down and hence it will start up very quickly. You have the
                 option of keeping <i>Video Pass Through</i> alive. When <i>Fast
-                Start</i> is off, powering back up will take somewhat longer. CEC
-                based power up will not work when <i>Fast Start</i> is off.
+                Start</i> is off, powering back up will take somewhat longer. CEC-based 
+                power up will not work when <i>Fast Start</i> is off.
               </li>
               <li>
                 Front panel brightness can be adjusted here. The <i>DIM</i>
