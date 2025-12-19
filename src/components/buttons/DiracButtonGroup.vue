@@ -15,27 +15,28 @@
     :state-value="0"
     :home-button="props.homeButton"
   />
+
   <span class="ml-2">
     <template v-if="diracErrorState === 'INACTIVE'">
       <span v-tooltip="{'message': 'Dirac Live filter is not active.'}" :id="`${props.tooltipId}-tooltipinactive`">
-        <span class="badge badge-secondary">Inactive</span>
+        <span style="width:4rem" class="badge badge-secondary">Inactive</span>
         <font-awesome-icon class="ml-1" :icon="['fas', 'question-circle']" />
       </span>
     </template>
     <template v-else-if="diracErrorState === 'GREEN'">
       <span v-tooltip="{'message': 'Dirac Live calibration is active and filters are operating as expected.'}" :id="`${props.tooltipId}-tooltipsuccess`">
-        <span class="badge badge-success">Active</span>
+        <span style="width:4rem" class="badge badge-success">Active</span>
       </span>
     </template>
     <template v-else-if="diracErrorState === 'YELLOW'">
       <span v-tooltip="{'message': 'Dirac Live calibration is in an unexpected state. Try toggling Dirac Live off and back on to fix it.'}" :id="`${props.tooltipId}-tooltipwarning`">
-        <span class="badge badge-warning">Warning</span>
+        <span style="width:4rem" class="badge badge-warning">Warning</span>
         <font-awesome-icon class="ml-1" :icon="['fas', 'question-circle']" />
       </span>
     </template>
     <template v-else>
       <span v-tooltip="{'message': 'Dirac Live filter has failed to load. Try rebooting the HTP-1 to fix it.'}" :id="`${props.tooltipId}-tooltiperror`">
-        <span class="badge badge-danger">Error</span>
+        <span style="width:4rem" class="badge badge-danger">Error</span>
         <font-awesome-icon class="ml-1" :icon="['fas', 'question-circle']" />
       </span>
     </template>
