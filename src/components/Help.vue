@@ -313,7 +313,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
             <p>
               <i>Balance</i> allows individual level adjustments to input channels. 
               It is implemented pre bass management, Dirac Live filters, tone control or loudness 
-              so as not to interfere with calibrations or other processing. <i>Balance</i> is where you can safely adjust center if dialog is too low or increase the volume for sounds from the surround channels.
+              so as not to interfere with calibrations or other processing. <i>Balance</i> is where you can safely adjust the center channel if dialog is too low or increase the volume for sounds from the surround channels.
             </p>
           </div>
         </div>
