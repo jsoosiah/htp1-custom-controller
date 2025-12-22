@@ -636,11 +636,7 @@
       });
 
       const warningMessageTrim = computed(() => {
-        const baseMsg = `The Dirac Live ${filterTypeToCssClass(diracFilterType.value, true).toUpperCase()} filter carefully calibrates the trim. Changing the trim here destroys the Dirac Live ${filterTypeToCssClass(diracFilterType.value, true).toUpperCase()} effect. Look to the balance page where channel trims are safely adjusted pre-Dirac Live.`;
-        if (trimAllowed.value === 'warn') {
-          return baseMsg + " Edit at your own risk.";
-        }
-        return baseMsg;
+        return `Trim is applied after the Dirac Live ${filterTypeToCssClass(diracFilterType.value, true).toUpperCase()} filter runs. Changing the trim value here damages the Dirac Live ${filterTypeToCssClass(diracFilterType.value, true).toUpperCase()} filter. Look to the balance page where channel trims are safely adjusted.`;
       });
 
       const warningMessageDelay = computed(() => {
@@ -701,7 +697,7 @@
       }
 
       function enableUserDelayBulk() {
-        return diracErrorState.value !== 'GREEN' || delayPeqAllowed.value !== 'blocked';
+        return (mso?.value?.cal?.diracactive === 'on' && diracErrorState.value !== 'GREEN') || mso?.value?.cal?.diracactive === 'off' || delayPeqAllowed.value !== 'blocked';
       }
 
       function enableUserTrimBulk() {
@@ -709,7 +705,7 @@
       }
 
       function enableUserDelay(channel) {
-        if (diracErrorState.value === 'GREEN' && channel !== seatShakerChannel.value) {
+        if ((diracErrorState.value === 'GREEN' || mso?.value?.cal?.diracactive === 'bypass') && channel !== seatShakerChannel.value) {
           return delayPeqAllowed.value !== 'blocked';
         }
 
@@ -724,7 +720,7 @@
       }
 
       function warnUserDelay(channel) {
-        if (diracErrorState.value !== 'GREEN' || channel === seatShakerChannel.value) {
+        if ((mso?.value?.cal?.diracactive === 'on' && diracErrorState.value !== 'GREEN') || mso?.value?.cal?.diracactive === 'off' || channel === seatShakerChannel.value) {
           return false;
         }
 
@@ -732,7 +728,7 @@
       }
 
       function warnUserTrim(channel) {
-        if (diracErrorState.value !== 'GREEN' || channel === seatShakerChannel.value) {
+        if ((mso?.value?.cal?.diracactive === 'on' && diracErrorState.value !== 'GREEN') || mso?.value?.cal?.diracactive === 'off' || channel === seatShakerChannel.value) {
           return false;
         }
 
