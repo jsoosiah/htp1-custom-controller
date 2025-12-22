@@ -27,6 +27,7 @@
       <span v-tooltip="{'message': 'Dirac Live calibration is active and filters are operating as expected.'}" :id="`${props.tooltipId}-tooltipsuccess`">
         <span style="width:4rem" class="badge badge-success">Active</span>
       </span>
+      
     </template>
     <template v-else-if="diracErrorState === 'YELLOW'">
       <span v-tooltip="{'message': 'Dirac Live calibration is in an unexpected state. Try toggling Dirac Live off and back on to fix it.'}" :id="`${props.tooltipId}-tooltipwarning`">
@@ -39,6 +40,13 @@
         <span style="width:4rem" class="badge badge-danger">Error</span>
         <font-awesome-icon class="ml-1" :icon="['fas', 'question-circle']" />
       </span>
+      <div
+        class="alert alert-danger small mt-3"
+        role="alert"
+      >
+        Dirac Live filter has failed to load. Try restarting concord or restarting the HTP-1 to fix it.
+        <button class="btn btn-sm btn-danger d-block mt-3">Restart Concord</button>
+      </div>
     </template>
   </span>
 </template>

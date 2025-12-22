@@ -619,7 +619,7 @@
         setMuteAllChannelsOff, setMuteAllChannelsOn, toggleAllMuteChannels,
         diracMismatchedChannels, setDiracSlotNotes, currentLayoutHasMatchingDiracFilter,
         filterTypeToCssClass, showCrossoverControls, seatShakerChannel, diracFilterType,
-        diracErrorState, delayPeqAllowed, currentDiracFilterType,
+        diracErrorState, delayPeqAllowed, diracNoFilter,
       } = useMso();
       const { spkName } = useSpeakerGroups();
       const { showChannelMuteControls, toggleShowChannelMuteControls, darkMode } = useLocalStorage();
@@ -671,7 +671,7 @@
       }
 
       function getCalDelay(channel) {
-        return (diracErrorState.value === 'INACTIVE' || channel === seatShakerChannel.value) ? 0 : currentDiracSlot.value?.channels[channel].caldelay;
+        return (mso?.value?.cal?.diracactive === 'off' || diracNoFilter.value || channel === seatShakerChannel.value) ? 0 : currentDiracSlot.value?.channels[channel].caldelay;
       }
 
       function getTotalDelay(channel) {
@@ -679,7 +679,7 @@
       }
 
       function getCalTrim(channel) {
-        return (diracErrorState.value === 'INACTIVE' || channel === seatShakerChannel.value) ? 0 : currentDiracSlot.value?.channels[channel].caltrim;
+        return (mso?.value?.cal?.diracactive === 'off' || diracNoFilter.value || channel === seatShakerChannel.value) ? 0 : currentDiracSlot.value?.channels[channel].caltrim;
       }
 
       function slotName(slot) {

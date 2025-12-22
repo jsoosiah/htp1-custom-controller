@@ -503,9 +503,12 @@ const visibleDiracSlots = computed(() => {
   const filtered = {};
   if (mso.value.personalize?.diracSlots) {
     for (let slotIndex in mso.value.personalize?.diracSlots) {
-      filtered[slotIndex] = mso.value.cal?.slots[slotIndex];
+      if (slotIndex < mso?.value?.cal?.num_dirac_slots) {
+        filtered[slotIndex] = mso.value.cal?.slots[slotIndex];
+      }
     }
   }
+  console.log(filtered)
   return filtered;
 });
 
@@ -1204,8 +1207,9 @@ function setPEQGain(channel, slot, gain) {
 }
 
 function setPEQQuality(channel, slot, q) {
-  const filterType = mso?.value?.peq.slots[slot].channels[channel].FilterType;
-  const minQ = filterType === 3 ? 0 : 0.1;
+  // const filterType = mso?.value?.peq.slots[slot].channels[channel].FilterType;
+  // const minQ = filterType === 3 ? 0 : 0.1;
+  const minQ = 0.1;
   let qValue = convertFloat(q, 1.0, minQ, 10.0);
 
   return patchMso( 'replace', `/peq/slots/${slot}/channels/${channel}/Q`, qValue);

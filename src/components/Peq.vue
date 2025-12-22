@@ -297,7 +297,7 @@
                 type="number" 
                 class="form-control form-control-sm text-right" 
                 :value="slot.channels[activeChannels[selectedChannel]].Q" 
-                min="0" 
+                min="0.1" 
                 max="10" 
                 step=".1" 
                 @change="({ type, target }) => { handleQ(activeChannels[selectedChannel], index, target.value) }"
