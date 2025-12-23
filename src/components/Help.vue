@@ -1,6 +1,26 @@
 <template>
   <div class="transition-container">
     <h5>Help Manual</h5>
+            <div
+              class="alert alert-info small alert-box"
+              role="alert"
+            >
+              The user guide has more information. <a
+                :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`"
+                target="_blank"
+              >Click
+                here to access a PDF copy of the user guide</a>.
+            </div>
+            <div class="alert alert-info small alert-box" role="alert">
+              <b>Update 12/2025:</b> Support for Dirac Live Active Room Treatment (ART) has been added. <a
+                :href="`http://${websocketIp}/HTP-1_User_Manual_ART_Addendum.pdf`"
+                target="_blank">Click here to access a PDF copy of the ART addendum</a>.
+            </div>
+            <div class="alert alert-info small alert-box" role="alert">
+              <b>Update 12/2025:</b> The front panel has been completely redesigned. <a
+                :href="`http://${websocketIp}/HTP-1-Front-Panel.pdf`"
+                target="_blank">Click here to access a PDF copy of the front panel manual</a>.
+            </div>
     <div
       id="accordionExample"
       class="accordion"
@@ -44,9 +64,8 @@
                 here to access a PDF copy of the user guide</a>.
             </div>
             <p>
-              This page is the main interface to the system. It looks much like
-              the front panel, but while the front panel is only a display, this
-              web page is interactive. The system is designed to be configured from this set of web pages.
+              The home page is the main interface to the system. While it looks similar to the front panel
+              it is designed to allow configuration of the whole system.
             </p>
             <ul>
               <li>
@@ -54,7 +73,7 @@
                 on the front panel.
               </li>
               <li>
-                The gear in the upper right allows you to configure the
+                The gear icon (desktop) or hamburger menu icon (mobile device) in the upper left allows you to configure the
                 system.
               </li>
               <li>
@@ -67,34 +86,32 @@
                 upmixer.<br>
               </li>
               <li>
-                The input configuration page sets which inputs are available
-                on buttons. Clicking in the upper left allows you to choose
-                from the full input list.
+                The <i>Inputs</i> configuration page sets which inputs are available
+                on buttons.
               </li>
               <li>
-                The upmix page sets which upmixers are available
-                on buttons. The help on the upmix page explains
-                the upmixers in more detail.
+                The <i>Upmix</i> page sets which upmixers are available
+                on buttons.
               </li>
               <li>
-                Night mode engages any available Dolby or DTS functions to
+                <i>Night Mode</i> engages any available Dolby or DTS functions to
                 reduce the dynamic range of the program. It also lowers the
                 subwoofer by 6dB.
               </li>
               <li>
-                The Dirac button allows you to quickly hear the effect of
-                the Dirac calibration filters. <i>You must perform a Dirac
+                The <i>Dirac Live</i> button allows you to quickly hear the effect of
+                the Dirac Live calibration filters. <i>You must perform a Dirac Live
                   calibration for this feature to be active.</i><br>
               </li>
               <li>
-                The loudness button engages a filter that turns up the bass
+                The <i>Loudness</i> button engages a filter that turns up the bass and treble
                 as the volume goes down. Actually, it is a bit more
-                complicated. The loudness button engages processing to closely
-                follow the Fletcher-Munson equal loudness curves, as described
-                on Wikipedia.
+                complicated. The <i>Loudness</i> button engages processing to closely
+                follow the <a href="https://en.wikipedia.org/wiki/Equal-loudness_contour" target="_blank">equal loudness</a> 
+                curve changes.
               </li>
               <li>
-                The dialog enhancement button is designed to make it easier
+                The <i>Dialog Enhancement</i> button is designed to make it easier
                 to hear the dialog. Some DTS-X streams have a feature to
                 adjust dialog directly and this control is connected to that
                 feature. If the stream does not have this feature then the
@@ -147,9 +164,9 @@
             </p>
             <ul>
               <li>
-                The speaker setup page allows you to specify which speakers
+                The <i>Speakers</i> setup page allows you to specify which speakers
                 are present. It also allows you to describe them for the purpose
-                of <a href="https://en.wikipedia.org/wiki/Bass_management">bass
+                of <a href="https://en.wikipedia.org/wiki/Bass_management" target="_blank">bass
                   management</a>.
               </li>
               <li>
@@ -163,17 +180,17 @@
                 are where.
               </li>
               <li>
-                A Dirac calibration allows you to see the measured cutoff
-                frequencies for the small speakers. Other procedures, including
-                a noise source from a test disk are also used, but a Dirac
-                calibration is really accurate. Set the cutoff frequencies based
-                on these measurements.
+                Set the cutoff frequencies based on the -3dB point of your speakers. 
+                The value can be found in the technical specifications of your particular speaker model.
               </li>
               <li>
-                The user guide contains more information about Dirac
+                The user guide contains more information about Dirac Live
                 calibration. You can download the Dirac Live tool here: <a
-                  href="https://live.dirac.com/download/"
-                >https://live.dirac.com/download/</a>
+                  href="https://www.dirac.com/resources/downloads" target="_blank"
+                >https://www.dirac.com/resources/downloads</a>
+              </li>
+              <li>
+                <b>Enable Seat Shaker</b>: When enabled the first unused subwoofer channel becomes the seat shaker channel. This channel will be excluded from Dirac Live calibrations and will not have any filter corrections while Dirac Live is enabled.
               </li>
             </ul>
           </div>
@@ -216,67 +233,41 @@
               >Click
                 here to access a PDF copy of the user guide</a>.
             </div>
+            <div class="alert alert-info small alert-box" role="alert">
+              <b>Update 12/2025:</b> Support for Dirac Live Active Room Treatment (ART) has been added. <a
+                :href="`http://${websocketIp}/HTP-1_User_Manual_ART_Addendum.pdf`"
+                target="_blank">Click here to access a PDF copy of the ART addendum</a>.
+            </div>
             <ul>
               <li>
-                <b>Min. volume</b>: This number sets the lowest level of
-                volume possible using any volume control. Set it so that
-                you can barely hear the audio.
+                Dirac Live filters are created using the
+                Dirac Live calibration tool to calibrate the system. The user guide has more information on performing
+                a Dirac Live calibration. You can download the Dirac Live calibration tool
+                here: <a
+                  href="https://www.dirac.com/resources/downloads" target="_blank"
+                >https://www.dirac.com/resources/downloads</a>
               </li>
               <li>
-                <b>Max. listening volume</b>: This number limits the upper
-                range of the volume control. The user guide gives more
-                background. This control can be usefully adjusted to
-                limit the volume of a system that is in fact capable of much
-                higher volumes.
+                <b>Dirac Live Slot: </b>Multiple Dirac Live filters can be transferred from the Dirac Live calibration tool to the HTP-1 and arranged into individual slots.
               </li>
               <li>
-                <b>Max. Output Level</b>: The maximum Output Level,
-                specified in volts, sets the level at which the output of the
-                HTP-1 saturates. It should represent the loudest volume
-                the system can achieve. Amplifier manufacturers
-                typically specify this number as the "amplifier
-                sensitivity". The user guide discusses what to do if you
-                don't know the amplifier sensitivity. It suggests starting at
-                1 volt and then adjusting by ear.<br>
-              </li>
-              <li>
-                <b>Lipsync</b><b> Delay</b>: The audio is delayed by the
-                specified number of milliseconds. Begin system setup with this
-                set to zero and do a Dirac calibration. Then check the sync
-                between the audio and the video using a local source that you
-                trust. Note that the surround modes add delay. The
-                shortest delay will be achieved in direct mode.
-              </li>
-              <li>
-                <b>Dirac Room Calibration Active</b>: This switch allows you
-                to completely disable Dirac room calibration. It is
-                appropriate to turn this off if you have never done a Dirac
-                calibration. The user guide has more information on performing
-                a Dirac Live calibration. You can download the Dirac Live tool
-                here. <a href="https://live.dirac.com/download/">https://live.dirac.com/download/</a>
-              </li>
-              <li>
-                <b>Dirac Filters: </b>Dirac filters are created using the
-                Dirac Live tool to calibrate the system. The user guide gives
-                a more detailed explanation.
-              </li>
-              <li>
-                <b>Delay and Trim</b>: A Dirac calibration measures the room
+                <b>Delay and Trim</b>: A Dirac Live calibration measures the room
                 and determines the amount of delay and trim required to align
-                the speakers in the room. The trim matches the levels. The
+                the speakers in the room with the listening position. The trim matches the levels. The
                 delay accounts for the different distances of the speakers as
-                sound travels at approximately one millisecond per foot. A
-                properly executed Dirac calibration will automatically choose
+                sound travels at approximately one foot per millisecond (0.34m/ms). A
+                properly executed Dirac Live calibration will automatically choose
                 the optimal delay and trim. The user delay and trim should be
-                zero after a Dirac calibration is completed.
+                zero after a Dirac Live calibration is completed.
               </li>
               <li>
                 <b>User Trim and Delay</b>: These user controls can be used
-                if a Dirac calibration is not desired. They can also be used
-                to modify the values determined by the Dirac calibration. The
-                user values add to the values determined by Dirac to make the
+                if a Dirac Live calibration is not desired. They can also be used
+                to modify the values determined by the Dirac Live calibration. The
+                user values add to the values determined by Dirac Live to make the
                 total delay and trim. You should be aware that setting very
-                high trim values can lead to digital clipping.
+                high trim values can lead to digital clipping.<br>
+With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no longer allows changes to trim and delay settings after calibration. This also applies to Dirac Live <b>Bass Control (BC)</b>. Although trim settings are still possible with BC, this is not recommended.
               </li>
             </ul>
           </div>
@@ -284,7 +275,7 @@
       </div>
       <div class="card">
         <div
-          id="headingTwo"
+          id="headingFour"
           class="card-header"
           @click="toggleOpened(3)"
         >
@@ -293,19 +284,64 @@
               class="btn btn-link btn-block text-left collapsed"
               type="button"
               data-toggle="collapse"
-              data-target="#collapseTwo"
+              data-target="#collapseFour"
               aria-expanded="false"
-              aria-controls="collapseTwo"
+              aria-controls="collapseFour"
+            >
+              Balance
+            </button>
+          </h2>
+        </div>
+        <div
+          id="collapseFour"
+          class="collapse"
+          :class="{'show': opened[3]}"
+          aria-labelledby="headingFour"
+          data-parent="#accordionExample"
+        >
+          <div class="card-body">
+            <div
+              class="alert alert-info small alert-box"
+              role="alert"
+            >
+              The user guide has more information. <a
+                :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`"
+                target="_blank"
+              >Click
+                here to access a PDF copy of the user guide</a>.
+            </div>
+            <p>
+              <i>Balance</i> allows individual level adjustments to input channels. 
+              It is implemented pre bass management, Dirac Live filters, tone control or loudness 
+              so as not to interfere with calibrations or other processing. <i>Balance</i> is where you can safely adjust the center channel if dialog is too low or increase the volume for sounds from the surround channels.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div
+          id="headingFive"
+          class="card-header"
+          @click="toggleOpened(4)"
+        >
+          <h2 class="mb-0">
+            <button
+              class="btn btn-link btn-block text-left collapsed"
+              type="button"
+              data-toggle="collapse"
+              data-target="#collapseFive"
+              aria-expanded="false"
+              aria-controls="collapseFive"
             >
               Signal Generator
             </button>
           </h2>
         </div>
         <div
-          id="collapseTwo"
+          id="collapseFive"
           class="collapse"
-          :class="{'show': opened[3]}"
-          aria-labelledby="headingTwo"
+          :class="{'show': opened[4]}"
+          aria-labelledby="headingFive"
           data-parent="#accordionExample"
         >
           <div class="card-body">
@@ -325,47 +361,55 @@
             <ul>
               <li>
                 <b>Signal Generator</b>: Toggles between ON and OFF to 
-                turn on or off the signal generator.  The signal generator
-                mimics an off-board signal generator.  That is to say the 
+                turn on or off the signal generator. The signal generator
+                mimics an off-board signal generator. That is to say the 
                 generator once turned on, remains on until it is turned off.
                 This means it remains turned on when you visit other configuration 
-                pages such as Calibration and EQ, or even change to different inputs.
-                This also means the generator outputs are processed by the Dirac 
+                pages such as <i>Calibration</i> and <i>PEQ</i>, or even change to different inputs.
+                This also means the generator outputs are processed by the Dirac Live
                 room correction filters, tone controls, as well as the PEQ filters.
               </li>
               <li>
-                <b>Signal Selection</b>: The Signal Generator support a number of signal generations:
+                <b>Signal Select</b>: The signal generator supports a number of signal generations:
                 <ul>
                   <li>
-                    <b>"THX_like" band limited noise</b>: 
-                    "THX_like" band limited noise
+                    <b>"THX-like" band limited noise</b>: 
+                    "THX-like" band limited noise at -30dBFS.
                   </li>
                   <li>
-                    <b>Louder reference noise</b>: A band limited noise 
-                    with energy between 300 Hz and 3 kHz and peak at 1 kHz
+                    <b>Louder reference noise</b>: A -20dBFS band limited noise 
+                    with energy between 300 Hz and 3 kHz and peak at 1 kHz.
                   </li>
                   <li>
                     <b>Polarity pulse</b>: 
-                    A positive impluse
+                    A positive impluse.
+                  </li>
+                  <li>
+                    <b>Sine wave</b>: 
+                    A sine wave. Frequency and amplitude can be adjusted.
                   </li>
                   <li>
                     <b>Left input as signal</b>: 
                     Sends the Left input to the selected speaker.
-                    Allows third party tools such as Room Equalization
-                    Wizard to measure speaker inaccessible through HDMI PCM 
+                    Allows third party tools such as <i>Room Equalization
+                    Wizard (REW)</i> to measure speakers inaccessible through HDMI PCM 
                     inputs.
                   </li>
                   <li>
                     <b>Right input as signal</b>: 
                     Sends the Right input to the selected speaker.
-                    Allows third party tools such as Room Equalization
-                    Wizard to measure speaker inaccessible through HDMI PCM 
+                    Allows third party tools such as <i>Room Equalization
+                    Wizard</i> to measure speakers inaccessible through HDMI PCM 
                     inputs.
+                  </li>
+                  <li>
+                    <b>Left and right input as signal</b>: 
+                    Sends the left and right inputs independently to any selectable speaker output. This allows the same speaker to be used as an acoustic timing reference in <i>REW</i>.
                   </li>
                 </ul>
               </li>
               <li>
-                <b>Speaker List</b>: This is the list of currently enabled speakers.  Choose the destination of the test signal.
+                <b>Speaker Select</b>: This is the list of currently enabled speakers.  Choose the destination of the test signal.
               </li>
             </ul>
           </div>
@@ -373,28 +417,28 @@
       </div>
       <div class="card">
         <div
-          id="headingThree"
+          id="headingSix"
           class="card-header"
-          @click="toggleOpened(4)"
+          @click="toggleOpened(5)"
         >
           <h2 class="mb-0">
             <button
               class="btn btn-link btn-block text-left collapsed"
               type="button"
               data-toggle="collapse"
-              data-target="#collapseThree"
+              data-target="#collapseSix"
               aria-expanded="false"
-              aria-controls="collapseThree"
+              aria-controls="collapseSix"
             >
               Parametric EQ
             </button>
           </h2>
         </div>
         <div
-          id="collapseThree"
+          id="collapseSix"
           class="collapse"
-          :class="{'show': opened[4]}"
-          aria-labelledby="headingThree"
+          :class="{'show': opened[5]}"
+          aria-labelledby="headingSix"
           data-parent="#accordionExample"
         >
           <div class="card-body">
@@ -408,20 +452,30 @@
               >Click
                 here to access a PDF copy of the user guide</a>.
             </div>
-            <p>The controls for the parametric equalizers are found here.</p>
+            <p>The controls for the parametric equalizers (PEQ) are found here.</p>
             <ul>
               <li>
-                <b>Parmetric</b><b> EQ</b>: The system allows for up to 16
+                The system allows for up to 16
                 bands of parametric EQ, individually adjustable on each
                 channel. These settings are typically used to tweak the
                 response of the room.
               </li>
               <li>
-                The tone and PEQ features are automatically disabled when a
-                Dirac calibration is run. These filters are used to
-                adjust a room that is already calibrated. There is discussion
-                about allowing the PEQ to run before the Dirac filter to allow
-                for a pre-calibration EQ. This is not yet exposed.<br>
+                If Dirac Live is off or Dirac Live RC or Dirac Live BM is active PEQ is located post bass managment and
+                post Dirac Live filters.
+              </li>
+              <li>
+                If Dirac Live BC or Dirac Live ART is active PEQ is located pre Dirac Live filters
+                and bass management.
+              </li>
+              <li>
+                PEQ can be on when a Dirac Live calibration is run. If PEQ is located post the Dirac Live filter
+                block the Dirac Live measurement signal will see PEQ as part of the room response. This behavior is
+                desirable for speaker pre-optimization but it also means that PEQ should not be changed after Dirac Live calibration
+                as this will destroy calibration results.
+              </li>
+              <li>
+                For optimal results with <i>BEQ</i> PEQ should be located pre Dirac Live filters and bass management.
               </li>
             </ul>
             <blockquote>
@@ -433,28 +487,28 @@
       </div>
       <div class="card">
         <div
-          id="headingTwo"
+          id="headingSeven"
           class="card-header"
-          @click="toggleOpened(5)"
+          @click="toggleOpened(6)"
         >
           <h2 class="mb-0">
             <button
               class="btn btn-link btn-block text-left collapsed"
               type="button"
               data-toggle="collapse"
-              data-target="#collapseTwo"
+              data-target="#collapseSeven"
               aria-expanded="false"
-              aria-controls="collapseTwo"
+              aria-controls="collapseSeven"
             >
-              Tone Control
+              Filtered Bass EQ
             </button>
           </h2>
         </div>
         <div
-          id="collapseTwo"
+          id="collapseSeven"
           class="collapse"
-          :class="{'show': opened[5]}"
-          aria-labelledby="headingTwo"
+          :class="{'show': opened[6]}"
+          aria-labelledby="headingSeven"
           data-parent="#accordionExample"
         >
           <div class="card-body">
@@ -469,24 +523,56 @@
                 here to access a PDF copy of the user guide</a>.
             </div>
             <p>
-              The controls for tone controls and loudness compensation are found here.
+              Bass EQ (BEQ) attempts to restore low frequency components that were filtered out during post-production. It uses PEQ for this purpose. PEQ settings are downloaded from the <a href="https://beqcatalogue.readthedocs.io/en/latest/" target="_blank">BEQ Catalog</a>.
             </p>
-            <ul>
-              <li>
-                <b>Tone Control</b>: Traditional tone controls can be
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div
+          id="headingEight"
+          class="card-header"
+          @click="toggleOpened(7)"
+        >
+          <h2 class="mb-0">
+            <button
+              class="btn btn-link btn-block text-left collapsed"
+              type="button"
+              data-toggle="collapse"
+              data-target="#collapseEight"
+              aria-expanded="false"
+              aria-controls="collapseEight"
+            >
+              Tone Control
+            </button>
+          </h2>
+        </div>
+        <div
+          id="collapseEight"
+          class="collapse"
+          :class="{'show': opened[7]}"
+          aria-labelledby="headingEight"
+          data-parent="#accordionExample"
+        >
+          <div class="card-body">
+            <div
+              class="alert alert-info small alert-box"
+              role="alert"
+            >
+              The user guide has more information. <a
+                :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`"
+                target="_blank"
+              >Click
+                here to access a PDF copy of the user guide</a>.
+            </div>
+            <p>
+              Traditional tone controls can be
                 enabled. When enabled the boost or cut can be specified as
-                well as the corner frequencies.
-              </li>
-              <li>
-                The tone and PEQ features are automatically disabled when a
-                Dirac calibration is run. These filters are used to
-                adjust a room that is already calibrated. There is discussion
-                about allowing the PEQ to run before the Dirac filter to allow
-                for a pre-calibration EQ. This is not yet exposed.<br>
-              </li>
-            </ul>
+                well as the corner frequencies.<br>
+              The bass control is particularly useful for compensating for the relatively large differences in the low frequency range that typically occur between different mixes.
+            </p>
             <blockquote>
-              Note that applying large boost in the equalization can
+              Note that applying large boosts can
               lead to digital clipping.
             </blockquote>
           </div>
@@ -494,28 +580,28 @@
       </div>
       <div class="card">
         <div
-          id="headingTwo"
+          id="headingNine"
           class="card-header"
-          @click="toggleOpened(6)"
+          @click="toggleOpened(8)"
         >
           <h2 class="mb-0">
             <button
               class="btn btn-link btn-block text-left collapsed"
               type="button"
               data-toggle="collapse"
-              data-target="#collapseTwo"
+              data-target="#collapseNine"
               aria-expanded="false"
-              aria-controls="collapseTwo"
+              aria-controls="collapseNine"
             >
               Loudness
             </button>
           </h2>
         </div>
         <div
-          id="collapseTwo"
+          id="collapseNine"
           class="collapse"
-          :class="{'show': opened[6]}"
-          aria-labelledby="headingTwo"
+          :class="{'show': opened[8]}"
+          aria-labelledby="headingNine"
           data-parent="#accordionExample"
         >
           <div class="card-body">
@@ -534,23 +620,26 @@
             </p>
             <ul>
               <li>
+                <b>Loudness Curve</b>: Select between different curve shapes for
+                loudness compensation. <i>ISO 226:2003</i> follows the standard equal loudness curve while
+                <i>Vintage</i> follows compensation curves very similar to those of vintage analog home audio equipment.
+              </li>
+              <li>
                 <b>Loudness Calibration</b>: The loudness calibration number
                 corresponds roughly to the sound pressure level at which you
-                want a flat response. That would be the “normal
-                listening volume”. A higher number means there will be
+                want a flat response. That would be the &quot;normal
+                listening volume&quot;. A higher number means there will be
                 more loudness bass as the volume goes down. A lower
                 number decreases the amount of bass boost.<br>
               </li>
               <li>
-                The tone and PEQ features are automatically disabled when a
-                Dirac calibration is run. These filters are used to
-                adjust a room that is already calibrated. There is discussion
-                about allowing the PEQ to run before the Dirac filter to allow
-                for a pre-calibration EQ. This is not yet exposed.<br>
+                <b>Night Mode</b>: Night mode engages any available Dolby or DTS functions to
+                reduce the dynamic range of the program. It also lowers the
+                subwoofer by 6dB.
               </li>
             </ul>
             <blockquote>
-              Note that applying large boost in the equalization can
+              Note that applying large boost can
               lead to digital clipping.
             </blockquote>
           </div>
@@ -558,28 +647,28 @@
       </div>
       <div class="card">
         <div
-          id="headingTwo"
+          id="headingTen"
           class="card-header"
-          @click="toggleOpened(7)"
+          @click="toggleOpened(9)"
         >
           <h2 class="mb-0">
             <button
               class="btn btn-link btn-block text-left collapsed"
               type="button"
               data-toggle="collapse"
-              data-target="#collapseTwo"
+              data-target="#collapseTen"
               aria-expanded="false"
-              aria-controls="collapseTwo"
+              aria-controls="collapseTen"
             >
               Upmix
             </button>
           </h2>
         </div>
         <div
-          id="collapseTwo"
+          id="collapseTen"
           class="collapse"
-          :class="{'show': opened[7]}"
-          aria-labelledby="headingTwo"
+          :class="{'show': opened[9]}"
+          aria-labelledby="headingTen"
           data-parent="#accordionExample"
         >
           <div class="card-body">
@@ -594,14 +683,14 @@
                 here to access a PDF copy of the user guide</a>.
             </div>
             <p>
-              The system supports a number of algorithms designed to <i>make it
-                sound better</i>. These are in fact <i>upmixers</i>. We
+              The system supports a number of algorithms designed to <i>make it 
+              sound better</i>. These are in fact <i>upmixers</i>. We
               sometimes refer to these as <i>sound modes</i>. They make more
               channels from fewer channels. They are designed in particular to
               help older source material (stereo or 5.1) drive the wide set of
               speakers that are supported here. Controls are provided for each
               algorithm to choose whether or not it is visible on the homepage.
-              A radio button allows you to choose one to listen to as you
+              Buttons allow you to choose one to listen to as you
               adjust. And some of the algorithms have more controls that you can
               access.
             </p>
@@ -620,9 +709,9 @@
                 <b>Native</b>: In native mode, the Dolby Surround upmixer is
                 applied only to material decoded from Dolby sources. The DTS
                 Neural-X upmixer is applied only to native DTS sources. And
-                the Auro3D decoder is enabled to handle any Auro3D encoded
+                the AURO-3D decoder is enabled to handle any AURO-3D encoded
                 sources. No upmixer is applied to PCM sources. The
-                AuroMatic upmixer cannot be applied to material sampled at
+                Auro-Matic upmixer cannot be applied to material sampled at
                 192kHz.
               </li>
               <li>
@@ -634,31 +723,31 @@
                 enabled the material found for the center channel is also
                 added to the left and right channels, hence <i>spreading</i>
                 the center channel sound. The Dolby Surround upmixer can
-                support any combination of speakers provide here. There may
+                support any combination of speakers provided here. There may
                 not be anything in some of the channels. For instance, a mono
                 input will result in sound only from the center channel.
               </li>
               <li>
                 <b>DTS Neural-X</b>: When this is selected, the DTS Neural-X
-                algorithm is enabled to analyzer the input stream and process
+                algorithm is enabled to analyze the input stream and process
                 it for presentation across the available speaker set. This is
                 an evolution of the previous DTS NEO. One control is provided,
-                namely <i>wide synth</i>. Since the Neural-X code only
+                namely <i>Wide Synth</i>. Since the Neural-X code only
                 produces data for 12 channels (7.1.4), enabling the wide synth
                 control will populate the rest of the channels.
               </li>
               <li>
-                <b>Auro3D</b>: When this is selected, the Auro Technology
+                <b>AURO-3D</b>: When this is selected, the Auro Technology
                 Engine is engaged to analyzer the input stream and process it
-                for presentation across the available speaker set. The Auro3D
+                for presentation across the available speaker set. The AURO-3D
                 engine provides an alternative to the Dolby and DTS systems.
-                When sources are encoded using the Auro3D algorithm the engine
+                When sources are encoded using the AURO-3D algorithm the engine
                 detects this and decodes more channels. For instance, it is
-                common to find program material recorded using Auro3D to
+                common to find program material recorded using AURO-3D to
                 capture 14 channels (7.1.6a) but encoded with 8 channels
                 (7.1). BlueRay disks with such content are clearly labeled.
-                The Auro3D engine can also function as an upmixer when the
-                source material is not encoded. Then the <i>AuroMatic</i>
+                The AURO-3D engine can also function as an upmixer when the
+                source material is not encoded. Then the <i>Auro-Matic</i>
                 algorithm is deployed to upmix. Auro Technologies provides a
                 number of controls to adjust this algorithm.
               </li>
@@ -671,6 +760,9 @@
                 to stereo and with the left signal going to all left speakers
                 and the right to all right speakers. The center speaker gets a
                 mono mix.
+              </li>
+              <li>
+                <b>Wide Synth</b>: Synthesizes wide speakers when possible.
               </li>
             </ul>
             <p>
@@ -688,28 +780,28 @@
       </div>
       <div class="card">
         <div
-          id="headingThree"
+          id="headingEleven"
           class="card-header"
-          @click="toggleOpened(8)"
+          @click="toggleOpened(10)"
         >
           <h2 class="mb-0">
             <button
               class="btn btn-link btn-block text-left collapsed"
               type="button"
               data-toggle="collapse"
-              data-target="#collapseThree"
+              data-target="#collapseEleven"
               aria-expanded="false"
-              aria-controls="collapseThree"
+              aria-controls="collapseEleven"
             >
               Inputs
             </button>
           </h2>
         </div>
         <div
-          id="collapseThree"
+          id="collapseEleven"
           class="collapse"
-          :class="{'show': opened[8]}"
-          aria-labelledby="headingThree"
+          :class="{'show': opened[10]}"
+          aria-labelledby="headingEleven"
           data-parent="#accordionExample"
         >
           <div class="card-body">
@@ -726,7 +818,7 @@
             <p>
               The input page allows you to assign a human readable name to each
               input. It also allows you to choose which input buttons will be
-              present on the homepage of the web UI. 
+              present on the homepage of this web UI. 
             </p>
             <ul>
               <li>
@@ -738,7 +830,17 @@
                 more ideas of what to try if this fixes the connection.
               </li>
               <li>
-                CEC stands for Consumer Electronic Control. It is designed
+                When <i>Show Advanced Input Settings</i> is enabled, another switch is
+                exposed for the digital inputs. <i>PCM Detect
+                Sensitivity</i> has three settings. <i>Auto</i> is the default
+                setting and this is usually correct. The <i>Biased</i>
+                setting is biased toward PCM material. This might be
+                appropriate for a player playing a CD. The <i>Indicated</i>
+                setting relies on the audio format indicated by the HDMI
+                stream.
+              </li>
+              <li>
+                <b>HDMI CEC</b>: CEC stands for <i>Consumer Electronics Control</i>. It is designed
                 to simplify the connection of devices like amplifiers and
                 players with TV sets. The entries on the connectivity page
                 allow you to configure CEC to work best in your system. 
@@ -747,19 +849,16 @@
                 devices than with others.
               </li>
               <li>
-                Nearly the last entry on the page is the BlueTooth device.
-                The controls necessary to discover and pair with a BlueTooth
-                device are found here.
+                <b>Lipsync Delay</b>: The audio is delayed by the
+                specified number of milliseconds. Begin system setup with this
+                set to zero and do a Dirac Live calibration. Then check the sync
+                between the audio and the video using a local source that you
+                trust. Note that the surround modes add delay. The
+                shortest delay will be achieved in direct mode.
               </li>
               <li>
-                When Show Advanced Input Settings is enabled, another switch is
-                exposed for the digital inputs. The PCM Detector
-                Sensitivity has three settings. "Auto" is the default
-                setting and this is usually correct. The "Biased"
-                setting is biased toward PCM material. This might be
-                appropriate for a player playing a CD. The "indicated"
-                setting relies on the audio format indicated by the HDMI
-                stream.<br>
+                <b>Bluetooth Settings</b>: The controls necessary to discover and pair with a Bluetooth
+                device are found here.
               </li>
             </ul>
           </div>
@@ -767,28 +866,28 @@
       </div>
       <div class="card">
         <div
-          id="headingThree"
+          id="headingTwelve"
           class="card-header"
-          @click="toggleOpened(9)"
+          @click="toggleOpened(11)"
         >
           <h2 class="mb-0">
             <button
               class="btn btn-link btn-block text-left collapsed"
               type="button"
               data-toggle="collapse"
-              data-target="#collapseThree"
+              data-target="#collapseTwelve"
               aria-expanded="false"
-              aria-controls="collapseThree"
+              aria-controls="collapseTwelve"
             >
               Network
             </button>
           </h2>
         </div>
         <div
-          id="collapseThree"
+          id="collapseTwelve"
           class="collapse"
-          :class="{'show': opened[9]}"
-          aria-labelledby="headingThree"
+          :class="{'show': opened[11]}"
+          aria-labelledby="headingTwelve"
           data-parent="#accordionExample"
         >
           <div class="card-body">
@@ -804,19 +903,19 @@
             </div>
             <p>
               The network page allows you to 
-              enable or disable WiFi as well as configure automatic (DHCP)
-              address assignment or manual configuration. 
+              enable or disable Wi-Fi as well as configure automatic
+              IP address assignment (DHCP) or manual configuration. 
             </p>
             <ul>
               <li>
                 Ethernet settings are displayed. If a static IP
                 address is desired, turn off DHCP and provide the required
-                information. Then "apply" the network settings.
+                information. Then <i>APPLY</i> the network settings.
               </li>
               <li>
-                When WiFi is enabled the system scans to find available
+                When Wi-Fi is enabled the system scans to find available
                 networks. These are displayed on the left. Choose
-                a network, enter the password, and click on "CONFIGURE".
+                a network, enter the password, and click on <i>CONFIGURE NETWORK</i>.
                 After a brief delay the network should appear in the list of
                 configured networks on the right.
               </li>
@@ -826,75 +925,76 @@
       </div>
       <div class="card">
         <div
-          id="headingTwo"
+          id="headingThirteen"
           class="card-header"
-          @click="toggleOpened(10)"
+          @click="toggleOpened(12)"
         >
           <h2 class="mb-0">
             <button
               class="btn btn-link btn-block text-left collapsed"
               type="button"
               data-toggle="collapse"
-              data-target="#collapseTwo"
+              data-target="#collapseThirteen"
               aria-expanded="false"
-              aria-controls="collapseTwo"
+              aria-controls="collapseThirteen"
             >
               Macros
             </button>
           </h2>
         </div>
         <div
-          id="collapseTwo"
+          id="collapseThirteen"
           class="collapse"
-          :class="{'show': opened[10]}"
-          aria-labelledby="headingTwo"
+          :class="{'show': opened[12]}"
+          aria-labelledby="headingThirteen"
           data-parent="#accordionExample"
         >
           <div class="card-body">
-            <p>The Macros page allows you to record your actions and save them to the CMD A/B/C/D and PRESET 1/2/3/4 buttons.</p>
+            <p>The <i>Macros</i> page allows you to record your actions and save them to the <i>CMD A/B/C/D</i> and <i>PRESET 1/2/3/4</i> buttons of the remote control.</p>
             <ul>
               <li>Select one of the 8 slots to record your actions.</li>
               <li>Click the Recording button to start recording, and then perform the actions you wish to record, using either the remote or the web interface.</li>
-              <li>Your actions will be recorded on the Macros page. You may delete any undesirable entries, or drag rows to rearrange the order of entries.</li>
+              <li>Your actions will be recorded on the <i>Macros</i> page. You may delete any undesirable entries, or drag rows to rearrange the order of entries.</li>
               <li>When you are finished, click the save button to save your recordings to the slot that you selected.</li>
               <li>Click the button you selected on the remote to play back your recordings.</li>
+              <li>You can create additional macros which can be added to the home page from the <i>Personalize</i> tab.</li>
             </ul>
           </div>
         </div>
       </div>
       <div class="card">
         <div
-          id="headingThree"
+          id="headingFourteen"
           class="card-header"
-          @click="toggleOpened(11)"
+          @click="toggleOpened(13)"
         >
           <h2 class="mb-0">
             <button
               class="btn btn-link btn-block text-left collapsed"
               type="button"
               data-toggle="collapse"
-              data-target="#collapseThree"
+              data-target="#collapseFourteen"
               aria-expanded="false"
-              aria-controls="collapseThree"
+              aria-controls="collapseFourteen"
             >
               Personalize
             </button>
           </h2>
         </div>
         <div
-          id="collapseThree"
+          id="collapseFourteen"
           class="collapse"
-          :class="{'show': opened[11]}"
-          aria-labelledby="headingThree"
+          :class="{'show': opened[13]}"
+          aria-labelledby="headingFourteen"
           data-parent="#accordionExample"
         >
           <div class="card-body">
             <p>
-              The Personalize page allows you to customize this user interface.
+              The <i>Personalize</i> page allows you to customize the home page.
             </p>
             <ul>
               <li>
-                Homepage status display
+                <i>Homepage Status Display</i>
                 <ul>
                   <li>
                     You can cause video status (resolution, color depth, etc)
@@ -906,10 +1006,10 @@
                   </li>
                 </ul>
               </li>
-              <li>You can select shortcuts to settings pages which will appear on the top right of the screen.</li>
-              <li>You can select which buttons appear under the Modes section of the homepage.</li>
-              <li>You can select which macro buttons appear under the Macros section of the homepage.</li>
-              <li>You can select which Dirac slots appear under the Dirac slots section of the homepage.</li>
+              <li>You can select <i>Shortcuts</i> to settings pages which will appear on the top right of the screen.</li>
+              <li>You can select which buttons appear under the <i>Modes</i> section of the homepage.</li>
+              <li>You can select which macro buttons appear under the <i>Macros</i> section of the homepage.</li>
+              <li>You can select which Dirac Live slots appear under the <i>Dirac Live Slot</i> section of the homepage.</li>
               <li>Notices are small info boxes that appear on various settings pages. You can restore all dismissed notices.</li>
             </ul>
           </div>
@@ -917,28 +1017,28 @@
       </div>
       <div class="card">
         <div
-          id="headingThree"
+          id="headingFifteen"
           class="card-header"
-          @click="toggleOpened(12)"
+          @click="toggleOpened(14)"
         >
           <h2 class="mb-0">
             <button
               class="btn btn-link btn-block text-left collapsed"
               type="button"
               data-toggle="collapse"
-              data-target="#collapseThree"
+              data-target="#collapseFifteen"
               aria-expanded="false"
-              aria-controls="collapseThree"
+              aria-controls="collapseFifteen"
             >
-              System
+              Volume Setup
             </button>
           </h2>
         </div>
         <div
-          id="collapseThree"
+          id="collapseFifteen"
           class="collapse"
-          :class="{'show': opened[12]}"
-          aria-labelledby="headingThree"
+          :class="{'show': opened[14]}"
+          aria-labelledby="headingFifteen"
           data-parent="#accordionExample"
         >
           <div class="card-body">
@@ -952,85 +1052,122 @@
               >Click
                 here to access a PDF copy of the user guide</a>.
             </div>
-            <p>
-              In addition to a few system level controls, this page also
-              displays some helpful information like the IP address and the
-              current output video resolution.<br>
-            </p>
             <ul>
               <li>
-                The unit name is displayed by to the outside world.
-                Examples include:
-              </li>
-              <ul>
-                <li>The Dirac calibration tool.</li>
-                <li>Bluetooth devices.</li>
-                <li>
-                  Roon player.<br>
-                </li>
-              </ul>
-              <li>The unit can be powered down from this page.</li>
-              <li>
-                When fast start is on the unit will not completely power
-                down and hence it will start up very quickly. You have the
-                option of keeping video pass through alive. When fast
-                start is off, powering back up will take somewhat longer. CEC
-                based power up will not work when fast start is off.<br>
+                <b>Power On Volume</b>: This number sets the default volume after restart.
               </li>
               <li>
-                You can set the volume you would like to have when the unit
-                boots up.<br>
+                <b>Min. volume</b>: This number sets the lowest level of
+                volume possible using any volume control. Set it so that
+                you can barely hear the audio.
               </li>
               <li>
-                Front panel brightness can be adjusted here. The "dim"
-                button on the remote also works.
+                <b>Max. volume</b>: This number limits the upper
+                range of the volume control. The user guide gives more
+                background. This control can be usefully adjusted to
+                limit the volume of a system that is in fact capable of much
+                higher volumes.
               </li>
-              <li>The volume control can use a slider or buttons.</li>
               <li>
-                You can export and import settings. It's a good idea
-                to export the configuration when you are happy with your
-                settings. Then you can re-import them if the settings
-                are lost or damaged.<br>
+                <b>Max. Output Level</b>: The maximum Output Level,
+                specified in volts, sets the level at which the output of the
+                HTP-1 saturates. It should represent the loudest volume
+                the system can achieve. Amplifier manufacturers
+                typically specify this number as the <i>amplifier
+                sensitivity</i>. The user guide discusses what to do if you
+                don't know the amplifier sensitivity. It suggests starting at
+                1 volt and then adjusting by ear.<br>
               </li>
-              <li>Several check-boxes enable features:</li>
-              <ul>
-                <li>
-                  You can cause video status (resolution, color depth, etc)
-                  to be displayed on the homepage.
-                </li>
-                <li>
-                  You can cause audio sample rates to be displayed on the
-                  homepage.
-                </li>
-              </ul>
             </ul>
           </div>
         </div>
       </div>
       <div class="card">
         <div
-          id="headingThree"
+          id="headingSixteen"
           class="card-header"
-          @click="toggleOpened(13)"
+          @click="toggleOpened(15)"
         >
           <h2 class="mb-0">
             <button
               class="btn btn-link btn-block text-left collapsed"
               type="button"
               data-toggle="collapse"
-              data-target="#collapseThree"
+              data-target="#collapseSixteen"
               aria-expanded="false"
-              aria-controls="collapseThree"
+              aria-controls="collapseSixteen"
+            >
+              System
+            </button>
+          </h2>
+        </div>
+        <div
+          id="collapseSixteen"
+          class="collapse"
+          :class="{'show': opened[15]}"
+          aria-labelledby="headingSixteen"
+          data-parent="#accordionExample"
+        >
+          <div class="card-body">
+            <div
+              class="alert alert-info small alert-box"
+              role="alert"
+            >
+              The user guide has more information. <a
+                :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`"
+                target="_blank"
+              >Click
+                here to access a PDF copy of the user guide</a>.
+            </div>
+            <ul>
+              <li>
+                The <i>Unit Name</i> is displayed by to the outside world.
+                Examples include:
+              </li>
+              <ul>
+                <li>The Dirac Live calibration tool</li>
+                <li>Bluetooth devices</li>
+                <li>Roon player</li>
+              </ul>
+              <li>
+                When <i>Fast Start</i> is on the unit will not completely power
+                down and hence it will start up very quickly. You have the
+                option of keeping <i>Video Pass Through</i> alive. When <i>Fast
+                Start</i> is off, powering back up will take somewhat longer. CEC-based 
+                power up will not work when <i>Fast Start</i> is off.
+              </li>
+              <li>
+                Front panel brightness can be adjusted here. The <i>DIM</i>
+                button on the remote also works.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div
+          id="headingSeventeen"
+          class="card-header"
+          @click="toggleOpened(16)"
+        >
+          <h2 class="mb-0">
+            <button
+              class="btn btn-link btn-block text-left collapsed"
+              type="button"
+              data-toggle="collapse"
+              data-target="#collapseSeventeen"
+              aria-expanded="false"
+              aria-controls="collapseSeventeen"
             >
               Configs
             </button>
           </h2>
         </div>
         <div
-          id="collapseThree"
+          id="collapseSeventeen"
           class="collapse"
-          :class="{'show': opened[13]}"
-          aria-labelledby="headingThree"
+          :class="{'show': opened[16]}"
+          aria-labelledby="headingSeventeen"
           data-parent="#accordionExample"
         >
           <div class="card-body">
@@ -1049,7 +1186,7 @@
                 You can export and import settings. It's a good idea
                 to export the configuration when you are happy with your
                 settings. Then you can re-import them if the settings
-                are lost or damaged.<br>
+                are lost or damaged.
               </li>
             </ul>
           </div>
@@ -1067,17 +1204,20 @@ import useLocalStorage from "@/use/useLocalStorage.js";
 const helpIndexes = {
   '/settings/speakers': 1,
   '/settings/calibration': 2,
-  '/settings/signal-generator': 3,
-  '/settings/peq': 4,
-  '/settings/tone-control': 5,
-  '/settings/loudness': 6,
-  '/settings/upmix': 7,
-  '/settings/inputs': 8, 
-  '/settings/network': 9, 
-  '/settings/macros': 10, 
-  '/settings/personalize': 11, 
-  '/settings/system': 12, 
-  '/settings/configs': 13, 
+  '/settings/signal-generator': 4,
+  '/settings/balance': 3,
+  '/settings/peq': 5,
+  '/settings/tone-control': 7,
+  '/settings/bass-eq': 6,
+  '/settings/loudness': 8,
+  '/settings/upmix': 9,
+  '/settings/inputs': 10, 
+  '/settings/network': 11, 
+  '/settings/macros': 12, 
+  '/settings/personalize': 13, 
+  '/settings/system': 15, 
+  '/settings/volume': 14,
+  '/settings/configs': 16, 
 }
 
 export default {
@@ -1135,6 +1275,10 @@ td {
 code {
   color: inherit;
   /* font-family: inherit; */
+}
+
+.accordion {
+    padding-bottom: 1rem;
 }
 
 </style>

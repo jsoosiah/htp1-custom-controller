@@ -383,7 +383,7 @@
               class="settings-link"
               :to="`/settings/calibration`"
             >
-              Dirac Slot Select
+              Dirac Live Slot Select
             </router-link>
           </h5>
           <div class="diracslot-container my-3">
@@ -462,14 +462,15 @@ import DialogEnhanceButton from './buttons/DialogEnhanceButton.vue';
 import AuroCodecIcon from './icons/streamformat/AuroCodecIcon.vue';
 import AuromaticCroppedIcon from './icons/streamformat/AuromaticCroppedIcon.vue';
 import DirectIcon from './icons/streamformat/DirectIcon.vue';
-import DolbyAtmosWhiteIcon from './icons/streamformat/DolbyAtmosWhiteIcon.vue';
-import DolbyAudioWhiteIcon from './icons/streamformat/DolbyAudioWhiteIcon.vue';
-import DtsHdmaWhiteIcon from './icons/streamformat/DtsHdmaWhiteIcon.vue';
-import DtsHdWhiteIcon from './icons/streamformat/DtsHdWhiteIcon.vue';
-import DtsWhiteIcon from './icons/streamformat/DtsWhiteIcon.vue';
-import DtsXWhiteIcon from './icons/streamformat/DtsXWhiteIcon.vue';
+import DolbyAtmosIcon from './icons/streamformat/DolbyAtmosIcon.vue';
+import DolbyAudioIcon from './icons/streamformat/DolbyAudioIcon.vue';
+import DtsHdmaIcon from './icons/streamformat/DtsHdmaIcon.vue';
+import DtsHdIcon from './icons/streamformat/DtsHdIcon.vue';
+import DtsIcon from './icons/streamformat/DtsIcon.vue';
+import DtsXIcon from './icons/streamformat/DtsXIcon.vue';
 import PcmIcon from './icons/streamformat/PcmIcon.vue';
 import StereoIcon from './icons/streamformat/StereoIcon.vue';
+import MonoIcon from './icons/streamformat/MonoIcon.vue'
 
 // ms per dB
 const LONG_PRESS_VOLUME_ADJUST_SPEED = 125; 
@@ -483,14 +484,15 @@ export default {
     AuroCodecIcon,
     AuromaticCroppedIcon,
     DirectIcon,
-    DolbyAtmosWhiteIcon,
-    DolbyAudioWhiteIcon,
-    DtsHdmaWhiteIcon,
-    DtsHdWhiteIcon,
-    DtsWhiteIcon,
-    DtsXWhiteIcon,
+    DolbyAtmosIcon,
+    DolbyAudioIcon,
+    DtsHdmaIcon,
+    DtsHdIcon,
+    DtsIcon,
+    DtsXIcon,
     PcmIcon,
     StereoIcon,
+    MonoIcon,
   },
   directives: {
     LongPress,

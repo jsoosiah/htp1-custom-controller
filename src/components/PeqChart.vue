@@ -283,50 +283,70 @@
             let gain = val.gaindB;
             let q = val.Q;
             let filterType = val.FilterType;
+            if (filterType === 3) { // all pass: render as PEQ with 0 gain
+              filterType = 0;
+              gain = 0;
+            }
             let sampleRate = 48000.0;
 
             let a0,a1,a2,b0,b1,b2;
             let ymin, ymax, minVal, maxVal;
 
-            // let V = Math.pow(10, Math.abs(gain) / 20);
-            // let K = Math.tan(Math.PI * center / sampleRate);
-            let gainAbs = Math.pow(10, gain / 40);
-            let omega = 2 * Math.PI * center / sampleRate;
-            let sn = Math.sin(omega);
-            let cs = Math.cos(omega);
-            let alpha = sn / (2 * q);
-            let beta = Math.sqrt(gainAbs + gainAbs);
+            let A = Math.pow(10, gain / 40);
+            let w0 = 2 * Math.PI * center / sampleRate;
+            let cosw0 = Math.cos(w0);
+            let sinw0 = Math.sin(w0);
+            let alpha;
+            let S;
 
             let len = NUM_SAMPLES;
 
-            switch(filterType) {
+            let Q = Math.max(q, 1e-6);
+
+            switch (filterType) {
               case 0: // peak
-                  b0 = 1 + (alpha * gainAbs);
-                  b1 = -2 * cs;
-                  b2 = 1 - (alpha * gainAbs);
-                  a0 = 1 + (alpha / gainAbs);
-                  a1 = -2 * cs;
-                  a2 = 1 - (alpha / gainAbs);
+                alpha = sinw0 / (2 * Q);
+
+                b0 = 1 + alpha * A;
+                b1 = -2 * cosw0;
+                b2 = 1 - alpha * A;
+                a0 = 1 + alpha / A;
+                a1 = -2 * cosw0;
+                a2 = 1 - alpha / A;
                 break;
-              case 1: // LS
-                b0 = gainAbs * ((gainAbs + 1) - (gainAbs - 1) * cs + beta * sn);
-                b1 = 2 * gainAbs * ((gainAbs - 1) - (gainAbs + 1) * cs);
-                b2 = gainAbs * ((gainAbs + 1) - (gainAbs - 1) * cs - beta * sn);
-                a0 = (gainAbs + 1) + (gainAbs - 1) * cs + beta * sn;
-                a1 = -2 * ((gainAbs - 1) + (gainAbs + 1) * cs);
-                a2 = (gainAbs + 1) + (gainAbs - 1) * cs - beta * sn;
+
+              case 1: // LS (low shelf)
+                S = Q;
+
+                alpha = sinw0 / 2 * Math.sqrt(
+                  (A + 1 / A) * (1 / S - 1) + 2
+                );
+
+                b0 =    A * ((A + 1) - (A - 1) * cosw0 + 2 * Math.sqrt(A) * alpha);
+                b1 =  2*A * ((A - 1) - (A + 1) * cosw0);
+                b2 =    A * ((A + 1) - (A - 1) * cosw0 - 2 * Math.sqrt(A) * alpha);
+                a0 =         (A + 1) + (A - 1) * cosw0 + 2 * Math.sqrt(A) * alpha;
+                a1 =   -2 * ((A - 1) + (A + 1) * cosw0);
+                a2 =         (A + 1) + (A - 1) * cosw0 - 2 * Math.sqrt(A) * alpha;
                 break;
-              case 2: // HS
-                b0 = gainAbs * ((gainAbs + 1) + (gainAbs - 1) * cs + beta * sn);
-                b1 = -2 * gainAbs * ((gainAbs - 1) + (gainAbs + 1) * cs);
-                b2 = gainAbs * ((gainAbs + 1) + (gainAbs - 1) * cs - beta * sn);
-                a0 = (gainAbs + 1) - (gainAbs - 1) * cs + beta * sn;
-                a1 = 2 * ((gainAbs - 1) - (gainAbs + 1) * cs);
-                a2 = (gainAbs + 1) - (gainAbs - 1) * cs - beta * sn;
+
+              case 2: // HS (high shelf)
+                S = Q;
+
+                alpha = sinw0 / 2 * Math.sqrt(
+                  (A + 1 / A) * (1 / S - 1) + 2
+                );
+
+                b0 =    A * ((A + 1) + (A - 1) * cosw0 + 2 * Math.sqrt(A) * alpha);
+                b1 = -2*A * ((A - 1) + (A + 1) * cosw0);
+                b2 =    A * ((A + 1) + (A - 1) * cosw0 - 2 * Math.sqrt(A) * alpha);
+                a0 =         (A + 1) - (A - 1) * cosw0 + 2 * Math.sqrt(A) * alpha;
+                a1 =    2 * ((A - 1) - (A + 1) * cosw0);
+                a2 =         (A + 1) - (A - 1) * cosw0 - 2 * Math.sqrt(A) * alpha;
                 break;
             }
 
-            // by prescaling filter constants, eliminate one variable
+            // normalize
             b0 /= a0;
             b1 /= a0;
             b2 /= a0;

@@ -1,9 +1,9 @@
 <template>
   <div class="transition-container">
     <template v-if="isMobileMode">
-      <h5>Dirac Room Correction Filters <br><small class="text-muted ">up to 6 sets or slots available</small></h5>
+      <h5>Dirac Live Filters <br><small class="text-muted ">up to {{ mso?.cal?.num_dirac_slots }} slots available</small></h5>
       <div class="mb-3">
-        <dirac-button-group :home-button="false" />
+        <dirac-button-group tooltip-id="calibration-mobile" :home-button="false" />
       </div>
       <div class="custom-control custom-switch mb-3">
         <input 
@@ -22,7 +22,7 @@
       </div>
 
       <div class="form-group">
-        <label for="diracSlot">Dirac Slot</label>
+        <label for="diracSlot">Dirac Live Slot</label>
         <select
           id="diracSlot"
           class="form-control"
@@ -33,8 +33,9 @@
             :key="key"
             :selected="mso.cal?.currentdiracslot === key"
             :value="key"
+            v-show="key < mso?.cal?.num_dirac_slots"
           >
-            {{ slot.name }} {{ filterTypeToCssClass(slot.filterType, slot.name).toUpperCase() }}
+            {{ slotName(slot) }} {{ filterTypeToCssClass(slot.filterType, slot.name).toUpperCase() }}
           </option>
         </select>
       </div>
@@ -43,7 +44,7 @@
         v-for="channame in activeChannels" 
         :key="channame" 
         class="card"
-        :class=" currentDiracSlot?.channels[channame].mute === true ? ['border-danger', 'text-danger'] :'' "
+        :class=" currentDiracSlot?.channels[channame].mute === true || channelInvalid(channame) ? ['border-danger', 'text-danger'] :'' "
       >
         <h5 class="card-header">
           {{ spkName(channame) }}
@@ -51,10 +52,10 @@
         <div class="card-body">
           <div class="row">
             <div class="col small">
-              Dirac Calibration Delay
+              Dirac Live Calibration Delay
             </div>
             <div class="col text-right">
-              {{ formatDecimal(currentDiracSlot?.channels[channame].caldelay) }} ms
+              {{ formatDecimal(getCalDelay(channame)) }} ms
             </div>
           </div>
           <div class="row">
@@ -67,13 +68,14 @@
                   class="input-group input-group-sm numeric-input"
                   style="float:right"
                 >
-                  <input 
+                  <input
                     type="number" 
                     class="form-control form-control-sm text-right" 
                     :value="currentDiracSlot?.channels[channame].delay" 
                     min="0" 
                     max="100" 
                     step=".1" 
+                    :disabled="!enableUserDelay(channame)"
                     @change="({ type, target }) => setUserDelay(channame, target.value)"
                   >
                   <div class="input-group-append">
@@ -91,15 +93,15 @@
               Total Delay
             </div>
             <div class="col text-right">
-              {{ formatDecimal((mso.cal?.diracactive=='off' ? 0 : currentDiracSlot?.channels[channame].caldelay) + currentDiracSlot?.channels[channame].delay) }} ms
+              {{ getTotalDelay(channame) }} ms
             </div>
           </div>
           <div class="row">
             <div class="col small">
-              Dirac Calibration Trim 
+              Dirac Live Calibration Trim 
             </div>
             <div class="col text-right">
-              {{ formatDecimal(currentDiracSlot?.channels[channame].caltrim) }} dB
+              {{ formatDecimal(getCalTrim(channame)) }} dB
             </div>
           </div>
           <div class="row">
@@ -113,7 +115,7 @@
                   style="float:right"
                 >
                   <input 
-                    v-if="enableUserTrim(channame)"
+                    v-if="!warnUserTrim(channame)"
                     type="number" 
                     class="form-control form-control-sm text-right" 
                     :value="currentDiracSlot?.channels[channame].mute === true ? currentDiracSlot?.channels[channame].preMuteTrim : currentDiracSlot?.channels[channame].trim" 
@@ -127,7 +129,7 @@
                     type="number"
                     class="form-control form-control-sm text-right" 
                     value="0"
-                    :disabled="true"
+                    :disabled="!enableUserTrim(channame)"
                     />
                   <div class="input-group-append">
                     <span
@@ -157,6 +159,7 @@
                 :state-on="currentDiracSlot?.channels[channame].mute === true" 
                 :mute-button="true"
                 @btn-click="toggleMuteChannel(channame)"
+                :disabled="!enableUserTrimBulk()"
               />
             </div>
           </div>
@@ -164,7 +167,7 @@
       </div>
     </template>
     <template v-else>
-      <h5>Dirac Room Correction Filters <small class="text-muted">up to 6 sets or slots available</small></h5>
+      <h5>Dirac Live Filters <small class="text-muted">up to {{ mso?.cal?.num_dirac_slots }} slots available</small></h5>
       <dismissable-alert alert-key="calibration-dlbc">
         <div><span class="rc" /> denotes standard Dirac Live Room Correction filters.</div>
         <div><span class="bm" /> denotes Dirac Live Room Correction filters with Bass Management.</div>
@@ -176,7 +179,7 @@
         alert-key="calibration-filter-mismatch"
         class="alert-warning"
       >
-        The selected Dirac calibration does not match the current speaker configuration. Uncalibrated channels are highlighted.
+        The selected Dirac Live calibration does not match the current speaker configuration. Uncalibrated speakers are highlighted.
       </dismissable-alert>
 
       <div
@@ -184,17 +187,17 @@
         class="alert alert-danger small"
         role="alert"
       >
-        <div>Dirac Live is disabled; there are no Dirac filters available for the current speaker layout. </div>
+        <div>Dirac Live is disabled; there are no Dirac Live filters available for the current speaker layout. </div>
         <div v-if="mso.cal?.currentLayout">
           Current Layout: {{ mso.cal?.currentLayout }}
         </div>
         <div v-if="mso.cal?.availableFilterLayouts">
-          Layouts with Available Dirac Filters: {{ mso.cal?.availableFilterLayouts?.join(", ") }}
+          Layouts with Available Dirac Live Filters: {{ mso.cal?.availableFilterLayouts?.join(", ") }}
         </div>
       </div>
       <div class="row justify-content-between mb-3">
         <div class="col-auto">
-          <dirac-button-group :home-button="false" />
+          <dirac-button-group tooltip-id="calibration-desktop" :home-button="false" />
         </div>
         <div class="col-auto">
           <div class="custom-control custom-switch">
@@ -225,16 +228,17 @@
           :class="[mso.cal?.currentdiracslot === key ? 'active' : '', filterTypeToCssClass(slot.filterType, slot.name), slot.valid ? '' : 'disabled']" 
           href="javascript:void(0)"
           @click="setDiracTab(key)"
+          v-show="key < mso?.cal?.num_dirac_slots"
         >
-          {{ slot.name === "" ? "Uncalibrated" : slot.name }}
+          {{ slotName(slot) }}
         </a>
       </nav>
       <table class="table table-sm table-responsive-md table-striped">
         <thead>
           <tr>
-            <th>Channel</th>
+            <th>Speaker</th>
             <th class="text-right">
-              Dirac Calibration<br>Delay (ms)
+              Dirac Live Calibration<br>Delay (ms)
             </th>
             <th class="text-right">
               User Delay (ms)
@@ -243,7 +247,7 @@
               Total Delay (ms)
             </th>
             <th class="text-right">
-              Dirac Calibration<br>Trim (dB)
+              Dirac Live Calibration<br>Trim (dB)
             </th>
             <th class="text-right">
               User Trim (dB)
@@ -255,7 +259,7 @@
               v-if="showChannelMuteControls"
               class="text-right"
             >
-              Mute Channel
+              Mute Speaker
             </th>
           </tr>
         </thead>
@@ -265,7 +269,7 @@
             :key="channame"
             :class="{
               'table-warning': diracMismatchedChannels.includes(channame),
-              'table-danger': currentDiracSlot?.channels[channame].mute === true
+              'table-danger': currentDiracSlot?.channels[channame].mute === true || channelInvalid(channame)
             }"
           >
             <td>
@@ -278,13 +282,14 @@
             <td
               class="text-right"
               :class="{'text-muted':mso.cal?.diracactive=='off'}"
-              :title="currentDiracSlot?.channels[channame].caldelay"
+              :title="getCalDelay(channame)"
             >
-              {{ formatDecimal(currentDiracSlot?.channels[channame].caldelay) }}
+              {{ formatDecimal(getCalDelay(channame)) }}
             </td>
             <td class="text-right">
               <input 
                 type="number" 
+                v-if="!warnUserDelay(channame)"
                 class="form-control form-control-sm text-right" 
                 :value="currentDiracSlot?.channels[channame].delay" 
                 min="0" 
@@ -292,22 +297,37 @@
                 step=".1" 
                 @change="({ type, target }) => setUserDelay(channame, target.value)"
               >
+              <div v-else v-tooltip="{'message': warningMessageDelay}" :id="`tooltipdelay-${channame}`">
+                <font-awesome-icon style="position:absolute;"
+                        :icon="['fas', 'question-circle']"
+                      />
+                <input 
+                  type="number"
+                  class="form-control form-control-sm text-right" 
+                  :value="currentDiracSlot?.channels[channame].delay"
+                  min="0" 
+                  max="100" 
+                  step=".1" 
+                  @change="({ type, target }) => setUserDelay(channame, target.value)"
+                  :disabled="!enableUserDelay(channame)"
+                  />
+              </div>
             </td>
             <td 
               class="text-right"
-              :title="currentDiracSlot?.channels[channame].caldelay + currentDiracSlot?.channels[channame].delay"
+              :title="getTotalDelay(channame)"
             >
-              {{ formatDecimal((mso.cal?.diracactive=='off' ? 0 : currentDiracSlot?.channels[channame].caldelay) + currentDiracSlot?.channels[channame].delay) }}
+              {{ getTotalDelay(channame) }}
             </td>
             <td
               class="text-right"
               :class="{'text-muted':mso.cal?.diracactive=='off'}"
-              :title="currentDiracSlot?.channels[channame].caltrim"
+              :title="getCalTrim(channame)"
             >
-              {{ formatDecimal(currentDiracSlot?.channels[channame].caltrim) }}
+              {{ formatDecimal(getCalTrim(channame)) }}
             </td>
             <td class="text-right">
-              <input v-if="enableUserTrim(channame)"
+              <input v-if="!warnUserTrim(channame)"
                 type="number" 
                 class="form-control form-control-sm text-right" 
                 :value="currentDiracSlot?.channels[channame].mute === true ? currentDiracSlot?.channels[channame].preMuteTrim : currentDiracSlot?.channels[channame].trim" 
@@ -317,21 +337,25 @@
                 step=".5" 
                 @change="({ type, target }) => setUserTrim(channame, target.value)"
               />
-              <div v-else v-tooltip="{'message': 'When DLBC or ART are active, trim is applied before Dirac and is not editable for subwoofers as doing so would invalidate the calibration.'}" :id="`tooltip-${channame}`">
+              <div v-else v-tooltip="{'message': warningMessageTrim}" :id="`tooltip-${channame}`">
                 <font-awesome-icon style="position:absolute;"
                         :icon="['fas', 'question-circle']"
                       />
                 <input 
                   type="number"
                   class="form-control form-control-sm text-right" 
-                  value="0"
-                  :disabled="true"
+                  :value="currentDiracSlot?.channels[channame].mute === true ? currentDiracSlot?.channels[channame].preMuteTrim : currentDiracSlot?.channels[channame].trim" 
+                  :disabled="currentDiracSlot?.channels[channame].mute || (!enableUserTrim(channame))"
+                  min="-12"
+                  max="12" 
+                  step=".5" 
+                  @change="({ type, target }) => setUserTrim(channame, target.value)"
                   />
               </div>
             </td>
             <td
               class="text-right"
-              :title="currentDiracSlot?.channels[channame].caltrim + currentDiracSlot?.channels[channame].trim"
+              :title="getTotalTrim(channame)"
             >
               {{ getTotalTrim(channame) }}
             </td>
@@ -344,6 +368,7 @@
                 :state-on="currentDiracSlot?.channels[channame].mute === true" 
                 :mute-button="true"
                 @btn-click="toggleMuteChannel(channame)"
+                :disabled="!enableUserTrimBulk()"
               />
             </td>
           </tr>
@@ -395,24 +420,51 @@
                   for="bulk-user-delay"
                   class="col-form-label col-form-label-sm "
                 >User Delay</label>
-                <div class="input-group input-group-sm numeric-input">
-                  <input
-                    id="bulk-user-delay"
-                    v-model="bulkUserDelay"
-                    type="number"
-                    class="form-control"
-                    aria-label="User delay"
-                    aria-describedby="basic-addon2"
-                    min="0"
-                    max="100"
-                  >
-                  <div class="input-group-append">
-                    <span
-                      id="basic-addon2"
-                      class="input-group-text"
-                    >ms</span>
+                <div v-tooltip="{'message': warningMessageDelay}" :id="`tooltipdelay-adv`" v-if="delayPeqAllowed !== 'OK'">
+                  <div class="input-group input-group-sm numeric-input">
+                    <font-awesome-icon style="position:absolute;right:-1rem"
+                      :icon="['fas', 'question-circle']"
+                    />
+                    <input
+                      id="bulk-user-delay"
+                      v-model="bulkUserDelay"
+                      type="number"
+                      class="form-control"
+                      aria-label="User delay"
+                      aria-describedby="basic-addon2"
+                      min="0"
+                      max="100"
+                      :disabled="!enableUserDelayBulk()"
+                    >
+                    <div class="input-group-append">
+                      <span
+                        id="basic-addon2"
+                        class="input-group-text"
+                      >ms</span>
+                    </div>
                   </div>
                 </div>
+
+                  <div v-else class="input-group input-group-sm numeric-input">
+                    <input
+                      id="bulk-user-delay"
+                      v-model="bulkUserDelay"
+                      type="number"
+                      class="form-control"
+                      aria-label="User delay"
+                      aria-describedby="basic-addon2"
+                      min="0"
+                      max="100"
+                      :disabled="!enableUserDelayBulk()"
+                    >
+                    <div class="input-group-append">
+                      <span
+                        id="basic-addon2"
+                        class="input-group-text"
+                      >ms</span>
+                    </div>
+                  </div>
+
               </div>
             </div>
             <div class="col-auto">
@@ -420,10 +472,10 @@
                 <label>&nbsp;</label>
                 <button 
                   class="btn btn-sm btn-primary d-block mb-3"
-                  :disabled="targetChannels.length === 0"
+                  :disabled="targetChannels.length === 0 || !enableUserDelayBulk()"
                   @click="setUserDelaySelectedChannels"
                 >
-                  Apply User Delay to Selected Channels
+                  Apply User Delay to Selected Speakers
                 </button>
               </div>
             </div>
@@ -435,7 +487,32 @@
                   for="bulk-user-trim"
                   class="col-form-label col-form-label-sm "
                 >User Trim</label>
-                <div class="input-group input-group-sm numeric-input">
+                <div v-tooltip="{'message': warningMessageTrim}" :id="`tooltiptrim-adv`" v-if="trimAllowed !== 'OK'">
+                  <div class="input-group input-group-sm numeric-input">
+                    <font-awesome-icon style="position:absolute;right:-1rem"
+                      :icon="['fas', 'question-circle']"
+                    />
+                    <input
+                      id="bulk-user-trim"
+                      v-model="bulkUserTrim"
+                      type="number"
+                      class="form-control"
+                      aria-label="User trim"
+                      aria-describedby="basic-addon2"
+                      min="-99"
+                      max="20"
+                      :disabled="!enableUserTrimBulk()"
+                    >
+                    <div class="input-group-append">
+                      <span
+                        id="basic-addon2"
+                        class="input-group-text"
+                      >dB</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div v-else class="input-group input-group-sm numeric-input">
                   <input
                     id="bulk-user-trim"
                     v-model="bulkUserTrim"
@@ -445,6 +522,7 @@
                     aria-describedby="basic-addon2"
                     min="-99"
                     max="20"
+                    :disabled="!enableUserTrimBulk()"
                   >
                   <div class="input-group-append">
                     <span
@@ -453,6 +531,7 @@
                     >dB</span>
                   </div>
                 </div>
+
               </div>
             </div>
             <div class="col-auto">
@@ -460,41 +539,43 @@
                 <label>&nbsp;</label>
                 <button 
                   class="btn btn-sm btn-primary d-block mb-3"
-                  :disabled="targetChannels.length === 0"
+                  :disabled="targetChannels.length === 0 || !enableUserTrimBulk()"
                   @click="setUserTrimSelectedChannels"
                 >
-                  Apply User Trim to Selected Channels
+                  Apply User Trim to Selected Speakers
                 </button>
               </div>
             </div>
           </div>
         </div>
       </div>
-        
-      <h6>Mute Channels</h6>
+      <h6>Mute Speakers</h6>
       <div class="row">
         <div class="col-auto">
           <button 
             class="btn btn-sm btn-danger mb-3"
             @click="setMuteAllChannelsOn()"
+            :disabled="!enableUserTrimBulk()"
           >
-            Mute All Channels
+            Mute All Speakers
           </button>
         </div>
         <div class="col-auto">
           <button 
             class="btn btn-sm btn-primary mb-3"
             @click="setMuteAllChannelsOff()"
+            :disabled="!enableUserTrimBulk()"
           >
-            Unmute All Channels
+            Unmute All Speakers
           </button>
         </div>
         <div class="col-auto">
           <button 
             class="btn btn-sm btn-info mb-3"
             @click="toggleAllMuteChannels()"
+            :disabled="!enableUserTrimBulk()"
           >
-            Invert Mute on All Channels
+            Invert Mute on All Speakers
           </button>
         </div>
       </div>
@@ -504,7 +585,7 @@
 
 <script>
 
-  import { ref } from 'vue';
+  import { ref, computed } from 'vue';
 
   import useMso from '@/use/useMso.js';
   import useLocalStorage from '@/use/useLocalStorage.js';
@@ -514,6 +595,7 @@
   import DiracButtonGroup from './buttons/DiracButtonGroup.vue';
   import TwoStateButton from './buttons/TwoStateButton.vue';
   import DismissableAlert from './buttons/DismissableAlert.vue';
+  import AdvancedPeqOptionsDialog from './AdvancedPeqOptionsDialog.vue';
 
   import { Tooltip } from '@/directives/Tooltip.js';
 
@@ -525,7 +607,8 @@
     components: {
       DiracButtonGroup,
       TwoStateButton,
-      DismissableAlert
+      DismissableAlert,
+      AdvancedPeqOptionsDialog
     },
     setup() {
 
@@ -535,7 +618,8 @@
         currentDiracSlot, activeChannels, toggleMuteChannel,
         setMuteAllChannelsOff, setMuteAllChannelsOn, toggleAllMuteChannels,
         diracMismatchedChannels, setDiracSlotNotes, currentLayoutHasMatchingDiracFilter,
-        filterTypeToCssClass, showCrossoverControls, seatShakerChannel,
+        filterTypeToCssClass, showCrossoverControls, seatShakerChannel, diracFilterType,
+        diracErrorState, delayPeqAllowed, diracNoFilter,
       } = useMso();
       const { spkName } = useSpeakerGroups();
       const { showChannelMuteControls, toggleShowChannelMuteControls, darkMode } = useLocalStorage();
@@ -545,10 +629,23 @@
       const targetChannels = ref([]);
       const bulkUserDelay = ref(0);
       const bulkUserTrim = ref(0);
+      const showAdvancedPeqOptionsDialog = ref(false);
 
-      // const activeChannels = computed(() => {
-      //   return getActiveChannels(mso.value.speakers?.groups);
-      // });
+      const trimAllowed = computed(() => {
+        return mso?.value?.cal.post_trim[currentDiracSlot?.value?.filterType];
+      });
+
+      const warningMessageTrim = computed(() => {
+        return `Trim is applied after the Dirac Live ${filterTypeToCssClass(diracFilterType.value, true).toUpperCase()} filter runs. Changing the trim value here damages the Dirac Live ${filterTypeToCssClass(diracFilterType.value, true).toUpperCase()} filter. Look to the balance page where channel trims are safely adjusted.`;
+      });
+
+      const warningMessageDelay = computed(() => {
+        const baseMsg = `The Dirac Live ${filterTypeToCssClass(diracFilterType.value, true).toUpperCase()} filter carefully calibrates the delay. Changing the delay destroys the Dirac Live ${filterTypeToCssClass(diracFilterType.value, true).toUpperCase()} effect.`
+        if (delayPeqAllowed.value === 'warn') {
+          return baseMsg + " Edit at your own risk.";
+        }
+        return baseMsg;
+      });
 
       function formatDecimal(num) {
         return num?.toFixed(1);
@@ -565,23 +662,77 @@
         }
       }
 
+      function channelInvalid(channel) {
+        return !enableUserDelay(channel) && currentDiracSlot?.value?.channels[channel].delay !== 0 || !enableUserTrim(channel) && currentDiracSlot?.value?.channels[channel].trim !== 0
+      }
+
+      function getCalDelay(channel) {
+        return (mso?.value?.cal?.diracactive === 'off' || diracNoFilter.value || channel === seatShakerChannel.value) ? 0 : currentDiracSlot.value?.channels[channel].caldelay;
+      }
+
+      function getTotalDelay(channel) {
+        return formatDecimal(getCalDelay(channel) + currentDiracSlot?.value?.channels[channel].delay);
+      }
+
+      function getCalTrim(channel) {
+        return (mso?.value?.cal?.diracactive === 'off' || diracNoFilter.value || channel === seatShakerChannel.value) ? 0 : currentDiracSlot.value?.channels[channel].caltrim;
+      }
+
+      function slotName(slot) {
+        return slot.name === "" ? "Uncalibrated" : slot.name;
+      }
+
       function getTotalTrim(channel) {
-        console.log('help!!!');
-        let calTrim = mso.value?.cal?.diracactive=='off' ? 0 : currentDiracSlot.value?.channels[channel].caltrim;
+        let calTrim = getCalTrim(channel);
         let userTrim = 0;
 
-        if (showCrossoverControls.value) {
+        // if (showCrossoverControls.value) {
           userTrim = (currentDiracSlot.value?.channels[channel].mute === true ? currentDiracSlot.value?.channels[channel].preMuteTrim : currentDiracSlot.value?.channels[channel].trim);
-        }
+        // }
         
 
-        console.log('getTotalTrim', channel, calTrim, userTrim);
+        // console.log('getTotalTrim', channel, calTrim, userTrim);
 
         return formatDecimal(calTrim + userTrim);
       }
 
+      function enableUserDelayBulk() {
+        return (mso?.value?.cal?.diracactive === 'on' && diracErrorState.value !== 'GREEN') || mso?.value?.cal?.diracactive === 'off' || delayPeqAllowed.value !== 'blocked';
+      }
+
+      function enableUserTrimBulk() {
+        return diracErrorState.value !== 'GREEN' || trimAllowed.value !== 'blocked';
+      }
+
+      function enableUserDelay(channel) {
+        if ((diracErrorState.value === 'GREEN' || mso?.value?.cal?.diracactive === 'bypass') && channel !== seatShakerChannel.value) {
+          return delayPeqAllowed.value !== 'blocked';
+        }
+
+        return true;
+      }
+
       function enableUserTrim(channel) {
-        return (!channel.includes('sub') || channel === seatShakerChannel.value) || showCrossoverControls.value;
+        if (diracErrorState.value === 'GREEN' && channel !== seatShakerChannel.value) {
+          return trimAllowed.value !== 'blocked';
+        }
+        return true;
+      }
+
+      function warnUserDelay(channel) {
+        if ((mso?.value?.cal?.diracactive === 'on' && diracErrorState.value !== 'GREEN') || mso?.value?.cal?.diracactive === 'off' || channel === seatShakerChannel.value) {
+          return false;
+        }
+
+        return delayPeqAllowed.value !== 'OK';
+      }
+
+      function warnUserTrim(channel) {
+        if ((mso?.value?.cal?.diracactive === 'on' && diracErrorState.value !== 'GREEN') || mso?.value?.cal?.diracactive === 'off' || channel === seatShakerChannel.value) {
+          return false;
+        }
+
+        return trimAllowed.value !== 'OK';
       }
 
       function setUserDelaySelectedChannels() {
@@ -596,6 +747,10 @@
         }
       }
 
+      function toggleShowAdvancedPeqOptionsDialog() {
+        showAdvancedPeqOptionsDialog.value = !showAdvancedPeqOptionsDialog.value;
+      }
+
       return {
         mso, setDiracSlot, setUserTrim, setUserDelay, 
         setMinVolume, setMaxVolume, setMaxOutputLevel, setLipsyncDelay, currentDiracSlot,
@@ -604,7 +759,10 @@
         setMuteAllChannelsOff, setMuteAllChannelsOn, toggleAllMuteChannels, isMobileMode,
         diracMismatchedChannels, darkMode, targetChannels, bulkUserDelay, bulkUserTrim,
         setUserDelaySelectedChannels, setUserTrimSelectedChannels, currentLayoutHasMatchingDiracFilter,
-        filterTypeToCssClass, showCrossoverControls, enableUserTrim, getTotalTrim, seatShakerChannel
+        filterTypeToCssClass, showCrossoverControls, enableUserTrim, enableUserDelay, getTotalTrim, seatShakerChannel,
+        diracFilterType, warningMessageTrim, warningMessageDelay, getCalTrim, getCalDelay, getTotalDelay,
+        showAdvancedPeqOptionsDialog, toggleShowAdvancedPeqOptionsDialog, slotName, enableUserDelayBulk, enableUserTrimBulk,
+        channelInvalid, trimAllowed, delayPeqAllowed, warnUserDelay, warnUserTrim
       };
     }
   }
@@ -679,6 +837,20 @@
 
   .card-body .row {
     min-height:2rem;
+  }
+
+  .modal {
+    display: block;
+  }
+
+  .connecting-overlay {
+    width:200%;
+    height:200%;
+    background: rgba(0,0,0,0.5);
+    z-index: 9999;
+    position:fixed;
+    top:0;
+    left:0;
   }
 
 </style>

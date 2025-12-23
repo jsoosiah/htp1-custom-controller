@@ -276,7 +276,7 @@
       <div class="row">
         <h6>Headroom</h6>
         <dismissable-alert alert-key="volume-headroom">
-          When the analog volume is as high as it can go, the digital volume begins to be turned up.  Eventually loud passages may clip.  When the volume is turned down, the digital volume is reduced until the specified amount of headroom is available.  Then the analog volume control takes over.  The default headroom is 12dB.  If your system includes a lot of bass boost from Dirac or PEQ you may want to specify more headroom.
+          When the analog volume is as high as it can go, the digital volume begins to be turned up.  Eventually loud passages may clip.  When the volume is turned down, the digital volume is reduced until the specified amount of headroom is available.  Then the analog volume control takes over.  The default headroom is 12dB.  If your system includes a lot of bass boost from Dirac Live or PEQ you may want to specify more headroom.
         </dismissable-alert>
       </div>
       <div class="row">
@@ -377,17 +377,28 @@
 
 import useMso from '@/use/useMso';
 import useLocalStorage from '@/use/useLocalStorage';
+import useSpeakerGroups from '@/use/useSpeakerGroups.js';
 
 import DismissableAlert from './buttons/DismissableAlert.vue';
 import PeakSignalLevels from './PeakSignalLevels.vue';
+
+import TwoStateButton from './buttons/TwoStateButton.vue';
 
 export default {
   components: {
     DismissableAlert,
     PeakSignalLevels,
+    TwoStateButton
   },
   setup() {
-    return { ...useMso(), ...useLocalStorage() };
+
+    function formatDecimal(num) {
+      return num?.toFixed(1);
+    }
+
+
+    const { spkName } = useSpeakerGroups();
+    return { ...useMso(), ...useLocalStorage(), spkName, formatDecimal };
   }
 }
 </script>
@@ -395,5 +406,9 @@ export default {
 <style scoped>
   .col-auto, .col, .col-xs-auto {
     padding-left: 0;
+  }
+
+  .table-sm td {
+    padding:0 0.3rem;
   }
 </style>

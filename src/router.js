@@ -7,6 +7,7 @@ const Settings = () => import('./components/Settings.vue');
 
 const Speakers = () => import('./components/Speakers.vue');
 const Calibration = () => import('./components/Calibration.vue');
+const Balance = () => import('./components/Balance.vue');
 const SignalGenerator = () => import('./components/SignalGenerator.vue');
 const Peq = () => import('./components/Peq.vue');
 const BassEq = () => import('./components/BassEq.vue');
@@ -31,6 +32,7 @@ const settingsRoutes = [
   { path: ''}, // divider
   { path: 'speakers', component: Speakers, meta: { label: 'Speakers', icon: 'speakers-icon' }},
   { path: 'calibration', component: Calibration, meta: { label: 'Calibration', icon: 'calibration-icon' }},
+  { path: 'balance', component: Balance, meta: { label: 'Balance', icon: 'balance-icon' }},
   { path: 'signal-generator', component: SignalGenerator, meta: { label: 'Signal Generator', icon: 'sgen-icon' }},
   { path: 'peq', component: Peq, meta: { label: 'PEQ', icon: 'peq-icon' }},
   { path: 'bass-eq', component: BassEq, meta: { label: 'Filtered Bass EQ', icon: 'filtered-bass-eq-icon' }},

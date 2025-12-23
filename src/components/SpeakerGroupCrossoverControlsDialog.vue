@@ -1,6 +1,6 @@
 <template>
   <div 
-    id="power-dialog" 
+    id="layout-dialog" 
     class="modal fade show" 
     tabindex="-1" 
     aria-labelledby="settingsModalLabel"
@@ -27,19 +27,6 @@
           </div>
         </div>
         <div class="modal-body text-left">
-          <div
-            v-if="!currentLayoutHasMatchingDiracFilter"
-            class="alert alert-danger small"
-            role="alert"
-          >
-            <div>Dirac Live is disabled; there are no Dirac filters available for the current speaker layout. </div>
-            <div v-if="mso.cal?.currentLayout">
-              Current Layout: {{ mso.cal?.currentLayout }}
-            </div>
-            <div v-if="mso.cal?.availableFilterLayouts">
-              Layouts with Available Dirac Filters: {{ mso.cal?.availableFilterLayouts?.join(", ") }}
-            </div>
-          </div>
           <table class="table table-sm table-striped table-responsive-sm">
             <tbody
               v-for="speakerGroup in props.speakerGroups"
@@ -68,7 +55,7 @@
                       :checked="msoCopy?.speakers?.groups[spk.code]?.present || spk.code === 'lr'" 
                       :disabled="!allSpeakerToggles[spk.code].enabled"
                       @change="toggleSpeakerGroupLocal(spk.code); applyProductRulesLocal()"
-                      v-if="spk.code !== seatShakerChannelLocal"
+                      
                     >
                     <label 
                       :id="'tooltip-container-' + spk.code" 
@@ -158,25 +145,41 @@
             </tbody>
           </table>
 
-          <div v-if="displaySeatShakerOptions">
-            <div class="form-check">
-              <input 
-                id="check-shaker" 
-                type="checkbox" 
-                class="form-check-input" 
-                :checked="msoCopy?.speakers?.seatshaker?.present" 
-                :disabled="msoCopy?.speakers?.groups?.sub5?.present"
-                @change="toggleSeatShakerLocal()"
-              >
-              <label 
-                class="form-check-label"
-                for="check-shaker"
-              >
-                Enable Seat Shaker
-                </label>
+          <div
+            v-if="!currentLayoutHasMatchingDiracFilter && !hasUnsavedChanges"
+            class="alert alert-danger small"
+            role="alert"
+          >
+            <div>Dirac Live is disabled; there are no Dirac Live filters available for the current speaker layout. </div>
+            <div v-if="mso.cal?.currentLayout">
+              Current Layout: <strong>{{ mso.cal?.currentLayout }}</strong>
             </div>
-            <small class="form-text text-muted">Enables seat shakers. The first unused subwoofer channel becomes the seat shaker channel. This channel will be excluded from Dirac calibrations and will not have any filter corrections while Dirac is enabled.</small>
+            <div v-if="mso.cal?.availableFilterLayouts">
+              Layouts with Available Dirac Live Filters: <strong>{{ mso.cal?.availableFilterLayouts?.join(", ") }}</strong>
+            </div>
           </div>
+        
+
+          <div
+            v-else-if="!selectedLayoutHasMatchingDiracFilter"
+            class="alert alert-danger small"
+            role="alert"
+          >
+            <div>The selected speaker layout has no Dirac Live calibrations. Saving will result in an empty layout. This is a necessary first step to calibrating that layout. </div>
+            <div v-if="selectedLayout">
+              Selected Layout: <strong>{{ selectedLayout }}</strong>
+            </div>
+            <div v-if="mso.cal?.availableFilterLayouts">
+              Layouts with Available Dirac Live Filters: <strong>{{ mso.cal?.availableFilterLayouts?.join(", ") }}</strong>
+            </div>
+          </div>
+
+          <div v-else>
+              <div v-if="selectedLayout">
+                Selected Layout: <strong>{{ selectedLayout }}</strong>
+              </div>
+          </div>
+
         </div>
 
         <div class="modal-footer" :class="{'text-white': darkMode}">
@@ -217,7 +220,7 @@
   import useSpeakerGroups from '@/use/useSpeakerGroups';
 
   export default {
-    'name': 'SpeakerGroupCrossoverControls',
+    'name': 'SpeakerGroupCrossoverControlsDialog',
     directives: {
       Tooltip
     },
@@ -230,7 +233,7 @@
         executeMacro, commitSpeakerLayout, diracMismatchedChannelGroups,
         currentLayoutHasMatchingDiracFilter } = useMso();
       const { darkMode } = useLocalStorage();
-      const { getActiveChannels, reverseBmg } = useSpeakerGroups();
+      const { getActiveChannels, reverseBmg, spgFromGroupsString } = useSpeakerGroups();
 
       const msoCopy = ref(null);
 
@@ -238,8 +241,17 @@
         msoCopy.value = deepClone(mso.value);
       });
 
+      const selectedLayout = computed(() => {
+        return spgFromGroupsString(msoCopy.value?.speakers?.groups);
+      })
+
       const activeChannelsCopy = computed(() => {
-        return getActiveChannels(msoCopy.value.speakers?.groups);
+        return getActiveChannels(msoCopy.value.speakers?.groups, seatShakerChannelLocal.value);
+      });
+
+      const selectedLayoutHasMatchingDiracFilter = computed(() => {
+        console.log(msoCopy.value?.cal?.availableFilterLayouts,selectedLayout.value)
+        return msoCopy.value?.cal?.availableFilterLayouts?.includes(selectedLayout.value);
       });
 
       // rule states the conditions for which the toggle should be enabled
@@ -294,14 +306,6 @@
           };
       });
 
-      const displaySeatShakerOptions = computed(() => {
-        if (mso.value?.speakers?.seatshaker) {
-          return true;
-        }
-
-        return false;
-      });
-
       const allSpeakerToggles = computed(() => {
 
         const result = {};
@@ -316,19 +320,20 @@
       });
 
       const seatShakerChannelLocal = computed(() => {
-        if (msoCopy.value?.speakers?.seatshaker?.present) {
+        if (mso.value?.speakers?.seatshaker?.present) {
           for (let i = 5; i >= 1; i--) {
             if (msoCopy.value?.speakers?.groups[`sub${i}`]?.present) {
               return `sub${i+1}`;
             }
           }
+          return "sub1";
         }
 
         return null;
       });
 
       function enableSpeakerToggle(spkCode) {
-
+        
         const result = {
           enabled: true,
           message: '',
@@ -341,13 +346,13 @@
 
           let limit = 16;
           if (spkCode !== 'c' && !spkCode.startsWith('sub')) {
-            limit = 15;
+            limit--;
           }
 
           if (activeChannelsCopy.value.length >= limit && spkCode !== 'lr') {
-            // return false;
+            const seatShakerMessage = seatShakerChannelLocal.value ? " (including seat shaker)" : "";
             result.enabled = false;
-            result.message = 'A maximum of 16 speakers is allowed.';
+            result.message = `A maximum of 16 speakers${seatShakerMessage} is allowed.`;
             return result;
           }
 
@@ -365,8 +370,11 @@
         }
 
         if (spkCode === seatShakerChannelLocal.value) {
-          result.enabled = true;
-          result.message = 'Seat shaker channel. This channel will be excluded from Dirac calibrations and will not have any filter corrections while Dirac is enabled.';
+          result.enabled = spkCode !== 'sub5';
+          result.message = 'Seat shaker channel. This channel will be excluded from Dirac Live calibrations and will not have any filter corrections while Dirac Live is enabled. ';
+          if (!result.enabled) {
+            result.message += 'Subwoofer 5 is used by seat shaker channel. Disable seat shaker to enable subwoofer 5.';
+          }
           return result;
         }
 
@@ -400,10 +408,6 @@
 
       function setSpeakerSizeLocal(spkCode, sizeCode) {
         return patchMsoLocal( 'replace', `/speakers/groups/${spkCode}/size`, sizeCode);
-      }
-
-      function toggleSeatShakerLocal() {
-        return patchMsoLocal('replace', '/speakers/seatshaker/present', !msoCopy.value?.speakers?.seatshaker?.present);
       }
 
       function patchMsoLocal(op, path, value) {
@@ -531,8 +535,9 @@
         mso, msoCopy, showCrossoverControls, setSpeakerSizeLocal, setCenterFreqLocal,
         showCrossoverControlsForSpeaker, showCenterFreqControlsForSpeaker, showDolby,
         props, allSpeakerToggles, diracMismatchedChannelGroups, handleCancel, toggleSpeakerGroupLocal,
-        hasUnsavedChanges, unsavedChanges, save, darkMode, seatShakerChannelLocal, toggleSeatShakerLocal,
-        applyProductRulesLocal, currentLayoutHasMatchingDiracFilter, displaySeatShakerOptions
+        hasUnsavedChanges, unsavedChanges, save, darkMode, seatShakerChannelLocal,
+        applyProductRulesLocal, currentLayoutHasMatchingDiracFilter, selectedLayoutHasMatchingDiracFilter,
+        selectedLayout
       };
     }
   }

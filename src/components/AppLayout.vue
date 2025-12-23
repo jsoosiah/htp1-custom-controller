@@ -34,7 +34,7 @@
     v-if="calToolConnected"
     class="fixed-top mx-auto"
   >
-    <span class="sgen-on-warning">Dirac Calibration in Progress - Currently in Readonly Mode</span>
+    <span class="sgen-on-warning">Dirac Live Calibration in Progress - Currently in Readonly Mode</span>
   </div>
   <div
     v-if="diracFilterTransferInProgress"
@@ -370,6 +370,7 @@ import PowerDialog from './PowerDialog.vue';
 
 import HomeIcon from './icons/HomeIcon.vue';
 import CalibrationIcon from './icons/CalibrationIcon.vue';
+import BalanceIcon from './icons/BalanceIcon.vue';
 import FilteredBassEqIcon from './icons/FilteredBassEqIcon.vue';
 import PeqIcon from './icons/PeqIcon.vue';
 import ToneControlIcon from './icons/ToneControlIcon.vue';
@@ -397,6 +398,7 @@ export default {
     BluetoothPairingRequest,
     PowerDialog,
     CalibrationIcon,
+    BalanceIcon,
     PeqIcon,
     ToneControlIcon,
     LoudnessIcon,
@@ -511,7 +513,7 @@ export default {
     watch(
       darkMode,
       () => {
-        console.log('dm watch', darkMode.value);
+        // console.log('dm watch', darkMode.value);
         if (darkMode.value) {
           document.documentElement.setAttribute('data-theme', 'darkMode'); // sets the data-theme attribute
         } else {
@@ -691,6 +693,7 @@ export default {
     /* width:auto; */
     /* background: rgba(255,0,0,.5); */
     text-align:center;
+    z-index:999999999;
   }
 
   .menu-btn {

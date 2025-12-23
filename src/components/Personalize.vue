@@ -233,7 +233,7 @@
           </tbody>
         </table>
 
-        <h6>Homepage Dirac Slots</h6>
+        <h6>Homepage Dirac Live Slots</h6>
         <table class="table table-sm table-responsive table-striped">
           <thead>
             <tr>
@@ -244,6 +244,7 @@
             <tr
               v-for="(slot, key) in mso.cal?.slots"
               :key="key"
+              v-show="key < mso?.cal?.num_dirac_slots"
             >
               <td>
                 <div class="custom-control custom-switch">
@@ -365,7 +366,7 @@
       const localUserCss = ref( userCss );
 
       const modes = [
-        {code: 'dirac', label: 'Dirac'},
+        {code: 'dirac', label: 'Dirac Live'},
         {code: 'peq', label: 'PEQ'},
         {code: 'tone', label: 'Tone Control'},
         {code: 'loudness', label: 'Loudness'},

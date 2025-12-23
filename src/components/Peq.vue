@@ -9,7 +9,7 @@
       :peq-slots="mso.peq?.slots || []"
       :active-channels="activeChannels"
       :selected-channel="selectedChannel"
-      :spk-name="spkName"
+      :spk-name="spkNamePre"
       :dark-mode="darkMode"
     />
     <div class="row justify-content-between">
@@ -43,6 +43,19 @@
             Group by Band
           </button>
         </div>
+      </div>
+    </div>
+    <div
+      v-show="isPeqPre"
+      class="row"
+    >
+      <div class="col">
+        <dismissable-alert
+          alert-key="peq-pre"
+          class="alert-info"
+        >
+          PEQ is applied pre-Dirac Live. PEQ controls are available on the LFE channel rather than individual subwoofer channels. 
+        </dismissable-alert>
       </div>
     </div>
     <div
@@ -102,7 +115,7 @@
             <th class="text-right">
               Filter Type
             </th>
-            <th>
+            <th class="text-right">
               Bypass
             </th>
           </tr>
@@ -112,9 +125,18 @@
             v-for="(channame, chanIndex) in activeChannels"
             :key="channame"
             :class="{'table-warning': mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].beq,
-                     'table-danger': mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].bypass}"
+                     'table-danger': mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].bypass || channelInvalid(chanIndex)}"
+            v-show="channelVisible(channame)"
           >
-            <td>{{ spkName(channame) }}</td>
+            <td>
+              <span v-if="!peqWarning">
+                {{ spkNamePre(channame) }}
+              </span>
+              <span v-else v-tooltip="{'message': warningMessagePeq}" :id="`peqbyband-${channame}`">
+                {{ spkNamePre(channame) }}
+                <font-awesome-icon :icon="['fas', 'question-circle']" />
+              </span>
+            </td>
             <td class="text-right">
               <input 
                 type="number" 
@@ -125,6 +147,7 @@
                 step=".1" 
                 @change="({ type, target }) => { clearAllImports(); setPEQCenterFrequency(activeChannels[chanIndex], mso.peq?.currentpeqslot, target.value) }"
                 @focus="setSelectedChannel(chanIndex, true)"
+                :disabled="mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].bypass === true || !peqEnabled"
               >
             </td>
             <td class="text-right">
@@ -132,12 +155,13 @@
                 type="number" 
                 class="form-control form-control-sm text-right" 
                 :value="mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].bypass === true ? mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].preBypassGain : mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].gaindB" 
-                :disabled="mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].bypass === true"
+                :disabled="mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].bypass === true || !peqEnabled"
                 min="-99" 
                 max="20" 
                 step=".1" 
                 @change="({ type, target }) => { clearAllImports(); setPEQGain(activeChannels[chanIndex], mso.peq?.currentpeqslot, target.value) }"
                 @focus="setSelectedChannel(chanIndex, true)"
+                v-show="!(mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].bypass === true && mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].preBypassFilterType === 3 || mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].FilterType === 3)"
               >
             </td>
             <td class="text-right">
@@ -150,6 +174,7 @@
                 step=".1" 
                 @change="({ type, target }) => { clearAllImports(); setPEQQuality(activeChannels[chanIndex], mso.peq?.currentpeqslot, target.value) }"
                 @focus="setSelectedChannel(chanIndex, true)"
+                :disabled="mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].bypass === true || !peqEnabled"
               >
             </td>
             <td class="text-right">
@@ -157,12 +182,14 @@
                 class="form-control form-control-sm" 
                 @change="({ type, target }) => { clearAllImports(); setPEQFilterType(activeChannels[chanIndex], mso.peq?.currentpeqslot, target.value) }"
                 @focus="setSelectedChannel(chanIndex, true)"
+                :disabled="mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].bypass === true || !peqEnabled"
               >
                 <option 
                   v-for="filterType in filterTypes" 
                   :key="filterType.value"
                   :value="filterType.value"
-                  :selected="filterType.value === mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].FilterType"
+                  
+                  :selected="mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].bypass === true ? mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].preBypassFilterType : mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].FilterType"
                 >
                   {{ filterType.label }}
                 </option>
@@ -194,8 +221,9 @@
           :class="{'active': selectedChannel === index, 'italic': channelHasModifications(channame)}" 
           href="javascript:void(0)" 
           @click="setSelectedChannel(index)" 
+          v-show="channelVisible(channame)"
         >
-          {{ spkName(channame) }}
+          {{ spkNamePre(channame) }}
           <font-awesome-icon
                         v-if="channame === seatShakerChannel"
                         :icon="['fas', 'couch']"
@@ -230,10 +258,14 @@
             v-for="(slot, index) in mso.peq?.slots"
             :key="index"
             :class="{'table-warning': slot.channels[activeChannels[selectedChannel]].beq,
-                     'table-danger': slot.channels[activeChannels[selectedChannel]].bypass}"
+                     'table-danger': slot.channels[activeChannels[selectedChannel]].bypass || bandInvalid(activeChannels[selectedChannel], index)}"
           >
             <td class="text-right">
-              {{ index + 1 }}
+              <span v-if="!peqWarning">{{ index + 1 }}</span>
+              <span v-else v-tooltip="{'message': warningMessagePeq}" :id="`peqbychan-${index}`">
+                {{ index + 1 }}
+                <font-awesome-icon :icon="['fas', 'question-circle']"/>
+              </span>
             </td>
             <td class="text-right">
               <input 
@@ -244,6 +276,7 @@
                 max="20000" 
                 step=".1" 
                 @change="({ type, target }) => { handleCenterFreq(activeChannels[selectedChannel], index, target.value) }"
+                :disabled="slot.channels[activeChannels[selectedChannel]].bypass === true || !peqEnabled"
               >
             </td>
             <td class="text-right">
@@ -251,11 +284,12 @@
                 type="number" 
                 class="form-control form-control-sm text-right" 
                 :value="slot.channels[activeChannels[selectedChannel]].bypass === true ? slot.channels[activeChannels[selectedChannel]].preBypassGain : slot.channels[activeChannels[selectedChannel]].gaindB" 
-                :disabled="slot.channels[activeChannels[selectedChannel]].bypass === true"
+                :disabled="slot.channels[activeChannels[selectedChannel]].bypass === true || !peqEnabled"
                 min="-99" 
                 max="20" 
                 step=".1" 
                 @change="({ type, target }) => { handleGain(activeChannels[selectedChannel], index, target.value) }"
+                v-show="!(slot.channels[activeChannels[selectedChannel]].bypass === true && slot.channels[activeChannels[selectedChannel]].preBypassFilterType === 3 || slot.channels[activeChannels[selectedChannel]].FilterType === 3)"
               >
             </td>
             <td class="text-right">
@@ -263,22 +297,24 @@
                 type="number" 
                 class="form-control form-control-sm text-right" 
                 :value="slot.channels[activeChannels[selectedChannel]].Q" 
-                min=".1" 
+                min="0.1" 
                 max="10" 
                 step=".1" 
                 @change="({ type, target }) => { handleQ(activeChannels[selectedChannel], index, target.value) }"
+                :disabled="slot.channels[activeChannels[selectedChannel]].bypass === true || !peqEnabled"
               >
             </td>
             <td class="text-right">
               <select 
                 class="form-control form-control-sm" 
                 @change="({ type, target }) => { handleFilterType(activeChannels[selectedChannel], index, target.value) }"
+                :disabled="slot.channels[activeChannels[selectedChannel]].bypass === true || !peqEnabled"
               >
                 <option 
                   v-for="filterType in filterTypes" 
                   :key="filterType.value"
                   :value="filterType.value"
-                  :selected="filterType.value === slot.channels[activeChannels[selectedChannel]].FilterType"
+                  :selected="filterType.value === (slot.channels[activeChannels[selectedChannel]].bypass === true ? slot.channels[activeChannels[selectedChannel]].preBypassFilterType : slot.channels[activeChannels[selectedChannel]].FilterType)"
                 >
                   {{ filterType.label }}
                 </option>
@@ -290,6 +326,7 @@
                 :state-on="slot.channels[activeChannels[selectedChannel]].bypass === true"
                 :mute-button="true"
                 @btn-click="handleBypass(activeChannels[selectedChannel], index)"
+                :disabled="!peqEnabled"
               />
             </td>
           </tr>
@@ -336,14 +373,14 @@
       </div>
     </template>
     <template v-else>
-      <h6>Export Channel {{ spkName(activeChannels[selectedChannel]) }}</h6>
+      <h6>Export Channel {{ spkNamePre(activeChannels[selectedChannel]) }}</h6>
       <div class="row">
         <div class="col-auto">
           <button 
             class="btn btn-sm btn-primary mb-3"
             @click="downloadSingleChannelConfig(activeChannels[selectedChannel])"
           >
-            Export {{ spkName(activeChannels[selectedChannel]) }} PEQ Configuration to File
+            Export {{ spkNamePre(activeChannels[selectedChannel]) }} PEQ Configuration to File
           </button>
         </div>
         <div class="col-auto">
@@ -351,7 +388,7 @@
             class="btn btn-sm btn-primary mb-3"
             @click="downloadSingleChannelTargetCurve(activeChannels[selectedChannel])"
           >
-            Export {{ spkName(activeChannels[selectedChannel]) }} PEQ to Dirac Target Curve
+            Export {{ spkNamePre(activeChannels[selectedChannel]) }} PEQ to Dirac Live Target Curve
           </button>
         </div>
       </div>
@@ -383,6 +420,7 @@
               type="file" 
               class="form-control-file" 
               @change="bandImportFileSelected"
+              :disabled="!peqEnabled"
             >
           </div>
           <mso-importer 
@@ -395,7 +433,7 @@
     </template>
     <!-- import operations for channel -->
     <template v-else>
-      <h6>Import Channel PEQ Configuration or REW Filter to Channel {{ spkName(activeChannels[selectedChannel]) }}</h6>
+      <h6>Import Channel PEQ Configuration or REW Filter to Channel {{ spkNamePre(activeChannels[selectedChannel]) }}</h6>
       <div class="row">
         <div class="col-auto">
           <div class="form-group">
@@ -406,6 +444,7 @@
               type="file" 
               class="form-control-file" 
               @change="channelImportFileSelected"
+              :disabled="!peqEnabled"
             >
           </div>
           <mso-importer 
@@ -429,6 +468,7 @@
             type="file" 
             class="form-control-file" 
             @change="fullImportFileSelected"
+            :disabled="!peqEnabled"
           >
         </div>
         <mso-importer 
@@ -441,7 +481,7 @@
     
     <!-- clone operations --> 
     <template v-if="eqGroupBy === 0">
-      <h6>Clone Channel {{ spkName(activeChannels[selectedChannel]) }} PEQ to Other Channels</h6>
+      <h6>Clone Channel {{ spkNamePre(activeChannels[selectedChannel]) }} PEQ to Other Channels</h6>
       <div class="form-group">
         <label for="target-channels">Target Channels</label>
         <select
@@ -449,13 +489,14 @@
           v-model="targetCloneChannels"
           multiple
           class="form-control"
+          :disabled="!peqEnabled"
         >
           <option
             v-for="channel in selectableChannels"
             :key="channel"
             :value="channel"
           >
-            {{ spkName(channel) }}
+            {{ spkNamePre(channel) }}
           </option>
         </select>
       </div>
@@ -463,10 +504,10 @@
         <div class="col-auto">
           <button 
             class="btn btn-sm btn-primary mb-3"
-            :disabled="targetCloneChannels.length === 0"
+            :disabled="targetCloneChannels.length === 0 || !peqEnabled"
             @click="cloneSelectedChannelPEQToTargetChannels"
           >
-            Clone {{ spkName(activeChannels[selectedChannel]) }} PEQ to Selected Channels
+            Clone {{ spkNamePre(activeChannels[selectedChannel]) }} PEQ to Selected Channels
           </button>
         </div>
       </div>
@@ -495,7 +536,7 @@
             class="btn btn-sm btn-warning mb-3"
             @click="resetPEQsForChannel(activeChannels[selectedChannel])"
           >
-            Reset Settings for Channel {{ spkName(activeChannels[selectedChannel]) }}
+            Reset Settings for Channel {{ spkNamePre(activeChannels[selectedChannel]) }}
           </button>
         </div>
       </div>
@@ -529,6 +570,8 @@
   import PeqChart from './PeqChart.vue';
   import DismissableAlert from './buttons/DismissableAlert.vue';
 
+  import { Tooltip } from '@/directives/Tooltip.js';
+
   export default {
     name: 'Eq',
     components: {
@@ -536,6 +579,9 @@
       MsoImporter,
       PeqChart,
       DismissableAlert
+    },
+    directives: {
+      Tooltip,
     },
     setup() {
 
@@ -546,10 +592,9 @@
       
       const { eqGroupBy, setEqGroupBy, darkMode } = useLocalStorage();
       const { mso, setPEQSlot, resetPEQ, importMsoPatchList, activeChannels,
-        setPEQCenterFrequency, setPEQQuality, setPEQFilterType, setPEQGain, togglePEQBypass } = useMso();
+        setPEQCenterFrequency, setPEQQuality, setPEQFilterType, setPEQGain, togglePEQBypass,
+        delayPeqAllowed, diracFilterType, filterTypeToCssClass, diracErrorState } = useMso();
       const { getActiveChannels, spkName } = useSpeakerGroups();
-
-
 
       const chartRef = ref(null);
       const tabLoaded = ref(true);
@@ -559,6 +604,18 @@
       const importFullRef = ref(null);
 
       const targetCloneChannels = ref([]);
+
+      const isPeqPre = computed(() => {
+        return mso?.value?.peq?.location === "pre" && diracErrorState.value === 'GREEN';
+      });
+
+      const peqEnabled = computed(() => {
+        return mso?.value?.peq.location === "pre" || delayPeqAllowed.value !== 'blocked' || diracErrorState.value !== 'GREEN';
+      });
+
+      const peqWarning = computed(() => {
+        return mso?.value?.peq.location !== "pre" && delayPeqAllowed.value !== 'OK' && diracErrorState.value === 'GREEN';
+      });
 
       // const activeChannels = computed(() => {
       //   return getActiveChannels(mso.value.speakers?.groups);
@@ -754,7 +811,8 @@
       const filterTypes = [
         { label: 'PEQ', value: 0 },
         { label: 'Low Shelf', value: 1 },
-        { label: 'High Shelf', value: 2 }
+        { label: 'High Shelf', value: 2 },
+        { label: 'All Pass', value: 3 }
       ];
 
       function toListSentence(arr) {
@@ -764,7 +822,7 @@
       } 
 
       function cloneSelectedChannelPEQToTargetChannels() {
-        if (confirm(`The PEQ for channel ${spkName(activeChannels.value[selectedChannel.value])} will be cloned to the following channels, overwriting their existing PEQ filters: ${toListSentence(targetCloneChannels.value.map(ch => spkName(ch)))}`)) {
+        if (confirm(`The PEQ for channel ${spkNamePre(activeChannels.value[selectedChannel.value])} will be cloned to the following channels, overwriting their existing PEQ filters: ${toListSentence(targetCloneChannels.value.map(ch => spkNamePre(ch)))}`)) {
           for (const channel of targetCloneChannels.value) {
             for (let band = 0; band < 16; band++) {
               const currentPEQ = mso.value.peq?.slots[band].channels[activeChannels.value[selectedChannel.value]];
@@ -838,8 +896,43 @@
         }
       }
 
+      function channelInvalid(chanIndex) {
+        // TODO handle bypass
+        return !peqEnabled.value && (mso?.value?.peq?.slots[mso?.value?.peq?.currentpeqslot].channels[activeChannels.value[chanIndex]].FilterType === 3 || mso?.value?.peq?.slots[mso?.value?.peq?.currentpeqslot].channels[activeChannels.value[chanIndex]].gaindB !== 0);
+      }
+
+      function bandInvalid(channel, slot) {
+        // slot.channels[activeChannels[selectedChannel]].bypass
+        return !peqEnabled.value && (mso?.value?.peq?.slots[slot].channels[channel].FilterType === 3 || mso?.value?.peq?.slots[slot].channels[channel].gaindB !== 0);
+      }
+
+      const warningMessagePeq = computed(() => {
+        const baseMsg = `The Dirac Live ${filterTypeToCssClass(diracFilterType.value, true).toUpperCase()} filter carefully aligns the phase. Applying PEQ destroys the Dirac Live ${filterTypeToCssClass(diracFilterType.value, true).toUpperCase()} effect.`
+        if (delayPeqAllowed.value === 'warn') {
+          return baseMsg + " Edit at your own risk.";
+        }
+
+        return baseMsg;
+      });
+
+      function channelVisible(channame) {
+        return !isPeqPre.value || !(channame !== 'sub1' && channame.startsWith('sub'));
+      }
+
+      function spkNamePre(spkId) {
+
+        if (!isPeqPre.value) {
+          return spkName(spkId);
+        }
+
+        if (spkId === 'sub1') {
+          return 'LFE';
+        }
+        return spkName(spkId);
+      }
+
       return {
-        ...useMso(), activeChannels, spkName, selectedChannel, setSelectedChannel, selectableChannels,
+        ...useMso(), activeChannels, spkNamePre, selectedChannel, setSelectedChannel, selectableChannels,
         bandHasModifications, channelHasModifications, filterTypes, tabLoaded, setSelectedBand, 
         downloadSingleChannelConfig, downloadSingleBandConfig, downloadFullConfig, 
         channelImportFileSelected, bandImportFileSelected, fullImportFileSelected, channelImportValidationWarnings,
@@ -850,7 +943,8 @@
         cloneSelectedChannelPEQToTargetChannels, targetCloneChannels, 
         secretSettings, linkAllChannels, toggleLinkAllChannels,
         handleCenterFreq, handleGain, handleQ, handleFilterType, handleBypass, darkMode, chartRef,
-        downloadSingleChannelTargetCurve
+        downloadSingleChannelTargetCurve, peqWarning, peqEnabled, warningMessagePeq, channelInvalid, bandInvalid,
+        diracErrorState, channelVisible, isPeqPre
       };
     }
   }

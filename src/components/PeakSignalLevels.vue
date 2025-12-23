@@ -8,7 +8,7 @@
   <div class="row mb-3">
     <div class="col-auto">
       <two-state-button
-        :button-text="`Peak VU Monitoring: ${peakSignalMonitoringEnabled ? 'on':'off'}`"
+        :button-text="`Peak Monitoring: ${peakSignalMonitoringEnabled ? 'on':'off'}`"
         :state-on="peakSignalMonitoringEnabled"
         @click="togglePeakSignalMonitoring()"
       />
@@ -20,7 +20,7 @@
         class="btn btn-sm btn-primary float-right"
         @click="clearVuPeakLevels"
       >
-        Clear Peak Levels
+        Clear Peaks
       </button>
     </div>
   </div>
@@ -135,7 +135,7 @@
 
       const peakSignalMonitoringEnabled = ref(false);
 
-      let VU_REFRESH_INTERVAL = 2000; // ms
+      let VU_REFRESH_INTERVAL = 500; // ms
       let lastVuReceived = 0;
 
       const vuValToDBFS = [

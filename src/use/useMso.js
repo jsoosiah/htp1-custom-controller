@@ -196,7 +196,7 @@ function applyProductRules() {
 
     setSpeakerGroupPresent('lrb', spg.lrb.present && spg.lrs.present); // No backs when no surround
     setSpeakerGroupPresent('lrw', spg.lrw.present && spg.lrb.present); // No wides when no backs
-    console.log('lrhf?', spg.lrhf.present && (!spg.lrtf.present));
+    // console.log('lrhf?', spg.lrhf.present && (!spg.lrtf.present));
     setSpeakerGroupPresent('lrhf', spg.lrhf.present && (!spg.lrtf.present)); // No height front if top front present
 
     if ((!spg.lrs.present) && (spg.lrtm.present) && (spg.lrtf.present || spg.lrtr.present || spg.lrhf.present || spg.lrhr.present)) {
@@ -350,7 +350,7 @@ function applyProductRules() {
     }
 
     for (let slot = 0; slot < mso.value.cal.slots.length; slot++) {
-      console.log(slot, typeof mso.value.cal.slots[slot].notes)
+      // console.log(slot, typeof mso.value.cal.slots[slot].notes)
       if (typeof mso.value.cal.slots[slot].notes === 'undefined') {
         initializeDiracSlotNotes(slot);
       }
@@ -394,27 +394,7 @@ function sendCommands() {
   console.log('sendCommands', commandsToSend, commandsAwaitingResponse)
   if (commandsToSend.value.length > 0) {
     console.log('changemso', commandsToSend.value.length, commandsToSend.value[0]);
-    
-    let useDiracBypassHack = true;
-
-    if (commandsToSend.value.length == 2) {
-      for (const cmd of commandsToSend.value) {
-        if (cmd.path !== '/cal/diracactive') {
-          useDiracBypassHack = false;
-        }
-      }
-    } else {
-      useDiracBypassHack = false;
-    }
-
-    if (useDiracBypassHack) {
-      console.log('useDiracBypassHack');
-      for (const cmd of commandsToSend.value) { // hack for dirac bypass
-        changemso([cmd]);
-      }
-    } else {
-      changemso(commandsToSend.value);
-    }
+    changemso(commandsToSend.value);
     
     commandsToSend.value = [];
   }
@@ -523,9 +503,12 @@ const visibleDiracSlots = computed(() => {
   const filtered = {};
   if (mso.value.personalize?.diracSlots) {
     for (let slotIndex in mso.value.personalize?.diracSlots) {
-      filtered[slotIndex] = mso.value.cal?.slots[slotIndex];
+      if (slotIndex < mso?.value?.cal?.num_dirac_slots) {
+        filtered[slotIndex] = mso.value.cal?.slots[slotIndex];
+      }
     }
   }
+  console.log(filtered)
   return filtered;
 });
 
@@ -576,24 +559,56 @@ const allUpmixers = computed(() => {
   return filtered;
 });
 
+const diracFilterType = computed(() => {
+  return currentDiracSlot.value?.filterType;
+})
+
 const currentDiracSlot = computed(() => {
   return mso.value.cal?.slots[mso.value.cal?.currentdiracslot];
 });
 
 const diracBCEnabled = computed(() => {
-  return ['dirac live bass management', 'dirac live bass control', 'dirac active room treatment'].includes(mso.value.cal?.slots[mso.value.cal?.currentdiracslot].filterType?.toLowerCase());
+  return ['dirac live bass management', 'dirac live bass control', 'dirac active room treatment'].includes(diracFilterType.value?.toLowerCase());
+});
+
+const currentDiracFilterType = computed(() => {
+  const filterType = filterTypeToCssClass(currentDiracSlot?.value?.filterType, true).toUpperCase();
+  if (['RC', 'BC', 'ART'].includes(filterType)) {
+    return filterType;
+  }
+  return 'RC';
+});
+
+const delayPeqAllowed = computed(() => {
+  return mso?.value?.cal.post_delay_peq[currentDiracSlot?.value?.filterType];
+});
+
+const diracErrorState = computed(() => {
+
+  if (diracNoFilter.value || mso.value?.cal?.diracactive !== "on") {
+    return "INACTIVE";
+  }
+
+  if (mso.value?.status?.raw?.DiracError) {
+    return "RED";
+  }
+
+  if (mso.value?.status?.DiracState && mso.value?.cal?.diracactive && mso.value?.status?.DiracState !== mso.value?.cal?.diracactive) {
+    return "YELLOW";
+  }
+
+  return "GREEN";
 });
 
 const seatShakerChannel = computed(() => {
-
   if (mso.value?.speakers?.seatshaker?.present) {
     for (let i = 5; i >= 1; i--) {
       if (mso.value?.speakers?.groups[`sub${i}`]?.present) {
         return `sub${i+1}`;
       }
     }
+    return "sub1";
   }
-
   return null;
 });
 
@@ -620,6 +635,21 @@ const diracNoFilter = computed(() => {
 const activeChannels = computed(() => {
   return getActiveChannels(mso.value.speakers?.groups, seatShakerChannel.value);
 });
+
+const activeChannelsForTrim = computed(() => {
+  const out = [];
+  let hasSub = false;
+
+  for (const x of activeChannels.value) {
+    if (x.startsWith('sub')) {
+      hasSub = true;
+    } else {
+      out.push(x);
+    }
+  }
+  if (hasSub) out.push('lfe');
+  return out;
+})
 
 const diracMismatchedChannels = computed(() => {
   return activeChannels.value.filter(chan => 
@@ -747,6 +777,10 @@ function setInput(inpid) {
   }
 
   return false;
+}
+
+function toggleSeatShaker() {
+  return patchMso('replace', '/speakers/seatshaker/present', !mso.value?.speakers?.seatshaker?.present);
 }
 
 function setUpmix(upmixKey) {
@@ -962,6 +996,10 @@ function setUserTrim(channel, trim) {
   return patchMso( 'replace', `/cal/slots/${mso.value.cal.currentdiracslot}/channels/${channel}/trim`, parseFloat(trim));
 }
 
+function setChannelTrim(channel, trim) {
+  return patchMso( 'replace', `/channeltrim/channels/${channel}`, parseFloat(trim));
+}
+
 function initializeDiracSlotNotes(slotNumber) {
   return patchMso('add', `/cal/slots/${slotNumber}/notes`, '');
 }
@@ -1169,14 +1207,25 @@ function setPEQGain(channel, slot, gain) {
 }
 
 function setPEQQuality(channel, slot, q) {
-
-  let qValue = convertFloat(q, 1.0, .1, 10.0);
+  // const filterType = mso?.value?.peq.slots[slot].channels[channel].FilterType;
+  // const minQ = filterType === 3 ? 0 : 0.1;
+  const minQ = 0.1;
+  let qValue = convertFloat(q, 1.0, minQ, 10.0);
 
   return patchMso( 'replace', `/peq/slots/${slot}/channels/${channel}/Q`, qValue);
 }
 
 function setPEQFilterType(channel, slot, filterType) {
-  return patchMso( 'replace', `/peq/slots/${slot}/channels/${channel}/FilterType`, parseInt(filterType));
+  let setQ = true;
+  const currentQ = mso?.value?.peq.slots[slot].channels[channel].Q;
+  console.log("cq", currentQ)
+  if (filterType !== 3 && currentQ <= 0.1) {
+    setQ = setPEQQuality(channel, slot, 0.1);
+  }
+
+  const setFilterType = patchMso( 'replace', `/peq/slots/${slot}/channels/${channel}/FilterType`, parseInt(filterType));
+
+  return setQ && setFilterType;
 }
 
 function setPEQBypassOn(channel, slot) {
@@ -1185,14 +1234,17 @@ function setPEQBypassOn(channel, slot) {
     // save existing gain so it can be restored on bypass off
     const preBypassGain = patchMso('add', `/peq/slots/${slot}/channels/${channel}/preBypassGain`,
       mso.value.peq.slots[slot].channels[channel].gaindB);
+    const preBypassFilterType = patchMso('add', `/peq/slots/${slot}/channels/${channel}/preBypassFilterType`,
+      mso.value.peq.slots[slot].channels[channel].FilterType);
 
     // set bypass flag to true
     const bypass = patchMso('add', `/peq/slots/${slot}/channels/${channel}/bypass`, true);
 
     // apply 0 gain to achieve bypass
     const gain = setPEQGain(channel, slot, 0);
+    const filterType = setPEQFilterType(channel, slot, 0);
 
-    return preBypassGain && bypass && gain;
+    return preBypassGain && preBypassFilterType && bypass && gain && filterType;
   }
 
   return false;
@@ -1208,13 +1260,22 @@ function setPEQBypassOff(channel, slot) {
 
     const gain = setPEQGain(channel, slot, gainValue);
 
+    // restore filter type
+    let filterTypeValue = 0;
+    if (mso.value.peq.slots[slot].channels[channel].preBypassFilterType) {
+      filterTypeValue = mso.value.peq.slots[slot].channels[channel].preBypassFilterType;
+    }
+
+    const filterType = setPEQFilterType(channel, slot, filterTypeValue);
+
     // remove bypass flag
     const bypass = patchMso('remove', `/peq/slots/${slot}/channels/${channel}/bypass`);
 
     // remove saved gain
     const preBypassGain = patchMso('remove', `/peq/slots/${slot}/channels/${channel}/preBypassGain`);
+    const preBypassFilterType = patchMso('remove', `/peq/slots/${slot}/channels/${channel}/preBypassFilterType`);
 
-    return gain && bypass && preBypassGain;
+    return gain && filterType && bypass && preBypassGain && preBypassFilterType;
   }
 
   return false;
@@ -1316,7 +1377,6 @@ function setInputDelay(input, delayStr) {
 }
 
 function initializeInputDiracSlot(input) {
-  console.log('init dirac?')
   return patchMso('add', `/inputs/${input}/diracslot`, null);
 }
 
@@ -1688,7 +1748,7 @@ function setVuPeakMode() {
 }
 
 function clearVuPeakLevels() {
-  send('avcui "vud 0"');
+  send('avcui "vuc"');
   setVuPeakMode();
 }
 
@@ -1723,7 +1783,7 @@ export default function useMso() {
     setMaxOutputLevel, setDefaultMaxOutputLevel, 
     setHeadroom, setDefaultHeadroom, setZeroPoint, setDefaultZeroPoint,
     setLipsyncDelay, setDiracSlot,
-    setUserDelay, setUserTrim, toggleMuteChannel,
+    setUserDelay, setUserTrim, toggleMuteChannel, setChannelTrim,
     setMuteAllChannelsOff, setMuteAllChannelsOn, toggleAllMuteChannels,
     toggleSignalGenerator, setSignalGeneratorOff, setSignalGeneratorOn,
     setSignalGeneratorChannel, setSignalGeneratorChannel2, setSignalGeneratorSignalType,
@@ -1750,14 +1810,16 @@ export default function useMso() {
     toggleShortcut, toggleShowMode, toggleShowDiracSlot, toggleShowMacro,
     setMacroName, commandKeys, executeMacro,
     setTopLeftLabel, setTopRightLabel, toggleShowPowerDialogButton,
-    setWifiCountryCode,
+    setWifiCountryCode, diracFilterType,
     showCrossoverControls, currentDiracSlot, calToolConnected, diracFilterTransferInProgress, 
     currentLayoutHasMatchingDiracFilter, diracNoFilter, seatShakerChannel,
     activeChannels, diracMismatchedChannels, diracMismatchedChannelGroups,
+    activeChannelsForTrim,
     currentlyRecordingSlot, setRecordingStarted, setRecordingStopped,
     dismissAlert, resetDismissedAlerts,
     updateVu, clearVuPeakLevels, setVuPeakMode,
-    setSecondVolume,
+    setSecondVolume, toggleSeatShaker, diracErrorState,
+    delayPeqAllowed, currentDiracFilterType,
     displayVolume,
     state, loading,
     parseMSO, data, eventHash,

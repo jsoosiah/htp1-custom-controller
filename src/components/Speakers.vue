@@ -5,7 +5,7 @@
     </div>
     <div class="row">
       <dismissable-alert alert-key="speaker-bm">
-        If the current Dirac Filter Slot has Bass Control and Dirac is On, speaker size and crossover controls are unavailable and must be configured using the Dirac software. Speaker sizes and crossovers can be changed if Dirac is off or in bypass mode.
+        If the current Dirac Live Filter Slot has Bass Control and Dirac Live is On, speaker size and crossover controls are unavailable and must be configured using the Dirac Live software. Speaker sizes and crossovers can be changed if Dirac Live is off or in bypass mode.
       </dismissable-alert>
     </div>
     <div class="row">
@@ -14,13 +14,13 @@
         alert-key="speaker-filter-mismatch"
         class="alert-warning"
       >
-        The selected Dirac calibration does not match the current speaker configuration. Uncalibrated channels are highlighted.
+        The selected Dirac Live calibration does not match the current speaker configuration. Uncalibrated channels are highlighted.
       </dismissable-alert>
     </div>
     <div class="row alert-row">
       <div class="col-lg-auto">
         <div :class="{'mb-3': !isLg}">
-          <dirac-button-group :home-button="false" />
+          <dirac-button-group :home-button="false" tooltip-id="speakers" />
         </div>
       </div>
       <div class="col-lg">
@@ -29,7 +29,7 @@
             Current bass manager: <img
               class="bm-icon"
               :src="bmIconUrl"
-            > <span class="bm-status">{{ showCrossoverControls ? 'HTP-1' : 'Dirac' }}</span>
+            > <span class="bm-status">{{ showCrossoverControls ? 'HTP-1' : 'Dirac Live' }}</span>
           </h6>
         </div>
       </div>
@@ -46,7 +46,10 @@
         <speaker-group-crossover-controls :speaker-groups="speakerGroups" @show="toggleShowSpeakerLayoutDialog" />
       </div>
       <div class="col-lg-5">
-        <SpeakerDiagram :class="diagramSpeakerVisibility" />
+        <speaker-diagram :class="diagramSpeakerVisibility" />
+            <div v-if="mso.cal?.currentLayout" class="text-center">
+              Current Layout: <strong>{{ mso.cal?.currentLayout }}</strong>
+            </div>
       </div>
     </div>
     <div
@@ -102,6 +105,32 @@
         </div>
       </div>
     </div>
+    <div class="row mb-3" v-if="displaySeatShakerOptions">
+        <div class="custom-control custom-switch">
+          <input 
+            id="shaker-input" 
+            type="checkbox" 
+            class="custom-control-input" 
+            :checked="mso?.speakers?.seatshaker?.present" 
+            :disabled="!seatShakerValidation.enabled"
+            @click="toggleSeatShaker()"
+          >
+          <label
+            id="tooltip-container-seat-shaker"
+            v-tooltip="seatShakerValidation"
+            class="custom-control-label"
+            for="shaker-input"
+          >
+            Enable Seat Shaker
+
+            <font-awesome-icon 
+              v-if="!seatShakerValidation.enabled && seatShakerValidation.message"
+              :icon="['fas', 'question-circle']"
+            />
+          </label>
+        </div>
+        <small class="form-text text-muted">Enables seat shakers. The first unused subwoofer channel becomes the seat shaker channel. This channel will be excluded from Dirac Live calibrations and will not have any filter corrections while Dirac Live is enabled.</small>
+    </div>
     <div class="row speaker-map-container">
       <h5>Speaker Map <small class="text-muted">Click image to zoom</small></h5>
       <dismissable-alert alert-key="speaker-labels">
@@ -118,6 +147,7 @@
 
   import useMso from '@/use/useMso.js';
   import useResponsive from '@/use/useResponsive.js';
+  import { Tooltip } from '@/directives/Tooltip.js';
 
   import SpeakerGroupCrossoverControlsDialog from './SpeakerGroupCrossoverControlsDialog.vue';
   import SpeakerGroupCrossoverControls from './SpeakerGroupCrossoverControls.vue';
@@ -129,6 +159,9 @@
 
   export default {
     name: 'Speakers',
+    directives: {
+      Tooltip,
+    },
     components: {
       SpeakerDiagram,
       DiracButtonGroup,
@@ -140,7 +173,7 @@
     },
     setup() {
 
-      const { mso, showCrossoverControls, activeChannels, setBassLpf, toggleReinforceBass } = useMso();
+      const { mso, showCrossoverControls, activeChannels, seatShakerChannel, setBassLpf, toggleReinforceBass, toggleSeatShaker, } = useMso();
       const { isLg } = useResponsive();
       const showSpeakerLayoutDialog = ref(false);
 
@@ -186,6 +219,14 @@
         }
       ];
 
+      const displaySeatShakerOptions = computed(() => {
+        if (mso.value?.speakers?.seatshaker) {
+          return true;
+        }
+
+        return false;
+      });
+
       const diagramSpeakerVisibility = computed(() => {
         const hideSpeakers = {};
         for (const spk of [...mainSpeakers, ...surroundSpeakers, ...upperSpeakers]) {
@@ -200,6 +241,30 @@
           return new URL(`../assets/${showCrossoverControls.value?'monolith-logo-small.svg':'dirac3.png'}`, import.meta.url).href +'#svgView(preserveAspectRatio(xMidYMid))'
       });
 
+      const seatShakerValidation = computed(() => {
+        const result = {
+          enabled: true,
+          message: '',
+        };
+
+        let seatShakerCount = 0;
+        if (seatShakerChannel.value) {
+          seatShakerCount++;
+        }
+
+        if ((activeChannels.value.length + seatShakerCount) === 16) {
+          result.enabled = false;
+          result.message = "Seat shaker cannot be enabled when 16 speakers are enabled. Reduce the number of enabled speakers to enable seat shaker."
+        }
+
+        if (mso?.value?.speakers?.groups?.sub5?.present) {
+          result.enabled = false;
+          result.message = "Seat shaker cannot be enabled when 5 subwoofers are enabled. Disable subwoofer 5 to enable seat shaker."
+        }
+
+        return result;
+      });
+
       function toggleShowSpeakerLayoutDialog() {
         console.log('toggleShowSpeakerLayoutDialog');
         showSpeakerLayoutDialog.value = !showSpeakerLayoutDialog.value;
@@ -207,9 +272,10 @@
 
       return { 
         mso, showCrossoverControls, mainSpeakers, surroundSpeakers, upperSpeakers, 
-        setBassLpf, toggleReinforceBass,
+        setBassLpf, toggleReinforceBass, toggleSeatShaker,
         diagramSpeakerVisibility, speakerGroups, activeChannels, isLg, bmIconUrl,
-        showSpeakerLayoutDialog, toggleShowSpeakerLayoutDialog
+        showSpeakerLayoutDialog, toggleShowSpeakerLayoutDialog, displaySeatShakerOptions, seatShakerValidation,
+        seatShakerChannel
       };
     }
   }

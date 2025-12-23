@@ -3,6 +3,14 @@
   "appName": "htp1-custom-controller",
   "webDir": "dist",
   "server": {
-    "androidScheme": "https"
+    "androidScheme": "http",
+    "cleartext": true
+  },
+  "plugins": {
+    "EdgeToEdge": {
+      "backgroundColor": "#000000",
+      "navigationBarColor": "#000000",
+      "statusBarColor": "#000000"
+    }
   }
 }
