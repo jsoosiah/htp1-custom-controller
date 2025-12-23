@@ -1,12 +1,41 @@
 {
   "name": "htp1-custom-controller",
-  "version": "0.0.0",
+  "version": "2.0.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "dev:electron": "electron-vite dev --outDir=dist-electron",
+    "build:electron": "electron-vite build --outDir=dist-electron",
+    "dist:win": "npm run build:electron && electron-builder --win nsis"
+  },
+  "main": "dist-electron/main/index.mjs",
+  "build": {
+    "appId": "com.htp1.customcontroller",
+    "productName": "HTP-1 Custom UI",
+    "asar": true,
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist-electron/**",
+      "package.json"
+    ],
+    "win": {
+      "icon": "resources/htp1-remote-connected.ico",
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": true,
+      "allowToChangeInstallationDirectory": false,
+      "installerIcon": "resources/htp1-remote-connected.ico",
+      "uninstallerIcon": "resources/htp1-remote-connected.ico"
+    },
+    "extraResources": [
+      { "from": "resources", "to": "resources" }
+    ]
   },
   "dependencies": {
     "@capacitor/android": "^8.0.0",
@@ -21,20 +50,24 @@
     "axios": "^1.6.5",
     "bootstrap": "^4.6.0",
     "chart.js": "^2.9.4",
+    "electron-updater": "^6.6.2",
     "fast-json-patch": "^3.1.1",
     "hammerjs": "^2.0.8",
     "lodash-es": "^4.17.21",
     "progressbar.js": "^1.1.1",
     "simple-eta": "^3.0.2",
     "tippy.js": "^6.3.7",
-    "vue": "^3.3.11",
+    "vue": "^3.5.26",
     "vue-draggable-next": "^2.2.1",
-    "vue-router": "^4.2.5"
+    "vue-router": "^4.6.4"
   },
   "devDependencies": {
     "@capacitor/assets": "^3.0.5",
     "@capacitor/cli": "^8.0.0",
-    "@vitejs/plugin-vue": "^4.5.2",
-    "vite": "^5.0.10"
+    "@vitejs/plugin-vue": "^6.0.3",
+    "electron": "^39.2.7",
+    "electron-builder": "^26.0.12",
+    "electron-vite": "^5.0.0",
+    "vite": "^7.3.0"
   }
 }
