@@ -116,6 +116,9 @@
               Filter Type
             </th>
             <th class="text-right">
+              First Order
+            </th>
+            <th class="text-right">
               Bypass
             </th>
           </tr>
@@ -175,6 +178,7 @@
                 @change="({ type, target }) => { clearAllImports(); setPEQQuality(activeChannels[chanIndex], mso.peq?.currentpeqslot, target.value) }"
                 @focus="setSelectedChannel(chanIndex, true)"
                 :disabled="mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].bypass === true || !peqEnabled"
+                v-if="mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].Q !== 0"
               >
             </td>
             <td class="text-right">
@@ -194,6 +198,25 @@
                   {{ filterType.label }}
                 </option>
               </select>
+            </td>
+            <td class="text-right">
+
+              <div
+                v-if="mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].FilterType === 3"
+                class="custom-control custom-switch"
+              >
+                <input 
+                  :id="'order-'+chanIndex+'-'+mso.peq?.currentpeqslot" 
+                  type="checkbox" 
+                  class="custom-control-input" 
+                  :checked="mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].Q === 0" 
+                  @change="handleFirstOrder(activeChannels[chanIndex], mso.peq?.currentpeqslot)"
+                >
+                <label
+                  class="custom-control-label"
+                  :for="'order-'+chanIndex+'-'+mso.peq?.currentpeqslot"
+                />
+              </div>
             </td>
             <td class="text-right">
               <two-state-button
@@ -249,6 +272,9 @@
               Filter Type
             </th>
             <th class="text-right">
+              First Order
+            </th>
+            <th class="text-right">
               Bypass
             </th>
           </tr>
@@ -302,6 +328,7 @@
                 step=".1" 
                 @change="({ type, target }) => { handleQ(activeChannels[selectedChannel], index, target.value) }"
                 :disabled="slot.channels[activeChannels[selectedChannel]].bypass === true || !peqEnabled"
+                v-if="slot.channels[activeChannels[selectedChannel]].Q !== 0"
               >
             </td>
             <td class="text-right">
@@ -319,6 +346,24 @@
                   {{ filterType.label }}
                 </option>
               </select>
+            </td>
+            <td class="text-right">
+            <div
+              v-if="slot.channels[activeChannels[selectedChannel]].FilterType === 3"
+              class="custom-control custom-switch"
+            >
+              <input 
+                :id="'order-'+selectedChannel+'-'+index" 
+                type="checkbox" 
+                class="custom-control-input" 
+                :checked="slot.channels[activeChannels[selectedChannel]].Q === 0" 
+                @change="handleFirstOrder(activeChannels[selectedChannel], index)"
+              >
+              <label
+                class="custom-control-label"
+                :for="'order-'+selectedChannel+'-'+index"
+              />
+            </div>
             </td>
             <td class="text-right">
               <two-state-button
@@ -559,6 +604,7 @@
 
   import { ref, computed } from 'vue';
   import { compare } from 'fast-json-patch/index.mjs';
+  import { debounce } from 'lodash-es';
 
   import useLocalStorage from '@/use/useLocalStorage.js';
   import useImportExport from '@/use/useImportExport.js';
@@ -593,7 +639,7 @@
       const { eqGroupBy, setEqGroupBy, darkMode } = useLocalStorage();
       const { mso, setPEQSlot, resetPEQ, importMsoPatchList, activeChannels,
         setPEQCenterFrequency, setPEQQuality, setPEQFilterType, setPEQGain, togglePEQBypass,
-        delayPeqAllowed, diracFilterType, filterTypeToCssClass, diracErrorState } = useMso();
+        delayPeqAllowed, diracFilterType, filterTypeToCssClass, diracErrorState, diracBCArtFilterExists } = useMso();
       const { getActiveChannels, spkName } = useSpeakerGroups();
 
       const chartRef = ref(null);
@@ -606,15 +652,15 @@
       const targetCloneChannels = ref([]);
 
       const isPeqPre = computed(() => {
-        return mso?.value?.peq?.location === "pre" && diracErrorState.value === 'GREEN';
+        return mso?.value?.peq?.location === "pre" && diracBCArtFilterExists.value;
       });
 
       const peqEnabled = computed(() => {
-        return mso?.value?.peq.location === "pre" || delayPeqAllowed.value !== 'blocked' || diracErrorState.value !== 'GREEN';
+        return mso?.value?.peq.location === "pre" || delayPeqAllowed.value !== 'blocked' || !diracBCArtFilterExists.value;
       });
 
       const peqWarning = computed(() => {
-        return mso?.value?.peq.location !== "pre" && delayPeqAllowed.value !== 'OK' && diracErrorState.value === 'GREEN';
+        return mso?.value?.peq.location !== "pre" && delayPeqAllowed.value !== 'OK' && diracBCArtFilterExists.value;
       });
 
       // const activeChannels = computed(() => {
@@ -863,7 +909,14 @@
         }
       }
 
-      function handleQ(channel, slot, q) {
+      const handleQ = debounce(handleQInternal, 1000, {
+        maxWait: 1000,
+        leading: true,
+        trailing: true,
+      });
+
+      function handleQInternal(channel, slot, q) {
+        console.log("handleQInternal", channel, slot, q);
         clearAllImports(); 
         if (linkAllChannels.value) {
           for (const channame of activeChannels.value) {
@@ -871,6 +924,21 @@
           }
         } else {
           setPEQQuality(channel, slot, q);
+        }
+      }
+
+      function handleFirstOrder(channel, slot) {
+        console.log("handleFirstOrder", channel, slot)
+        clearAllImports();
+        const currentQ = mso?.value?.peq?.slots[slot].channels[channel].Q;
+        const targetQ = currentQ === 0 ? 0.1 : 0;
+
+        if (linkAllChannels.value) {
+          for (const channame of activeChannels.value) {
+            setPEQQuality(channame, slot, targetQ);
+          }
+        } else {
+          setPEQQuality(channel, slot, targetQ);
         }
       }
 
@@ -944,7 +1012,7 @@
         secretSettings, linkAllChannels, toggleLinkAllChannels,
         handleCenterFreq, handleGain, handleQ, handleFilterType, handleBypass, darkMode, chartRef,
         downloadSingleChannelTargetCurve, peqWarning, peqEnabled, warningMessagePeq, channelInvalid, bandInvalid,
-        diracErrorState, channelVisible, isPeqPre
+        diracErrorState, channelVisible, isPeqPre, handleFirstOrder
       };
     }
   }

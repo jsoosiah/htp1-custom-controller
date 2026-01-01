@@ -5,7 +5,6 @@ import { cloneDeep, debounce, get, isArray, isEqual, maxBy } from 'lodash-es';
 import useWebSocket from './useWebSocket.js';
 import useLocalStorage from './useLocalStorage.js';
 import useSpeakerGroups from './useSpeakerGroups.js';
-import { faL } from '@fortawesome/free-solid-svg-icons';
 
 // map upmix codes to labels,
 // used internally by visibleUpmixers
@@ -559,6 +558,19 @@ const allUpmixers = computed(() => {
   return filtered;
 });
 
+const diracBCArtFilterExists = computed(() => {
+  if (mso?.value?.cal?.slots) {
+    for (const slot of mso?.value?.cal?.slots) {
+      const filterType = filterTypeToCssClass(slot?.filterType, true).toUpperCase();
+      if (slot?.valid && ['RC', 'BC', 'ART'].includes(filterType) ) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+});
+
 const diracFilterType = computed(() => {
   return currentDiracSlot.value?.filterType;
 })
@@ -979,7 +991,7 @@ function setDefaultHeadroom() {
 }
 
 function setLipsyncDelay(lipsyncDelay) {
-  let delay = convertInt(lipsyncDelay, 0, 0, 340);
+  let delay = convertInt(lipsyncDelay, 0, 0, 500);
 
   return patchMso( 'replace', '/cal/lipsync', delay) && patchMso('replace', `/inputs/${mso.value?.input}/delay`, delay);
 }
@@ -1209,23 +1221,28 @@ function setPEQGain(channel, slot, gain) {
 function setPEQQuality(channel, slot, q) {
   // const filterType = mso?.value?.peq.slots[slot].channels[channel].FilterType;
   // const minQ = filterType === 3 ? 0 : 0.1;
-  const minQ = 0.1;
+  const minQ = 0.0;
   let qValue = convertFloat(q, 1.0, minQ, 10.0);
 
   return patchMso( 'replace', `/peq/slots/${slot}/channels/${channel}/Q`, qValue);
 }
 
 function setPEQFilterType(channel, slot, filterType) {
+  filterType = convertInt(filterType, 0, 0, 3);
   let setQ = true;
+  let setGain = true;
   const currentQ = mso?.value?.peq.slots[slot].channels[channel].Q;
-  console.log("cq", currentQ)
-  if (filterType !== 3 && currentQ <= 0.1) {
+  // console.log("cq", currentQ)
+  if (filterType === 3) {
+    setGain = setPEQGain(channel, slot, 0);
+  }
+  else if (currentQ <= 0.1) {
     setQ = setPEQQuality(channel, slot, 0.1);
   }
 
   const setFilterType = patchMso( 'replace', `/peq/slots/${slot}/channels/${channel}/FilterType`, parseInt(filterType));
 
-  return setQ && setFilterType;
+  return setQ && setGain && setFilterType;
 }
 
 function setPEQBypassOn(channel, slot) {
@@ -1819,7 +1836,7 @@ export default function useMso() {
     dismissAlert, resetDismissedAlerts,
     updateVu, clearVuPeakLevels, setVuPeakMode,
     setSecondVolume, toggleSeatShaker, diracErrorState,
-    delayPeqAllowed, currentDiracFilterType,
+    delayPeqAllowed, currentDiracFilterType, diracBCArtFilterExists,
     displayVolume,
     state, loading,
     parseMSO, data, eventHash,

@@ -98,7 +98,7 @@
               aria-label="Input Delay" 
               :value="inp.delay" 
               min="0"
-              max="200" 
+              max="500" 
               size="3" 
               @change="({ type, target }) => setInputDelay(inpcode, target.value)"
             >
@@ -315,7 +315,9 @@
           <label
             for="inputPassword3"
             class="col-form-label col-form-label-sm"
-          >Lipsync Delay</label>
+            v-tooltip="{'message': 'The maximum lipsync delay depends on the sample rate. For example, the maximum total delay (including speaker calibration and user delay, plus lipsync delay) for 192kHz audio is 340ms.'}" id="lipsync-delay"
+          >Lipsync Delay <font-awesome-icon :icon="['fas', 'question-circle']" />
+        </label>
           <div class="input-group input-group-sm numeric-input">
             <input
               type="number"
@@ -324,7 +326,7 @@
               aria-describedby="basic-addon2"
               :value="mso.cal?.lipsync"
               min="0"
-              max="340"
+              max="500"
               @change="({ type, target }) => setLipsyncDelay(target.value)"
             >
             <div class="input-group-append">
@@ -374,6 +376,7 @@
 
   import useMso from '@/use/useMso.js';
   import useInputs from '@/use/useInputs.js';
+  import { Tooltip } from '@/directives/Tooltip.js';
 
   import TwoStateButton from './buttons/TwoStateButton.vue';
   import DismissableAlert from './buttons/DismissableAlert.vue';
@@ -383,6 +386,9 @@
     components: {
       TwoStateButton,
       DismissableAlert,
+    },
+    directives: {
+      Tooltip,
     },
     setup() {
 

@@ -391,6 +391,20 @@
       </div>
     </div>
     <template v-if="showChannelMuteControls">
+
+      <h6>Advanced PEQ Options</h6>
+      <div class="row">
+        <div class="col-auto">
+          <button class="btn btn-sm btn-primary mb-3"
+            @click="toggleShowAdvancedPeqOptionsDialog">
+              Change PEQ Configuration
+          </button>
+          <div v-if="showAdvancedPeqOptionsDialog" class="connecting-overlay">
+            <advanced-peq-options-dialog @cancel="toggleShowAdvancedPeqOptionsDialog" />
+          </div>
+        </div>
+      </div>
+
       <h6>Bulk Edit</h6>
       <div class="row">
         <div class="col-auto">
@@ -619,7 +633,7 @@
         setMuteAllChannelsOff, setMuteAllChannelsOn, toggleAllMuteChannels,
         diracMismatchedChannels, setDiracSlotNotes, currentLayoutHasMatchingDiracFilter,
         filterTypeToCssClass, showCrossoverControls, seatShakerChannel, diracFilterType,
-        diracErrorState, delayPeqAllowed, diracNoFilter,
+        diracErrorState, delayPeqAllowed, diracNoFilter, diracBCArtFilterExists
       } = useMso();
       const { spkName } = useSpeakerGroups();
       const { showChannelMuteControls, toggleShowChannelMuteControls, darkMode } = useLocalStorage();
@@ -697,15 +711,15 @@
       }
 
       function enableUserDelayBulk() {
-        return (mso?.value?.cal?.diracactive === 'on' && diracErrorState.value !== 'GREEN') || mso?.value?.cal?.diracactive === 'off' || delayPeqAllowed.value !== 'blocked';
+        return !diracBCArtFilterExists.value || delayPeqAllowed.value !== 'blocked';
       }
 
       function enableUserTrimBulk() {
-        return diracErrorState.value !== 'GREEN' || trimAllowed.value !== 'blocked';
+        return !diracBCArtFilterExists.value || trimAllowed.value !== 'blocked';
       }
 
       function enableUserDelay(channel) {
-        if ((diracErrorState.value === 'GREEN' || mso?.value?.cal?.diracactive === 'bypass') && channel !== seatShakerChannel.value) {
+        if (diracBCArtFilterExists.value && channel !== seatShakerChannel.value) {
           return delayPeqAllowed.value !== 'blocked';
         }
 
@@ -713,14 +727,14 @@
       }
 
       function enableUserTrim(channel) {
-        if (diracErrorState.value === 'GREEN' && channel !== seatShakerChannel.value) {
+        if (diracBCArtFilterExists.value && channel !== seatShakerChannel.value) {
           return trimAllowed.value !== 'blocked';
         }
         return true;
       }
 
       function warnUserDelay(channel) {
-        if ((mso?.value?.cal?.diracactive === 'on' && diracErrorState.value !== 'GREEN') || mso?.value?.cal?.diracactive === 'off' || channel === seatShakerChannel.value) {
+        if (!diracBCArtFilterExists.value || channel === seatShakerChannel.value) {
           return false;
         }
 
@@ -728,7 +742,7 @@
       }
 
       function warnUserTrim(channel) {
-        if ((mso?.value?.cal?.diracactive === 'on' && diracErrorState.value !== 'GREEN') || mso?.value?.cal?.diracactive === 'off' || channel === seatShakerChannel.value) {
+        if (!diracBCArtFilterExists.value || channel === seatShakerChannel.value) {
           return false;
         }
 
@@ -762,7 +776,7 @@
         filterTypeToCssClass, showCrossoverControls, enableUserTrim, enableUserDelay, getTotalTrim, seatShakerChannel,
         diracFilterType, warningMessageTrim, warningMessageDelay, getCalTrim, getCalDelay, getTotalDelay,
         showAdvancedPeqOptionsDialog, toggleShowAdvancedPeqOptionsDialog, slotName, enableUserDelayBulk, enableUserTrimBulk,
-        channelInvalid, trimAllowed, delayPeqAllowed, warnUserDelay, warnUserTrim
+        channelInvalid, trimAllowed, delayPeqAllowed, warnUserDelay, warnUserTrim, diracBCArtFilterExists
       };
     }
   }

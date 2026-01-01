@@ -28,8 +28,21 @@
         <div class="modal-body text-left">
 
           <dismissable-alert alert-key="calibration-advanced-peq">
-            Normally PEQ operates on the signal before the Dirac module. This is "pre-Dirac." You can choose to run PEQ after (post-) Dirac. This is an advanced setting. It will be applied only to this preset if you choose to use it. Users that apply PEQ post-Dirac typically also choose to leave PEQ enabled while calibrating Dirac. Using this option requires you to manage your PEQ settings carefully. Be warned.
+            Two PEQ modes are available:
+            <ul>
+              <li>
+                PEQ "pre" Dirac Live. This is the default. PEQ operates on channel signal which are then fed into the Dirac Live filter. BEQ requires this setting. PEQ can be adjusted at any time. PEQ can operate only on the LFE signal, and not on the separate subwoofer speaker signals.
+              </li>
+              <li>
+                PEQ "post" Dirac Live. PEQ can be used to "pre-calibrate" before running the Dirac Live calibration. PEQ remains enabled while calibrating. "User" PEQ setting are then be frozen after the calibration. The PEQ module is located downstream of (post) the Dirac Live filters. This allows you to make Dirac Live's job a bit easier by addressing EQ issues before calibrating. But per Dirac Live rules, you cannot adjust the user delay, trim and PEQ after calibrating.
+              </li>
+            </ul>
+
           </dismissable-alert>
+
+          <div class="alert alert-warning small" role="alert">
+            PEQ Configuration locked down because a Dirac Live ART/BC filter is loaded. Delete all BC/ART filters to regain access.
+          </div>
 
           <table class="table table-sm table-striped table-resonsive select">
             <thead>
@@ -51,12 +64,13 @@
                       name="left-label" 
                       :checked="msoCopy?.peq?.location === 'pre' && msoCopy?.cal?.peq_during_cal === 'off'" 
                       @click="setPreDiracLocal()"
+                      :disabled="!peqEnabled"
                     >
                     <label 
                       class="form-check-label" 
                       for="pre-dirac"
                     >
-                      Apply PEQ pre-Dirac (default)
+                      Apply PEQ pre-Dirac Live (default)
                     </label>
                   </div>
                 </td>
@@ -72,33 +86,13 @@
                       name="left-label" 
                       :checked="msoCopy?.peq?.location === 'post' && msoCopy?.cal?.peq_during_cal === 'on'" 
                       @click="setPostDiracAndDuringCalLocal()"
+                      :disabled="!peqEnabled"
                     >
                     <label 
                       class="form-check-label" 
                       for="post-dirac-during"
                     >
-                      Apply PEQ post-Dirac and during calibration (advanced)
-                    </label>
-                  </div>
-                </td>
-              </tr>
-              <!-- Apply PEQ post-Dirac but not during calibration (wild) -->
-              <tr>
-                <td>
-                  <div class="form-check">
-                    <input 
-                      id="post-dirac-not-during" 
-                      class="form-check-input" 
-                      type="radio" 
-                      name="left-label" 
-                      :checked="msoCopy?.peq?.location === 'post' && msoCopy?.cal?.peq_during_cal === 'off'" 
-                      @click="setPostDiracAndNoCalLocal()"
-                    >
-                    <label 
-                      class="form-check-label" 
-                      for="post-dirac-not-during"
-                    >
-                      Apply PEQ post-Dirac but not during calibration (wild)
+                      Apply PEQ post-Dirac Live and during calibration (advanced)
                     </label>
                   </div>
                 </td>
@@ -170,11 +164,19 @@
       function handleCancel() {
         emit('cancel');
       }
-      const { mso, calToolConnected, diracFilterTransferInProgress, executeMacro } = useMso();
+      const { mso, calToolConnected, diracFilterTransferInProgress, executeMacro, diracBCArtFilterExists, delayPeqAllowed } = useMso();
       const { darkMode } = useLocalStorage();
 
       const msoCopy = ref(null);
       const forceShowNotice = ref(false);
+
+      const peqEnabled = computed(() => {
+        return mso?.value?.peq.location === "pre" || delayPeqAllowed.value !== 'blocked' || !diracBCArtFilterExists.value;
+      });
+
+      const peqWarning = computed(() => {
+        return mso?.value?.peq.location !== "pre" && delayPeqAllowed.value !== 'OK' && diracBCArtFilterExists.value;
+      });
 
       onMounted(() => {
         msoCopy.value = deepClone(mso.value);
@@ -249,7 +251,8 @@
       }
 
       return { 
-        msoCopy, darkMode, handleCancel, unsavedChanges, hasUnsavedChanges, setPreDiracLocal, setPostDiracAndDuringCalLocal, setPostDiracAndNoCalLocal, save, forceShowNotice
+        msoCopy, darkMode, handleCancel, unsavedChanges, hasUnsavedChanges, setPreDiracLocal, setPostDiracAndDuringCalLocal, setPostDiracAndNoCalLocal, save, forceShowNotice,
+        peqEnabled, peqWarning
       };
     }
   }
