@@ -1148,11 +1148,11 @@ function setTrebleCornerFrequency(freq) {
 }
 
 function setBassBoostCutLevel(level) {
-  return patchMso( 'replace', `/eq/bass/level`, parseFloat(level));
+  return patchMso( 'replace', `/eq/bass/level`, convertFloat(level, 0, -12, 12));
 }
 
 function setTrebleBoostCutLevel(level) {
-  return patchMso( 'replace', `/eq/treble/level`, parseFloat(level));
+  return patchMso( 'replace', `/eq/treble/level`, convertFloat(level, 0, -12, 12));
 }
 
 function setLoudnessCalibration(loudness) {

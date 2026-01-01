@@ -139,53 +139,23 @@
         </div>
       </div>
       <!-- Program Format Logo, Volumn Text, Listening Format Logo -->
-      <div class="row mt-2 justify-content-center">
-        <div
-          class="col-auto text-left"
-          :class="{'px-0': isMobileMode}"
-        >
-          <button 
-            v-press="handleVolumeDownPress" 
-            v-long-press="handleVolumeDownLongPress" 
-            v-long-press-up="handleVolumeLongPressUp"
-            type="button"
-            class="btn btn-dark vol-btn"
-          >
-            <font-awesome-icon
-              :class="{'text-danger':mso.muted}"
-              size="4x"
-              :icon="['fas', 'volume-down']"
-            />
-          </button>
-        </div>
-        <div
-          class="col-auto text-center"
-          :class="{'px-0': isMobileMode}"
-        >
-          <span 
-            v-press="handleMute" 
-            class="vol-display" 
-            :class="{'text-danger':mso.muted}"
-          >
-            {{ displayVolume }} dB
-          </span>
-        </div>
-        <div class="col-auto text-right pr-0">
-          <button 
-            v-press="handleVolumeUpPress" 
-            v-long-press="handleVolumeUpLongPress" 
-            v-long-press-up="handleVolumeLongPressUp"
-            type="button"
-            class="btn btn-dark vol-btn"
-          >
-            <font-awesome-icon
-              :class="{'text-danger':mso.muted}"
-              size="4x"
-              :icon="['fas', 'volume-up']"
-            />
-          </button>
-        </div>
-      </div>
+      <PlusMinusControl
+        :isMobileMode="isMobileMode"
+        displayFontSize="3rem"
+        :displayText="displayVolume + ' dB'"
+        :iconClass="{ 'text-danger': mso.muted }"
+        :displayTextClass="{ 'text-danger': mso.muted }"
+        iconSize="4x"
+        :downIcon="['fas', 'volume-down']"
+        :upIcon="['fas', 'volume-up']"
+        :onDownPress="handleVolumeDownPress"
+        :onDownLongPress="handleVolumeDownLongPress"
+        :onUpPress="handleVolumeUpPress"
+        :onUpLongPress="handleVolumeUpLongPress"
+        :onLongPressUp="handleVolumeLongPressUp"
+        :onDisplayPress="handleMute"
+      />
+
       <!-- Volume Buttons -->
       <div class="row mt-2">
         <div class="col-md-12 text-center" />
@@ -318,56 +288,55 @@
             />
 
             <!-- Lipsync Delay -->
-            <div
-              v-if="mso.personalize?.modes.lipsync"
-              class="row mt-2 justify-content-center"
-            >
-              <div
-                class="col-auto text-left"
-                :class="{'px-0': isMobileMode}"
-              >
-                <button 
-                  v-press="handleLipsyncDownPress" 
-                  v-long-press="handleLipsyncDownLongPress" 
-                  v-long-press-up="handleLipsyncLongPressUp"
-                  type="button"
-                  class="btn btn-dark lipsync-btn"
-                >
-                  <font-awesome-icon
-                    :class="{'text-danger':mso.muted}"
-                    size="2x"
-                    :icon="['fas', 'minus']"
-                  />
-                </button>
-              </div>
-              <div
-                class="col-auto text-center"
-                :class="{'px-0': isMobileMode}"
-              >
-                <span 
-                  v-press="handleMute" 
-                  class="lipsync-display" 
-                  :class="{'text-danger':mso.muted}"
-                >
-                  {{ mso.cal?.lipsync }} ms
-                </span>
-              </div>
-              <div class="col-auto text-right pr-0">
-                <button 
-                  v-press="handleLipsyncUpPress" 
-                  v-long-press="handleLipsyncUpLongPress" 
-                  v-long-press-up="handleLipsyncLongPressUp"
-                  type="button"
-                  class="btn btn-dark lipsync-btn"
-                >
-                  <font-awesome-icon
-                    :class="{'text-danger':mso.muted}"
-                    size="2x"
-                    :icon="['fas', 'plus']"
-                  />
-                </button>
-              </div>
-            </div>
+            <PlusMinusControl
+              v-if="!!mso.personalize?.modes.lipsync"
+              :isMobileMode="isMobileMode"
+              :displayText="`${mso.cal?.lipsync} ms`"
+              iconSize="2x"
+              :downIcon="['fas','minus']"
+              :upIcon="['fas','plus']"
+              :onDownPress="handleLipsyncDownPress"
+              :onDownLongPress="handleLipsyncDownLongPress"
+              :onUpPress="handleLipsyncUpPress"
+              :onUpLongPress="handleLipsyncUpLongPress"
+              :onLongPressUp="handleLipsyncLongPressUp"
+            />
+
+            <!-- Tone Control - Bass Boost -->
+            <PlusMinusControl
+              v-if="!!mso.personalize?.modes.tonebass"
+              :isMobileMode="isMobileMode"
+              :displayText="`Bass ${formatSigned(mso?.eq?.bass?.level)} dB`"
+              iconSize="2x"
+              :downIcon="['fas','minus']"
+              :upIcon="['fas','plus']"
+              :onDownPress="handleBassBoostDownPress"
+              :onDownLongPress="handleBassBoostDownLongPress"
+              :onUpPress="handleBassBoostUpPress"
+              :onUpLongPress="handleBassBoostUpLongPress"
+              :onLongPressUp="handleBassBoostLongPressUp"
+              :iconClass="{ 'text-danger': !mso?.eq?.tc }"
+              :displayTextClass="{ 'text-danger': !mso?.eq?.tc }"
+              :onDisplayPress="handleToneControl"
+            />
+
+            <!-- Tone Control - Treble Boost -->
+            <PlusMinusControl
+              v-if="!!mso.personalize?.modes.tonetreble"
+              :isMobileMode="isMobileMode"
+              :displayText="`Treble ${formatSigned(mso?.eq?.treble?.level)} dB`"
+              iconSize="2x"
+              :downIcon="['fas','minus']"
+              :upIcon="['fas','plus']"
+              :onDownPress="handleTrebleBoostDownPress"
+              :onDownLongPress="handleTrebleBoostDownLongPress"
+              :onUpPress="handleTrebleBoostUpPress"
+              :onUpLongPress="handleTrebleBoostUpLongPress"
+              :onLongPressUp="handleTrebleBoostLongPressUp"
+              :iconClass="{ 'text-danger': !mso?.eq?.tc }"
+              :displayTextClass="{ 'text-danger': !mso?.eq?.tc }"
+              :onDisplayPress="handleToneControl"
+            />
           </div>
         </div>
       </div>
@@ -458,6 +427,7 @@ import TwoStateButton from './buttons/TwoStateButton.vue';
 import ThreeStateButton from './buttons/ThreeStateButton.vue';
 import DiracButton from './buttons/DiracButton.vue';
 import DialogEnhanceButton from './buttons/DialogEnhanceButton.vue';
+import PlusMinusControl from './buttons/PlusMinusControl.vue';
 
 import AuroCodecIcon from './icons/streamformat/AuroCodecIcon.vue';
 import AuromaticCroppedIcon from './icons/streamformat/AuromaticCroppedIcon.vue';
@@ -493,6 +463,7 @@ export default {
     PcmIcon,
     StereoIcon,
     MonoIcon,
+    PlusMinusControl,
   },
   directives: {
     LongPress,
@@ -511,7 +482,7 @@ export default {
       setNightOff, setNightAuto, setNightOn, setLoudnessOff, setLoudnessOn, setDiracSlot,
       setToneControlOff, setToneControlOn, setGlobalPEQOff, setGlobalPEQOn, setDtsDialogEnh,
       currentlyRecordingSlot, visibleRemoteMacros, visibleExtraMacros, executeMacro, toggleUpmixWideSynth,
-      displayVolume, setLipsyncDelay
+      displayVolume, setLipsyncDelay, setBassBoostCutLevel, setTrebleBoostCutLevel
     } = useMso();
 
     onMounted(() => {
@@ -546,10 +517,19 @@ export default {
     let decrementVolumeInterval;
     let incrementLipsyncInterval;
     let decrementLipsyncInterval;
+    let incrementBassBoostInterval;
+    let decrementBassBoostInterval;
+    let incrementTrebleBoostInterval;
+    let decrementTrebleBoostInterval;
 
     function handleMute(e) {
       e.preventDefault();
       toggleMute();
+    }
+
+    function handleToneControl(e) {
+      e.preventDefault();
+      toggleToneControl();
     }
 
     function incrementVolume() {
@@ -632,6 +612,75 @@ export default {
       clearInterval(incrementLipsyncInterval);
     }
 
+    // bass boost
+    function incrementBassBoost() {
+      setBassBoostCutLevel(mso.value.eq.bass.level + 1);
+    }
+
+    function decrementBassBoost() {
+      setBassBoostCutLevel(mso.value.eq.bass.level - 1);
+    }
+
+    function handleBassBoostDownPress() {
+      decrementBassBoost();
+    }
+
+    function handleBassBoostUpPress() {
+      incrementBassBoost();
+    }
+
+    function handleBassBoostDownLongPress() {
+      clearInterval(decrementBassBoostInterval);
+      clearInterval(incrementBassBoostInterval);
+      decrementBassBoostInterval = setInterval(decrementBassBoost, LONG_PRESS_VOLUME_ADJUST_SPEED);
+    } 
+
+    function handleBassBoostUpLongPress () {
+      clearInterval(decrementBassBoostInterval);
+      clearInterval(incrementBassBoostInterval);
+      incrementBassBoostInterval = setInterval(incrementBassBoost, LONG_PRESS_VOLUME_ADJUST_SPEED);
+    }
+
+    function handleBassBoostLongPressUp() {
+      clearInterval(decrementBassBoostInterval);
+      clearInterval(incrementBassBoostInterval);
+    }
+
+    // treble boost
+    function incrementTrebleBoost() {
+      setTrebleBoostCutLevel(mso.value.eq.treble.level + 1);
+    }
+
+    function decrementTrebleBoost() {
+      setTrebleBoostCutLevel(mso.value.eq.treble.level - 1);
+    }
+
+    function handleTrebleBoostDownPress() {
+      decrementTrebleBoost();
+    }
+
+    function handleTrebleBoostUpPress() {
+      incrementTrebleBoost();
+    }
+
+    function handleTrebleBoostDownLongPress() {
+      clearInterval(decrementTrebleBoostInterval);
+      clearInterval(incrementTrebleBoostInterval);
+      decrementTrebleBoostInterval = setInterval(decrementTrebleBoost, LONG_PRESS_VOLUME_ADJUST_SPEED);
+    } 
+
+    function handleTrebleBoostUpLongPress () {
+      clearInterval(decrementTrebleBoostInterval);
+      clearInterval(incrementTrebleBoostInterval);
+      incrementTrebleBoostInterval = setInterval(incrementTrebleBoost, LONG_PRESS_VOLUME_ADJUST_SPEED);
+    }
+
+    function handleTrebleBoostLongPressUp() {
+      clearInterval(decrementTrebleBoostInterval);
+      clearInterval(incrementTrebleBoostInterval);
+    }
+
+
     function handleInputClicked(inp) {
       setInput(inp);
       inputRecentlyInteracted.value = true;
@@ -679,6 +728,12 @@ export default {
       return inp.startsWith('h') && mso.value.videostat?.VideoResolution === '-----';
     }
 
+    function formatSigned(n) {
+      if (n === null || n === undefined || Number.isNaN(Number(n))) return '';
+      const x = Number(n);
+      return x > 0 ? `+${x}` : `${x}`;
+    }
+
     return { 
       mso, setVolume, toggleMute,
       loading, calToolConnected, state,
@@ -695,7 +750,10 @@ export default {
       inputLoaded, inputSelectedAndLoading,
       experimental, isMobileMode, toggleUpmixWideSynth,
       displayVolume,
-      handleLipsyncDownPress, handleLipsyncUpPress, handleLipsyncDownLongPress, handleLipsyncUpLongPress, handleLipsyncLongPressUp
+      handleLipsyncDownPress, handleLipsyncUpPress, handleLipsyncDownLongPress, handleLipsyncUpLongPress, handleLipsyncLongPressUp,
+      handleBassBoostDownPress, handleBassBoostUpPress, handleBassBoostDownLongPress, handleBassBoostUpLongPress, handleBassBoostLongPressUp,
+      handleTrebleBoostDownPress, handleTrebleBoostUpPress, handleTrebleBoostDownLongPress, handleTrebleBoostUpLongPress, handleTrebleBoostLongPressUp,
+      handleToneControl, formatSigned
     };
   },
 }

@@ -369,6 +369,8 @@
         {code: 'dirac', label: 'Dirac Live'},
         {code: 'peq', label: 'PEQ'},
         {code: 'tone', label: 'Tone Control'},
+        {code: 'tonebass', label: 'Tone Control - Bass'},
+        {code: 'tonetreble', label: 'Tone Control - Treble'},
         {code: 'loudness', label: 'Loudness'},
         {code: 'dialogenh', label: 'Dialog Enhance'},
         {code: 'night', label: 'Night'},
