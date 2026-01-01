@@ -368,7 +368,6 @@
                 :state-on="currentDiracSlot?.channels[channame].mute === true" 
                 :mute-button="true"
                 @btn-click="toggleMuteChannel(channame)"
-                :disabled="!enableUserTrimBulk()"
               />
             </td>
           </tr>
