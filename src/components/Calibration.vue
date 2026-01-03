@@ -568,7 +568,6 @@
           <button 
             class="btn btn-sm btn-danger mb-3"
             @click="setMuteAllChannelsOn()"
-            :disabled="!enableUserTrimBulk()"
           >
             Mute All Speakers
           </button>
@@ -577,7 +576,6 @@
           <button 
             class="btn btn-sm btn-primary mb-3"
             @click="setMuteAllChannelsOff()"
-            :disabled="!enableUserTrimBulk()"
           >
             Unmute All Speakers
           </button>
@@ -586,7 +584,6 @@
           <button 
             class="btn btn-sm btn-info mb-3"
             @click="toggleAllMuteChannels()"
-            :disabled="!enableUserTrimBulk()"
           >
             Invert Mute on All Speakers
           </button>

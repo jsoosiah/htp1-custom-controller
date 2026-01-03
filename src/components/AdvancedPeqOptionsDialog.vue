@@ -31,10 +31,10 @@
             Two PEQ modes are available:
             <ul>
               <li>
-                PEQ "pre" Dirac Live. This is the default. PEQ operates on channel signal which are then fed into the Dirac Live filter. BEQ requires this setting. PEQ can be adjusted at any time. PEQ can operate only on the LFE signal, and not on the separate subwoofer speaker signals.
+                PEQ "pre" Dirac Live. This is the default. PEQ operates on channel signal which are then fed into the Dirac Live filter. BEQ requires this setting. PEQ can be adjusted at any time. PEQ will operate on the LFE signal, and not on the separate subwoofer speaker signals.
               </li>
               <li>
-                PEQ "post" Dirac Live. PEQ can be used to "pre-calibrate" before running the Dirac Live calibration. PEQ remains enabled while calibrating. "User" PEQ setting are then be frozen after the calibration. The PEQ module is located downstream of (post) the Dirac Live filters. This allows you to make Dirac Live's job a bit easier by addressing EQ issues before calibrating. But per Dirac Live rules, you cannot adjust the user delay, trim and PEQ after calibrating.
+                PEQ "post" Dirac Live. PEQ can be used to "pre-calibrate" before running the Dirac Live calibration. PEQ remains enabled while calibrating. "User" PEQ setting will then be frozen after the calibration. The PEQ module is located downstream of (post) the Dirac Live filters. This allows you to make Dirac Live's job a bit easier by addressing EQ issues before calibrating. But per Dirac Live rules, you cannot adjust the user delay, trim and PEQ after calibrating.
               </li>
             </ul>
 
@@ -64,7 +64,7 @@
                       name="left-label" 
                       :checked="msoCopy?.peq?.location === 'pre' && msoCopy?.cal?.peq_during_cal === 'off'" 
                       @click="setPreDiracLocal()"
-                      :disabled="!peqEnabled"
+                      :disabled="!peqSwitchEnabled"
                     >
                     <label 
                       class="form-check-label" 
@@ -86,7 +86,7 @@
                       name="left-label" 
                       :checked="msoCopy?.peq?.location === 'post' && msoCopy?.cal?.peq_during_cal === 'on'" 
                       @click="setPostDiracAndDuringCalLocal()"
-                      :disabled="!peqEnabled"
+                      :disabled="!peqSwitchEnabled"
                     >
                     <label 
                       class="form-check-label" 
@@ -99,17 +99,6 @@
               </tr>
             </tbody>
           </table>
-
-          <div
-            v-if="forceShowNotice || hasUnsavedChanges"
-            class="alert alert-info small"
-            role="alert"
-          >
-            This setting will be applied to your next Dirac calibration. The details of your PEQ settings are not remembered with the calibration.
-          </div>
-
-          
-
         </div>
 
         <div class="modal-footer" :class="{'text-white': darkMode}">
@@ -170,12 +159,12 @@
       const msoCopy = ref(null);
       const forceShowNotice = ref(false);
 
-      const peqEnabled = computed(() => {
-        return mso?.value?.peq.location === "pre" || delayPeqAllowed.value !== 'blocked' || !diracBCArtFilterExists.value;
+      const peqSwitchEnabled = computed(() => {
+        return delayPeqAllowed.value !== 'blocked' || !diracBCArtFilterExists.value;
       });
 
-      const peqWarning = computed(() => {
-        return mso?.value?.peq.location !== "pre" && delayPeqAllowed.value !== 'OK' && diracBCArtFilterExists.value;
+      const peqSwitchWarning = computed(() => {
+        return delayPeqAllowed.value !== 'OK' && diracBCArtFilterExists.value;
       });
 
       onMounted(() => {
@@ -252,7 +241,7 @@
 
       return { 
         msoCopy, darkMode, handleCancel, unsavedChanges, hasUnsavedChanges, setPreDiracLocal, setPostDiracAndDuringCalLocal, setPostDiracAndNoCalLocal, save, forceShowNotice,
-        peqEnabled, peqWarning
+        peqSwitchEnabled, peqSwitchWarning
       };
     }
   }

@@ -1249,6 +1249,8 @@ function setPEQBypassOn(channel, slot) {
   console.log(mso.value.peq, channel, slot);
   if (mso.value.peq.slots[slot].channels[channel].bypass === undefined) {
     // save existing gain so it can be restored on bypass off
+    const preBypassQ = patchMso('add', `/peq/slots/${slot}/channels/${channel}/preBypassQ`,
+      mso.value.peq.slots[slot].channels[channel].Q);
     const preBypassGain = patchMso('add', `/peq/slots/${slot}/channels/${channel}/preBypassGain`,
       mso.value.peq.slots[slot].channels[channel].gaindB);
     const preBypassFilterType = patchMso('add', `/peq/slots/${slot}/channels/${channel}/preBypassFilterType`,
@@ -1261,7 +1263,7 @@ function setPEQBypassOn(channel, slot) {
     const gain = setPEQGain(channel, slot, 0);
     const filterType = setPEQFilterType(channel, slot, 0);
 
-    return preBypassGain && preBypassFilterType && bypass && gain && filterType;
+    return preBypassGain && preBypassFilterType && preBypassQ && bypass && gain && filterType;
   }
 
   return false;
@@ -1271,15 +1273,22 @@ function setPEQBypassOff(channel, slot) {
   if (mso.value.peq.slots[slot].channels[channel].bypass === true) {
     // restore gain
     let gainValue = 0;
-    if (mso.value.peq.slots[slot].channels[channel].preBypassGain) {
+    if (typeof mso.value.peq.slots[slot].channels[channel].preBypassGain !== 'undefined') {
       gainValue = mso.value.peq.slots[slot].channels[channel].preBypassGain;
     } 
 
     const gain = setPEQGain(channel, slot, gainValue);
 
+    // restore q
+    let qValue = 0.1;
+    if (typeof mso.value.peq.slots[slot].channels[channel].preBypassQ !== 'undefined') {
+      qValue = mso.value.peq.slots[slot].channels[channel].preBypassQ;
+    }
+    const q = setPEQQuality(channel, slot, qValue);
+
     // restore filter type
     let filterTypeValue = 0;
-    if (mso.value.peq.slots[slot].channels[channel].preBypassFilterType) {
+    if (typeof mso.value.peq.slots[slot].channels[channel].preBypassFilterType !== 'undefined') {
       filterTypeValue = mso.value.peq.slots[slot].channels[channel].preBypassFilterType;
     }
 
@@ -1292,7 +1301,7 @@ function setPEQBypassOff(channel, slot) {
     const preBypassGain = patchMso('remove', `/peq/slots/${slot}/channels/${channel}/preBypassGain`);
     const preBypassFilterType = patchMso('remove', `/peq/slots/${slot}/channels/${channel}/preBypassFilterType`);
 
-    return gain && filterType && bypass && preBypassGain && preBypassFilterType;
+    return gain && q && filterType && bypass && preBypassGain && preBypassFilterType;
   }
 
   return false;

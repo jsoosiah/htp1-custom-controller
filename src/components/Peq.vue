@@ -1,4 +1,4 @@
-<template>
+<template>{{ showAdvancedPeqOptionsDialog }}
   <div class="transition-container">
     <h5>Parametric Equalization Filters <small class="text-muted">up to 16 bands are available</small></h5>
     <dismissable-alert alert-key="peq-bypass">
@@ -116,9 +116,6 @@
               Filter Type
             </th>
             <th class="text-right">
-              First Order
-            </th>
-            <th class="text-right">
               Bypass
             </th>
           </tr>
@@ -178,13 +175,13 @@
                 @change="({ type, target }) => { clearAllImports(); setPEQQuality(activeChannels[chanIndex], mso.peq?.currentpeqslot, target.value) }"
                 @focus="setSelectedChannel(chanIndex, true)"
                 :disabled="mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].bypass === true || !peqEnabled"
-                v-if="mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].Q !== 0"
+                v-if="!mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].bypass && mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].Q !== 0 || mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].bypass && mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].preBypassQ !== 0"
               >
             </td>
             <td class="text-right">
               <select 
                 class="form-control form-control-sm" 
-                @change="({ type, target }) => { clearAllImports(); setPEQFilterType(activeChannels[chanIndex], mso.peq?.currentpeqslot, target.value) }"
+                @change="({ type, target }) => { handleFilterType(activeChannels[chanIndex], mso.peq?.currentpeqslot, target.value) }"
                 @focus="setSelectedChannel(chanIndex, true)"
                 :disabled="mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].bypass === true || !peqEnabled"
               >
@@ -193,30 +190,11 @@
                   :key="filterType.value"
                   :value="filterType.value"
                   
-                  :selected="mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].bypass === true ? mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].preBypassFilterType : mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].FilterType"
+                  :selected="filterType.value === (mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].bypass === true ? getFilterTypeFloat(mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].preBypassQ, mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].preBypassFilterType) :  getFilterTypeFloat(mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].Q, mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].FilterType))"
                 >
-                  {{ filterType.label }}
+                  {{ filterType.label }} 
                 </option>
               </select>
-            </td>
-            <td class="text-right">
-
-              <div
-                v-if="mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].FilterType === 3"
-                class="custom-control custom-switch"
-              >
-                <input 
-                  :id="'order-'+chanIndex+'-'+mso.peq?.currentpeqslot" 
-                  type="checkbox" 
-                  class="custom-control-input" 
-                  :checked="mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].Q === 0" 
-                  @change="handleFirstOrder(activeChannels[chanIndex], mso.peq?.currentpeqslot)"
-                >
-                <label
-                  class="custom-control-label"
-                  :for="'order-'+chanIndex+'-'+mso.peq?.currentpeqslot"
-                />
-              </div>
             </td>
             <td class="text-right">
               <two-state-button
@@ -272,9 +250,6 @@
               Filter Type
             </th>
             <th class="text-right">
-              First Order
-            </th>
-            <th class="text-right">
               Bypass
             </th>
           </tr>
@@ -328,7 +303,7 @@
                 step=".1" 
                 @change="({ type, target }) => { handleQ(activeChannels[selectedChannel], index, target.value) }"
                 :disabled="slot.channels[activeChannels[selectedChannel]].bypass === true || !peqEnabled"
-                v-if="slot.channels[activeChannels[selectedChannel]].Q !== 0"
+                v-if="!slot.channels[activeChannels[selectedChannel]].bypass && slot.channels[activeChannels[selectedChannel]].Q !== 0 || slot.channels[activeChannels[selectedChannel]].bypass && slot.channels[activeChannels[selectedChannel]].preBypassQ !== 0"
               >
             </td>
             <td class="text-right">
@@ -341,29 +316,11 @@
                   v-for="filterType in filterTypes" 
                   :key="filterType.value"
                   :value="filterType.value"
-                  :selected="filterType.value === (slot.channels[activeChannels[selectedChannel]].bypass === true ? slot.channels[activeChannels[selectedChannel]].preBypassFilterType : slot.channels[activeChannels[selectedChannel]].FilterType)"
+                  :selected="filterType.value === (slot.channels[activeChannels[selectedChannel]].bypass === true ? getFilterTypeFloat(slot.channels[activeChannels[selectedChannel]].preBypassQ, slot.channels[activeChannels[selectedChannel]].preBypassFilterType) :  getFilterTypeFloat(slot.channels[activeChannels[selectedChannel]].Q, slot.channels[activeChannels[selectedChannel]].FilterType))"
                 >
                   {{ filterType.label }}
                 </option>
               </select>
-            </td>
-            <td class="text-right">
-            <div
-              v-if="slot.channels[activeChannels[selectedChannel]].FilterType === 3"
-              class="custom-control custom-switch"
-            >
-              <input 
-                :id="'order-'+selectedChannel+'-'+index" 
-                type="checkbox" 
-                class="custom-control-input" 
-                :checked="slot.channels[activeChannels[selectedChannel]].Q === 0" 
-                @change="handleFirstOrder(activeChannels[selectedChannel], index)"
-              >
-              <label
-                class="custom-control-label"
-                :for="'order-'+selectedChannel+'-'+index"
-              />
-            </div>
             </td>
             <td class="text-right">
               <two-state-button
@@ -402,6 +359,19 @@
         </div>
       </div>
     </template>
+
+    <h6>Advanced PEQ Options</h6>
+    <div class="row">
+      <div class="col-auto">
+        <button class="btn btn-sm btn-primary mb-3"
+          @click="toggleShowAdvancedPeqOptionsDialog">
+            Change PEQ Configuration
+        </button>
+        <div v-if="showAdvancedPeqOptionsDialog" class="connecting-overlay">
+          <advanced-peq-options-dialog @cancel="toggleShowAdvancedPeqOptionsDialog" />
+        </div>
+      </div>
+    </div>
 
     <!-- export operations -->
     <template v-if="eqGroupBy === 1">
@@ -615,6 +585,7 @@
   import MsoImporter from './MsoImporter.vue';
   import PeqChart from './PeqChart.vue';
   import DismissableAlert from './buttons/DismissableAlert.vue';
+  import AdvancedPeqOptionsDialog from './AdvancedPeqOptionsDialog.vue';
 
   import { Tooltip } from '@/directives/Tooltip.js';
 
@@ -624,7 +595,8 @@
       TwoStateButton,
       MsoImporter,
       PeqChart,
-      DismissableAlert
+      DismissableAlert,
+      AdvancedPeqOptionsDialog,
     },
     directives: {
       Tooltip,
@@ -650,6 +622,8 @@
       const importFullRef = ref(null);
 
       const targetCloneChannels = ref([]);
+
+      const showAdvancedPeqOptionsDialog = ref(false);
 
       const isPeqPre = computed(() => {
         return mso?.value?.peq?.location === "pre" && diracBCArtFilterExists.value;
@@ -858,7 +832,8 @@
         { label: 'PEQ', value: 0 },
         { label: 'Low Shelf', value: 1 },
         { label: 'High Shelf', value: 2 },
-        { label: 'All Pass', value: 3 }
+        { label: 'All Pass 1st Order', value: 3.1 },
+        { label: 'All Pass 2nd Order', value: 3.2 }
       ];
 
       function toListSentence(arr) {
@@ -927,30 +902,44 @@
         }
       }
 
-      function handleFirstOrder(channel, slot) {
-        console.log("handleFirstOrder", channel, slot)
-        clearAllImports();
-        const currentQ = mso?.value?.peq?.slots[slot].channels[channel].Q;
-        const targetQ = currentQ === 0 ? 0.1 : 0;
-
-        if (linkAllChannels.value) {
-          for (const channame of activeChannels.value) {
-            setPEQQuality(channame, slot, targetQ);
-          }
-        } else {
-          setPEQQuality(channel, slot, targetQ);
-        }
-      }
-
-      function handleFilterType(channel, slot, filterType) {
+      function handleFilterType(channel, slot, filterTypeStr) {
         clearAllImports(); 
+
+        const filterTypeFloat = parseFloat(filterTypeStr);
+        const filterType = parseInt(filterTypeFloat);
+
         if (linkAllChannels.value) {
           for (const channame of activeChannels.value) {
             setPEQFilterType(channame, slot, filterType);
+            if (filterTypeFloat === 3.1) {
+              setPEQQuality(channame, slot, 0);
+            }
+            else if (filterTypeFloat === 3.2) {
+              setPEQQuality(channame, slot, 1.0); // TODO
+            }
           }
         } else {
           setPEQFilterType(channel, slot, filterType);
+          if (filterTypeFloat === 3.1) {
+            setPEQQuality(channel, slot, 0);
+          }
+          else if (filterTypeFloat === 3.2) {
+            setPEQQuality(channel, slot, 1.0); // TODO
+          }
         }
+      }
+
+      function getFilterTypeFloat(q, filterType) {
+        console.log("getFilterTypeFloat", q, filterType);
+        if (filterType === 3) {
+          if (q === 0) {
+            return 3.1;
+          }
+
+          return 3.2;
+        }
+
+        return filterType;
       }
 
       function handleBypass(channel, slot) {
@@ -999,6 +988,10 @@
         return spkName(spkId);
       }
 
+      function toggleShowAdvancedPeqOptionsDialog() {
+        showAdvancedPeqOptionsDialog.value = !showAdvancedPeqOptionsDialog.value;
+      }
+
       return {
         ...useMso(), activeChannels, spkNamePre, selectedChannel, setSelectedChannel, selectableChannels,
         bandHasModifications, channelHasModifications, filterTypes, tabLoaded, setSelectedBand, 
@@ -1012,7 +1005,8 @@
         secretSettings, linkAllChannels, toggleLinkAllChannels,
         handleCenterFreq, handleGain, handleQ, handleFilterType, handleBypass, darkMode, chartRef,
         downloadSingleChannelTargetCurve, peqWarning, peqEnabled, warningMessagePeq, channelInvalid, bandInvalid,
-        diracErrorState, channelVisible, isPeqPre, handleFirstOrder
+        diracErrorState, channelVisible, isPeqPre, getFilterTypeFloat,
+        toggleShowAdvancedPeqOptionsDialog, showAdvancedPeqOptionsDialog
       };
     }
   }
@@ -1057,6 +1051,20 @@
 
   .col-lg {
     padding-left: 0;
+  }
+
+  .modal {
+    display: block;
+  }
+
+  .connecting-overlay {
+    width:200%;
+    height:200%;
+    background: rgba(0,0,0,0.5);
+    z-index: 9999;
+    position:fixed;
+    top:0;
+    left:0;
   }
 
 </style>
