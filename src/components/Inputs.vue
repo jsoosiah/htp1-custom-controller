@@ -98,7 +98,7 @@
               aria-label="Input Delay" 
               :value="inp.delay" 
               min="0"
-              max="500" 
+              max="340" 
               size="3" 
               @change="({ type, target }) => setInputDelay(inpcode, target.value)"
             >
@@ -326,7 +326,7 @@
               aria-describedby="basic-addon2"
               :value="mso.cal?.lipsync"
               min="0"
-              max="500"
+              max="340"
               @change="({ type, target }) => setLipsyncDelay(target.value)"
             >
             <div class="input-group-append">

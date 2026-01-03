@@ -1,6 +1,6 @@
-<template>{{ showAdvancedPeqOptionsDialog }}
+<template>
   <div class="transition-container">
-    <h5>Parametric Equalization Filters <small class="text-muted">up to 16 bands are available</small></h5>
+    <h5>Parametric Equalization Filters <small class="text-muted">up to 16 bands are available, PEQ {{ mso.peq?.location }}</small></h5>
     <dismissable-alert alert-key="peq-bypass">
       Note that a gain of 0dB is equivalent to bypassing the filter; * denotes channels or bands that have been modified and have active PEQ filters.
     </dismissable-alert>
@@ -914,7 +914,7 @@
             if (filterTypeFloat === 3.1) {
               setPEQQuality(channame, slot, 0);
             }
-            else if (filterTypeFloat === 3.2) {
+            else if (filterTypeFloat === 3.2 && mso?.value?.peq?.slots[slot].channels[channel].Q === 0) {
               setPEQQuality(channame, slot, 1.0); // TODO
             }
           }
@@ -923,7 +923,7 @@
           if (filterTypeFloat === 3.1) {
             setPEQQuality(channel, slot, 0);
           }
-          else if (filterTypeFloat === 3.2) {
+          else if (filterTypeFloat === 3.2 && mso?.value?.peq?.slots[slot].channels[channel].Q === 0) {
             setPEQQuality(channel, slot, 1.0); // TODO
           }
         }

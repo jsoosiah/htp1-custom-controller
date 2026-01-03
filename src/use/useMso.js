@@ -991,9 +991,9 @@ function setDefaultHeadroom() {
 }
 
 function setLipsyncDelay(lipsyncDelay) {
-  let delay = convertInt(lipsyncDelay, 0, 0, 500);
+  let delay = convertInt(lipsyncDelay, 0, 0, 340);
 
-  return patchMso( 'replace', '/cal/lipsync', delay) && patchMso('replace', `/inputs/${mso.value?.input}/delay`, delay);
+  return patchMso('replace', '/cal/lipsync', delay) && patchMso('replace', `/inputs/${mso.value?.input}/delay`, delay);
 }
 
 function setDiracSlot(slotNumber) {
@@ -1219,9 +1219,9 @@ function setPEQGain(channel, slot, gain) {
 }
 
 function setPEQQuality(channel, slot, q) {
-  // const filterType = mso?.value?.peq.slots[slot].channels[channel].FilterType;
-  // const minQ = filterType === 3 ? 0 : 0.1;
-  const minQ = 0.0;
+  const filterType = mso?.value?.peq.slots[slot].channels[channel].FilterType;
+  const minQ = filterType === 3 ? 0 : 0.1;
+  // const minQ = 0.0;
   let qValue = convertFloat(q, 1.0, minQ, 10.0);
 
   return patchMso( 'replace', `/peq/slots/${slot}/channels/${channel}/Q`, qValue);
@@ -1232,12 +1232,12 @@ function setPEQFilterType(channel, slot, filterType) {
   let setQ = true;
   let setGain = true;
   const currentQ = mso?.value?.peq.slots[slot].channels[channel].Q;
-  // console.log("cq", currentQ)
+
   if (filterType === 3) {
     setGain = setPEQGain(channel, slot, 0);
   }
   else if (currentQ <= 0.1) {
-    setQ = setPEQQuality(channel, slot, 0.1);
+    setQ = setPEQQuality(channel, slot, 1.0);
   }
 
   const setFilterType = patchMso( 'replace', `/peq/slots/${slot}/channels/${channel}/FilterType`, parseInt(filterType));
@@ -1279,13 +1279,6 @@ function setPEQBypassOff(channel, slot) {
 
     const gain = setPEQGain(channel, slot, gainValue);
 
-    // restore q
-    let qValue = 0.1;
-    if (typeof mso.value.peq.slots[slot].channels[channel].preBypassQ !== 'undefined') {
-      qValue = mso.value.peq.slots[slot].channels[channel].preBypassQ;
-    }
-    const q = setPEQQuality(channel, slot, qValue);
-
     // restore filter type
     let filterTypeValue = 0;
     if (typeof mso.value.peq.slots[slot].channels[channel].preBypassFilterType !== 'undefined') {
@@ -1293,6 +1286,13 @@ function setPEQBypassOff(channel, slot) {
     }
 
     const filterType = setPEQFilterType(channel, slot, filterTypeValue);
+
+    // restore q
+    let q = true;
+    if (typeof mso.value.peq.slots[slot].channels[channel].preBypassQ !== 'undefined') {
+      const qValue = mso.value.peq.slots[slot].channels[channel].preBypassQ;
+      q = setPEQQuality(channel, slot, qValue);
+    }
 
     // remove bypass flag
     const bypass = patchMso('remove', `/peq/slots/${slot}/channels/${channel}/bypass`);
@@ -1392,7 +1392,7 @@ function initializeInputDelay(input) {
 }
 
 function setInputDelay(input, delayStr) {
-  let delay = convertInt(delayStr, 0, 0, 200);
+  let delay = convertInt(delayStr, 0, 0, 340);
 
   if (input === mso.value?.input) {
     return setLipsyncDelay(delay);

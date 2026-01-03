@@ -1,7 +1,7 @@
 <template>
   <div class="transition-container">
     <template v-if="isMobileMode">
-      <h5>Dirac Live Filters <br><small class="text-muted ">up to {{ mso?.cal?.num_dirac_slots }} slots available</small></h5>
+      <h5>Dirac Live Filters <br><small class="text-muted ">up to {{ mso?.cal?.num_dirac_slots }} slots available, PEQ {{ mso.peq?.location }}</small></h5>
       <div class="mb-3">
         <dirac-button-group tooltip-id="calibration-mobile" :home-button="false" />
       </div>
@@ -167,7 +167,7 @@
       </div>
     </template>
     <template v-else>
-      <h5>Dirac Live Filters <small class="text-muted">up to {{ mso?.cal?.num_dirac_slots }} slots available</small></h5>
+      <h5>Dirac Live Filters <small class="text-muted">up to {{ mso?.cal?.num_dirac_slots }} slots available, PEQ {{ mso.peq?.location }}</small></h5>
       <dismissable-alert alert-key="calibration-dlbc">
         <div><span class="rc" /> denotes standard Dirac Live Room Correction filters.</div>
         <div><span class="bm" /> denotes Dirac Live Room Correction filters with Bass Management.</div>

@@ -40,7 +40,7 @@
 
           </dismissable-alert>
 
-          <div class="alert alert-warning small" role="alert">
+          <div class="alert alert-warning small" role="alert" v-if="peqSwitchWarning">
             PEQ Configuration locked down because a Dirac Live ART/BC filter is loaded. Delete all BC/ART filters to regain access.
           </div>
 
