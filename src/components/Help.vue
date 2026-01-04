@@ -267,7 +267,7 @@
                 user values add to the values determined by Dirac Live to make the
                 total delay and trim. You should be aware that setting very
                 high trim values can lead to digital clipping.<br>
-With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no longer allows changes to trim and delay settings after calibration if PEQ is switched to *post*. This also applies to Dirac Live <b>Bass Control (BC)</b>.
+With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no longer allows changes to trim and delay settings after calibration if PEQ is switched to <i>post</i>. This also applies to Dirac Live <b>Bass Control (BC)</b>.
               </li>
             </ul>
           </div>
@@ -464,7 +464,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
                 By default PEQ is applied pre Dirac Live.
               </li>
               <li>
-                PEQ can be switched to *post* in *Show advanced Settings* on the *Calibration* page.
+                PEQ can be switched to <i>post</i> in <i>Advanced PEQ Options<i> or under <i>Show Advanced Settings</i> on the <i>Calibration</i> page.
               </li>
               <li>
                 PEQ can be on when a Dirac Live calibration is run. If PEQ is located post the Dirac Live filter
