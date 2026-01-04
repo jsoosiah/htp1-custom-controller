@@ -464,7 +464,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
                 By default PEQ is applied pre Dirac Live.
               </li>
               <li>
-                PEQ can be switched to <i>post</i> in <i>Advanced PEQ Options<i> or under <i>Show Advanced Settings</i> on the <i>Calibration</i> page.
+                PEQ can be switched to <i>post</i> in <i>Advanced PEQ Options</i> or under <i>Show Advanced Settings</i> on the <i>Calibration</i> page.
               </li>
               <li>
                 PEQ can be on when a Dirac Live calibration is run. If PEQ is located post the Dirac Live filter

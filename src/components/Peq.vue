@@ -18,6 +18,7 @@
           :button-text="`Parametric Equalization: ${mso.peq?.peqsw ? 'on' : 'off'}`"
           :state-on="mso.peq?.peqsw"
           @click="toggleGlobalPEQ()"
+          :disabled="!peqEnabled"
         />
       </div>
       <div class="col-auto mb-3">
@@ -58,14 +59,19 @@
         </dismissable-alert>
       </div>
     </div>
+    
     <div
       v-show="!mso.peq?.peqsw"
       class="row"
     >
       <div class="col">
+        <div class="alert alert-warning small" role="alert" v-if="!peqEnabled">
+          PEQ Configuration locked down because a Dirac Live ART/BC filter is loaded. Delete all BC/ART filters to regain access.
+        </div>
         <dismissable-alert
           alert-key="peq-off"
           class="alert-warning"
+          v-else
         >
           Parametric equalization is currently turned off. The following PEQ settings may be modified, but they will not have any effect until PEQ is turned on.
         </dismissable-alert>
