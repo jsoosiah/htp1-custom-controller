@@ -53,6 +53,35 @@
   >
     <ip-select :focus="state !== 'OPEN'" />
   </div>
+
+  <div
+    v-else-if="blockUi"
+    class="connecting-overlay"
+  >
+    <div 
+      id="settingsModal" 
+      class="modal fade show" 
+      tabindex="-1" 
+      aria-labelledby="settingsModalLabel"
+      style="display:block"
+    >
+      <div class="modal-dialog modal-xl">
+        <div class="modal-content bg-dark">
+          <div class="modal-header text-white">
+            <h4 class="modal-title">
+              Unsupported Version
+            </h4>
+          </div>
+          <div class="modal-body text-left text-white">
+              <p>
+                This custom web UI does not support HTP-1 running version 2.x. Please access the new UI directly at <a :href="`http://${websocketIp}/.`">{{ websocketIp }}</a>.
+              </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <template v-if="mso?.stat?.updateprogmsg.updating !== undefined && mso?.stat?.updateprogmsg.updating">
     <div class="container">
       <div class="row pt-5">
@@ -538,6 +567,10 @@ export default {
       )
     );
 
+    const blockUi = computed(() => {
+      return mso?.value?.versions?.swVer?.toLowerCase().startsWith("v2");
+    });
+
     const debouncedState = ref(state.value);
 
     let setDebouncedStateTimeout = null;
@@ -561,7 +594,7 @@ export default {
     return { settingsRoutes, filteredSettingsRoutes, showMobileMenu, 
       showPowerDialog, toggleShowPowerDialog, personalizePowerDialog,
       toggleShowMobileMenu, isMobileMode, ...useMso(), websocketIp, userCss,
-      debouncedState, isDemoMode, exitDemoMode,
+      debouncedState, isDemoMode, exitDemoMode, blockUi
     };
   }
 }
