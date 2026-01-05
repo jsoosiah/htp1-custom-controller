@@ -70,25 +70,25 @@
 import { settingsRoutes } from '@/router.js';
 import useLocalStorage from '@/use/useLocalStorage.js';
 
-import HomeIcon from './icons/HomeIcon';
-import CalibrationIcon from './icons/CalibrationIcon';
-import FilteredBassEqIcon from './icons/FilteredBassEqIcon';
-import PeqIcon from './icons/PeqIcon';
-import ToneControlIcon from './icons/ToneControlIcon';
-import LoudnessIcon from './icons/LoudnessIcon';
-import InputsIcon from './icons/InputsIcon';
-import NetworkIcon from './icons/NetworkIcon';
-import SgenIcon from './icons/SgenIcon';
-import SpeakersIcon from './icons/SpeakersIcon';
-import SystemIcon from './icons/SystemIcon';
-import ConfigsIcon from './icons/ConfigsIcon';
-import UpmixIcon from './icons/UpmixIcon';
-import MacrosIcon from './icons/MacrosIcon';
-import PersonalizeIcon from './icons/PersonalizeIcon';
-import AboutIcon from './icons/AboutIcon';
-import HelpIcon from './icons/HelpIcon';
-import PowerIcon from './icons/PowerIcon';
-import VolumeIcon from './icons/VolumeIcon';
+import HomeIcon from './icons/HomeIcon.vue';
+import CalibrationIcon from './icons/CalibrationIcon.vue';
+import FilteredBassEqIcon from './icons/FilteredBassEqIcon.vue';
+import PeqIcon from './icons/PeqIcon.vue';
+import ToneControlIcon from './icons/ToneControlIcon.vue';
+import LoudnessIcon from './icons/LoudnessIcon.vue';
+import InputsIcon from './icons/InputsIcon.vue';
+import NetworkIcon from './icons/NetworkIcon.vue';
+import SgenIcon from './icons/SgenIcon.vue';
+import SpeakersIcon from './icons/SpeakersIcon.vue';
+import SystemIcon from './icons/SystemIcon.vue';
+import ConfigsIcon from './icons/ConfigsIcon.vue';
+import UpmixIcon from './icons/UpmixIcon.vue';
+import MacrosIcon from './icons/MacrosIcon.vue';
+import PersonalizeIcon from './icons/PersonalizeIcon.vue';
+import AboutIcon from './icons/AboutIcon.vue';
+import HelpIcon from './icons/HelpIcon.vue';
+import PowerIcon from './icons/PowerIcon.vue';
+import VolumeIcon from './icons/VolumeIcon.vue';
 
 export default {
   name: 'Settings',

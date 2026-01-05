@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHashHistory } from 'vue-router';
 
 const AppLayout = () => import('./components/AppLayout.vue');
 
@@ -52,7 +52,7 @@ const settingsRoutes = [
 ];
 
 export default createRouter({
-  history: createWebHistory(),
+  history: createWebHashHistory(),
   routes: [
     { path: '/', 
       component: AppLayout, 

@@ -3,7 +3,7 @@
     <img
       class="speaker-mapping"
       :class="{'speaker-mapping-enlarged': enlarged, 'speaker-mapping-standard': !enlarged}"
-      :src="require('@/assets/HTP-1_back.webp')"
+      :src="speakerMapUrl"
       @click="toggleEnlarged()"
     >
     <span 
@@ -24,6 +24,7 @@
 
   import useMso from '@/use/useMso.js';
   import useSpeakerGroups from '@/use/useSpeakerGroups.js';
+  import speakerMapUrl from '@/assets/HTP-1_back.webp';
 
   export default {
     name: 'SpeakerMap',
@@ -74,7 +75,7 @@
 
 //{{speakerLabels[spk?.trim()].toLowerCase()}} {{reverseBmg[speakerLabels[spk?.trim()].toLowerCase()]
 
-      return { mso, reverseBmg, enlarged, toggleEnlarged, speakerLabels };
+      return { mso, reverseBmg, enlarged, toggleEnlarged, speakerLabels, speakerMapUrl };
     }
   }
 </script>

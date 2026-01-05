@@ -29,6 +29,11 @@
           id="eth0" 
           :network="network.eth0"
           :blank-ip="BLANK_IP_ADDRESS"
+          @add-ip-address="addIPAddress"
+          @remove-ip-address="removeIPAddress"
+          @add-nameserver="addNameserver"
+          @remove-nameserver="removeNameserver"
+          @apply-network-config="applyNetworkConfig"
         />
       </template>
       <template v-else>
@@ -299,7 +304,8 @@
         network.dns.push('');
       }
 
-      function removeNameserver(index) {
+      function removeNameserver(network, index) {
+        console.log('removeNameserver', network, index);
         network.dns.splice(index, 1);
       }
 
@@ -339,13 +345,30 @@
       watch(
         nmstat,
         newNMStat => {
+          console.log('newNMStat', newNMStat);
+
           if (!network.eth0.uuid) {
             populateNetworkFromConfig('eth0', newNMStat.eth0detail);
           }
 
+          let selected = actnet.value;
+          if (selected) {
+            let selidx = newNMStat.cons.findIndex(net => (net.UUID == selected.UUID));
+            if (selidx === -1) {
+              actnet.value = {}; // connection doesn't exist anymore
+            }
+          }
+
           // set initial actnet value for Configured Networks select
           if (!actnet.value.UUID) {
-            const active = newNMStat.cons.filter(con => con.ACTIVE === 'yes');
+            let active = newNMStat.cons.filter(con => con.ACTIVE === 'yes' && con.TYPE === '802-11-wireless');
+            
+            if (active.length === 0) {
+              active = newNMStat.cons.filter(con => con.TYPE === '802-11-wireless');
+            }
+
+            console.log('active', active);
+
             if (active.length > 0) {
               actnet.value = active[0];
             }

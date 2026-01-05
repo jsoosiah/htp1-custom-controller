@@ -24,6 +24,7 @@
               type="file" 
               class="form-control-file" 
               @change="importMsoFileSelected"
+              accept="application/json"
             >
           </div>
         </form>
@@ -39,13 +40,21 @@
           :mso-import-patch="msoImportPatch"
           @confirm-import="importMso"
         />
+
+        <div
+          v-if="errorMessage"
+          class="alert alert-danger small"
+          role="alert"
+        >
+          Error importing configuration file: {{ errorMessage }}
+        </div>
       </div>
     </div>
     <div class="row">
       <div class="col-auto">
-        <h5>Import/Export Dirac Filters</h5>
+        <h5>Import/Export Dirac Live Filters</h5>
         <p>
-          Follow this link to the <a :href="`http://${websocketIp}/dirac.html`">Dirac Filters Export/Import Tools</a>.
+          Follow this link to the <a :href="`http://${websocketIp}/dirac.html`">Dirac Live Filters Export/Import Tools</a>.
         </p>
       </div>
     </div>
@@ -100,7 +109,8 @@
 
 <script>
 
-  import { computed } from 'vue';
+  import axios from 'axios';
+  import { computed, ref } from 'vue';
   import { compare } from 'fast-json-patch/index.mjs';
 
   import useLocalStorage from '@/use/useLocalStorage.js';
@@ -130,21 +140,35 @@
         setFastStartOn, setFastStartOff, setFastStartPassThroughOn, setFastStartPassThroughOff
       } = useMso();
 
+      const file = ref(null);
+      const errorMessage = ref('');
+
       function downloadMsoAsJson(){
         exportJsonToFile(mso.value, 'config');
       }
 
       function importMsoFileSelected(e) {
-        const file = e.target.files[0];
-        importJsonFileToSelected(file);
+        file.value = e.target.files[0];
+        importJsonFileToSelected(file.value);
       }
 
       const msoImportPatch = computed(() => {
         return filterCommands(compare(mso.value, importJson.value));
       });
 
-      function importMso() {
-        importMsoPatchList(msoImportPatch.value);
+      async function importMso() {
+        try {
+          errorMessage.value = '';
+          await axios.postForm(`http://${websocketIp.value}/import`, {
+            'myfile': file.value,
+            'upload': 'Import selected file'
+          });
+
+          location.reload();
+        }
+        catch(error) {
+          errorMessage.value = error.toString();
+        }
       }
 
       return { 

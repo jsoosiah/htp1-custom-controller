@@ -5,49 +5,31 @@
   "description": "Custom controller for the HTP-1.",
   "author": "Jeff Soosiah",
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build --modern",
-    "lint": "vue-cli-service lint",
-    "electron:build": "vue-cli-service electron:build",
-    "electron:serve": "vue-cli-service electron:serve",
-    "postinstall": "electron-builder install-app-deps",
-    "postuninstall": "electron-builder install-app-deps",
-    "release": "vue-cli-service electron:build -p always"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
-    "@capacitor/android": "^3.3.2",
-    "@capacitor/cli": "^3.3.2",
-    "@capacitor/core": "^3.3.2",
-    "@capacitor/ios": "^3.3.2",
     "@fortawesome/fontawesome-svg-core": "^1.2.35",
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
     "@fortawesome/vue-fontawesome": "^3.0.0-4",
     "@slite/reconnecting-websocket": "^4.4.1",
     "auto-launch": "^5.0.5",
+    "axios": "^1.13.2",
     "bootstrap": "^4.6.0",
     "chart.js": "^2.9.4",
     "core-js": "^3.16.0",
-    "electron-updater": "^4.3.9",
     "fast-json-patch": "^3.1.0",
     "hammerjs": "^2.0.8",
     "lodash-es": "^4.17.21",
     "tippy.js": "^6.3.1",
-    "vue": "^3.2.31",
-    "vue-draggable-next": "^1.0.8",
-    "vue-router": "^4.0.12"
+    "vue": "^3.5.26",
+    "vue-draggable-next": "^2.3.0",
+    "vue-router": "^4.6.4"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.16",
-    "@babel/eslint-parser": "^7.12.16",
-    "@vue/cli-plugin-babel": "~5.0.1",
-    "@vue/cli-plugin-eslint": "~5.0.1",
-    "@vue/cli-service": "~5.0.1",
-    "@vue/compiler-sfc": "^3.1.5",
-    "electron": "^17.1.0",
-    "electron-devtools-installer": "^3.1.0",
-    "eslint": "^7.32.0",
-    "eslint-plugin-vue": "^8.0.3",
-    "vue-cli-plugin-electron-builder": "^3.0.0-alpha.4"
+    "@vitejs/plugin-vue": "^6.0.3",
+    "vite": "^7.3.0"
   },
   "repository": {
     "type": "git",
