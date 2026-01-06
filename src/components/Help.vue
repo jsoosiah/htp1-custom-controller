@@ -466,6 +466,9 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
                 channel. These settings are typically used to tweak the
                 response of the room but they can also be used to tweak input signal.
               </li>
+              <li>
+                PEQ can be switched to <i>post</i> in <i>Advanced PEQ Options</i> or under <i>Show Advanced Settings</i> on the <i>Calibration</i> page.
+              </li>
               <li>PEQ settings can be grouped by speaker <i>channel</i> or by EQ <i>bands</i>.</li>
               <li>PEQ settings can be exported and imported, cloned and reset to defaults.</li>
               <li><i>Advanced PEQ Options</i> allows switching PEQ to <i>pre</i> or <i>post</i> bass management.</li>
