@@ -267,7 +267,7 @@
                 user values add to the values determined by Dirac Live to make the
                 total delay and trim. You should be aware that setting very
                 high trim values can lead to digital clipping.<br>
-With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no longer allows changes to trim and delay settings after calibration. This also applies to Dirac Live <b>Bass Control (BC)</b>. Although trim settings are still possible with BC, this is not recommended.
+With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no longer allows changes to trim and delay settings after calibration if PEQ is switched to <i>post</i>. This also applies to Dirac Live <b>Bass Control (BC)</b>.
               </li>
             </ul>
             <p>Additional controls become available when <i>Show Advanced Settings</i> is enabled.</p>
@@ -474,8 +474,8 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
               <li><i>Advanced PEQ Options</i> allows switching PEQ to <i>pre</i> or <i>post</i> bass management.</li>
               <li>PEQ defaults to <i>pre</i>. This is optimal if you are planning to use <i>BEQ</i>.</li>
               <li>
-                PEQ can be on when a Dirac Live calibration is run. If PEQ is located <i>post</i> the Dirac Live filter
-                block the Dirac Live measurement signal will then see PEQ as part of the room response. This behavior is desirable for speaker pre-optimization but it also means that PEQ should not be changed after a Dirac Live calibration is run as this will destroy calibration results. PEQ <i>post</i> is also optimal if you want to do a manual calibration.
+                PEQ can be on during a Dirac Live calibration. If PEQ is located <i>post</i> the Dirac Live filter
+                block the Dirac Live measurement signal will then see PEQ as part of the room response. This behavior is desirable for speaker pre-optimization but it also means that PEQ should not be changed after Dirac Live calibration as this will destroy calibration results. PEQ <i>post</i> is also optimal if you want to do a manual calibration.
               </li>
             </ul>
             <p>
@@ -569,7 +569,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
               Traditional tone controls can be
                 enabled. When enabled the boost or cut can be specified as
                 well as the corner frequencies.<br>
-              The bass control is particularly useful for compensating for the relatively large differences in the low frequency range that typically occur between different mixes.
+              Bass tone control is particularly useful for compensating for the relatively large differences in the low frequency range that typically occur between different recordings.
             </p>
             <p>
               Note that applying large boosts can
@@ -621,7 +621,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
             <ul>
               <li>
                 <b>Loudness Curve</b>: Select between different curve shapes for
-                loudness compensation. <i>ISO 226:2003</i> follows the standard equal loudness curve while
+                loudness compensation. <i>ISO 226:2003</i> follows a standardized equal loudness curve while
                 <i>Vintage</i> follows compensation curves very similar to those of vintage analog home audio equipment.
               </li>
               <li>
@@ -719,7 +719,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
               </li>
               <li>
                 <b>Dolby Surround</b>: When this is selected, the Dolby
-                Surround algorithm is enabled to analyzer the input stream and
+                Surround algorithm is enabled to analyze the input stream and
                 process it for presentation across the available speaker set.
                 This is an evolution of the previous Dolby Pro-Logic. It has
                 one control, namely center spread. When center spread is
@@ -741,7 +741,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
               </li>
               <li>
                 <b>AURO-3D</b>: When this is selected, the Auro Technology
-                Engine is engaged to analyzer the input stream and process it
+                Engine is engaged to analyze the input stream and process it
                 for presentation across the available speaker set. The AURO-3D
                 engine provides an alternative to the Dolby and DTS systems.
                 When sources are encoded using the AURO-3D algorithm the engine
@@ -769,7 +769,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
               </li>
             </ul>
             <p>
-              A note about <b>Dolby Atmos</b> and <b>DTS-X sources</b>: When
+              A note about <b>Dolby Atmos</b> and <b>DTS-X</b> sources: When
               the signal if encoded with Dolby Atmos and likewise with DTS-X
               then none of the fancy upmixers can be applied. Following the
               guidance of the folks at Dolby and DTS, these signals are already
@@ -1058,7 +1058,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
             </div>
             <ul>
               <li>
-                <b>Power On Volume</b>: This number sets the default volume after restart.
+                <b>Power On Volume</b>: This number sets the default volume after restart or wake.
               </li>
               <li>
                 <b>Min. volume</b>: This number sets the lowest level of
@@ -1131,7 +1131,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
             </div>
             <ul>
               <li>
-                The <i>Unit Name</i> is displayed by to the outside world.
+                The <i>Unit Name</i> is displayed to the outside world.
                 Examples include:
               </li>
               <ul>
@@ -1143,7 +1143,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
                 When <i>Fast Start</i> is on the unit will not completely power
                 down and hence it will start up very quickly. You have the
                 option of keeping <i>Video Pass Through</i> alive. When <i>Fast
-                Start</i> is off, powering back up will take somewhat longer. CEC-based 
+                Start</i> is off, powering back up will take longer. CEC-based 
                 power up will not work when <i>Fast Start</i> is off.
               </li>
               <li>
@@ -1193,7 +1193,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
             </div>
             <ul>
               <li>
-                You can export and import settings. It's a good idea
+                You can export and import settings of the whole system. It's a good idea
                 to export the configuration when you are happy with your
                 settings. Then you can re-import them if the settings
                 are lost or damaged.
