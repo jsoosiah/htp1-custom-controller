@@ -267,8 +267,14 @@
                 user values add to the values determined by Dirac Live to make the
                 total delay and trim. You should be aware that setting very
                 high trim values can lead to digital clipping.<br>
-With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no longer allows changes to trim and delay settings after calibration if PEQ is switched to <i>post</i>. This also applies to Dirac Live <b>Bass Control (BC)</b>.
+With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no longer allows changes to trim and delay settings after calibration. This also applies to Dirac Live <b>Bass Control (BC)</b>. Although trim settings are still possible with BC, this is not recommended.
               </li>
+            </ul>
+            <p>Additional controls become available when <i>Show Advanced Settings</i> is enabled.</p>
+            <ul>
+              <li>Single speaker can be muted to check what each speaker is doing. Muting and unmuting of all speakers is available, and the selection of muted and unmuted speakers can be inverted.</li>
+              <li><i>Advanced PEQ Options</i> allows switching PEQ to <i>pre</i> or <i>post</i> bass management.</li>
+              <li><i>Bulk Edit</i> allows changing trim and delay for multiple speaker channels. Select one or multiple <i>target channels</i> set a value and <i>apply to selected speakers</i>.</li>
             </ul>
           </div>
         </div>
@@ -430,7 +436,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
               aria-expanded="false"
               aria-controls="collapseSix"
             >
-              Parametric EQ
+              PEQ
             </button>
           </h2>
         </div>
@@ -456,30 +462,23 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
             <ul>
               <li>
                 The system allows for up to 16
-                bands of parametric EQ, individually adjustable on each
+                bands of parametric EQ (PEQ), individually adjustable on each
                 channel. These settings are typically used to tweak the
-                response of the room.
+                response of the room but they can also be used to tweak input signal.
               </li>
+              <li>PEQ settings can be grouped by speaker <i>channel</i> or by EQ <i>bands</i>.</li>
+              <li>PEQ settings can be exported and imported, cloned and reset to defaults.</li>
+              <li><i>Advanced PEQ Options</i> allows switching PEQ to <i>pre</i> or <i>post</i> bass management.</li>
+              <li>PEQ defaults to <i>pre</i>. This is optimal if you are planning to use <i>BEQ</i>.</li>
               <li>
-                By default PEQ is applied pre Dirac Live.
-              </li>
-              <li>
-                PEQ can be switched to <i>post</i> in <i>Advanced PEQ Options<i> or under <i>Show Advanced Settings</i> on the <i>Calibration</i> page.
-              </li>
-              <li>
-                PEQ can be on when a Dirac Live calibration is run. If PEQ is located post the Dirac Live filter
-                block the Dirac Live measurement signal will see PEQ as part of the room response. This behavior is
-                desirable for speaker pre-optimization but it also means that PEQ can not be changed after Dirac Live calibration
-                as this will destroy calibration results.
-              </li>
-              <li>
-                For optimal results with <i>BEQ</i> PEQ should be located pre Dirac Live filters and bass management.
+                PEQ can be on when a Dirac Live calibration is run. If PEQ is located <i>post</i> the Dirac Live filter
+                block the Dirac Live measurement signal will then see PEQ as part of the room response. This behavior is desirable for speaker pre-optimization but it also means that PEQ should not be changed after a Dirac Live calibration is run as this will destroy calibration results. PEQ <i>post</i> is also optimal if you want to do a manual calibration.
               </li>
             </ul>
-            <blockquote>
+            <p>
               Note that applying large boost in the equalization can
               lead to digital clipping.
-            </blockquote>
+            </p>
           </div>
         </div>
       </div>
@@ -567,12 +566,12 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
               Traditional tone controls can be
                 enabled. When enabled the boost or cut can be specified as
                 well as the corner frequencies.<br>
-              The bass control is particularly useful for compensating for the relatively large differences in the low frequency range that typically occur between different recordings.
+              The bass control is particularly useful for compensating for the relatively large differences in the low frequency range that typically occur between different mixes.
             </p>
-            <blockquote>
+            <p>
               Note that applying large boosts can
               lead to digital clipping.
-            </blockquote>
+            </p>
           </div>
         </div>
       </div>
@@ -619,7 +618,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
             <ul>
               <li>
                 <b>Loudness Curve</b>: Select between different curve shapes for
-                loudness compensation. <i>ISO 226:2003</i> follows a standardized equal loudness curve while
+                loudness compensation. <i>ISO 226:2003</i> follows the standard equal loudness curve while
                 <i>Vintage</i> follows compensation curves very similar to those of vintage analog home audio equipment.
               </li>
               <li>
@@ -635,11 +634,14 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
                 reduce the dynamic range of the program. It also lowers the
                 subwoofer by 6dB.
               </li>
+              <li>
+                <b>Dialog Enhance</b>: Designed to make it easier to hear the dialog. Some DTS-X streams have a feature to adjust dialog directly and this control is connected to that feature. If the stream does not have this feature then the center channel is boosted.
+              </li>
             </ul>
-            <blockquote>
+            <p>
               Note that applying large boost can
               lead to digital clipping.
-            </blockquote>
+            </p>
           </div>
         </div>
       </div>
@@ -714,7 +716,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
               </li>
               <li>
                 <b>Dolby Surround</b>: When this is selected, the Dolby
-                Surround algorithm is enabled to analyze the input stream and
+                Surround algorithm is enabled to analyzer the input stream and
                 process it for presentation across the available speaker set.
                 This is an evolution of the previous Dolby Pro-Logic. It has
                 one control, namely center spread. When center spread is
@@ -736,7 +738,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
               </li>
               <li>
                 <b>AURO-3D</b>: When this is selected, the Auro Technology
-                Engine is engaged to analyze the input stream and process it
+                Engine is engaged to analyzer the input stream and process it
                 for presentation across the available speaker set. The AURO-3D
                 engine provides an alternative to the Dolby and DTS systems.
                 When sources are encoded using the AURO-3D algorithm the engine
@@ -764,7 +766,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
               </li>
             </ul>
             <p>
-              A note about <b>Dolby Atmos</b> and <b>DTS-X</b> sources: When
+              A note about <b>Dolby Atmos</b> and <b>DTS-X sources</b>: When
               the signal if encoded with Dolby Atmos and likewise with DTS-X
               then none of the fancy upmixers can be applied. Following the
               guidance of the folks at Dolby and DTS, these signals are already
@@ -852,7 +854,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
                 set to zero and do a Dirac Live calibration. Then check the sync
                 between the audio and the video using a local source that you
                 trust. Note that the surround modes add delay. The
-                shortest delay will be achieved in direct mode.
+                shortest delay will be achieved in <i>Direct</i> mode.
               </li>
               <li>
                 <b>Bluetooth Settings</b>: The controls necessary to discover and pair with a Bluetooth
@@ -956,6 +958,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
               <li>When you are finished, click the save button to save your recordings to the slot that you selected.</li>
               <li>Click the button you selected on the remote to play back your recordings.</li>
               <li>You can create additional macros which can be added to the home page from the <i>Personalize</i> tab.</li>
+              <li>With <i>Show Macro Code Editor</i> enabled the actual commands sent to the HTP-1 can be inspected and edited.</li>
             </ul>
           </div>
         </div>
@@ -1008,7 +1011,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
               <li>You can select which buttons appear under the <i>Modes</i> section of the homepage.</li>
               <li>You can select which macro buttons appear under the <i>Macros</i> section of the homepage.</li>
               <li>You can select which Dirac Live slots appear under the <i>Dirac Live Slot</i> section of the homepage.</li>
-              <li>Notices are small info boxes that appear on various settings pages. You can restore all dismissed notices.</li>
+              <li>Notices are small info boxes that appear on various settings pages. You can <i>restore all dismissed notices</i>.</li>
             </ul>
           </div>
         </div>
@@ -1052,7 +1055,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
             </div>
             <ul>
               <li>
-                <b>Power On Volume</b>: This number sets the default volume after restart or wake.
+                <b>Power On Volume</b>: This number sets the default volume after restart.
               </li>
               <li>
                 <b>Min. volume</b>: This number sets the lowest level of
@@ -1076,6 +1079,12 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
                 don't know the amplifier sensitivity. It suggests starting at
                 1 volt and then adjusting by ear.<br>
               </li>
+            </ul>
+            <p>Additional controls become available when <i>Show Advanced Settings</i> is enabled.</p>
+            <ul>
+              <li><b>Zero Point</b>: If you prefer your loudest volume level to show show 0 then set this to a matching value above or below the default master volume reading.</li>
+              <li><b>Max. Digital Headroom</b>: The HTP-1 has a two step volume control. First an analog volume control will raise volume. When it hits its limit the digital signal is raised. <i>Max. Digital Headroom</i> defines how much dBs are reserved in the digital signal for the volume control change to happen. For the digital volume control to never kick in you want to set <i>Max. volume</i> to your <b>negative</b> <i>Max. Digital Headroom</i> value, minus 1dB (there's already a 1dB min. headroom applied behind the scenes).</li>
+              <li><b>Peak Level Measurement</b>: Shows (and holds) volume peaks in each output channel while program material is playing. This reading is independent of the master volume control. Ideally you never want the signal to peak above 0dB. Adjust <i>Max. Digital Headroom</i> down until you see no more peaks. <i>Clear Peaks</i> will reset readings.</li>
             </ul>
           </div>
         </div>
@@ -1119,7 +1128,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
             </div>
             <ul>
               <li>
-                The <i>Unit Name</i> is displayed to the outside world.
+                The <i>Unit Name</i> is displayed by to the outside world.
                 Examples include:
               </li>
               <ul>
@@ -1131,7 +1140,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
                 When <i>Fast Start</i> is on the unit will not completely power
                 down and hence it will start up very quickly. You have the
                 option of keeping <i>Video Pass Through</i> alive. When <i>Fast
-                Start</i> is off, powering back up will take longer. CEC-based 
+                Start</i> is off, powering back up will take somewhat longer. CEC-based 
                 power up will not work when <i>Fast Start</i> is off.
               </li>
               <li>
@@ -1181,12 +1190,100 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
             </div>
             <ul>
               <li>
-                You can export and import settings of the whole system. It's a good idea
+                You can export and import settings. It's a good idea
                 to export the configuration when you are happy with your
                 settings. Then you can re-import them if the settings
                 are lost or damaged.
               </li>
             </ul>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div
+          id="headingEighteen"
+          class="card-header"
+          @click="toggleOpened(17)"
+        >
+          <h2 class="mb-0">
+            <button
+              class="btn btn-link btn-block text-left collapsed"
+              type="button"
+              data-toggle="collapse"
+              data-target="#collapseEighteen"
+              aria-expanded="false"
+              aria-controls="collapseEighteen"
+            >
+              About
+            </button>
+          </h2>
+        </div>
+        <div
+          id="collapseEighteen"
+          class="collapse"
+          :class="{'show': opened[17]}"
+          aria-labelledby="headingEighteen"
+          data-parent="#accordionExample"
+        >
+          <div class="card-body">
+            <div
+              class="alert alert-info small alert-box"
+              role="alert"
+            >
+              The user guide has more information. <a
+                :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`"
+                target="_blank"
+              >Click
+                here to access a PDF copy of the user guide</a>.
+            </div>
+            <ul>
+              <li>This page shows the system status and versions of hardware/software.</li>
+              <li>Click on <i>Current Release Notes</i> for a detailed overview of what has changed between firmware versions.</li>
+              <li><i>History and Updates</i> shows if a new frimware is available and all prior firmware versions.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div
+          id="headingNineteen"
+          class="card-header"
+          @click="toggleOpened(18)"
+        >
+          <h2 class="mb-0">
+            <button
+              class="btn btn-link btn-block text-left collapsed"
+              type="button"
+              data-toggle="collapse"
+              data-target="#collapseNineteen"
+              aria-expanded="false"
+              aria-controls="collapseNineteen"
+            >
+              Help
+            </button>
+          </h2>
+        </div>
+        <div
+          id="collapseNineteen"
+          class="collapse"
+          :class="{'show': opened[18]}"
+          aria-labelledby="headingNineteen"
+          data-parent="#accordionExample"
+        >
+          <div class="card-body">
+            <div
+              class="alert alert-info small alert-box"
+              role="alert"
+            >
+              The user guide has more information. <a
+                :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`"
+                target="_blank"
+              >Click
+                here to access a PDF copy of the user guide</a>.
+            </div>
+            <p>
+              You clicked <i>Help</i> to get here.
+            </p>
           </div>
         </div>
       </div>
@@ -1216,6 +1313,8 @@ const helpIndexes = {
   '/settings/system': 15, 
   '/settings/volume': 14,
   '/settings/configs': 16, 
+  '/settings/about': 17,
+  '/settings/help': 18 
 }
 
 export default {
