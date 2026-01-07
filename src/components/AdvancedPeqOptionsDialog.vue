@@ -62,7 +62,7 @@
                       class="form-check-input" 
                       type="radio" 
                       name="left-label" 
-                      :checked="msoCopy?.peq?.location === 'pre' && msoCopy?.cal?.peq_during_cal === 'off'" 
+                      :checked="msoCopy?.peq?.location === 'pre'" 
                       @click="setPreDiracLocal()"
                       :disabled="!peqSwitchEnabled"
                     >
@@ -84,7 +84,7 @@
                       class="form-check-input" 
                       type="radio" 
                       name="left-label" 
-                      :checked="msoCopy?.peq?.location === 'post' && msoCopy?.cal?.peq_during_cal === 'on'" 
+                      :checked="msoCopy?.peq?.location === 'post'" 
                       @click="setPostDiracAndDuringCalLocal()"
                       :disabled="!peqSwitchEnabled"
                     >
