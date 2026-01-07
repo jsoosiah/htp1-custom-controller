@@ -65,16 +65,20 @@
       class="row"
     >
       <div class="col">
-        <div class="alert alert-warning small" role="alert" v-if="!peqEnabled">
-          PEQ Configuration locked down because a Dirac Live ART/BC filter is loaded. Delete all BC/ART filters to regain access.
-        </div>
         <dismissable-alert
           alert-key="peq-off"
           class="alert-warning"
-          v-else
+          v-if="peqEnabled"
         >
           Parametric equalization is currently turned off. The following PEQ settings may be modified, but they will not have any effect until PEQ is turned on.
         </dismissable-alert>
+      </div>
+    </div>
+    <div class="row" v-if="!peqEnabled">
+      <div class="col">
+        <div class="alert alert-warning small" role="alert">
+          PEQ locked down because a Dirac Live ART/BC filter is loaded. Delete all BC/ART filters to regain access.
+        </div>
       </div>
     </div>
     <div class="row">
@@ -543,6 +547,7 @@
           <button 
             class="btn btn-sm btn-warning mb-3"
             @click="resetPEQsForBand(mso.peq?.currentpeqslot)"
+            :disabled="!peqEnabled"
           >
             Reset Settings for Band {{ mso.peq?.currentpeqslot + 1 }} 
           </button>
@@ -556,6 +561,7 @@
           <button 
             class="btn btn-sm btn-warning mb-3"
             @click="resetPEQsForChannel(activeChannels[selectedChannel])"
+            :disabled="!peqEnabled"
           >
             Reset Settings for Channel {{ spkNamePre(activeChannels[selectedChannel]) }}
           </button>
@@ -568,6 +574,7 @@
         <button 
           class="btn btn-sm btn-danger mb-3"
           @click="resetAllPEQs"
+          :disabled="!peqEnabled"
         >
           Reset All PEQ Settings
         </button>
@@ -617,7 +624,8 @@
       const { eqGroupBy, setEqGroupBy, darkMode } = useLocalStorage();
       const { mso, setPEQSlot, resetPEQ, importMsoPatchList, activeChannels,
         setPEQCenterFrequency, setPEQQuality, setPEQFilterType, setPEQGain, togglePEQBypass,
-        delayPeqAllowed, diracFilterType, filterTypeToCssClass, diracErrorState, diracBCArtFilterExists } = useMso();
+        delayPeqAllowed, diracFilterType, filterTypeToCssClass, diracErrorState, diracBCArtFilterExists,
+        peqEnabled, peqWarning } = useMso();
       const { getActiveChannels, spkName } = useSpeakerGroups();
 
       const chartRef = ref(null);
@@ -633,14 +641,6 @@
 
       const isPeqPre = computed(() => {
         return mso?.value?.peq?.location === "pre" && diracBCArtFilterExists.value;
-      });
-
-      const peqEnabled = computed(() => {
-        return mso?.value?.peq.location === "pre" || delayPeqAllowed.value !== 'blocked' || !diracBCArtFilterExists.value;
-      });
-
-      const peqWarning = computed(() => {
-        return mso?.value?.peq.location !== "pre" && delayPeqAllowed.value !== 'OK' && diracBCArtFilterExists.value;
       });
 
       // const activeChannels = computed(() => {

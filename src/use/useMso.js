@@ -571,6 +571,14 @@ const diracBCArtFilterExists = computed(() => {
   return false;
 });
 
+const peqEnabled = computed(() => {
+  return mso?.value?.peq.location === "pre" || delayPeqAllowed.value !== 'blocked' || !diracBCArtFilterExists.value;
+});
+
+const peqWarning = computed(() => {
+  return mso?.value?.peq.location !== "pre" && delayPeqAllowed.value !== 'OK' && diracBCArtFilterExists.value;
+});
+
 const diracFilterType = computed(() => {
   return currentDiracSlot.value?.filterType;
 })
@@ -1845,7 +1853,7 @@ export default function useMso() {
     dismissAlert, resetDismissedAlerts,
     updateVu, clearVuPeakLevels, setVuPeakMode,
     setSecondVolume, toggleSeatShaker, diracErrorState,
-    delayPeqAllowed, currentDiracFilterType, diracBCArtFilterExists,
+    delayPeqAllowed, currentDiracFilterType, diracBCArtFilterExists, peqEnabled, peqWarning,
     displayVolume,
     state, loading,
     parseMSO, data, eventHash,

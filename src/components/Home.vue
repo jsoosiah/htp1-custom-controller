@@ -139,22 +139,53 @@
         </div>
       </div>
       <!-- Program Format Logo, Volumn Text, Listening Format Logo -->
-      <PlusMinusControl
-        :isMobileMode="isMobileMode"
-        displayFontSize="3rem"
-        :displayText="displayVolume + ' dB'"
-        :iconClass="{ 'text-danger': mso.muted }"
-        :displayTextClass="{ 'text-danger': mso.muted }"
-        iconSize="4x"
-        :downIcon="['fas', 'volume-down']"
-        :upIcon="['fas', 'volume-up']"
-        :onDownPress="handleVolumeDownPress"
-        :onDownLongPress="handleVolumeDownLongPress"
-        :onUpPress="handleVolumeUpPress"
-        :onUpLongPress="handleVolumeUpLongPress"
-        :onLongPressUp="handleVolumeLongPressUp"
-        :onDisplayPress="handleMute"
-      />
+      <div class="row mt-2 justify-content-center">
+        <div
+          class="col-auto text-left"
+          :class="{'px-0': isMobileMode}"
+        >
+          <button 
+            v-press="handleVolumeDownPress" 
+            v-long-press="handleVolumeDownLongPress" 
+            v-long-press-up="handleVolumeLongPressUp"
+            type="button"
+            class="btn btn-dark vol-btn"
+          >
+            <font-awesome-icon
+              :class="{'text-danger':mso.muted}"
+              size="4x"
+              :icon="['fas', 'volume-down']"
+            />
+          </button>
+        </div>
+        <div
+          class="col-auto text-center"
+          :class="{'px-0': isMobileMode}"
+        >
+          <span 
+            v-press="handleMute" 
+            class="vol-display" 
+            :class="{'text-danger':mso.muted}"
+          >
+            {{ displayVolume }} dB
+          </span>
+        </div>
+        <div class="col-auto text-right pr-0">
+          <button 
+            v-press="handleVolumeUpPress" 
+            v-long-press="handleVolumeUpLongPress" 
+            v-long-press-up="handleVolumeLongPressUp"
+            type="button"
+            class="btn btn-dark vol-btn"
+          >
+            <font-awesome-icon
+              :class="{'text-danger':mso.muted}"
+              size="4x"
+              :icon="['fas', 'volume-up']"
+            />
+          </button>
+        </div>
+      </div>
 
       <!-- Volume Buttons -->
       <div class="row mt-2">
@@ -292,7 +323,7 @@
               v-if="!!mso.personalize?.modes.lipsync"
               :isMobileMode="isMobileMode"
               :displayText="`${mso.cal?.lipsync} ms`"
-              iconSize="2x"
+              iconSize="2rem"
               :downIcon="['fas','minus']"
               :upIcon="['fas','plus']"
               :onDownPress="handleLipsyncDownPress"
@@ -307,7 +338,7 @@
               v-if="!!mso.personalize?.modes.tonebass"
               :isMobileMode="isMobileMode"
               :displayText="`Bass ${formatSigned(mso?.eq?.bass?.level)} dB`"
-              iconSize="2x"
+              iconSize="2rem"
               :downIcon="['fas','minus']"
               :upIcon="['fas','plus']"
               :onDownPress="handleBassBoostDownPress"
@@ -325,7 +356,7 @@
               v-if="!!mso.personalize?.modes.tonetreble"
               :isMobileMode="isMobileMode"
               :displayText="`Treble ${formatSigned(mso?.eq?.treble?.level)} dB`"
-              iconSize="2x"
+              iconSize="2rem"
               :downIcon="['fas','minus']"
               :upIcon="['fas','plus']"
               :onDownPress="handleTrebleBoostDownPress"

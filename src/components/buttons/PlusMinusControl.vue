@@ -11,7 +11,7 @@
       >
         <font-awesome-icon
           :class="iconClass"
-          :size="iconSize"
+          :style="{'font-size': iconSize}"
           :icon="downIcon"
         />
       </button>
@@ -35,7 +35,7 @@
     </div>
 
     <!-- Right button -->
-    <div class="col-auto text-right pr-0">
+    <div class="col-auto text-right"  :class="{ 'px-0': isMobileMode }">
       <button
         v-press="onUpPress"
         v-long-press="onUpLongPress"
@@ -45,7 +45,7 @@
       >
         <font-awesome-icon
           :class="iconClass"
-          :size="iconSize"
+          :style="{'font-size': iconSize}"
           :icon="upIcon"
         />
       </button>
@@ -54,6 +54,8 @@
 </template>
 
 <script>
+import {computed} from 'vue';
+
 import { LongPress, LongPressUp, Press } from '@/directives/Press.js';
 
 export default {
@@ -71,7 +73,7 @@ export default {
     displayFontSize: {
       type: [String],
       requred: false,
-      default: '1.8rem',
+      default: '1.75rem',
     },
     // extra class for display text (e.g. text-danger binding)
     displayTextClass: {
@@ -135,6 +137,14 @@ export default {
       default: null,
     },
   },
+  setup(props) {
+    const lineHeight = computed(() => {
+      console.log("props", props)
+      return parseFloat(props.displayFontSize) > 2 ? 1.65 : 2.2;
+    });
+
+    return { lineHeight };
+  }
 };
 </script>
 
@@ -146,7 +156,8 @@ export default {
     /* font-size:2rem; */
     cursor: pointer;
     color:white;
-    line-height: 1.9;
+    /* line-height: 2; */
+    line-height: v-bind('lineHeight')
   }
 
   .plus-minus-btn, .plus-minus-btn:focus, .plus-minus-btn:active {
@@ -154,7 +165,7 @@ export default {
     box-shadow: none !important;
     outline:none;
     border:none;
-    width:6rem;
+    width:5rem;
     height:3rem;
     margin:.5rem 0 .5rem 0;
   }

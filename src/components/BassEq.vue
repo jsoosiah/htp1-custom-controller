@@ -11,12 +11,13 @@
         >Bass EQ for Filtered Movies</a> AVS Forum thread.
       </span>
     </dismissable-alert>
-    <dismissable-alert alert-key="beq-background-service">
-      To automatically clear BEQ filters when powering the HTP-1 or changing inputs, install the <a
-        target="_blank"
-        href="https://github.com/jsoosiah/htp1-custom-ui-background-service/releases/latest"
-      >HTP-1 Custom UI Background Service</a> on a computer and leave it running in the background.
-    </dismissable-alert>
+    <div class="row" v-if="!peqEnabled">
+      <div class="col">
+        <div class="alert alert-warning small" role="alert">
+          BEQ locked down because a Dirac Live ART/BC filter is loaded. Delete all BC/ART filters to regain access.
+        </div>
+      </div>
+    </div>
     <div class="alert alert-secondary mb-3">
       <div
         class="row"
@@ -205,6 +206,7 @@
                     <button 
                       class="btn btn-sm btn-primary float-right"
                       @click="applyBeqFilters(beq)"
+                      :disabled="!peqEnabled"
                     >
                       Apply
                     </button>
