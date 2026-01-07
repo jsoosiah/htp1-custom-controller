@@ -180,8 +180,8 @@
                 are where.
               </li>
               <li>
-                Set the cutoff frequencies based on the -3dB point of your speakers. 
-                The value can be found in the technical specifications of your particular speaker model.
+                Set the cutoff frequencies based on the -3dB point (f<sub>-3dB</sub>) of your speakers. This is where your speaker emits only half the acoustic power and lower frequencies start to roll off.
+                The f<sub>-3dB</sub> value can be found in the technical specifications of your particular speaker model.
               </li>
               <li>
                 The user guide contains more information about Dirac Live
@@ -270,11 +270,11 @@
 With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no longer allows changes to trim and delay settings after calibration if PEQ is switched to <i>post</i>. This also applies to Dirac Live <b>Bass Control (BC)</b>.
               </li>
             </ul>
-            <p>Additional controls become available when <i>Show Advanced Settings</i> is enabled.</p>
+            <p>Additional controls become available when <b>Show Advanced Settings</b> is enabled.</p>
             <ul>
               <li>Single speaker can be muted to check what each speaker is doing. Muting and unmuting of all speakers is available, and the selection of muted and unmuted speakers can be inverted.</li>
               <li><i>Advanced PEQ Options</i> allows switching PEQ to <i>pre</i> or <i>post</i> bass management.</li>
-              <li><i>Bulk Edit</i> allows changing trim and delay for multiple speaker channels. Select one or multiple <i>target channels</i> set a value and <i>apply to selected speakers</i>.</li>
+              <li><i>Bulk Edit</i> allows changing trim and delay for multiple speaker channels at once. Select one or multiple <i>target channels</i>, set a value and <i>apply to selected speakers</i>.</li>
             </ul>
           </div>
         </div>
@@ -1083,7 +1083,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
                 1 volt and then adjusting by ear.<br>
               </li>
             </ul>
-            <p>Additional controls become available when <i>Show Advanced Settings</i> is enabled.</p>
+            <p>Additional controls become available when <b>Show Advanced Settings</b> is enabled.</p>
             <ul>
               <li><b>Zero Point</b>: If you prefer your loudest volume level to show show 0 then set this to a matching value above or below the default master volume reading.</li>
               <li><b>Max. Digital Headroom</b>: The HTP-1 has a two step volume control. First an analog volume control will raise volume. When it hits its limit the digital signal is raised. <i>Max. Digital Headroom</i> defines how much dBs are reserved in the digital signal for the volume control change to happen. For the digital volume control to never kick in you want to set <i>Max. volume</i> to your <b>negative</b> <i>Max. Digital Headroom</i> value, minus 1dB (there's already a 1dB min. headroom applied behind the scenes).</li>
@@ -1195,7 +1195,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
               <li>
                 You can export and import settings of the whole system. It's a good idea
                 to export the configuration when you are happy with your
-                settings. Then you can re-import them if the settings
+                settings. Then you can re-import them if settings
                 are lost or damaged.
               </li>
             </ul>
@@ -1240,9 +1240,9 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
                 here to access a PDF copy of the user guide</a>.
             </div>
             <ul>
-              <li>This page shows the system status and versions of hardware/software.</li>
+              <li>This page shows system status and hardware/software versions.</li>
               <li>Click on <i>Current Release Notes</i> for a detailed overview of what has changed between firmware versions.</li>
-              <li><i>History and Updates</i> shows if a new frimware is available and all prior firmware versions.</li>
+              <li><i>History and Updates</i> shows whether a new firmware is available and a list of previous firmware releases.</li>
             </ul>
           </div>
         </div>
