@@ -225,6 +225,9 @@
             debouncedUpdateChart(channelsToUpdate);
             localPeqSlots.value = cloneDeep(newProps.peqSlots);
           }
+        },
+        {
+          deep: true
         }
       )
 
