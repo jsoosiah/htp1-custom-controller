@@ -36,7 +36,7 @@
                 aria-label="Minimum volume"
                 aria-describedby="basic-addon2"
                 :value="mso.eq?.bass.freq"
-                min="40"
+                min="20"
                 max="500"
                 @change="({ type, target }) => setBassCornerFrequency(target.value)"
               >

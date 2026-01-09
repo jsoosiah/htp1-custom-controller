@@ -251,15 +251,16 @@
         if (seatShakerChannel.value) {
           seatShakerCount++;
         }
+        else {
+          if ((activeChannels.value.length + seatShakerCount) === 16) {
+            result.enabled = false;
+            result.message = "Seat shaker cannot be enabled when 16 speakers are enabled. Reduce the number of enabled speakers to enable seat shaker."
+          }
 
-        if ((activeChannels.value.length + seatShakerCount) === 16) {
-          result.enabled = false;
-          result.message = "Seat shaker cannot be enabled when 16 speakers are enabled. Reduce the number of enabled speakers to enable seat shaker."
-        }
-
-        if (mso?.value?.speakers?.groups?.sub5?.present) {
-          result.enabled = false;
-          result.message = "Seat shaker cannot be enabled when 5 subwoofers are enabled. Disable subwoofer 5 to enable seat shaker."
+          if (mso?.value?.speakers?.groups?.sub5?.present) {
+            result.enabled = false;
+            result.message = "Seat shaker cannot be enabled when 5 subwoofers are enabled. Disable subwoofer 5 to enable seat shaker."
+          }
         }
 
         return result;

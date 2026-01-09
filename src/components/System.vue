@@ -99,7 +99,7 @@
               type="range" 
               class="custom-range col" 
               min="0" 
-              max="10"
+              max="7"
               :value="mso.hw?.fpBright"
               @input="({ type, target }) => setFrontPanelBrightness(target.value)"
             >

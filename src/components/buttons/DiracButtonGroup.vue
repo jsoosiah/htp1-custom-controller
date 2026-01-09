@@ -44,8 +44,8 @@
         class="alert alert-danger small mt-3"
         role="alert"
       >
-        Dirac Live filter has failed to load. Try restarting concord or restarting the HTP-1 to fix it.
-        <button class="btn btn-sm btn-danger d-block mt-3">Restart Concord</button>
+        Dirac Live filter has failed to load. Try restarting Dirac Live Server or restarting the HTP-1 to fix it.
+        <button class="btn btn-sm btn-danger d-block mt-3" @click="concordRestart()">Restart Dirac Live Server</button>
       </div>
     </template>
   </span>
@@ -73,9 +73,9 @@
     },
     setup(props) {
 
-      const { mso, setDiracOff, diracFilterType, setDiracBypass, setDiracOn, diracNoFilter, filterTypeToCssClass, diracErrorState } = useMso();
+      const { mso, setDiracOff, diracFilterType, setDiracBypass, setDiracOn, diracNoFilter, filterTypeToCssClass, diracErrorState, concordRestart } = useMso();
 
-      return { mso, setDiracOff, diracFilterType, setDiracBypass, setDiracOn, diracNoFilter, filterTypeToCssClass, diracErrorState, props };
+      return { mso, setDiracOff, diracFilterType, setDiracBypass, setDiracOn, diracNoFilter, filterTypeToCssClass, diracErrorState, concordRestart, props };
     }
   }
 </script>

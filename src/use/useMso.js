@@ -604,7 +604,6 @@ const delayPeqAllowed = computed(() => {
 });
 
 const diracErrorState = computed(() => {
-
   if (diracNoFilter.value || mso.value?.cal?.diracactive !== "on") {
     return "INACTIVE";
   }
@@ -1160,11 +1159,11 @@ function setToneControlOff() {
 }
 
 function setBassCornerFrequency(freq) {
-  return patchMso( 'replace', `/eq/bass/freq`, parseFloat(freq));
+  return patchMso( 'replace', `/eq/bass/freq`, convertFloat(freq, 20, 20, 500));
 }
 
 function setTrebleCornerFrequency(freq) {
-  return patchMso( 'replace', `/eq/treble/freq`, parseFloat(freq));
+  return patchMso( 'replace', `/eq/treble/freq`, convertFloat(freq, 8000, 501, 8000));
 }
 
 function setBassBoostCutLevel(level) {
@@ -1517,7 +1516,7 @@ function setPowerOnVol(volumeLevel) {
 }
 
 function setFrontPanelBrightness(brightness) {
-  return patchMso( 'replace', `/hw/fpBright`, parseInt(brightness));
+  return patchMso( 'replace', `/hw/fpBright`, convertInt(brightness, 7, 0, 7));
 }
 
 function toggleVideoStatusHomePage() {
@@ -1790,6 +1789,10 @@ function commitSpeakerLayout () {
   send('avcui "commit lm"');
 }
 
+function concordRestart() {
+  send('avcui "concord restart"');
+}
+
 /**
 * Composition function which exposes the MSO state, as well 
 * as an API to interact with MSO, abstracting away all 
@@ -1852,7 +1855,7 @@ export default function useMso() {
     currentlyRecordingSlot, setRecordingStarted, setRecordingStopped,
     dismissAlert, resetDismissedAlerts,
     updateVu, clearVuPeakLevels, setVuPeakMode,
-    setSecondVolume, toggleSeatShaker, diracErrorState,
+    setSecondVolume, toggleSeatShaker, diracErrorState, concordRestart,
     delayPeqAllowed, currentDiracFilterType, diracBCArtFilterExists, peqEnabled, peqWarning,
     displayVolume,
     state, loading,

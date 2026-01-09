@@ -405,7 +405,7 @@
 
       <!-- Macros --> 
       <div
-        v-if="mso.personalize?.macros && Object.keys(mso.personalize.macros).length > 0"
+        v-if="showMacros"
         class="row mt-2"
       >
         <div class="col-md-12 text-center">
@@ -552,6 +552,10 @@ export default {
     let decrementBassBoostInterval;
     let incrementTrebleBoostInterval;
     let decrementTrebleBoostInterval;
+
+    const showMacros = computed(() => {
+      return mso?.value?.personalize?.macros && Object.keys(mso?.value?.personalize.macros).filter(key => Object.keys(mso?.value?.svronly.macroNames).includes(key)).length > 0;
+    });
 
     function handleMute(e) {
       e.preventDefault();
@@ -784,7 +788,7 @@ export default {
       handleLipsyncDownPress, handleLipsyncUpPress, handleLipsyncDownLongPress, handleLipsyncUpLongPress, handleLipsyncLongPressUp,
       handleBassBoostDownPress, handleBassBoostUpPress, handleBassBoostDownLongPress, handleBassBoostUpLongPress, handleBassBoostLongPressUp,
       handleTrebleBoostDownPress, handleTrebleBoostUpPress, handleTrebleBoostDownLongPress, handleTrebleBoostUpLongPress, handleTrebleBoostLongPressUp,
-      handleToneControl, formatSigned
+      handleToneControl, formatSigned, showMacros
     };
   },
 }

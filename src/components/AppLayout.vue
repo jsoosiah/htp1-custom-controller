@@ -443,7 +443,7 @@ export default {
         console.log('initializeTextAreas', tx.length);
         for (let i = 0; i < tx.length; i++) {
           tx[i].removeEventListener("input", onInput);
-          tx[i].setAttribute("style", "height:" + (tx[i].scrollHeight) + "px;overflow-y:hidden;");
+          tx[i].setAttribute("style", "height:" + (tx[i].scrollHeight) + "px;overflow-y:auto;");
           tx[i].addEventListener("input", onInput);
         }
       }, 100);

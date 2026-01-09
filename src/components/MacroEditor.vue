@@ -130,7 +130,7 @@
               v-model="currentCommandsRaw"
               class="form-control"
               :class="{'is-invalid': !currentCommandsRawIsValid, 'is-valid': currentCommandsRawIsValid}"
-              rows="3"
+              rows="5"
             />
           </div>
         </div>
@@ -231,13 +231,14 @@
       watch(
         () => currentCommands,
         val => {
-          const newRawVal = JSON.stringify(val.value)
+          const newRawVal = JSON.stringify(val.value, null, 2);
           if (currentCommandsRaw.value !==  newRawVal) {
             currentCommandsRaw.value = newRawVal;
           }
         },
         {
-          immediate: true
+          immediate: true,
+          deep: true,
         }
       );
 
