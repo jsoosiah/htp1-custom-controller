@@ -69,11 +69,12 @@
         'Right Wide': 'RW'
       };
 
-    console.log(reverseBmg);
+    // console.log("reverseBmg", reverseBmg);
 
       for (let i = 0; i < mso.value.speakers?.mapping.length; i++) {
         let spk = mso.value.speakers?.mapping[i];
-        console.log('mapping',i, spk,speakerLabels[spk?.trim()].toLowerCase(), reverseBmg[speakerLabels[spk?.trim()].toLowerCase()])
+        // console.log('mapping',i, spk,speakerLabels[spk?.trim()], speakerLabels)
+        // console.log('mapping',i, spk,speakerLabels[spk?.trim()].toLowerCase(), reverseBmg[speakerLabels[spk?.trim()].toLowerCase()])
       }
 
 //{{speakerLabels[spk?.trim()].toLowerCase()}} {{reverseBmg[speakerLabels[spk?.trim()].toLowerCase()]

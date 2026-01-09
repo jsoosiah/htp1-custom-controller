@@ -108,6 +108,65 @@
         </div>
       </div>
     </div>
+    
+    <hr />
+
+    <div
+      id="accordionFactoryReset"
+      class="accordion"
+    >
+      <div class="card">
+        <div
+          id="headingOneFR"
+          class="card-header"
+          @click="toggleOpened(0)"
+        >
+          <h2 class="mb-0">
+            <button
+              class="btn btn-link btn-block text-left"
+              type="button"
+              data-toggle="collapse"
+              data-target="#collapseOneFR"
+              aria-expanded="true"
+              aria-controls="collapseOneFR"
+            >
+              Factory Reset
+            </button>
+          </h2>
+        </div>
+
+        <div
+          id="collapseOneFR"
+          class="collapse"
+          :class="{'show': opened[0]}"
+          aria-labelledby="headingOneFR"
+          data-parent="#accordionExample"
+        >
+          <div class="card-body">
+
+            <div class="row">
+              <div class="col-auto">
+                <button 
+                  class="btn btn-sm btn-danger"
+                  @click="handleFactoryReset()"
+                >
+                  Factory Reset
+                </button>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-auto">
+                <div class="form-group">
+                  <small class="form-text text-muted">All settings will be restored to factory default. Network settings and Dirac calibrations are not changed.</small>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -134,13 +193,25 @@
               exportJsonToFile,
               importJsonFileToSelected } = useImportExport();
 
-      const { mso } = useMso();
+      const { mso, factoryReset } = useMso();
 
       const { websocketIp, setWebsocketIp, findServers } = useWebSocket();
 
       const { isDemoMode } = useLocalStorage();
 
       const ipAddressText = ref(websocketIp.value);
+
+      const opened = ref({0: false});
+
+      function toggleOpened(key) {
+        this.opened[key] = !this.opened[key];
+      }
+
+      function handleFactoryReset() {
+        if (confirm("All settings will be restored to factory default. Network settings and Dirac calibrations are not changed.")) {
+          factoryReset();
+        }
+      }
 
       function validateAndSetWebsocketurl(url) {
         // todo: if valid 
@@ -174,7 +245,7 @@
         ...useMso(),
         downloadMsoAsJson, importMsoFileSelected, importJson, msoImportPatch,
         validateAndSetWebsocketurl, ipAddressText, setWebsocketIp, 
-        isDemoMode, toggleDemoMode,
+        isDemoMode, toggleDemoMode, handleFactoryReset, opened, toggleOpened
       };
     },
     computed: {

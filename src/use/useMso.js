@@ -98,7 +98,8 @@ watch(
           console.log('msoupdate non-array', arg)
           commandsReceived.value = addCommand(commandsReceived.value, arg);
         }
-        
+    } else if (verb === 'forcereload') {
+      document.location.reload();
     } else if (verb === 'error') {
       // oh no
       console.log('error', arg);
@@ -1447,6 +1448,10 @@ function enableBluetoothDiscovery() {
   send('btdiscover ' + mso.value.bluetooth.discoverabletime);
 }
 
+function factoryReset() {
+  send('factoryreset');
+}
+
 function toggleCEC() {
   return patchMso( 'replace', `/CEC/cecOnSw`, mso.value.CEC.cecOnSw === 'off' ? 'on' : 'off');
 }
@@ -1857,7 +1862,7 @@ export default function useMso() {
     updateVu, clearVuPeakLevels, setVuPeakMode,
     setSecondVolume, toggleSeatShaker, diracErrorState, concordRestart,
     delayPeqAllowed, currentDiracFilterType, diracBCArtFilterExists, peqEnabled, peqWarning,
-    displayVolume,
+    displayVolume, factoryReset,
     state, loading,
     parseMSO, data, eventHash,
     commandsToSend, commandsReceived, commandsAwaitingResponse // debug
