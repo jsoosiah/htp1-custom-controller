@@ -14,7 +14,7 @@
     <div class="row" v-if="!peqEnabled">
       <div class="col">
         <div class="alert alert-warning small" role="alert">
-          BEQ locked down because a Dirac Live ART/BC filter is loaded. Delete all BC/ART filters to regain access.
+          BEQ locked down because PEQ is set to post and a Dirac Live ART/BC filter is loaded. Delete all BC/ART filters to regain access.
         </div>
       </div>
     </div>
