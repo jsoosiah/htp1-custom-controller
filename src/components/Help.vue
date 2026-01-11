@@ -466,9 +466,6 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
                 channel. These settings are typically used to tweak the
                 response of the room but they can also be used to tweak input signal.
               </li>
-              <li>
-                PEQ can be switched to <i>post</i> in <i>Advanced PEQ Options</i> or under <i>Show Advanced Settings</i> on the <i>Calibration</i> page.
-              </li>
               <li>PEQ settings can be grouped by speaker <i>channel</i> or by EQ <i>bands</i>.</li>
               <li>PEQ settings can be exported and imported, cloned and reset to defaults.</li>
               <li><i>Advanced PEQ Options</i> allows switching PEQ to <i>pre</i> or <i>post</i> bass management.</li>
@@ -1085,9 +1082,10 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
             </ul>
             <p>Additional controls become available when <b>Show Advanced Settings</b> is enabled.</p>
             <ul>
-              <li><b>Zero Point</b>: If you prefer your loudest volume level to show show 0 then set this to a matching value above or below the default master volume reading.</li>
-              <li><b>Max. Digital Headroom</b>: The HTP-1 has a two step volume control. First an analog volume control will raise volume. When it hits its limit the digital signal is raised. <i>Max. Digital Headroom</i> defines how much dBs are reserved in the digital signal for the volume control change to happen. For the digital volume control to never kick in you want to set <i>Max. volume</i> to your <b>negative</b> <i>Max. Digital Headroom</i> value, minus 1dB (there's already a 1dB min. headroom applied behind the scenes).</li>
-              <li><b>Peak Level Measurement</b>: Shows (and holds) volume peaks in each output channel while program material is playing. This reading is independent of the master volume control. Ideally you never want the signal to peak above 0dB. Adjust <i>Max. Digital Headroom</i> down until you see no more peaks. <i>Clear Peaks</i> will reset readings.</li>
+              <li><b>Zero Point</b>: If you want your maximum listening level to display as 0, set this control to the corresponding offset above or below the default master volume value.</li>
+              <li><b>Max. Digital Headroom</b>: The HTP-1 uses a two-stage volume control. Volume is first increased in the analog domain; once that reaches its limit, further increases are applied digitally. <i>Max Digital Headroom</i> determines how many decibels are reserved in the digital signal for this second stage.
+If you want to ensure that the digital volume stage is never used, set <i>Max Volume</i> to the <b>negative</b> value of <i>Max Digital Headroom</i>, minus 1 dB (an additional 1 dB of headroom is already applied internally).</li>
+              <li><b>Peak Level Measurement</b>: Displays the peak levels for each output channel while audio is playing, independent of the master volume setting. If a channel clips, its row turns red. Ideally, no signal should clip &ndash; that is, peak above 0 dB. Reduce <i>Max Digital Headroom</i> until no further peaks occur. <i>Clear Peaks</i> resets the readings.</li>
             </ul>
           </div>
         </div>
@@ -1247,49 +1245,6 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
           </div>
         </div>
       </div>
-      <div class="card">
-        <div
-          id="headingNineteen"
-          class="card-header"
-          @click="toggleOpened(18)"
-        >
-          <h2 class="mb-0">
-            <button
-              class="btn btn-link btn-block text-left collapsed"
-              type="button"
-              data-toggle="collapse"
-              data-target="#collapseNineteen"
-              aria-expanded="false"
-              aria-controls="collapseNineteen"
-            >
-              Help
-            </button>
-          </h2>
-        </div>
-        <div
-          id="collapseNineteen"
-          class="collapse"
-          :class="{'show': opened[18]}"
-          aria-labelledby="headingNineteen"
-          data-parent="#accordionExample"
-        >
-          <div class="card-body">
-            <div
-              class="alert alert-info small alert-box"
-              role="alert"
-            >
-              The user guide has more information. <a
-                :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`"
-                target="_blank"
-              >Click
-                here to access a PDF copy of the user guide</a>.
-            </div>
-            <p>
-              You clicked <i>Help</i> to get here.
-            </p>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </template>
@@ -1316,8 +1271,7 @@ const helpIndexes = {
   '/settings/system': 15, 
   '/settings/volume': 14,
   '/settings/configs': 16, 
-  '/settings/about': 17,
-  '/settings/help': 18 
+  '/settings/about': 17
 }
 
 export default {
