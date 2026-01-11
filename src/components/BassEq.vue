@@ -379,7 +379,7 @@ export default {
   setup() {
 
     const { mso, setPEQCenterFrequency, setPEQGain, setPEQFilterType, setPEQQuality,
-    addBEQFlag, resetBEQ, addBEQActive, removeBEQActive, setGlobalPEQOn } = useMso();
+    addBEQFlag, resetBEQ, addBEQActive, removeBEQActive, setGlobalPEQOn, peqEnabled } = useMso();
     const { getActiveChannels } = useSpeakerGroups();
     const { isMobileMode } = useResponsive();
 
@@ -573,7 +573,7 @@ export default {
     subtitle, getSubtitle, contentTypeFilter, languageFilter, yearFilter, sourceFilter, page, totalPages, 
     setPrevPage, setNextPage, setPage, pagesToShow, allSources, allLanguages, allContentTypes, allYears, 
     contentTypeMap, applyBeqFilters, clearAllExistingBeqFilters, activeSubwoofers, streamingIconMap,
-    activeBeq };
+    activeBeq, peqEnabled };
   }
 }
 </script>

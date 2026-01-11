@@ -150,6 +150,20 @@
                 User Manual
               </a>
             </li>
+            <li>
+              <a target="_blank"
+                :href="`http://${websocketIp}/HTP-1_User_Manual_ART_Addendum.pdf`"
+              >
+                ART Addendum
+              </a>
+            </li>
+            <li>
+              <a target="_blank"
+                :href="`http://${websocketIp}/HTP-1-Front-Panel.pdf`"
+              >
+                Front Panel Manual
+              </a>
+            </li>
           </ul>
         </div>
       </div>
