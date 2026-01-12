@@ -1148,6 +1148,9 @@ If you want to ensure that the digital volume stage is never used, set <i>Max Vo
                 Front panel brightness can be adjusted here. The <i>DIM</i>
                 button on the remote also works.
               </li>
+              <li>
+                A <i>Factory Reset</i> clears all user settings and restores the system to its factory defaults. Network settings and Dirac Live calibrations are preserved.
+              </li>
             </ul>
           </div>
         </div>
