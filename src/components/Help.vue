@@ -94,11 +94,6 @@
                 on buttons.
               </li>
               <li>
-                <i>Night Mode</i> engages any available Dolby or DTS functions to
-                reduce the dynamic range of the program. It also lowers the
-                subwoofer by 6dB.
-              </li>
-              <li>
                 The <i>Dirac Live</i> button allows you to quickly hear the effect of
                 the Dirac Live calibration filters. <i>You must perform a Dirac Live
                   calibration for this feature to be active.</i><br>
@@ -111,11 +106,16 @@
                 curve changes.
               </li>
               <li>
-                The <i>Dialog Enhancement</i> button is designed to make it easier
+                The <i>Dialog Enhance</i> button is designed to make it easier
                 to hear the dialog. Some DTS-X streams have a feature to
                 adjust dialog directly and this control is connected to that
                 feature. If the stream does not have this feature then the
                 center channel is boosted.
+              </li>
+              <li>
+                <i>Night Mode</i> engages any available Dolby or DTS functions to
+                reduce the dynamic range of the program. It also lowers the
+                subwoofer by 6dB.
               </li>
             </ul>
           </div>
@@ -464,7 +464,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
                 The system allows for up to 16
                 bands of parametric EQ (PEQ), individually adjustable on each
                 channel. These settings are typically used to tweak the
-                response of the room but they can also be used to tweak input signal.
+                response of the room but they can also be used to tweak input signals.
               </li>
               <li>PEQ settings can be grouped by speaker <i>channel</i> or by EQ <i>bands</i>.</li>
               <li>PEQ settings can be exported and imported, cloned and reset to defaults.</li>
@@ -745,7 +745,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
                 detects this and decodes more channels. For instance, it is
                 common to find program material recorded using AURO-3D to
                 capture 14 channels (7.1.6a) but encoded with 8 channels
-                (7.1). BlueRay disks with such content are clearly labeled.
+                (7.1). Blu-ray disks with such content are clearly labeled.
                 The AURO-3D engine can also function as an upmixer when the
                 source material is not encoded. Then the <i>Auro-Matic</i>
                 algorithm is deployed to upmix. Auro Technologies provides a
