@@ -76,12 +76,12 @@
               <li>
                 The information button in the upper right is used to update the system.
               </li>
-              <li>You accessed this page by selecting the Help button.</li>
+              <li>You reached this page by selecting the Help button.</li>
               <li>
                 From the Home page, you can adjust the volume, select an input, and choose an upmixer.
               </li>
               <li>
-                The <i>Inputs</i> configuration page determines which inputs are available as buttons
+                The <i>Inputs</i> configuration page determines which inputs are available as buttons.
               </li>
               <li>
                 The <i>Upmix</i> configuration page controls which upmixers appear as selectable buttons.
@@ -96,7 +96,7 @@
                 The <i>Dialog Enhance</i> button improves dialog intelligibility. Some DTS:X streams support direct dialog level adjustment, and this control connects to that feature when available. If the stream does not support it, the system boosts the center channel instead.
               </li>
               <li>
-                <i>Night Mode</i> activates any available Dolby or DTS processing to reduce the program’s dynamic range and also lowers the subwoofer level by 6dB.
+                <i>Night Mode</i> activates any available Dolby or DTS processing to reduce the program's dynamic range and also lowers the subwoofer level by 6dB.
               </li>
             </ul>
           </div>
@@ -220,7 +220,7 @@
                 <b>Dirac Live Slots</b>: Multiple Dirac Live filters can be transferred from the Dirac Live calibration app to the HTP-1 and stored in individual slots. This allows you to switch between different calibrations as needed.
               </li>
               <li>
-                <b>Delay and Trim</b>: During calibration, Dirac Live measures the room and determines the appropriate delay and trim values needed to align all speakers with the listening position. Trim adjusts the output levels, while delay compensates for differences in speaker distance, based on the speed of sound (approximately one foot per millisecond, or 0.34 m/ms). A properly completed Dirac Live calibration automatically sets optimal delay and trim values, and user delay and trim controls should remain at zero afterward.
+                <b>Delay and Trim</b>: During calibration, Dirac Live measures the room and determines the appropriate delay and trim values needed to align all speakers with the listening position. Trim adjusts the output levels, while delay compensates for differences in speaker distance, based on the speed of sound (approximately one foot per millisecond, or 0.34m/ms). A properly completed Dirac Live calibration automatically sets optimal delay and trim values, and user delay and trim controls should remain at zero afterward.
               </li>
               <li>
                 <b>User Trim and Delay</b>: These controls are available if you choose not to run a Dirac Live calibration, or if you need to make small adjustments to the values determined by Dirac Live. User-entered values are added to the Dirac Live values to determine the total delay and trim. Be aware that setting excessively high trim values may result in digital clipping.<br>
@@ -417,7 +417,7 @@
             <p>The parametric equalizer (PEQ) controls are located here.</p>
             <ul>
               <li>
-                The system supports up to 16 PEQ bands per channel, all individually adjustable. These controls are typically used to fine-tune your room’s acoustic response, but they can also adjust the input signal if needed.
+                The system supports up to 16 PEQ bands per channel, all individually adjustable. These controls are typically used to fine-tune your room's acoustic response, but they can also adjust the input signal if needed.
               </li>
               <li>PEQ settings can be organized by speaker <i>channel</i> or by individual EQ <i>bands</i>.</li>
               <li>You can export, import, clone, or reset PEQ settings to their defaults.</li>
