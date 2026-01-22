@@ -64,58 +64,39 @@
                 here to access a PDF copy of the user guide</a>.
             </div>
             <p>
-              The home page is the main interface to the system. While it looks similar to the front panel
-              it is designed to allow configuration of the whole system.
+              The Home page is the primary interface of the system. Although it looks similar to the front panel, it is designed to provide access to configuration options for the entire system.
             </p>
             <ul>
               <li>
-                The details of the audio stream are presented here much like
-                on the front panel.
+                Audio stream details are displayed here, much like on the front panel.
               </li>
               <li>
-                The gear icon (desktop) or hamburger menu icon (mobile device) in the upper left allows you to configure the
-                system.
+                The gear icon (on desktop) or the hamburger menu icon (on mobile devices) in the upper left allows you to configure system settings.
               </li>
               <li>
-                The info button in the upper right allows you to update the
-                system.
+                The information button in the upper right is used to update the system.
               </li>
-              <li>You pressed the help button to get here. </li>
+              <li>You reached this page by selecting the Help button.</li>
               <li>
-                You can adjust the volume, choose an input, and select an
-                upmixer.<br>
+                From the Home page, you can adjust the volume, select an input, and choose an upmixer.
               </li>
               <li>
-                The <i>Inputs</i> configuration page sets which inputs are available
-                on buttons.
+                The <i>Inputs</i> configuration page determines which inputs are available as buttons.
               </li>
               <li>
-                The <i>Upmix</i> page sets which upmixers are available
-                on buttons.
+                The <i>Upmix</i> configuration page controls which upmixers appear as selectable buttons.
               </li>
               <li>
-                <i>Night Mode</i> engages any available Dolby or DTS functions to
-                reduce the dynamic range of the program. It also lowers the
-                subwoofer by 6dB.
+                The <i>Dirac Live</i> button lets you quickly hear the effect of the Dirac Live calibration filters. This feature is only available after a Dirac Live calibration has been performed.
               </li>
               <li>
-                The <i>Dirac Live</i> button allows you to quickly hear the effect of
-                the Dirac Live calibration filters. <i>You must perform a Dirac Live
-                  calibration for this feature to be active.</i><br>
+                The <i>Loudness</i> button enables processing that boosts bass and treble as the volume decreases. More precisely, it applies compensation that closely follows <a href="https://en.wikipedia.org/wiki/Equal-loudness_contour" target="_blank">equal loudness</a> contour changes.
               </li>
               <li>
-                The <i>Loudness</i> button engages a filter that turns up the bass and treble
-                as the volume goes down. Actually, it is a bit more
-                complicated. The <i>Loudness</i> button engages processing to closely
-                follow the <a href="https://en.wikipedia.org/wiki/Equal-loudness_contour" target="_blank">equal loudness</a> 
-                curve changes.
+                The <i>Dialog Enhance</i> button improves dialog intelligibility. Some DTS:X streams support direct dialog level adjustment, and this control connects to that feature when available. If the stream does not support it, the system boosts the center channel instead.
               </li>
               <li>
-                The <i>Dialog Enhancement</i> button is designed to make it easier
-                to hear the dialog. Some DTS-X streams have a feature to
-                adjust dialog directly and this control is connected to that
-                feature. If the stream does not have this feature then the
-                center channel is boosted.
+                <i>Night Mode</i> activates any available Dolby or DTS processing to reduce the program's dynamic range and also lowers the subwoofer level by 6dB.
               </li>
             </ul>
           </div>
@@ -159,38 +140,29 @@
                 here to access a PDF copy of the user guide</a>.
             </div>
             <p>
-              The user guide suggests users first make a simple setup, then tune
-              and evolve to a more complex configuration.
+              The user guide recommends starting with a simple setup and then gradually refining and expanding it into a more advanced configuration as you become familiar with the system.
             </p>
             <ul>
               <li>
-                The <i>Speakers</i> setup page allows you to specify which speakers
-                are present. It also allows you to describe them for the purpose
-                of <a href="https://en.wikipedia.org/wiki/Bass_management" target="_blank">bass
+                The <i>Speakers</i> setup page is where you define which speakers are installed and describe their characteristics for <a href="https://en.wikipedia.org/wiki/Bass_management" target="_blank">bass
                   management</a>.
               </li>
               <li>
-                Unless you regularly change your speakers and amps, you should
-                not expect to change this page often. This page describes your
-                speakers.
+                Because this page reflects your physical speaker layout, you typically won't need to change it unless you replace or rearrange speakers or amplifiers.
               </li>
               <li>
-                Turn on the speaker switches to match your configuration.
-                Refer to the user manual for more details about which speakers
-                are where.
+                Use the speaker switches to match your actual speaker configuration. Refer to the user manual for detailed guidance on speaker locations and layouts.
               </li>
               <li>
-                Set the cutoff frequencies based on the -3dB point (f<sub>-3dB</sub>) of your speakers. This is where your speaker emits only half the acoustic power and lower frequencies start to roll off.
-                The f<sub>-3dB</sub> value can be found in the technical specifications of your particular speaker model.
+                Set the crossover (cutoff) frequencies based on the -3dB point (f<sub>-3dB</sub>) of each speaker. This is the frequency at which the speaker's output drops to half its acoustic power and lower frequencies begin to roll off. You can find the f<sub>-3dB</sub> value in the technical specifications for your specific speaker model.
               </li>
               <li>
-                The user guide contains more information about Dirac Live
-                calibration. You can download the Dirac Live tool here: <a
+                The user guide provides additional details about performing a Dirac Live calibration. You can download the Dirac Live app here: <a
                   href="https://www.dirac.com/resources/downloads" target="_blank"
                 >https://www.dirac.com/resources/downloads</a>
               </li>
               <li>
-                <b>Enable Seat Shaker</b>: When enabled the first unused subwoofer channel becomes the seat shaker channel. This channel will be excluded from Dirac Live calibrations and will not have any filter corrections while Dirac Live is enabled.
+                <b>Enable Seat Shaker</b>: When this option is enabled, the first unused subwoofer channel is assigned as the seat shaker channel. This channel is excluded from Dirac Live calibration and will not receive filter corrections while Dirac Live is active.
               </li>
             </ul>
           </div>
@@ -240,41 +212,26 @@
             </div>
             <ul>
               <li>
-                Dirac Live filters are created using the
-                Dirac Live calibration tool to calibrate the system. The user guide has more information on performing
-                a Dirac Live calibration. You can download the Dirac Live calibration tool
-                here: <a
+                Dirac Live filters are created using the Dirac Live calibration app, which measures your room and calibrates the system accordingly. The user guide provides detailed instructions on how to perform a Dirac Live calibration. You can download the Dirac Live calibration app here: <a
                   href="https://www.dirac.com/resources/downloads" target="_blank"
                 >https://www.dirac.com/resources/downloads</a>
               </li>
               <li>
-                <b>Dirac Live Slot: </b>Multiple Dirac Live filters can be transferred from the Dirac Live calibration tool to the HTP-1 and arranged into individual slots.
+                <b>Dirac Live Slots</b>: Multiple Dirac Live filters can be transferred from the Dirac Live calibration app to the HTP-1 and stored in individual slots. This allows you to switch between different calibrations as needed.
               </li>
               <li>
-                <b>Delay and Trim</b>: A Dirac Live calibration measures the room
-                and determines the amount of delay and trim required to align
-                the speakers in the room with the listening position. The trim matches the levels. The
-                delay accounts for the different distances of the speakers as
-                sound travels at approximately one foot per millisecond (0.34m/ms). A
-                properly executed Dirac Live calibration will automatically choose
-                the optimal delay and trim. The user delay and trim should be
-                zero after a Dirac Live calibration is completed.
+                <b>Delay and Trim</b>: During calibration, Dirac Live measures the room and determines the appropriate delay and trim values needed to align all speakers with the listening position. Trim adjusts the output levels, while delay compensates for differences in speaker distance, based on the speed of sound (approximately one foot per millisecond, or 0.34m/ms). A properly completed Dirac Live calibration automatically sets optimal delay and trim values, and user delay and trim controls should remain at zero afterward.
               </li>
               <li>
-                <b>User Trim and Delay</b>: These user controls can be used
-                if a Dirac Live calibration is not desired. They can also be used
-                to modify the values determined by the Dirac Live calibration. The
-                user values add to the values determined by Dirac Live to make the
-                total delay and trim. You should be aware that setting very
-                high trim values can lead to digital clipping.<br>
-With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no longer allows changes to trim and delay settings after calibration if PEQ is switched to <i>post</i>. This also applies to Dirac Live <b>Bass Control (BC)</b>.
+                <b>User Trim and Delay</b>: These controls are available if you choose not to run a Dirac Live calibration, or if you need to make small adjustments to the values determined by Dirac Live. User-entered values are added to the Dirac Live values to determine the total delay and trim. Be aware that setting excessively high trim values may result in digital clipping.<br>
+                With the introduction of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no longer allows changes to trim and delay settings after calibration when PEQ is set to <i>post</i>. This restriction also applies when using Dirac Live <b>Bass Control (BC)</b>.
               </li>
             </ul>
             <p>Additional controls become available when <b>Show Advanced Settings</b> is enabled.</p>
             <ul>
-              <li>Single speaker can be muted to check what each speaker is doing. Muting and unmuting of all speakers is available, and the selection of muted and unmuted speakers can be inverted.</li>
-              <li><i>Advanced PEQ Options</i> allows switching PEQ to <i>pre</i> or <i>post</i> bass management.</li>
-              <li><i>Bulk Edit</i> allows changing trim and delay for multiple speaker channels at once. Select one or multiple <i>target channels</i>, set a value and <i>apply to selected speakers</i>.</li>
+              <li>Individual speakers can be muted to help you check what each speaker is doing. You can also mute or unmute all speakers at once, and invert the current mute selection.</li>
+              <li><i>Advanced PEQ Options</i> let you switch PEQ placement to either <i>pre</i>- or <i>post</i>-bass management.</li>
+              <li><i>Bulk Edit</i> allows you to adjust trim and delay for multiple speaker channels at the same time. Simply select one or more <i>target channels</i>, enter the desired value, and <i>apply to selected speakers</i>.</li>
             </ul>
           </div>
         </div>
@@ -317,9 +274,8 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
                 here to access a PDF copy of the user guide</a>.
             </div>
             <p>
-              <i>Balance</i> allows individual level adjustments to input channels. 
-              It is implemented pre bass management, Dirac Live filters, tone control or loudness 
-              so as not to interfere with calibrations or other processing. <i>Balance</i> is where you can safely adjust the center channel if dialog is too low or increase the volume for sounds from the surround channels.
+              <i>Balance</i> lets you make individual level adjustments to input channels. It is applied before bass management, Dirac Live filters, tone controls, and loudness processing, so it does not interfere with calibrations or other signal processing.<br>
+              This makes <i>Balance</i> the ideal place to safely adjust the center channel if dialog is too low, or to increase the level of sounds coming from the surround channels.
             </p>
           </div>
         </div>
@@ -384,7 +340,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
                   </li>
                   <li>
                     <b>Louder reference noise</b>: A -20dBFS band limited noise 
-                    with energy between 300 Hz and 3 kHz and peak at 1 kHz.
+                    with energy between 300Hz and 3kHz and peak at 1kHz.
                   </li>
                   <li>
                     <b>Polarity pulse</b>: 
@@ -397,14 +353,14 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
                   <li>
                     <b>Left input as signal</b>: 
                     Sends the Left input to the selected speaker.
-                    Allows third party tools such as <i>Room Equalization
+                    Allows third party apps such as <i>Room Equalization
                     Wizard (REW)</i> to measure speakers inaccessible through HDMI PCM 
                     inputs.
                   </li>
                   <li>
                     <b>Right input as signal</b>: 
                     Sends the Right input to the selected speaker.
-                    Allows third party tools such as <i>Room Equalization
+                    Allows third party apps such as <i>Room Equalization
                     Wizard</i> to measure speakers inaccessible through HDMI PCM 
                     inputs.
                   </li>
@@ -458,26 +414,21 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
               >Click
                 here to access a PDF copy of the user guide</a>.
             </div>
-            <p>The controls for the parametric equalizers (PEQ) are found here.</p>
+            <p>The parametric equalizer (PEQ) controls are located here.</p>
             <ul>
               <li>
-                The system allows for up to 16
-                bands of parametric EQ (PEQ), individually adjustable on each
-                channel. These settings are typically used to tweak the
-                response of the room but they can also be used to tweak input signal.
+                The system supports up to 16 PEQ bands per channel, all individually adjustable. These controls are typically used to fine-tune your room's acoustic response, but they can also adjust the input signal if needed.
               </li>
-              <li>PEQ settings can be grouped by speaker <i>channel</i> or by EQ <i>bands</i>.</li>
-              <li>PEQ settings can be exported and imported, cloned and reset to defaults.</li>
-              <li><i>Advanced PEQ Options</i> allows switching PEQ to <i>pre</i> or <i>post</i> bass management.</li>
-              <li>PEQ defaults to <i>pre</i>. This is optimal if you are planning to use <i>BEQ</i>.</li>
+              <li>PEQ settings can be organized by speaker <i>channel</i> or by individual EQ <i>bands</i>.</li>
+              <li>You can export, import, clone, or reset PEQ settings to their defaults.</li>
+              <li><i>Advanced PEQ Options</i> allow you to switch the PEQ placement to either <i>pre</i> or <i>post</i> bass management.</li>
+              <li>By default, PEQ is set to <i>pre</i>, which is optimal if you plan to use <i>BEQ</i>.</li>
               <li>
-                PEQ can be on during a Dirac Live calibration. If PEQ is located <i>post</i> the Dirac Live filter
-                block the Dirac Live measurement signal will then see PEQ as part of the room response. This behavior is desirable for speaker pre-optimization but it also means that PEQ should not be changed after Dirac Live calibration as this will destroy calibration results. PEQ <i>post</i> is also optimal if you want to do a manual calibration.
+                PEQ can remain active during a Dirac Live calibration. If PEQ is set <i>post</i> Dirac Live filter, the calibration signal will include the PEQ adjustments as part of the room response. This is useful for speaker pre-optimization but means you should not change PEQ after calibration, as it would invalidate the results. Using PEQ <i>post</i> is also ideal for manual room calibration.
               </li>
             </ul>
             <p>
-              Note that applying large boost in the equalization can
-              lead to digital clipping.
+              Keep in mind that applying large EQ boosts can cause digital clipping.
             </p>
           </div>
         </div>
@@ -520,7 +471,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
                 here to access a PDF copy of the user guide</a>.
             </div>
             <p>
-              Bass EQ (BEQ) attempts to restore low frequency components that were filtered out during post-production. It uses PEQ for this purpose. PEQ settings are downloaded from the <a href="https://beqcatalogue.readthedocs.io/en/latest/" target="_blank">BEQ Catalog</a>.
+              Bass EQ (BEQ) is designed to bring back low-frequency content that may have been reduced during post-production. It does this using PEQ settings, which are retrieved from the <a href="https://beqcatalogue.readthedocs.io/en/latest/" target="_blank">BEQ Catalog</a>.
             </p>
           </div>
         </div>
@@ -563,14 +514,11 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
                 here to access a PDF copy of the user guide</a>.
             </div>
             <p>
-              Traditional tone controls can be
-                enabled. When enabled the boost or cut can be specified as
-                well as the corner frequencies.<br>
-              Bass tone control is particularly useful for compensating for the relatively large differences in the low frequency range that typically occur between different recordings.
+              Traditional tone controls can be turned on, allowing you to adjust both the amount of boost or cut and the corner frequencies.<br>
+              The bass tone control is especially useful for compensating for the wide variations in low-frequency content that often exist between different recordings.
             </p>
             <p>
-              Note that applying large boosts can
-              lead to digital clipping.
+              Be aware that applying excessive boost can cause digital clipping.
             </p>
           </div>
         </div>
@@ -613,34 +561,24 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
                 here to access a PDF copy of the user guide</a>.
             </div>
             <p>
-              The controls for loudness compensation are found here.
+              The loudness compensation controls are located here.
             </p>
             <ul>
               <li>
-                <b>Loudness Curve</b>: Select between different curve shapes for
-                loudness compensation. <i>ISO 226:2003</i> follows a standardized equal loudness curve while
-                <i>Vintage</i> follows compensation curves very similar to those of vintage analog home audio equipment.
+                <b>Loudness Curve</b>: Choose from different curve shapes for loudness compensation. <i>ISO 226:2003</i> follows the standardized equal-loudness curve, while <i>Vintage</i> emulates the compensation curves commonly found in classic analog home audio equipment.
               </li>
               <li>
-                <b>Loudness Calibration</b>: The loudness calibration number
-                corresponds roughly to the sound pressure level at which you
-                want a flat response. That would be the &quot;normal
-                listening volume&quot;. A higher number means there will be
-                more loudness bass as the volume goes down. A lower
-                number decreases the amount of bass boost.<br>
+                <b>Loudness Calibration</b>: This setting roughly represents the sound pressure level at which you want a flat response, also known as "reference level." A higher number increases bass boost at lower volumes, while a lower number reduces the amount of bass compensation.
               </li>
               <li>
-                <b>Night Mode</b>: Night mode engages any available Dolby or DTS functions to
-                reduce the dynamic range of the program. It also lowers the
-                subwoofer by 6dB.
+                <b>Night Mode</b>: Activates available Dolby or DTS features to reduce the program's dynamic range and lowers the subwoofer by 6dB, making listening at low volumes more comfortable.
               </li>
               <li>
-                <b>Dialog Enhance</b>: Designed to make it easier to hear the dialog. Some DTS-X streams have a feature to adjust dialog directly and this control is connected to that feature. If the stream does not have this feature then the center channel is boosted.
+                <b>Dialog Enhance</b>: Helps make dialog easier to hear. For some DTS:X streams, this control adjusts dialog directly. If the audio stream does not support this feature, the center channel is boosted instead.
               </li>
             </ul>
             <p>
-              Note that applying large boost can
-              lead to digital clipping.
+              Be aware that applying large boosts can result in digital clipping.
             </p>
           </div>
         </div>
@@ -700,10 +638,10 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
                 algorithm. The decoded audio is played <i>directly</i> with
                 no modification. The upmixer is <i>off</i>. The program
                 material is presented at its original sample rate. If you wish
-                to listen to material at high sample rates (96k or 192k) then
+                to listen to material at high sample rates (96kHz or 192kHz) then
                 you should use direct mode. All of the other upmixers use a
                 high quality sample rate converter to drop the output sample
-                rate to 48000 (or 44100)Hz.
+                rate to 48000Hz (or 44100Hz).
               </li>
               <li>
                 <b>Native</b>: In native mode, the Dolby Surround upmixer is
@@ -745,7 +683,7 @@ With the release of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no long
                 detects this and decodes more channels. For instance, it is
                 common to find program material recorded using AURO-3D to
                 capture 14 channels (7.1.6a) but encoded with 8 channels
-                (7.1). BlueRay disks with such content are clearly labeled.
+                (7.1). Blu-ray disks with such content are clearly labeled.
                 The AURO-3D engine can also function as an upmixer when the
                 source material is not encoded. Then the <i>Auro-Matic</i>
                 algorithm is deployed to upmix. Auro Technologies provides a
@@ -1133,7 +1071,7 @@ If you want to ensure that the digital volume stage is never used, set <i>Max Vo
                 Examples include:
               </li>
               <ul>
-                <li>The Dirac Live calibration tool</li>
+                <li>The Dirac Live calibration app</li>
                 <li>Bluetooth devices</li>
                 <li>Roon player</li>
               </ul>
@@ -1147,6 +1085,9 @@ If you want to ensure that the digital volume stage is never used, set <i>Max Vo
               <li>
                 Front panel brightness can be adjusted here. The <i>DIM</i>
                 button on the remote also works.
+              </li>
+              <li>
+                A <i>Factory Reset</i> clears all user settings and restores the system to its factory defaults. Network settings and Dirac Live calibrations are preserved.
               </li>
             </ul>
           </div>
