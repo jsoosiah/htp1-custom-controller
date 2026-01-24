@@ -700,7 +700,8 @@
                 mono mix.
               </li>
               <li>
-                <b>Wide Synth</b>: When Neural:X is enabled, the DTS codec derives the wide speaker signals. When Neural:X is disabled, wide speaker content is generated using principles based on Michael Gerzon's research. In this mode, <i>Wide Synth</i> derives signals from adjacent channels &ndash; for example, the left wide channel is created from the left and left surround channels. <i>Wide Synth</i> also generates top middle content from the front top and rear top speakers. If a recording already includes native wide or top middle content, it is blended with the synthesized output.
+                <b>Wide Synth</b>: The Wide Synth function generates signals for the wide channels and/or the top middle channels when speakers are present but the decoded audio contains no signal for those channels. This is particularly useful with certain Dolby formats that do not produce wide channels, as well as with DTS:X configurations that provide upper front and rear channels but no top middle channels.<br>
+                The synthesized signals are derived using principles based on Michael Gerzon's research. In this mode, Wide Synth creates new channel content from adjacent channels &ndash; for example, the left wide channel is synthesized from the left and left surround channels.
               </li>
             </ul>
             <p>
