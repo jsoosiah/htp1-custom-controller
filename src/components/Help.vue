@@ -646,7 +646,7 @@
               <li>
                 <b>Native</b>: In native mode, the Dolby Surround upmixer is
                 applied only to material decoded from Dolby sources. The DTS
-                Neural-X upmixer is applied only to native DTS sources. And
+                Neural:X upmixer is applied only to native DTS sources. And
                 the AURO-3D decoder is enabled to handle any AURO-3D encoded
                 sources. No upmixer is applied to PCM sources. The
                 Auro-Matic upmixer cannot be applied to material sampled at
@@ -666,11 +666,11 @@
                 input will result in sound only from the center channel.
               </li>
               <li>
-                <b>DTS Neural-X</b>: When this is selected, the DTS Neural-X
+                <b>DTS Neural:X</b>: When this is selected, the DTS Neural:X
                 algorithm is enabled to analyze the input stream and process
                 it for presentation across the available speaker set. This is
-                an evolution of the previous DTS NEO. One control is provided,
-                namely <i>Wide Synth</i>. Since the Neural-X code only
+                an evolution of the previous DTS Neo. One control is provided,
+                namely <i>Wide Synth</i>. Since the Neural:X code only
                 produces data for 12 channels (7.1.4), enabling the wide synth
                 control will populate the rest of the channels.
               </li>
@@ -700,12 +700,12 @@
                 mono mix.
               </li>
               <li>
-                <b>Wide Synth</b>: Synthesizes wide speakers when possible.
+                <b>Wide Synth</b>: When Neural:X is enabled, the DTS codec derives the wide speaker signals. When Neural:X is disabled, wide speaker content is generated using principles based on Michael Gerzon's research. In this mode, <i>Wide Synth</i> derives signals from adjacent channels &ndash; for example, the left wide channel is created from the left and left surround channels. <i>Wide Synth</i> also generates top middle content from the front top and rear top speakers. If a recording already includes native wide or top middle content, it is blended with the synthesized output.
               </li>
             </ul>
             <p>
-              A note about <b>Dolby Atmos</b> and <b>DTS-X</b> sources: When
-              the signal if encoded with Dolby Atmos and likewise with DTS-X
+              A note about <b>Dolby Atmos</b> and <b>DTS:X</b> sources: When
+              the signal if encoded with Dolby Atmos and likewise with DTS:X
               then none of the fancy upmixers can be applied. Following the
               guidance of the folks at Dolby and DTS, these signals are already
               optimized for lots of speakers. Hence the availability of such a
@@ -1022,7 +1022,7 @@
             <ul>
               <li><b>Zero Point</b>: If you want your maximum listening level to display as 0, set this control to the corresponding offset above or below the default master volume value.</li>
               <li><b>Max. Digital Headroom</b>: The HTP-1 uses a two-stage volume control. Volume is first increased in the analog domain; once that reaches its limit, further increases are applied digitally. <i>Max Digital Headroom</i> determines how many decibels are reserved in the digital signal for this second stage.
-If you want to ensure that the digital volume stage is never used, set <i>Max Volume</i> to the <b>negative</b> value of <i>Max Digital Headroom</i>, minus 1 dB (an additional 1 dB of headroom is already applied internally).</li>
+If you want to ensure that the digital volume stage is never used, set <i>Max Volume</i> to the <b>negative</b> value of <i>Max Digital Headroom</i>, minus 1dB (an additional 1dB of headroom is already applied internally).</li>
               <li><b>Peak Level Measurement</b>: Displays the peak levels for each output channel while audio is playing, independent of the master volume setting. If a channel clips, its row turns red. Ideally, no signal should clip &ndash; that is, peak above 0 dB. Reduce <i>Max Digital Headroom</i> until no further peaks occur. <i>Clear Peaks</i> resets the readings.</li>
             </ul>
           </div>
