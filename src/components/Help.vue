@@ -621,83 +621,30 @@
                 here to access a PDF copy of the user guide</a>.
             </div>
             <p>
-              The system supports a number of algorithms designed to <i>make it 
-              sound better</i>. These are in fact <i>upmixers</i>. We
-              sometimes refer to these as <i>sound modes</i>. They make more
-              channels from fewer channels. They are designed in particular to
-              help older source material (stereo or 5.1) drive the wide set of
-              speakers that are supported here. Controls are provided for each
-              algorithm to choose whether or not it is visible on the homepage.
-              Buttons allow you to choose one to listen to as you
-              adjust. And some of the algorithms have more controls that you can
-              access.
+              The system includes several algorithms designed to <i>enhance the sound</i>. These are essentially <i>upmixers</i>, sometimes referred to as <i>sound modes</i>. They expand fewer channels into more, making them especially useful for older source material (stereo or 5.1) to take full advantage of the wide speaker setups supported here. Each algorithm has controls to determine whether it appears on the homepage. Buttons allow you to select and listen to a mode while making adjustments, and some algorithms offer additional controls for fine-tuning.
             </p>
             <ul>
               <li>
-                <b>Direct</b>: The direct sound mode applies no upmix
-                algorithm. The decoded audio is played <i>directly</i> with
-                no modification. The upmixer is <i>off</i>. The program
-                material is presented at its original sample rate. If you wish
-                to listen to material at high sample rates (96kHz or 192kHz) then
-                you should use direct mode. All of the other upmixers use a
-                high quality sample rate converter to drop the output sample
-                rate to 48000Hz (or 44100Hz).
+                <b>Direct</b>: The <i>Direct</i> sound mode applies no upmixing algorithm. Decoded audio is played <i>directly</i> without modification, with the upmixer <i>off</i>. Program material is presented at its original sample rate, making this mode ideal for listening to high-sample-rate content (96 Hz or 192kHz). All other upmixers use a high-quality sample rate converter, which reduces the output sample rate to 48kHz (or 44.1kHz).
               </li>
               <li>
-                <b>Native</b>: In native mode, the Dolby Surround upmixer is
-                applied only to material decoded from Dolby sources. The DTS
-                Neural:X upmixer is applied only to native DTS sources. And
-                the AURO-3D decoder is enabled to handle any AURO-3D encoded
-                sources. No upmixer is applied to PCM sources. The
-                Auro-Matic upmixer cannot be applied to material sampled at
-                192kHz.
+                <b>Native</b>: In <i>Native</i> mode, the Dolby Surround upmixer is applied exclusively to content decoded from Dolby sources, while the DTS Neural:X upmixer is used only for native DTS sources. The AURO-3D decoder handles any AURO-3D-encoded material. PCM sources do not receive any upmixing, and the Auro-Matic upmixer cannot be applied to content sampled at 192kHz.
               </li>
               <li>
-                <b>Dolby Surround</b>: When this is selected, the Dolby
-                Surround algorithm is enabled to analyze the input stream and
-                process it for presentation across the available speaker set.
-                This is an evolution of the previous Dolby Pro-Logic. It has
-                one control, namely center spread. When center spread is
-                enabled the material found for the center channel is also
-                added to the left and right channels, hence <i>spreading</i>
-                the center channel sound. The Dolby Surround upmixer can
-                support any combination of speakers provided here. There may
-                not be anything in some of the channels. For instance, a mono
-                input will result in sound only from the center channel.
+                <b>Dolby Surround</b>: When selected, the Dolby Surround algorithm is activated to analyze the input stream and process it for playback across the available speaker setup. This is an evolution of the earlier Dolby Pro Logic system. It includes a single control &ndash; <i>Center Spread</i>. When <i>Center Spread</i> is enabled, the content intended for the center channel is also sent to the left and right channels, effectively <i>spreading</i> the center channel sound. The Dolby Surround upmixer can work with any combination of available speakers, though some channels may remain silent depending on the source &ndash; for example, a mono input will produce sound only from the center channel. The Dolby Surround upmixer does not generate wide channels.
               </li>
               <li>
-                <b>DTS Neural:X</b>: When this is selected, the DTS Neural:X
-                algorithm is enabled to analyze the input stream and process
-                it for presentation across the available speaker set. This is
-                an evolution of the previous DTS Neo. One control is provided,
-                namely <i>Wide Synth</i>. Since the Neural:X code only
-                produces data for 12 channels (7.1.4), enabling the wide synth
-                control will populate the rest of the channels.
+                <b>DTS Neural:X</b>: When selected, the DTS Neural:X algorithm is activated to analyze the input stream and process it for playback across the available speaker setup. This is an evolution of the earlier DTS Neo. Neural:X natively outputs up to 12 channels (7.1.4).
               </li>
               <li>
-                <b>AURO-3D</b>: When this is selected, the Auro Technology
-                Engine is engaged to analyze the input stream and process it
-                for presentation across the available speaker set. The AURO-3D
-                engine provides an alternative to the Dolby and DTS systems.
-                When sources are encoded using the AURO-3D algorithm the engine
-                detects this and decodes more channels. For instance, it is
-                common to find program material recorded using AURO-3D to
-                capture 14 channels (7.1.6a) but encoded with 8 channels
-                (7.1). Blu-ray disks with such content are clearly labeled.
-                The AURO-3D engine can also function as an upmixer when the
-                source material is not encoded. Then the <i>Auro-Matic</i>
-                algorithm is deployed to upmix. Auro Technologies provides a
-                number of controls to adjust this algorithm.
+                <b>AURO-3D</b>: Selecting this option engages the Auro Technology Engine, which analyzes the input stream and processes it for playback across the available speaker configuration. AURO-3D serves as an alternative to Dolby and DTS systems. When a source is encoded with the AURO-3D algorithm, the engine automatically detects it and decodes additional channels. For example, some program material may be recorded in 14 channels (7.1.6a) but encoded as 8 channels (7.1); Blu-ray discs containing such content are clearly labeled.<br>
+                When the source material is not AURO-3D encoded, the engine can operate as an upmixer using the <i>Auro-Matic</i> algorithm. Auro Technologies also provides several controls for adjusting this upmixing behavior.
               </li>
               <li>
-                <b>Mono</b>: All of the available channels are mixed down to
-                mono and the same signal is presented to all speakers.
+                <b>Mono</b>: All available channels are mixed down to mono, and the same signal is sent to all speakers.
               </li>
               <li>
-                <b>Stereo</b>: All of the available channels are mixed down
-                to stereo and with the left signal going to all left speakers
-                and the right to all right speakers. The center speaker gets a
-                mono mix.
+                <b>Stereo</b>: All available channels are mixed down to stereo, with the left signal sent to all left speakers and the right signal sent to all right speakers. The center speaker receives a mono mix.
               </li>
               <li>
                 <b>Wide Synth</b>: The Wide Synth function generates signals for the wide channels and/or the top middle channels when speakers are present but the decoded audio contains no signal for those channels. This is particularly useful with certain Dolby formats that do not produce wide channels, as well as with DTS:X configurations that provide upper front and rear channels but no top middle channels.<br>
@@ -705,14 +652,7 @@
               </li>
             </ul>
             <p>
-              A note about <b>Dolby Atmos</b> and <b>DTS:X</b> sources: When
-              the signal if encoded with Dolby Atmos and likewise with DTS:X
-              then none of the fancy upmixers can be applied. Following the
-              guidance of the folks at Dolby and DTS, these signals are already
-              optimized for lots of speakers. Hence the availability of such a
-              signal overrides the selection of an upmixer. The mono and stereo
-              upmixers are an exception to this. They can be applied to any
-              signal.
+              A note about <b>Dolby Atmos</b> and <b>DTS:X</b> sources: When a signal is encoded in Dolby Atmos or DTS:X, none of the advanced upmixers can be applied. According to Dolby and DTS, these formats are already optimized for systems with many speakers, so the presence of such a signal overrides any selected upmixer. Mono and stereo upmixers are the exception and can be applied to any signal.
             </p>
           </div>
         </div>
