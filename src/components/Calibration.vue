@@ -225,7 +225,7 @@
           v-for="(slot, key) in mso.cal?.slots" 
           :key="key" 
           class="nav-link" 
-          :class="[mso.cal?.currentdiracslot === key ? 'active' : '', filterTypeToCssClass(slot.filterType, slot.name), slot.valid ? '' : 'disabled']" 
+          :class="[mso.cal?.currentdiracslot === key ? 'active' : '', filterTypeToCssClass(slot.filterType, slot.name)]" 
           href="javascript:void(0)"
           @click="setDiracTab(key)"
           v-show="key < mso?.cal?.num_dirac_slots"
@@ -662,14 +662,12 @@
       }
 
       async function setDiracTab(tab) {
-        if (mso.value?.cal?.slots[tab].valid === true) {
-          currentDiracTab.value = null;
-        
-          setTimeout(() => {
-            setDiracSlot(tab);
-            currentDiracTab.value = tab;
-          }, 100);
-        }
+        currentDiracTab.value = null;
+      
+        setTimeout(() => {
+          setDiracSlot(tab);
+          currentDiracTab.value = tab;
+        }, 100);
       }
 
       function channelInvalid(channel) {

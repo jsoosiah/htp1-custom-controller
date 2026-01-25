@@ -183,8 +183,8 @@ export default function useSpeakerGroups() {
       });
       uppers = frontTops + middleTop + rearTops + frontHeights + rearHeights;
       if (uppers > 2){
-          if ((frontTops !== 0) && (rearHeights !== 0)) { suffix = "\\"; }
-          if ((frontHeights !== 0) && (rearTops !== 0)) { suffix = "/"; }
+          if ((frontTops !== 0) && (rearHeights !== 0)) { suffix = "b"; }
+          if ((frontHeights !== 0) && (rearTops !== 0)) { suffix = "s"; }
       }
       if (uppers !== 0){
           if((frontTops + rearTops) === 0) {suffix = "h";}

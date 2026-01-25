@@ -157,7 +157,7 @@
             <div class="row">
               <div class="col-auto">
                 <div class="form-group">
-                  <small class="form-text text-muted">All settings will be restored to factory default. Network settings and Dirac calibrations are not changed.</small>
+                  <small class="form-text text-muted">All settings will be restored to factory default and Dirac Live calibrations will be deleted. Network settings are not changed.</small>
                 </div>
               </div>
             </div>
@@ -208,7 +208,7 @@
       }
 
       function handleFactoryReset() {
-        if (confirm("All settings will be restored to factory default. Network settings and Dirac calibrations are not changed.")) {
+        if (confirm("All settings will be restored to factory default and Dirac Live calibrations will be deleted. Network settings are not changed.")) {
           factoryReset();
         }
       }
