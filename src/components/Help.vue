@@ -621,7 +621,7 @@
                 here to access a PDF copy of the user guide</a>.
             </div>
             <p>
-              The system includes several algorithms designed to <i>enhance the sound</i>. These are essentially <i>upmixers</i>, sometimes referred to as <i>sound modes</i>. They expand fewer channels into more, making them especially useful for older source material (stereo or 5.1) to take full advantage of the wide speaker setups supported here. Each algorithm has controls to determine whether it appears on the homepage. Buttons allow you to select and listen to a mode while making adjustments, and some algorithms offer additional controls for fine-tuning.
+              The system features a range of algorithms designed to enhance audio playback. Often called <i>upmixers</i> or <i>sound modes</i>, these processes expand content with fewer channels into more channels, allowing older sources such as stereo or 5.1 to better utilize the system's expansive speaker configurations. Each algorithm can be set to appear on the homepage, and buttons let you select and audition a mode while adjusting its settings. Some algorithms also provide extra controls for more detailed fine-tuning.
             </p>
             <ul>
               <li>
@@ -1028,7 +1028,7 @@ If you want to ensure that the digital volume stage is never used, set <i>Max Vo
                 button on the remote also works.
               </li>
               <li>
-                A <i>Factory Reset</i> clears all user settings and restores the system to its factory defaults. Network settings and Dirac Live calibrations are preserved.
+                A <i>Factory Reset</i> clears all user settings and restores the system to its factory defaults. Dirac Live calibrations will be deleted. Network settings are preserved.
               </li>
             </ul>
           </div>
