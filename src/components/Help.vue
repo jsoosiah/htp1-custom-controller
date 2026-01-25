@@ -625,7 +625,7 @@
             </p>
             <ul>
               <li>
-                <b>Direct</b>: The <i>Direct</i> sound mode applies no upmixing algorithm. Decoded audio is played <i>directly</i> without modification, with the upmixer <i>off</i>. All other processing such as balance, bass management, tone control, loudness, PEQ, and Dirac Live filters is still applied. Program material is presented at its original sample rate, making this mode ideal for listening to high sample rate content (96kHz or 192kHz). All other upmixers use a high quality sample rate converter, which reduces the output sample rate to 48kHz (or 44.1kHz).
+                <b>Direct</b>: The <i>Direct</i> sound mode applies no upmixing algorithm. Decoded audio is played <i>directly</i> without modification, with the upmixer <i>off</i>. All other processing such as balance, bass management, tone control, loudness and PEQ is still applied. Program material is presented at its original sample rate, making this mode ideal for listening to high sample rate content (96kHz or 192kHz). All other upmixers use a high quality sample rate converter, which reduces the output sample rate to 48kHz (or 44.1kHz). Dirac Live filters also limit the sample rate to 48kHz. Disable Dirac Live filtering if you want to take advantage of high sample rates.
               </li>
               <li>
                 <b>Native</b>: In <i>Native</i> mode, the Dolby Surround upmixer is applied exclusively to content decoded from Dolby sources, while the DTS Neural:X upmixer is used only for native DTS sources. The AURO-3D decoder handles any AURO-3D-encoded material. PCM sources do not receive any upmixing, and the Auro-Matic upmixer cannot be applied to content sampled at 192kHz.
