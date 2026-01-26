@@ -140,29 +140,24 @@
                 here to access a PDF copy of the user guide</a>.
             </div>
             <p>
-              The user guide recommends starting with a simple setup and then gradually refining and expanding it into a more advanced configuration as you become familiar with the system.
+              The <i>Speakers</i> setup page is where you define which speakers are installed and describe their characteristics for <a href="https://en.wikipedia.org/wiki/Bass_management" target="_blank">bass management</a>.<br>
+              Because this page reflects your physical speaker layout, you typically won't need to change it often unless you replace or rearrange speakers.
             </p>
             <ul>
               <li>
-                The <i>Speakers</i> setup page is where you define which speakers are installed and describe their characteristics for <a href="https://en.wikipedia.org/wiki/Bass_management" target="_blank">bass
-                  management</a>.
+                Click <i>Edit Speaker Layout</i> and use the speaker checkboxes to match your actual speaker configuration. Refer to the user manual for detailed guidance on speaker locations and layouts.
               </li>
               <li>
-                Because this page reflects your physical speaker layout, you typically won't need to change it unless you replace or rearrange speakers or amplifiers.
+                If a speaker is set to <i>Small</i> adjust its crossover (cutoff) frequency based on the -3dB point (f<sub>-3dB</sub>) of each speaker. This is the frequency at which the speaker's output drops to half its acoustic power and lower frequencies begin to roll off. You can find the f<sub>-3dB</sub> value in the technical specifications for your specific speaker model.
               </li>
               <li>
-                Use the speaker switches to match your actual speaker configuration. Refer to the user manual for detailed guidance on speaker locations and layouts.
-              </li>
-              <li>
-                Set the crossover (cutoff) frequencies based on the -3dB point (f<sub>-3dB</sub>) of each speaker. This is the frequency at which the speaker's output drops to half its acoustic power and lower frequencies begin to roll off. You can find the f<sub>-3dB</sub> value in the technical specifications for your specific speaker model.
-              </li>
-              <li>
-                The user guide provides additional details about performing a Dirac Live calibration. You can download the Dirac Live app here: <a
-                  href="https://www.dirac.com/resources/downloads" target="_blank"
-                >https://www.dirac.com/resources/downloads</a>
+                <i>LPF for LFE Channel</i> sets the cutoff frequency for the LFE low-pass filter.
               </li>
               <li>
                 <b>Enable Seat Shaker</b>: When this option is enabled, the first unused subwoofer channel is assigned as the seat shaker channel. This channel is excluded from Dirac Live calibration and will not receive filter corrections while Dirac Live is active.
+              </li>
+              <li>
+                <i>Speaker Map</i> displays where each speaker should be connected based on the selected speaker layout.
               </li>
             </ul>
           </div>
@@ -210,14 +205,10 @@
                 :href="`http://${websocketIp}/HTP-1_User_Manual_ART_Addendum.pdf`"
                 target="_blank">Click here to access a PDF copy of the ART addendum</a>.
             </div>
+            <p> Individual trim and delay settings, along with Dirac Live filters, can be saved in different slots. Dirac Live filters are created using the Dirac Live calibration app, which measures your room and calibrates the system accordingly. The user guide provides detailed instructions on how to perform a Dirac Live calibration. You can download the Dirac Live calibration app here: <a href="https://www.dirac.com/resources/downloads" target="_blank"> https://www.dirac.com/resources/downloads </a> </p>
             <ul>
               <li>
-                Dirac Live filters are created using the Dirac Live calibration app, which measures your room and calibrates the system accordingly. The user guide provides detailed instructions on how to perform a Dirac Live calibration. You can download the Dirac Live calibration app here: <a
-                  href="https://www.dirac.com/resources/downloads" target="_blank"
-                >https://www.dirac.com/resources/downloads</a>
-              </li>
-              <li>
-                <b>Dirac Live Slots</b>: Multiple Dirac Live filters can be transferred from the Dirac Live calibration app to the HTP-1 and stored in individual slots. This allows you to switch between different calibrations as needed.
+                <b>Calibration Slots</b>: You can store either manual calibrations or Dirac Live filters transferred from the Dirac Live calibration app to the HTP-1 in individual slots, allowing you to switch between different calibrations as needed.
               </li>
               <li>
                 <b>Delay and Trim</b>: During calibration, Dirac Live measures the room and determines the appropriate delay and trim values needed to align all speakers with the listening position. Trim adjusts the output levels, while delay compensates for differences in speaker distance, based on the speed of sound (approximately one foot per millisecond, or 0.34m/ms). A properly completed Dirac Live calibration automatically sets optimal delay and trim values, and user delay and trim controls should remain at zero afterward.
@@ -1071,13 +1062,16 @@ If you want to ensure that the digital volume stage is never used, set <i>Max Vo
               >Click
                 here to access a PDF copy of the user guide</a>.
             </div>
-            <ul>
-              <li>
+            <p>
                 You can export and import settings of the whole system. It's a good idea
                 to export the configuration when you are happy with your
                 settings. Then you can re-import them if settings
                 are lost or damaged.
-              </li>
+            </p>
+            <ul>
+              <li>Clicking <i>Export current Configuration to File</i> downloads the current configuration as a JSON file.</li>
+              <li><i>Choose File</i> allows you to select a saved configuration file from your hard drive. A list of parameters to be updated will be displayed. Click <i>Confirm Import Configuration</i> to upload.</li>
+              <li><i>Import/Export Dirac Live Filters</i> lets you back up and restore Dirac Live filters. Only pre-ART filters from firmware version 1.x can be downloaded and uploaded here. These filters cannot be imported into the ART system.</li>
             </ul>
           </div>
         </div>
@@ -1119,8 +1113,8 @@ If you want to ensure that the digital volume stage is never used, set <i>Max Vo
               >Click
                 here to access a PDF copy of the user guide</a>.
             </div>
+            <p>This page shows system status and hardware/software versions.</p>
             <ul>
-              <li>This page shows system status and hardware/software versions.</li>
               <li>Click on <i>Current Release Notes</i> for a detailed overview of what has changed between firmware versions.</li>
               <li><i>History and Updates</i> shows whether a new firmware is available and a list of previous firmware releases.</li>
             </ul>
