@@ -1781,13 +1781,18 @@ function updateVu() {
   send('avcui "vu"');
 }
 
-function setVuPeakMode() {
+function startVuPoll() {
   send('avcui "vud 1"');
+  send('avcui "vuc"');
+  send('avcui "vut 3000');
+}
+
+function stopVuPoll() {
+  send('avcui "vud 0"')
 }
 
 function clearVuPeakLevels() {
   send('avcui "vuc"');
-  setVuPeakMode();
 }
 
 function commitSpeakerLayout () {
@@ -1859,7 +1864,7 @@ export default function useMso() {
     activeChannelsForTrim,
     currentlyRecordingSlot, setRecordingStarted, setRecordingStopped,
     dismissAlert, resetDismissedAlerts,
-    updateVu, clearVuPeakLevels, setVuPeakMode,
+    updateVu, clearVuPeakLevels, startVuPoll, stopVuPoll,
     setSecondVolume, toggleSeatShaker, diracErrorState, concordRestart,
     delayPeqAllowed, currentDiracFilterType, diracBCArtFilterExists, peqEnabled, peqWarning,
     displayVolume, factoryReset,

@@ -119,7 +119,7 @@
       const { mso, toggleSignalGenerator, setSignalGeneratorChannel, setSignalGeneratorChannel2, 
         setSignalGeneratorSignalType, setSignalGeneratorOff, setSignalGeneratorOn, 
         showCrossoverControls, setSineFrequency, setSineAmplitude, setUpmix, setVolume, updateVu, commandsReceived, eventHash,
-        clearVuPeakLevels,setVuPeakMode } = useMso();
+        clearVuPeakLevels,startVuPoll, stopVuPoll } = useMso();
       const { getActiveChannels, spkName, reverseAllChannelCodes } = useSpeakerGroups();
 
       const signalOptions = [
@@ -238,7 +238,8 @@
         peakSignalMonitoringEnabled.value = !peakSignalMonitoringEnabled.value;
 
         if (peakSignalMonitoringEnabled.value) {
-          setVuPeakMode();
+          // setVuPeakMode();
+          startVuPoll();
 
           // watch for vu received
           stopWatcher = watch(eventHash, () => {
@@ -261,6 +262,7 @@
           }
           
           clearInterval(vuInterval);
+          stopVuPoll();
         }
       }
 
@@ -300,7 +302,7 @@
         mso, toggleSignalGenerator, setSignalGeneratorChannel, setSignalGeneratorChannel2, setSignalGeneratorSignalType, 
         activeChannels, spkName, signalOptions, setSignalGeneratorOff, setSignalGeneratorOn, showCrossoverControls,
         setSineFrequency, setSineAmplitude, setUpmix, setVolume, vuMap, channelDisabled, showTooltip, handleSelect, isChecked,
-        clearVuPeakLevels,setVuPeakMode, peakSignalMonitoringEnabled, togglePeakSignalMonitoring, debug
+        clearVuPeakLevels, peakSignalMonitoringEnabled, togglePeakSignalMonitoring, debug
       };
     }
   }
