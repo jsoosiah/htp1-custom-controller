@@ -1776,19 +1776,15 @@ function setRecordingStopped() {
   currentlyRecordingSlot.value = null;
 }
 
-function updateVu() {
-  console.log('call updateVu', new Date());
-  send('avcui "vu"');
-}
-
 function startVuPoll() {
   send('avcui "vud 1"');
-  send('avcui "vuc"');
-  send('avcui "vut 3000');
+  clearVuPeakLevels();
+  send('avcui "vut 500"');
 }
 
 function stopVuPoll() {
-  send('avcui "vud 0"')
+  send('avcui "vut 0"')
+  clearVuPeakLevels();
 }
 
 function clearVuPeakLevels() {
@@ -1864,7 +1860,7 @@ export default function useMso() {
     activeChannelsForTrim,
     currentlyRecordingSlot, setRecordingStarted, setRecordingStopped,
     dismissAlert, resetDismissedAlerts,
-    updateVu, clearVuPeakLevels, startVuPoll, stopVuPoll,
+    clearVuPeakLevels, startVuPoll, stopVuPoll,
     setSecondVolume, toggleSeatShaker, diracErrorState, concordRestart,
     delayPeqAllowed, currentDiracFilterType, diracBCArtFilterExists, peqEnabled, peqWarning,
     displayVolume, factoryReset,

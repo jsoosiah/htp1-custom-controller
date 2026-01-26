@@ -118,7 +118,7 @@
 
       const { mso, toggleSignalGenerator, setSignalGeneratorChannel, setSignalGeneratorChannel2, 
         setSignalGeneratorSignalType, setSignalGeneratorOff, setSignalGeneratorOn, 
-        showCrossoverControls, setSineFrequency, setSineAmplitude, setUpmix, setVolume, updateVu, commandsReceived, eventHash,
+        showCrossoverControls, setSineFrequency, setSineAmplitude, setUpmix, setVolume, commandsReceived, eventHash,
         clearVuPeakLevels,startVuPoll, stopVuPoll } = useMso();
       const { getActiveChannels, spkName, reverseAllChannelCodes } = useSpeakerGroups();
 
@@ -134,9 +134,6 @@
       ];
 
       const peakSignalMonitoringEnabled = ref(false);
-
-      let VU_REFRESH_INTERVAL = 500; // ms
-      let lastVuReceived = 0;
 
       const vuValToDBFS = [
         '< -84',
@@ -231,37 +228,12 @@
         return result;
       });
 
-      let stopWatcher;
-      let vuInterval;
-
       function togglePeakSignalMonitoring() {
         peakSignalMonitoringEnabled.value = !peakSignalMonitoringEnabled.value;
 
         if (peakSignalMonitoringEnabled.value) {
-          // setVuPeakMode();
           startVuPoll();
-
-          // watch for vu received
-          stopWatcher = watch(eventHash, () => {
-            if (commandsReceived.value.filter(cmd => cmd.path === '/vu').length > 0) {
-              lastVuReceived = Date.now();
-            }
-          });
-
-          vuInterval = setInterval(() => {
-            if ((Date.now() - lastVuReceived) > VU_REFRESH_INTERVAL && peakSignalMonitoringEnabled.value) {
-              console.log('do updatevu');
-              updateVu();
-            } else {
-              console.log('skip updatevu', Date.now() - lastVuReceived, peakSignalMonitoringEnabled.value);
-            }
-          }, VU_REFRESH_INTERVAL)
         } else {
-          if (stopWatcher) {
-            stopWatcher();
-          }
-          
-          clearInterval(vuInterval);
           stopVuPoll();
         }
       }
