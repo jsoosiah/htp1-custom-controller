@@ -154,7 +154,7 @@
                 <i>LPF for LFE Channel</i> sets the cutoff frequency for the LFE low-pass filter.
               </li>
               <li>
-                <b>Enable Seat Shaker</b>: When this option is enabled, the first unused subwoofer channel is assigned as the seat shaker channel. This channel is excluded from Dirac Live calibration and will not receive filter corrections while Dirac Live is active.
+                <b>Enable Seat Shaker</b>: When this option is enabled, the first unused subwoofer channel is assigned as the seat shaker channel. Once enabled, the seat shaker output appears in yellow on the <i>Speaker Map</i>. This channel is excluded from Dirac Live calibration and will not receive filter corrections while Dirac Live is active.
               </li>
               <li>
                 <i>Speaker Map</i> displays where each speaker should be connected based on the selected speaker layout.
@@ -1019,7 +1019,7 @@ If you want to ensure that the digital volume stage is never used, set <i>Max Vo
                 button on the remote also works.
               </li>
               <li>
-                A <i>Factory Reset</i> clears all user settings and restores the system to its factory defaults. Dirac Live calibrations will be deleted. Network settings are preserved.
+                A <i>Factory Reset</i> clears all user settings and restores the system to its factory defaults. The system will automatically restart. Dirac Live calibrations will be deleted. Network settings are preserved.
               </li>
             </ul>
           </div>
@@ -1063,10 +1063,7 @@ If you want to ensure that the digital volume stage is never used, set <i>Max Vo
                 here to access a PDF copy of the user guide</a>.
             </div>
             <p>
-                You can export and import settings of the whole system. It's a good idea
-                to export the configuration when you are happy with your
-                settings. Then you can re-import them if settings
-                are lost or damaged.
+                You can export and import the entire system configuration. It's recommended to export your settings once you're satisfied with them, so you can easily restore them later if they are lost or corrupted.
             </p>
             <ul>
               <li>Clicking <i>Export current Configuration to File</i> downloads the current configuration as a JSON file.</li>
