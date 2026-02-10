@@ -42,12 +42,6 @@ const commandKeys = [
   'preset4'
 ];
 
-// flag to apply bmlfec from bassLpf
-let bmlfecApplied = false;
-
-// flag to apply headroom from cal/headroom
-let headroomApplied = false;
-
 // local MSO state, used to display values on the interface
 const mso = ref({});
 
@@ -323,22 +317,10 @@ function applyProductRules() {
 
     if (!mso.value.bassLpf) {
       initializeBassLpf();
-    } else {
-      if (mso.value.powerIsOn && !bmlfecApplied) {
-      // TODO remove once the MSO is read by avController
-      send(`avcui "bmlfec ${mso.value.bassLpf}"`);
-      bmlfecApplied = true;
-      }
     }
 
     if (!mso.value.cal.headroom) {
       initializeHeadroom();
-    } else {
-      if (mso.value.powerIsOn && !headroomApplied) {
-        // TODO remove once the MSO is read by avController
-        send(`avcui "headroom ${mso.value.cal.headroom}"`);
-        headroomApplied = true;
-      }
     }
 
     if (!mso.value.cal.zeroPoint) {
@@ -692,17 +674,6 @@ const powerIsOn = computed(() => {
 const displayVolume = computed(() => {
   return mso.value.cal?.zeroPoint ? mso.value.volume - mso.value.cal.zeroPoint : mso.value.volume;
 })
-
-// watch mso power state
-watch(
-  powerIsOn,
-  (newPower, oldPower) => {
-    if (newPower != oldPower) {
-      bmlfecApplied = false;
-      headroomApplied = false;
-    }
-  }
-)
 
 function setDefaultsBeforePowerDown() {
   // set default upmix for current input if necessary
@@ -1621,7 +1592,6 @@ function setSecondVolume(secVol) {
 
 function setBassLpf(lpf) {
   let lpfValue = convertInt(lpf, 120, 40, 200);
-  bmlfecApplied = false;
   return patchMso('replace', '/bassLpf', parseInt(lpfValue));
 }
 
