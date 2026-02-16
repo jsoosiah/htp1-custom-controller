@@ -230,7 +230,7 @@
     setup(props, { emit }) {
 
       const { mso, showCrossoverControls, calToolConnected,
-        executeMacro, commitSpeakerLayout, diracMismatchedChannelGroups,
+        executeMacro, diracMismatchedChannelGroups,
         currentLayoutHasMatchingDiracFilter } = useMso();
       const { darkMode } = useLocalStorage();
       const { getActiveChannels, reverseBmg, spgFromGroupsString } = useSpeakerGroups();
@@ -515,7 +515,6 @@
         console.log('save', unsavedChanges.value);
         executeMacro(unsavedChanges.value);
         setTimeout(() => {
-          commitSpeakerLayout();
           emit('cancel');
         }, 2000);
       }

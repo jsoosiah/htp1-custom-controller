@@ -1761,10 +1761,6 @@ function clearVuPeakLevels() {
   send('avcui "vuc"');
 }
 
-function commitSpeakerLayout () {
-  send('avcui "commit lm"');
-}
-
 function concordRestart() {
   send('avcui "concord restart"');
 }
@@ -1791,7 +1787,6 @@ export default function useMso() {
     setLoudnessOff, setLoudnessOn,
     setToneControlOff, setToneControlOn,
     toggleSpeakerGroup, setSpeakerSize, setCenterFreq, setBassLpf,
-    commitSpeakerLayout,
     setMinVolume, setMaxVolume, setDefaultMinVolume, setDefaultMaxVolume,
     setMaxOutputLevel, setDefaultMaxOutputLevel, 
     setHeadroom, setDefaultHeadroom, setZeroPoint, setDefaultZeroPoint,
