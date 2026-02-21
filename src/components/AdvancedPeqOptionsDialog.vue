@@ -234,7 +234,6 @@
         console.log('save', unsavedChanges.value);
         executeMacro(unsavedChanges.value);
         setTimeout(() => {
-          // commitSpeakerLayout();
           emit('cancel');
         }, 2000);
       }
