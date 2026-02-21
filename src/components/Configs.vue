@@ -50,14 +50,14 @@
         </div>
       </div>
     </div>
-    <div class="row">
+    <!-- <div class="row">
       <div class="col-auto">
         <h5>Import/Export Dirac Live Filters</h5>
         <p>
           Follow this link to the <a :href="`http://${websocketIp}/dirac.html`">Dirac Live Filters Export/Import Tools</a>.
         </p>
       </div>
-    </div>
+    </div> -->
     <template v-if="false">
       <h5>Support</h5>
       <div class="custom-control custom-switch">

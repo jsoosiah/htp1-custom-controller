@@ -327,8 +327,8 @@ function applyProductRules() {
       initializeZeroPoint();
     }
 
-    if (!mso.value.secondVolume) {
-      initializeSecondVolume();
+    if (!mso.value.secondaryPowerOnVolume) {
+      initializeSecondaryPowerOnVolume();
     }
 
     for (let slot = 0; slot < mso.value.cal.slots.length; slot++) {
@@ -1582,12 +1582,12 @@ function setDefaultZeroPoint() {
   return setZeroPoint(0);
 }
 
-function initializeSecondVolume() {
-  return patchMso('add', '/secondVolume', -20);
+function initializeSecondaryPowerOnVolume() {
+  return patchMso('add', '/secondaryPowerOnVolume', -20);
 }
 
-function setSecondVolume(secVol) {
-  return patchMso('replace', '/secondVolume', convertInt(secVol, -20, mso.value.cal?.vpl, mso.value.cal?.vph));
+function setSecondaryPowerOnVolume(secVol) {
+  return patchMso('replace', '/secondaryPowerOnVolume', convertInt(secVol, -20, mso.value.cal?.vpl, mso.value.cal?.vph));
 }
 
 function setBassLpf(lpf) {
@@ -1826,7 +1826,7 @@ export default function useMso() {
     currentlyRecordingSlot, setRecordingStarted, setRecordingStopped,
     dismissAlert, resetDismissedAlerts,
     clearVuPeakLevels, startVuPoll, stopVuPoll,
-    setSecondVolume, toggleSeatShaker, diracErrorState, concordRestart,
+    setSecondaryPowerOnVolume, toggleSeatShaker, diracErrorState, concordRestart,
     delayPeqAllowed, currentDiracFilterType, diracBCArtFilterExists, peqEnabled, peqWarning,
     displayVolume, factoryReset,
     state, loading,

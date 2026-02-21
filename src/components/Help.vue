@@ -313,29 +313,28 @@
             </p>
             <ul>
               <li>
-                <b>Signal Generator</b>: Toggles between ON and OFF to 
-                turn on or off the signal generator. The signal generator
-                mimics an off-board signal generator. That is to say the 
-                generator once turned on, remains on until it is turned off.
-                This means it remains turned on when you visit other configuration 
-                pages such as <i>Calibration</i> and <i>PEQ</i>, or even change to different inputs.
-                This also means the generator outputs are processed by the Dirac Live
-                room correction filters, tone controls, as well as the PEQ filters.
+                <b>Signal Generator</b>: 
+                Toggles the signal generator on or off. The signal generator emulates an external (off-board) generator and, once enabled, remains active until explicitly turned off. It continues running when navigating to other configuration pages &ndash;such as <i>Calibration</i> and <i>PEQ</i>&ndash;or when switching inputs. The generator output is processed through Dirac Live room correction, tone controls, and PEQ filters.
               </li>
               <li>
-                <b>Signal Select</b>: The signal generator supports a number of signal generations:
+                <b>Signal Select</b>: 
+                The signal generator supports a number of signal generations:
                 <ul>
                   <li>
-                    <b>"THX-like" band limited noise</b>: 
-                    "THX-like" band limited noise at -30dBFS.
+                    <b>"THX-like" band-limited noise</b>: 
+                    Band-limited pink noise at -30dBFS (RMS), with energy concentrated between 400 and 2000Hz. The subwoofer signal is band-limited from 30 to 80Hz.
                   </li>
                   <li>
-                    <b>Louder reference noise</b>: A -20dBFS band limited noise 
-                    with energy between 300Hz and 3kHz and peak at 1kHz.
+                    <b>Full bandwidth pink noise</b>: 
+                    A pure pink noise signal with no band-limiting applied.
+                  </li>
+                  <li>
+                    <b>Louder reference noise</b>: 
+                    A -20dBFS band-limited pink noise signal with energy between 300Hz and 3kHz and peak at 1kHz. The subwoofer signal is band-limited to lower frequencies.
                   </li>
                   <li>
                     <b>Polarity pulse</b>: 
-                    A positive impluse.
+                    A pulse train repeating once per second, designed to verify speaker polarity.
                   </li>
                   <li>
                     <b>Sine wave</b>: 

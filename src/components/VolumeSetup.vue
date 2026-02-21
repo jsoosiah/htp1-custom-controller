@@ -339,7 +339,7 @@
         </table>
       </div>
       <peak-signal-levels />
-      <!-- <div class="form-group">
+      <div class="form-group">
         <label
           for="inputEmail3"
           class="col-form-label col-form-label-sm"
@@ -351,12 +351,12 @@
                 <input
                   type="number"
                   class="form-control"
-                  aria-label="Minimum volume"
+                  aria-label="Secondary Output Power On Volume"
                   aria-describedby="basic-addon2"
-                  :value="mso.secondVolume"
+                  :value="mso.secondaryPowerOnVolume"
                   :min="mso.vpl"
                   :max="mso.vph"
-                  @change="({ type, target }) => setSecondVolume(target.value)"
+                  @change="({ type, target }) => setSecondaryPowerOnVolume(target.value)"
                 >
                 <div class="input-group-append">
                   <span
@@ -368,7 +368,7 @@
             </div>
           </div>
         </div>
-      </div> -->
+      </div>
     </template>
   </div>
 </template>
