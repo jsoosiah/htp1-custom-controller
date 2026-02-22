@@ -961,7 +961,6 @@ function setDefaultMaxOutputLevel() {
 }
 
 function setHeadroom(headroom) {
-  headroomApplied = false;
   return patchMso('replace', '/cal/headroom', convertFloat(headroom, 12, 0, 30))
 }
 
