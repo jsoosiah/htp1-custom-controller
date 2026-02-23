@@ -98,8 +98,8 @@
                     labelString: 'Gain (dB)'
                   },
                   ticks: {
-                    suggestedMin: -5,
-                    suggestedMax: 5,
+                    suggestedMin: -12,
+                    suggestedMax: 12,
                   },
                   gridLines: {
                     color: gridLinesColor.value,
@@ -108,24 +108,22 @@
                 xAxes: [{
                   type: 'logarithmic',
                   ticks: {
-                    min: 20,
+                    min: 10,
                     max: 20000,
                     callback: function(value, index) {
-                      let formatted = value.toLocaleString('en-US');
-                      let parts = formatted.split(',');
+                      // Define which frequencies to show
+                      const showFrequencies = [10, 20, 30, 40, 60, 80, 100, 200, 400, 600, 1000, 2000, 4000, 6000, 8000, 10000, 20000];
                       
-                      if ((Math.floor(index / 9)) % 2 === 0) {
-                        if (index % 2 !== 0) {
-                          return '';
-                        }
-                      } else {
-                        if (index % 2 === 0) {
-                          return '';
-                        }
-                        
+                      // Only show labels for specified frequencies
+                      if (!showFrequencies.includes(value)) {
+                        return '';
                       }
-
-                      return parts[0] + (parts.length > 1 ? 'k':'');
+                      
+                      // Format the label
+                      if (value >= 1000) {
+                        return (value / 1000) + 'k';
+                      }
+                      return value.toString();
                     },
                     minRotation: 0,
                     maxRotation: 50
@@ -358,8 +356,7 @@
 
 
             for (let i = 0; i < len; i++) {
-              let ix = convertLogScale(i, 0, len);
-              let f = ntrp(ix, 0, len, 0, sampleRate / 2);
+              let f = 10 * Math.pow(2000, i / (len - 1)); // logaritminen skaalaus 10 Hz - 20000 Hz
               let phi = Math.pow((Math.sin(2.0 * Math.PI * f / (2.0 * sampleRate))), 2.0);
               let r = (Math.pow(b0 + b1 + b2, 2.0) - 4.0 * (b0 * b1 + 4.0 * b0 * b2 + b1 * b2) * phi + 16.0 * b0 * b2 * phi * phi) / (Math.pow(1.0 + a1 + a2, 2.0) - 4.0 * (a1 + 4.0 * a2 + a1 * a2) * phi + 16.0 * a2 * phi * phi);
               r = (r < 0)?0:r;
