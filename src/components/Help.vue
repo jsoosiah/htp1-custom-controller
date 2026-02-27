@@ -215,13 +215,15 @@
               </li>
               <li>
                 <b>User Trim and Delay</b>: These controls are available if you choose not to run a Dirac Live calibration, or if you need to make small adjustments to the values determined by Dirac Live. User-entered values are added to the Dirac Live values to determine the total delay and trim. Be aware that setting excessively high trim values may result in digital clipping.<br>
-                With the introduction of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no longer allows changes to trim and delay settings after calibration when PEQ is set to <i>post</i>. This restriction also applies when using Dirac Live <b>Bass Control (BC)</b>.
+                With the introduction of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no longer allows changes to trim and delay settings after calibration. This restriction also applies when using Dirac Live <b>Bass Control (BC)</b>.<br>
+                User trim and delay settings are stored independently with each slot, so you can have different adjustments for each calibration.<br>
+                Delays and trims are set to zero during Dirac Live calibration. When a saved Dirac Live project is opened and a filter is transferred into a slot, any user-defined delays and trims are also reset to zero.
               </li>
             </ul>
             <p>Additional controls become available when <b>Show Advanced Settings</b> is enabled.</p>
             <ul>
               <li>Individual speakers can be muted to help you check what each speaker is doing. You can also mute or unmute all speakers at once, and invert the current mute selection.</li>
-              <li><i>Advanced PEQ Options</i> let you switch PEQ placement to either <i>pre</i>- or <i>post</i>-bass management.</li>
+              <li><i>Advanced PEQ Options</i> let you switch PEQ placement to either <i>pre</i> or <i>post</i> bass management.</li>
               <li><i>Bulk Edit</i> allows you to adjust trim and delay for multiple speaker channels at the same time. Simply select one or more <i>target channels</i>, enter the desired value, and <i>apply to selected speakers</i>.</li>
             </ul>
           </div>
@@ -265,7 +267,7 @@
                 here to access a PDF copy of the user guide</a>.
             </div>
             <p>
-              <i>Balance</i> lets you make individual level adjustments to input channels. It is applied before bass management, Dirac Live filters, tone controls, and loudness processing, so it does not interfere with calibrations or other signal processing.<br>
+              <i>Balance</i> lets you make individual level adjustments to input channels. It is applied before tone controls, loudness processing, parametric EQ (PEQ), bass management and Dirac Live filters, so it does not interfere with calibrations or other signal processing.<br>
               This makes <i>Balance</i> the ideal place to safely adjust the center channel if dialog is too low, or to increase the level of sounds coming from the surround channels.
             </p>
           </div>
@@ -314,7 +316,7 @@
             <ul>
               <li>
                 <b>Signal Generator</b>: 
-                Toggles the signal generator on or off. The signal generator emulates an external (off-board) generator and, once enabled, remains active until explicitly turned off. It continues running when navigating to other configuration pages &ndash;such as <i>Calibration</i> and <i>PEQ</i>&ndash;or when switching inputs. The generator output is processed through Dirac Live room correction, tone controls, and PEQ filters.
+                Toggles the signal generator on or off. The signal generator emulates an external (off-board) generator and, once enabled, remains active until explicitly turned off. It continues running when navigating to other configuration pages&ndash;such as <i>Calibration</i> and <i>PEQ</i>&ndash;or when switching inputs. The generator's output is routed through Dirac Live room correction, along with tone controls, loudness compensation, bass management, parametric EQ (PEQ) filters, and other signal processing.
               </li>
               <li>
                 <b>Signal Select</b>: 
@@ -416,6 +418,8 @@
               <li>
                 PEQ can remain active during a Dirac Live calibration. If PEQ is set <i>post</i> Dirac Live filter, the calibration signal will include the PEQ adjustments as part of the room response. This is useful for speaker pre-optimization but means you should not change PEQ after calibration, as it would invalidate the results. Using PEQ <i>post</i> is also ideal for manual room calibration.
               </li>
+              <li>PEQ settings are global and affect all calibration slots. Any adjustment made to the PEQ in one slot will automatically apply to every other slot.
+              </li>
             </ul>
             <p>
               Keep in mind that applying large EQ boosts can cause digital clipping.
@@ -504,7 +508,7 @@
                 here to access a PDF copy of the user guide</a>.
             </div>
             <p>
-              Traditional tone controls can be turned on, allowing you to adjust both the amount of boost or cut and the corner frequencies.<br>
+              Traditional tone controls can be turned on, allowing you to adjust both the amount of boost or cut and the corner frequencies for the high and/or low frequency ranges.<br>
               The bass tone control is especially useful for compensating for the wide variations in low-frequency content that often exist between different recordings.
             </p>
             <p>
@@ -927,6 +931,9 @@
                 <b>Power On Volume</b>: This number sets the default volume after restart or wake.
               </li>
               <li>
+                <b>Mix Out Power On Volume</b>: This number sets the default Mix Out volume after restart or wake.
+              </li>
+              <li>
                 <b>Min. volume</b>: This number sets the lowest level of
                 volume possible using any volume control. Set it so that
                 you can barely hear the audio.
@@ -1014,8 +1021,7 @@ If you want to ensure that the digital volume stage is never used, set <i>Max Vo
                 power up will not work when <i>Fast Start</i> is off.
               </li>
               <li>
-                Front panel brightness can be adjusted here. The <i>DIM</i>
-                button on the remote also works.
+                Front panel brightness can be adjusted here. The <i>DIM</i> button on the remote can be used as well.
               </li>
               <li>
                 A <i>Factory Reset</i> clears all user settings and restores the system to its factory defaults. The system will automatically restart. Dirac Live calibrations will be deleted. Network settings are preserved.
@@ -1067,7 +1073,6 @@ If you want to ensure that the digital volume stage is never used, set <i>Max Vo
             <ul>
               <li>Clicking <i>Export current Configuration to File</i> downloads the current configuration as a JSON file.</li>
               <li><i>Choose File</i> allows you to select a saved configuration file from your hard drive. A list of parameters to be updated will be displayed. Click <i>Confirm Import Configuration</i> to upload.</li>
-              <li><i>Import/Export Dirac Live Filters</i> lets you back up and restore Dirac Live filters. Only pre-ART filters from firmware version 1.x can be downloaded and uploaded here. These filters cannot be imported into the ART system.</li>
             </ul>
           </div>
         </div>
