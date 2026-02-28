@@ -21,6 +21,30 @@
           :disabled="!peqEnabled"
         />
       </div>
+      <div class="col-auto mb-3" v-if="eqGroupBy === 0">
+        <div
+          class="btn-group btn-group-sm"
+          role="group"
+          aria-label="Chart Display"
+        >
+          <button
+            type="button"
+            class="btn"
+            :class="{'btn-primary': showAllChannels, 'btn-secondary': !showAllChannels}"
+            @click="showAllChannels = true; chartRef.showAllChannels()"
+          >
+            SHOW ALL
+          </button>
+          <button
+            type="button"
+            class="btn"
+            :class="{'btn-primary': !showAllChannels, 'btn-secondary': showAllChannels}"
+            @click="showAllChannels = false; chartRef.showSelectedOnly(selectedChannel)"
+          >
+            SELECTED
+          </button>
+        </div>
+      </div>
       <div class="col-auto mb-3">
         <div
           class="btn-group btn-group-sm"
@@ -655,6 +679,7 @@
       const selectedChannel = ref(0);
 
       const linkAllChannels = ref(false);
+      const showAllChannels = ref(true);
 
       const secretSettings = computed(() => window.location.href.includes('secret'));
 
@@ -1012,7 +1037,8 @@
         handleCenterFreq, handleGain, handleQ, handleFilterType, handleBypass, darkMode, chartRef,
         downloadSingleChannelTargetCurve, peqWarning, peqEnabled, warningMessagePeq, channelInvalid, bandInvalid,
         diracErrorState, channelVisible, isPeqPre, getFilterTypeFloat,
-        toggleShowAdvancedPeqOptionsDialog, showAdvancedPeqOptionsDialog
+        toggleShowAdvancedPeqOptionsDialog, showAdvancedPeqOptionsDialog,
+        showAllChannels,
       };
     }
   }

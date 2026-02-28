@@ -13,22 +13,22 @@
   const NUM_SAMPLES = 128;
 
   const COLOR_PALLETE = [
-    [147,208,226],
-    [229,174,174],
-    [141,202,189],
-    [216,191,227],
-    [167,197,159],
-    [136,174,225],
-    [222,196,159],
-    [149,187,239],
-    [208,234,197],
-    [169,174,206],
-    [195,240,237],
-    [232,211,202],
-    [151,177,171],
-    [192,206,230],
-    [178,188,166],
-    [178,204,198]
+    [30,144,255],   // DodgerBlue
+    [255,69,58],    // Red
+    [52,199,89],    // Green
+    [255,149,0],    // Orange
+    [175,82,222],   // Purple
+    [0,199,190],    // Teal
+    [255,59,48],    // SystemRed
+    [90,200,250],   // LightBlue
+    [255,204,0],    // Yellow
+    [88,86,214],    // Indigo
+    [255,45,85],    // Pink
+    [50,215,75],    // SystemGreen
+    [191,90,242],   // SystemPurple
+    [64,200,224],   // Cyan
+    [255,159,10],   // SystemOrange
+    [162,132,94]    // Brown
   ];
 
   function getBorderColor(index) {
@@ -150,7 +150,45 @@
                 }
               },
               legend: {
-                position: 'bottom'
+                position: 'bottom',
+                labels: {
+                  generateLabels: function(chart) {
+                    return chart.data.datasets.map((ds, i) => {
+                      const meta = chart.getDatasetMeta(i);
+                      const hidden = meta.hidden;
+                      return {
+                        text: ds.label,
+                        fillStyle: hidden ? 'rgba(190,190,190,0.20)' : ds.backgroundColor,
+                        strokeStyle: hidden ? 'rgba(190,190,190,0.20)' : ds.borderColor,
+                        lineWidth: ds.borderWidth,
+                        datasetIndex: i,
+                        hidden: false,
+                      };
+                    });
+                  }
+                },
+                onClick: function(e, legendItem) {
+                  const index = legendItem.datasetIndex;
+                  const chart = myChart.chart;
+                  const datasets = chart.config.data.datasets;
+                  const allOthersHidden = datasets.every((ds, i) => {
+                    if (i === index) return true;
+                    return chart.getDatasetMeta(i).hidden;
+                  });
+
+                  if (allOthersHidden) {
+                    // solo päällä tai kaikki muut jo piilotettu -> palauta kaikki näkyviin
+                    datasets.forEach((ds, i) => {
+                      chart.getDatasetMeta(i).hidden = false;
+                    });
+                  } else {
+                    // solo: piilota kaikki muut
+                    datasets.forEach((ds, i) => {
+                      chart.getDatasetMeta(i).hidden = i !== index;
+                    });
+                  }
+                  chart.update();
+                }
               }
             }
           });
@@ -191,7 +229,7 @@
           pointBackgroundColor: 'rgba(0,0,0,0)',
           pointBorderColor: 'rgba(0,0,0,0)',
           pointRadius: selected ? 32 : 16,
-          borderWidth: selected ? 8 : 2,
+          borderWidth: selectedOnlyMode.value ? 2 : (selected ? 8 : 2),
         }
       }
 
@@ -206,6 +244,8 @@
 
         return singleSeriesData;
       }
+
+      const selectedOnlyMode = ref(false);
 
       watch(
         props,
@@ -226,6 +266,19 @@
         },
         {
           deep: true
+        }
+      )
+
+      watch(
+        () => props.selectedChannel,
+        (newIndex) => {
+          if (selectedOnlyMode.value && myChart) {
+            const chart = myChart.chart;
+            chart.config.data.datasets.forEach((ds, i) => {
+              chart.getDatasetMeta(i).hidden = i !== newIndex;
+            });
+            chart.update();
+          }
         }
       )
 
@@ -261,6 +314,12 @@
             myChart.options.scales.xAxes[0].gridLines.color = gridLinesColor.value;
             updateChartData(myChart.chart.config.data.datasets, channelsToUpdate);
             myChart.chart.update();
+            if (selectedOnlyMode.value) {
+              myChart.chart.config.data.datasets.forEach((ds, i) => {
+                myChart.chart.getDatasetMeta(i).hidden = i !== props.selectedChannel;
+              });
+              myChart.chart.update();
+            }
          }
       }
 
@@ -500,7 +559,31 @@
         return x;
       }
 
-      return { props, chartRef, options, gridLinesColor, exportData };
+      function showSelectedOnly(channelIndex) {
+        if (myChart) {
+          selectedOnlyMode.value = true;
+          const chart = myChart.chart;
+          chart.config.data.datasets.forEach((ds, i) => {
+            updateChartChannelActive(ds, props.activeChannels[i]);
+            chart.getDatasetMeta(i).hidden = i !== channelIndex;
+          });
+          chart.update();
+        }
+      }
+
+      function showAllChannels() {
+        if (myChart) {
+          selectedOnlyMode.value = false;
+          const chart = myChart.chart;
+          chart.config.data.datasets.forEach((ds, i) => {
+            updateChartChannelActive(ds, props.activeChannels[i]);
+            chart.getDatasetMeta(i).hidden = false;
+          });
+          chart.update();
+        }
+      }
+
+      return { props, chartRef, options, gridLinesColor, exportData, showSelectedOnly, showAllChannels };
     }
   }
 </script>
