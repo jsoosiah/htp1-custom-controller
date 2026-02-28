@@ -177,12 +177,12 @@
                   });
 
                   if (allOthersHidden) {
-                    // solo päällä tai kaikki muut jo piilotettu -> palauta kaikki näkyviin
+                    // solo on or all others already hidden -> show all
                     datasets.forEach((ds, i) => {
                       chart.getDatasetMeta(i).hidden = false;
                     });
                   } else {
-                    // solo: piilota kaikki muut
+                    // solo: hide all others
                     datasets.forEach((ds, i) => {
                       chart.getDatasetMeta(i).hidden = i !== index;
                     });
@@ -415,7 +415,7 @@
 
 
             for (let i = 0; i < len; i++) {
-              let f = 10 * Math.pow(2000, i / (len - 1)); // logaritminen skaalaus 10 Hz - 20000 Hz
+              let f = 10 * Math.pow(2000, i / (len - 1)); // log scaling 10 Hz - 20000 Hz
               let phi = Math.pow((Math.sin(2.0 * Math.PI * f / (2.0 * sampleRate))), 2.0);
               let r = (Math.pow(b0 + b1 + b2, 2.0) - 4.0 * (b0 * b1 + 4.0 * b0 * b2 + b1 * b2) * phi + 16.0 * b0 * b2 * phi * phi) / (Math.pow(1.0 + a1 + a2, 2.0) - 4.0 * (a1 + 4.0 * a2 + a1 * a2) * phi + 16.0 * a2 * phi * phi);
               r = (r < 0)?0:r;
