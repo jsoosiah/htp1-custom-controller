@@ -422,8 +422,10 @@ export default {
     }
 
     function getBandLabel(band) {
-      if (band.FilterType === FILTER_LS) return 'LS';
-      if (band.FilterType === FILTER_HS) return 'HS';
+      if (band.FilterType === FILTER_LS)  return 'LS';
+      if (band.FilterType === FILTER_HS)  return 'HS';
+      if (band.FilterType === FILTER_LPF) return 'LP';
+      if (band.FilterType === FILTER_HPF) return 'HP';
       return String(band.originalIndex + 1);
     }
 
