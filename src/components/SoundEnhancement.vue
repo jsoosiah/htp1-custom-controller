@@ -59,6 +59,23 @@
               v-if="upmix.value === 'auro'"
               class="row"
             >
+              <div class="col-lg-12 mb-3">
+                <div class="custom-control custom-switch">
+                  <input 
+                    id="aurohs" 
+                    type="checkbox" 
+                    class="custom-control-input" 
+                    :checked="mso.upmix?.auro.highSides === 'on'" 
+                    @click="toggleUpmixAuroHS()"
+                  >
+                  <label
+                    class="custom-control-label"
+                    for="aurohs"
+                  >
+                    High Sides
+                  </label>
+                </div>
+              </div>
               <div class="col-lg">
                 <div class="form-group">
                   <label

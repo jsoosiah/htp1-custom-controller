@@ -810,6 +810,10 @@ function setDefaultAuroMaticStrength() {
   setAuroMaticStrength(13);
 }
 
+function toggleUpmixAuroHS() {
+  return patchMso('replace', `/upmix/auro/highSides`, mso.value.upmix.auro.highSides === 'off' ? 'on' : 'off');
+}
+
 function toggleReinforceBass() {
   if (!diracBCEnabled.value) {
     return patchMso('replace', `/bassenhance`, mso.value.bassenhance === 'off' ? 'on' : 'off');
@@ -859,6 +863,23 @@ function setNightAuto() {
 
 function setNightOff() {
   return patchMso('replace', '/night', 'off');
+}
+
+function setNextDialnorm() {
+  return patchMso('replace', '/dialnorm', !mso.value.dialnorm);
+}
+
+function setDialnorm(mode) {
+  // Convert 'on'/'off' to boolean
+  return patchMso('replace', '/dialnorm', mode === 'on');
+}
+
+function setDialnormOn() {
+  return patchMso('replace', '/dialnorm', true);
+}
+
+function setDialnormOff() {
+  return patchMso('replace', '/dialnorm', false);
 }
 
 function toggleDirac() {

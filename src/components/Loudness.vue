@@ -99,6 +99,16 @@
       />
     </div>
 
+    <h5>Dialnorm</h5>
+    <div class="mb-3">
+      <multi-state-button-group
+        :states="[{value: 0, label: 'OFF'}, {value: 1, label: 'ON'}]"
+        :state-value="mso.dialnorm ? 1 : 0"
+        @set-on="setDialnormOn()"
+        @set-off="setDialnormOff()"
+      />
+    </div>
+
     <h5>Dialog Enhance</h5>
     <div class="row">
       <div class="col-auto">
