@@ -4,7 +4,10 @@
     <dismissable-alert alert-key="peq-bypass">
       Note that a gain of 0dB is equivalent to bypassing the filter; * denotes channels or bands that have been modified and have active PEQ filters.
     </dismissable-alert>
-    <peq-chart 
+
+    <!-- Existing chart (shown in chart mode) -->
+    <peq-chart
+      v-show="!dragEditorMode"
       ref="chartRef"
       :peq-slots="mso.peq?.slots || []"
       :active-channels="activeChannels"
@@ -12,6 +15,17 @@
       :spk-name="spkNamePre"
       :dark-mode="darkMode"
     />
+
+    <!-- Drag editor (shown in drag mode, only available in group-by-channel view) -->
+    <peq-drag-editor
+      v-if="dragEditorMode && eqGroupBy === 0"
+      :bands="currentChannelBands"
+      :dark-mode="darkMode"
+      @update:freq="onDragFreqUpdate"
+      @update:gain="onDragGainUpdate"
+      @update:q="onDragQUpdate"
+    />
+
     <div class="row justify-content-between">
       <div class="col-auto mb-3">
         <two-state-button 
@@ -20,6 +34,55 @@
           @click="toggleGlobalPEQ()"
           :disabled="!peqEnabled"
         />
+      </div>
+      <div class="col-auto mb-3" v-if="eqGroupBy === 0">
+        <div
+          class="btn-group btn-group-sm mr-2"
+          role="group"
+          aria-label="Chart Display"
+        >
+          <button
+            type="button"
+            class="btn"
+            :class="{'btn-primary': showAllChannels, 'btn-secondary': !showAllChannels}"
+            @click="showAllChannels = true; chartRef.showAllChannels()"
+            :disabled="dragEditorMode"
+          >
+            SHOW ALL
+          </button>
+          <button
+            type="button"
+            class="btn"
+            :class="{'btn-primary': !showAllChannels, 'btn-secondary': showAllChannels}"
+            @click="showAllChannels = false; chartRef.showSelectedOnly(selectedChannel)"
+            :disabled="dragEditorMode"
+          >
+            SELECTED
+          </button>
+        </div>
+        <!-- Toggle between static chart view and interactive drag editor -->
+        <div
+          class="btn-group btn-group-sm"
+          role="group"
+          aria-label="Editor Mode"
+        >
+          <button
+            type="button"
+            class="btn"
+            :class="{'btn-primary': !dragEditorMode, 'btn-secondary': dragEditorMode}"
+            @click="dragEditorMode = false"
+          >
+            Chart
+          </button>
+          <button
+            type="button"
+            class="btn"
+            :class="{'btn-primary': dragEditorMode, 'btn-secondary': !dragEditorMode}"
+            @click="dragEditorMode = true"
+          >
+            Editor
+          </button>
+        </div>
       </div>
       <div class="col-auto mb-3">
         <div
@@ -125,15 +188,23 @@
             <th class="text-right">
               Filter Type
             </th>
+            <th class="text-center" style="width: 40px;">
+              
+            </th>
+            <th class="text-right">
+              Reset
+            </th>
             <th class="text-right">
               Bypass
             </th>
           </tr>
         </thead>
         <tbody :class="{'hiding':!tabLoaded, 'showing':tabLoaded}">
-          <tr
+          <template
             v-for="(channame, chanIndex) in activeChannels"
             :key="channame"
+          >
+          <tr
             :class="{'table-warning': mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].beq,
                      'table-danger': mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].bypass || channelInvalid(chanIndex)}"
             v-show="channelVisible(channame)"
@@ -171,7 +242,7 @@
                 step=".1" 
                 @change="({ type, target }) => { clearAllImports(); setPEQGain(activeChannels[chanIndex], mso.peq?.currentpeqslot, target.value) }"
                 @focus="setSelectedChannel(chanIndex, true)"
-                v-show="!(mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].bypass === true && mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].preBypassFilterType === 3 || mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].FilterType === 3)"
+                v-show="!(mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].bypass === true && [3, 4, 5].includes(mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].preBypassFilterType) || [3, 4, 5].includes(mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].FilterType))"
               >
             </td>
             <td class="text-right">
@@ -206,6 +277,28 @@
                 </option>
               </select>
             </td>
+            <td class="text-center">
+              <button
+                type="button"
+                class="btn btn-sm"
+                :class="{'btn-primary': expandedRow === activeChannels[chanIndex] + '-' + mso.peq?.currentpeqslot, 'btn-secondary': expandedRow !== activeChannels[chanIndex] + '-' + mso.peq?.currentpeqslot}"
+                @click="toggleExpandRow(activeChannels[chanIndex], mso.peq?.currentpeqslot)"
+                :disabled="!peqEnabled"
+                title="Interactive sliders"
+              >
+                ⚙
+              </button>
+            </td>
+            <td class="text-right">
+              <button
+                type="button"
+                class="btn btn-sm btn-secondary"
+                @click="resetSingleBandForChannel(activeChannels[chanIndex], mso.peq?.currentpeqslot)"
+                :disabled="!peqEnabled"
+              >
+                Reset
+              </button>
+            </td>
             <td class="text-right">
               <two-state-button
                 :button-text="`Bypass: ${mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].bypass ? 'on' : 'off'}`"
@@ -215,6 +308,56 @@
               />
             </td>
           </tr>
+          <!-- Inline sliders -->
+          <tr v-if="expandedRow == activeChannels[chanIndex] + '-' + mso.peq?.currentpeqslot">
+            <td colspan="8" style="background-color: #f8f9fa; padding: 1rem;">
+              <div style="display: flex; gap: 1rem;">
+                <div style="flex: 1; min-width: 0;">
+                  <label class="form-label small mb-1"><strong>Frequency:</strong> <span style="display: inline-block; min-width: 60px; text-align: right;">{{ localSlider[`${activeChannels[chanIndex]}-${mso.peq?.currentpeqslot}-freq`] ?? mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].Fc }} Hz</span></label>
+                  <input
+                    type="range"
+                    class="form-range"
+                    style="width: 100%;"
+                    min="0"
+                    max="100"
+                    step="1"
+                    :value="freqToSlider(localSlider[`${activeChannels[chanIndex]}-${mso.peq?.currentpeqslot}-freq`] ?? mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].Fc)"
+                    @input="debouncedSetFrequency(activeChannels[chanIndex], mso.peq?.currentpeqslot, $event.target.value)"
+                    @change="finalSetFrequency(activeChannels[chanIndex], mso.peq?.currentpeqslot, $event.target.value)"
+                  >
+                </div>
+                <div style="flex: 0.9; min-width: 0;" v-if="![3,4,5].includes(mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].FilterType)">
+                  <label class="form-label small mb-1"><strong>Gain:</strong> <span style="display: inline-block; min-width: 50px; text-align: right;">{{ localSlider[`${activeChannels[chanIndex]}-${mso.peq?.currentpeqslot}-gain`] ?? mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].gaindB }} dB</span></label>
+                  <input
+                    type="range"
+                    class="form-range"
+                    style="width: 100%;"
+                    min="-12"
+                    max="12"
+                    step="0.1"
+                    :value="localSlider[`${activeChannels[chanIndex]}-${mso.peq?.currentpeqslot}-gain`] ?? mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].gaindB"
+                    @input="debouncedSetGain(activeChannels[chanIndex], mso.peq?.currentpeqslot, $event.target.value)"
+                    @change="finalSetGain(activeChannels[chanIndex], mso.peq?.currentpeqslot, $event.target.value)"
+                  >
+                </div>
+                <div style="flex: 0.9; min-width: 0;">
+                  <label class="form-label small mb-1"><strong>Q:</strong> <span style="display: inline-block; min-width: 40px; text-align: right;">{{ localSlider[`${activeChannels[chanIndex]}-${mso.peq?.currentpeqslot}-q`] ?? mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].Q }}</span></label>
+                  <input
+                    type="range"
+                    class="form-range"
+                    style="width: 100%;"
+                    min="0.1"
+                    max="10"
+                    step="0.1"
+                    :value="localSlider[`${activeChannels[chanIndex]}-${mso.peq?.currentpeqslot}-q`] ?? mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].Q"
+                    @input="debouncedSetQ(activeChannels[chanIndex], mso.peq?.currentpeqslot, $event.target.value)"
+                    @change="finalSetQ(activeChannels[chanIndex], mso.peq?.currentpeqslot, $event.target.value)"
+                  >
+                </div>
+              </div>
+            </td>
+          </tr>
+          </template>
         </tbody>
       </table>
     </template>
@@ -259,15 +402,23 @@
             <th class="text-right">
               Filter Type
             </th>
+            <th class="text-center" style="width: 40px;">
+              
+            </th>
+            <th class="text-right">
+              Reset
+            </th>
             <th class="text-right">
               Bypass
             </th>
           </tr>
         </thead>
         <tbody :class="{'hiding':!tabLoaded, 'showing':tabLoaded}">
-          <tr
+          <template
             v-for="(slot, index) in mso.peq?.slots"
             :key="index"
+          >
+          <tr
             :class="{'table-warning': slot.channels[activeChannels[selectedChannel]].beq,
                      'table-danger': slot.channels[activeChannels[selectedChannel]].bypass || bandInvalid(activeChannels[selectedChannel], index)}"
           >
@@ -300,7 +451,7 @@
                 max="20" 
                 step=".1" 
                 @change="({ type, target }) => { handleGain(activeChannels[selectedChannel], index, target.value) }"
-                v-show="!(slot.channels[activeChannels[selectedChannel]].bypass === true && slot.channels[activeChannels[selectedChannel]].preBypassFilterType === 3 || slot.channels[activeChannels[selectedChannel]].FilterType === 3)"
+                v-show="!(slot.channels[activeChannels[selectedChannel]].bypass === true && [3, 4, 5].includes(slot.channels[activeChannels[selectedChannel]].preBypassFilterType) || [3, 4, 5].includes(slot.channels[activeChannels[selectedChannel]].FilterType))"
               >
             </td>
             <td class="text-right">
@@ -332,6 +483,28 @@
                 </option>
               </select>
             </td>
+            <td class="text-center">
+              <button
+                type="button"
+                class="btn btn-sm"
+                :class="{'btn-primary': expandedRow === activeChannels[selectedChannel] + '-' + index, 'btn-secondary': expandedRow !== activeChannels[selectedChannel] + '-' + index}"
+                @click="toggleExpandRow(activeChannels[selectedChannel], index)"
+                :disabled="!peqEnabled"
+                title="Interactive sliders"
+              >
+                ⚙
+              </button>
+            </td>
+            <td class="text-right">
+              <button
+                type="button"
+                class="btn btn-sm btn-secondary"
+                @click="resetSingleBandForChannel(activeChannels[selectedChannel], index)"
+                :disabled="!peqEnabled"
+              >
+                Reset
+              </button>
+            </td>
             <td class="text-right">
               <two-state-button
                 :button-text="`Bypass: ${slot.channels[activeChannels[selectedChannel]].bypass ? 'on' : 'off'}`"
@@ -342,6 +515,56 @@
               />
             </td>
           </tr>
+          <!-- Inline sliders -->
+          <tr v-if="expandedRow == activeChannels[selectedChannel] + '-' + index">
+            <td colspan="8" style="background-color: #f8f9fa; padding: 1rem;">
+              <div style="display: flex; gap: 1rem;">
+                <div style="flex: 1; min-width: 0;">
+                  <label class="form-label small mb-1"><strong>Frequency:</strong> <span style="display: inline-block; min-width: 60px; text-align: right;">{{ localSlider[`${activeChannels[selectedChannel]}-${index}-freq`] ?? slot.channels[activeChannels[selectedChannel]].Fc }} Hz</span></label>
+                  <input
+                    type="range"
+                    class="form-range"
+                    style="width: 100%;"
+                    min="0"
+                    max="100"
+                    step="1"
+                    :value="freqToSlider(localSlider[`${activeChannels[selectedChannel]}-${index}-freq`] ?? slot.channels[activeChannels[selectedChannel]].Fc)"
+                    @input="debouncedSetFrequency(activeChannels[selectedChannel], index, $event.target.value)"
+                    @change="finalSetFrequency(activeChannels[selectedChannel], index, $event.target.value)"
+                  >
+                </div>
+                <div style="flex: 0.9; min-width: 0;" v-if="![3,4,5].includes(slot.channels[activeChannels[selectedChannel]].FilterType)">
+                  <label class="form-label small mb-1"><strong>Gain:</strong> <span style="display: inline-block; min-width: 50px; text-align: right;">{{ localSlider[`${activeChannels[selectedChannel]}-${index}-gain`] ?? slot.channels[activeChannels[selectedChannel]].gaindB }} dB</span></label>
+                  <input
+                    type="range"
+                    class="form-range"
+                    style="width: 100%;"
+                    min="-12"
+                    max="12"
+                    step="0.1"
+                    :value="localSlider[`${activeChannels[selectedChannel]}-${index}-gain`] ?? slot.channels[activeChannels[selectedChannel]].gaindB"
+                    @input="debouncedSetGain(activeChannels[selectedChannel], index, $event.target.value)"
+                    @change="finalSetGain(activeChannels[selectedChannel], index, $event.target.value)"
+                  >
+                </div>
+                <div style="flex: 0.9; min-width: 0;">
+                  <label class="form-label small mb-1"><strong>Q:</strong> <span style="display: inline-block; min-width: 40px; text-align: right;">{{ localSlider[`${activeChannels[selectedChannel]}-${index}-q`] ?? slot.channels[activeChannels[selectedChannel]].Q }}</span></label>
+                  <input
+                    type="range"
+                    class="form-range"
+                    style="width: 100%;"
+                    min="0.1"
+                    max="10"
+                    step="0.1"
+                    :value="localSlider[`${activeChannels[selectedChannel]}-${index}-q`] ?? slot.channels[activeChannels[selectedChannel]].Q"
+                    @input="debouncedSetQ(activeChannels[selectedChannel], index, $event.target.value)"
+                    @change="finalSetQ(activeChannels[selectedChannel], index, $event.target.value)"
+                  >
+                </div>
+              </div>
+            </td>
+          </tr>
+          </template>
         </tbody>
       </table>
     </template>
@@ -585,7 +808,9 @@
 
 <script>
 
-  import { ref, computed } from 'vue';
+  import PeqDragEditor from './PeqDragEditor.vue';
+
+  import { ref, computed, watch } from 'vue';
   import { compare } from 'fast-json-patch/index.mjs';
   import { debounce } from 'lodash-es';
 
@@ -608,6 +833,7 @@
       TwoStateButton,
       MsoImporter,
       PeqChart,
+      PeqDragEditor,
       DismissableAlert,
       AdvancedPeqOptionsDialog,
     },
@@ -627,6 +853,8 @@
         delayPeqAllowed, diracFilterType, filterTypeToCssClass, diracErrorState, diracBCArtFilterExists,
         peqEnabled, peqWarning } = useMso();
       const { getActiveChannels, spkName } = useSpeakerGroups();
+
+      const dragEditorMode = ref(false);
 
       const chartRef = ref(null);
       const tabLoaded = ref(true);
@@ -655,8 +883,30 @@
       const selectedChannel = ref(0);
 
       const linkAllChannels = ref(false);
+      const showAllChannels = ref(true);
 
       const secretSettings = computed(() => window.location.href.includes('secret'));
+
+      const currentChannelBands = computed(() => {
+        const chanName = activeChannels.value[selectedChannel.value];
+        if (!chanName || !mso.value.peq?.slots) return [];
+        return mso.value.peq.slots.map(slot => slot.channels[chanName]);
+      });
+
+      function onDragFreqUpdate(bandIndex, newFreq) {
+        const chanName = activeChannels.value[selectedChannel.value];
+        setPEQCenterFrequency(chanName, bandIndex, newFreq);
+      }
+
+      function onDragGainUpdate(bandIndex, newGain) {
+        const chanName = activeChannels.value[selectedChannel.value];
+        setPEQGain(chanName, bandIndex, newGain);
+      }
+
+      function onDragQUpdate(bandIndex, newQ) {
+        const chanName = activeChannels.value[selectedChannel.value];
+        setPEQQuality(chanName, bandIndex, newQ);
+      }
 
       function setSelectedChannel(chanNumber, skipLoader) {
 
@@ -839,7 +1089,9 @@
         { label: 'Low Shelf', value: 1 },
         { label: 'High Shelf', value: 2 },
         { label: 'All Pass 1st Order', value: 3.1 },
-        { label: 'All Pass 2nd Order', value: 3.2 }
+        { label: 'All Pass 2nd Order', value: 3.2 },
+        { label: 'LPF', value: 4 },
+        { label: 'HPF', value: 5 }
       ];
 
       function toListSentence(arr) {
@@ -994,6 +1246,102 @@
         return spkName(spkId);
       }
 
+      // Convert linear slider position (0-100) to logarithmic frequency (15-20000 Hz)
+      function sliderToFreq(sliderValue) {
+        const minFreq = Math.log(15);
+        const maxFreq = Math.log(20000);
+        const scale = (maxFreq - minFreq) / 100;
+        return Math.round(Math.exp(minFreq + scale * sliderValue));
+      }
+
+      // Convert frequency (15-20000 Hz) to linear slider position (0-100)
+      function freqToSlider(freq) {
+        const minFreq = Math.log(15);
+        const maxFreq = Math.log(20000);
+        const scale = (maxFreq - minFreq) / 100;
+        return Math.round((Math.log(freq) - minFreq) / scale);
+      }
+
+      // Pending slider values for immediate visual feedback.
+      // Key format: "channel-slot-param" (param: freq | gain | q)
+      // Local display values for sliders — updated on @input so label tracks
+      // the thumb in real time. Device is only called on @change (mouse/touch release).
+      const localSlider = ref({});
+
+      // Clear localSlider entries when MSO data changes externally
+      // (e.g. input box edit or drag editor update), so sliders stay in sync.
+      watch(
+        () => mso.value?.peq?.slots,
+        (slots) => {
+          if (!slots || Object.keys(localSlider.value).length === 0) return;
+          const next = { ...localSlider.value };
+          let changed = false;
+          for (const key of Object.keys(next)) {
+            const parts   = key.split('-');
+            const param   = parts[parts.length - 1];
+            const slotIdx = parseInt(parts[parts.length - 2]);
+            const channel = parts.slice(0, parts.length - 2).join('-');
+            const band    = slots[slotIdx]?.channels?.[channel];
+            if (!band) continue;
+            const live = param === 'freq' ? band.Fc : param === 'gain' ? band.gaindB : band.Q;
+            // If MSO value differs from localSlider, the change came from outside — clear it
+            if (Math.abs(live - next[key]) > 0.001) {
+              delete next[key];
+              changed = true;
+            }
+          }
+          if (changed) localSlider.value = next;
+        },
+        { deep: true }
+      );
+
+
+      function sliderSetLocal(key, val) {
+        localSlider.value = { ...localSlider.value, [key]: val };
+      }
+      function sliderCommit(key, fn, val) {
+        // Send final value to device
+        fn(Number(val));
+        // Sync local display to committed value
+        localSlider.value = { ...localSlider.value, [key]: Number(val) };
+      }
+
+      // Convenience wrappers used by template
+      function debouncedSetFrequency(channel, slot, val) {
+        sliderSetLocal(`${channel}-${slot}-freq`, sliderToFreq(val));
+      }
+      function debouncedSetGain(channel, slot, val) {
+        sliderSetLocal(`${channel}-${slot}-gain`, Number(val));
+      }
+      function debouncedSetQ(channel, slot, val) {
+        sliderSetLocal(`${channel}-${slot}-q`, Number(val));
+      }
+      function finalSetFrequency(channel, slot, val) {
+        sliderCommit(`${channel}-${slot}-freq`, v => setPEQCenterFrequency(channel, slot, v), sliderToFreq(val));
+      }
+      function finalSetGain(channel, slot, val) {
+        sliderCommit(`${channel}-${slot}-gain`, v => setPEQGain(channel, slot, v), val);
+      }
+      function finalSetQ(channel, slot, val) {
+        sliderCommit(`${channel}-${slot}-q`, v => setPEQQuality(channel, slot, v), val);
+      }
+
+      // Tracks which row's slider panel is open (null = all closed)
+      const expandedRow = ref(null);
+
+      function toggleExpandRow(channel, band) {
+        const key = `${channel}-${band}`;
+        expandedRow.value = expandedRow.value === key ? null : key;
+      }
+
+      function resetSingleBandForChannel(channel, slot) {
+        clearAllImports();
+        setPEQCenterFrequency(channel, slot, 100);
+        setPEQGain(channel, slot, 0);
+        setPEQQuality(channel, slot, 1);
+        setPEQFilterType(channel, slot, 0);
+      }
+
       function toggleShowAdvancedPeqOptionsDialog() {
         showAdvancedPeqOptionsDialog.value = !showAdvancedPeqOptionsDialog.value;
       }
@@ -1005,14 +1353,19 @@
         channelImportFileSelected, bandImportFileSelected, fullImportFileSelected, channelImportValidationWarnings,
         channelImportJson, bandImportJson, fullImportJson, bandImportPatch, channelImportPatch, fullImportPatch, 
         confirmImport, clearAllImports, importBandRef, importChannelRef, importFullRef,
-        resetPEQsForBand, resetPEQsForChannel, resetAllPEQs,
+        resetPEQsForBand, resetPEQsForChannel, resetAllPEQs, resetSingleBandForChannel,
+        expandedRow, toggleExpandRow, sliderToFreq, freqToSlider,
+        debouncedSetFrequency, debouncedSetGain, debouncedSetQ,
+        finalSetFrequency, finalSetGain, finalSetQ, localSlider,
         eqGroupBy, setGroupBy,
         cloneSelectedChannelPEQToTargetChannels, targetCloneChannels, 
         secretSettings, linkAllChannels, toggleLinkAllChannels,
         handleCenterFreq, handleGain, handleQ, handleFilterType, handleBypass, darkMode, chartRef,
         downloadSingleChannelTargetCurve, peqWarning, peqEnabled, warningMessagePeq, channelInvalid, bandInvalid,
         diracErrorState, channelVisible, isPeqPre, getFilterTypeFloat,
-        toggleShowAdvancedPeqOptionsDialog, showAdvancedPeqOptionsDialog
+        toggleShowAdvancedPeqOptionsDialog, showAdvancedPeqOptionsDialog,
+        showAllChannels, dragEditorMode, currentChannelBands, onDragFreqUpdate,
+        onDragGainUpdate, onDragQUpdate,
       };
     }
   }
