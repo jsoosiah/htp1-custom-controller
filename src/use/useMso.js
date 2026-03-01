@@ -810,6 +810,10 @@ function setDefaultAuroMaticStrength() {
   setAuroMaticStrength(13);
 }
 
+function toggleUpmixAuroHS() {
+  return patchMso('replace', `/upmix/auro/highSides`, mso.value.upmix.auro.highSides === 'off' ? 'on' : 'off');
+}
+
 function toggleReinforceBass() {
   if (!diracBCEnabled.value) {
     return patchMso('replace', `/bassenhance`, mso.value.bassenhance === 'off' ? 'on' : 'off');
@@ -859,6 +863,19 @@ function setNightAuto() {
 
 function setNightOff() {
   return patchMso('replace', '/night', 'off');
+}
+
+function setDialnorm(mode) {
+  // Convert 'on'/'off' to boolean
+  return patchMso('replace', '/dialnorm', mode === 'on');
+}
+
+function setDialnormOn() {
+  return patchMso('replace', '/dialnorm', true);
+}
+
+function setDialnormOff() {
+  return patchMso('replace', '/dialnorm', false);
 }
 
 function toggleDirac() {
@@ -1776,13 +1793,14 @@ export default function useMso() {
     visibleRemoteMacros, visibleExtraMacros, allUpmixers, upmixLabels,
     powerOff, powerSleep, powerRestart, powerOn,
     setVolume, toggleMute, setInput, setUpmix, 
-    toggleUpmixHomevis, toggleUpmixCenterSpread, toggleUpmixWideSynth,
+    toggleUpmixHomevis, toggleUpmixCenterSpread, toggleUpmixWideSynth, toggleUpmixAuroHS,
     setUpmixWideSynthOff, setUpmixWideSynthOn,
     setAuroMaticPreset, setAuroMaticStrength, setDefaultAuroMaticStrength,
     toggleReinforceBass, setReinforceBassOn, setReinforceBassOff,
     setNextNightMode, setNightMode, toggleDirac, toggleLoudness, setNextDtsDialogEnh, setDtsDialogEnh,
     setDiracOff, setDiracBypass, setDiracOn,setDiracSlotNotes, filterTypeToCssClass,
     setNightOff, setNightAuto, setNightOn,
+    setDialnorm, setDialnormOff, setDialnormOn,
     setLoudnessOff, setLoudnessOn,
     setToneControlOff, setToneControlOn,
     toggleSpeakerGroup, setSpeakerSize, setCenterFreq, setBassLpf,
