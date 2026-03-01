@@ -865,10 +865,6 @@ function setNightOff() {
   return patchMso('replace', '/night', 'off');
 }
 
-function setNextDialnorm() {
-  return patchMso('replace', '/dialnorm', !mso.value.dialnorm);
-}
-
 function setDialnorm(mode) {
   // Convert 'on'/'off' to boolean
   return patchMso('replace', '/dialnorm', mode === 'on');
@@ -1797,13 +1793,14 @@ export default function useMso() {
     visibleRemoteMacros, visibleExtraMacros, allUpmixers, upmixLabels,
     powerOff, powerSleep, powerRestart, powerOn,
     setVolume, toggleMute, setInput, setUpmix, 
-    toggleUpmixHomevis, toggleUpmixCenterSpread, toggleUpmixWideSynth,
+    toggleUpmixHomevis, toggleUpmixCenterSpread, toggleUpmixWideSynth, toggleUpmixAuroHS,
     setUpmixWideSynthOff, setUpmixWideSynthOn,
     setAuroMaticPreset, setAuroMaticStrength, setDefaultAuroMaticStrength,
     toggleReinforceBass, setReinforceBassOn, setReinforceBassOff,
     setNextNightMode, setNightMode, toggleDirac, toggleLoudness, setNextDtsDialogEnh, setDtsDialogEnh,
     setDiracOff, setDiracBypass, setDiracOn,setDiracSlotNotes, filterTypeToCssClass,
     setNightOff, setNightAuto, setNightOn,
+    setDialnorm, setDialnormOff, setDialnormOn,
     setLoudnessOff, setLoudnessOn,
     setToneControlOff, setToneControlOn,
     toggleSpeakerGroup, setSpeakerSize, setCenterFreq, setBassLpf,
