@@ -150,6 +150,33 @@
         </tr>
       </tbody>
     </table>
+    <h5>Debug Options</h5>
+    <table class="table table-sm table-striped table-responsive">
+      <tbody>
+        <tr>
+          <th>
+            Dirac Live Server
+          </th>
+          <td>
+            <a
+              target="_blank"
+              href="#"
+              @click="handleConcordRestart()"
+            >Restart</a>
+          </td>
+        </tr>
+        <tr>
+          <th>avController</th>
+          <td>
+            <a
+              target="_blank"
+              href="#"
+              @click="handleAvControllerRestart()"
+            >Restart</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
@@ -169,7 +196,21 @@ export default {
       );
     });
 
-    return { ...useMso(), ...useLocalStorage(), buildTime };
+    const { mso, concordRestart, avControllerRestart } = useMso();
+
+    function handleConcordRestart() {
+      if (confirm("Restart the Dirac Live server?")) {
+        concordRestart();
+      }
+    }
+
+    function handleAvControllerRestart() {
+      if (confirm("Restart the avController?")) {
+        avControllerRestart();
+      }
+    }
+
+    return { ...useMso(), ...useLocalStorage(), buildTime, handleConcordRestart, handleAvControllerRestart};
   },
 };
 </script>
