@@ -155,11 +155,20 @@
       <tbody>
         <tr>
           <th>
+            Quicklogs
+          </th>
+          <td>
+            <a
+              :href="`http://${websocketIp}/quicklogs.zip`"
+            >Download .zip</a>
+          </td>
+        </tr>
+        <tr>
+          <th>
             Dirac Live Server
           </th>
           <td>
             <a
-              target="_blank"
               href="#"
               @click="handleConcordRestart()"
             >Restart</a>
@@ -169,7 +178,6 @@
           <th>avController</th>
           <td>
             <a
-              target="_blank"
               href="#"
               @click="handleAvControllerRestart()"
             >Restart</a>
@@ -199,13 +207,13 @@ export default {
     const { mso, concordRestart, avControllerRestart } = useMso();
 
     function handleConcordRestart() {
-      if (confirm("Restart the Dirac Live server?")) {
+      if (confirm("Restart the Dirac Live server?\r\rThis typically takes around 30 seconds.")) {
         concordRestart();
       }
     }
 
     function handleAvControllerRestart() {
-      if (confirm("Restart the avController?")) {
+      if (confirm("Restart the avController?\r\rThis typically takes around 60 seconds.")) {
         avControllerRestart();
       }
     }
