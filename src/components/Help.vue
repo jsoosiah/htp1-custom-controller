@@ -217,7 +217,7 @@
                 <b>User Trim and Delay</b>: These controls are available if you choose not to run a Dirac Live calibration, or if you need to make small adjustments to the values determined by Dirac Live. User-entered values are added to the Dirac Live values to determine the total delay and trim. Be aware that setting excessively high trim values may result in digital clipping.<br>
                 With the introduction of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no longer allows changes to trim and delay settings after calibration. This restriction also applies when using Dirac Live <b>Bass Control (BC)</b>.<br>
                 User trim and delay settings are stored independently with each slot, so you can have different adjustments for each calibration.<br>
-                Delays and trims are set to zero during Dirac Live calibration. When a saved Dirac Live project is opened and a filter is transferred into a slot, any user-defined delays and trims are also reset to zero.
+                Delays and trims are set to zero during Dirac Live calibration. When a saved Dirac Live project is opened and a filter is transferred into a slot, any user-defined delays and trims are reset to zero as well.
               </li>
             </ul>
             <p>Additional controls become available when <b>Show Advanced Settings</b> is enabled.</p>
@@ -1118,6 +1118,7 @@ If you want to ensure that the digital volume stage is never used, set <i>Max Vo
             <ul>
               <li>Click on <i>Current Release Notes</i> for a detailed overview of what has changed between firmware versions.</li>
               <li><i>History and Updates</i> shows whether a new firmware is available and a list of previous firmware releases.</li>
+              <li><b>Debug Options</b>: These options help troubleshoot unusual system behavior. Use them only when instructed.</li>
             </ul>
           </div>
         </div>
