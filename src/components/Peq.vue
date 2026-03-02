@@ -179,22 +179,22 @@
             <th class="text-right">
               Center Freq. (Hz)
             </th>
-            <th class="text-right">
+            <th class="text-right" style="padding-right: 1.0rem;">
               Gain (dB)
             </th>
-            <th class="text-right">
+            <th class="text-right" style="padding-right: 1.5rem;">
               Q
             </th>
-            <th class="text-right">
+            <th class="text-right" style="padding-right: 2rem;">
               Filter Type
             </th>
-            <th class="text-center" style="width: 40px;">
-              
-            </th>
             <th class="text-right">
+              Slider
+            </th>
+            <th class="text-center">
               Reset
             </th>
-            <th class="text-right">
+            <th class="text-center">
               Bypass
             </th>
           </tr>
@@ -277,7 +277,7 @@
                 </option>
               </select>
             </td>
-            <td class="text-center">
+            <td class="text-right">
               <button
                 type="button"
                 class="btn btn-sm"
@@ -393,22 +393,22 @@
             <th class="text-right">
               Center Freq. (Hz)
             </th>
-            <th class="text-right">
+            <th class="text-right" style="padding-right: 1.0rem;">
               Gain (dB)
             </th>
-            <th class="text-right">
+            <th class="text-right" style="padding-right: 2rem;">
               Q
             </th>
-            <th class="text-right">
+            <th class="text-right" style="padding-right: 2rem;">
               Filter Type
             </th>
-            <th class="text-center" style="width: 40px;">
-              
-            </th>
             <th class="text-right">
+              Slider
+            </th>
+            <th class="text-center">
               Reset
             </th>
-            <th class="text-right">
+            <th class="text-center">
               Bypass
             </th>
           </tr>
@@ -483,7 +483,7 @@
                 </option>
               </select>
             </td>
-            <td class="text-center">
+            <td class="text-right">
               <button
                 type="button"
                 class="btn btn-sm"
