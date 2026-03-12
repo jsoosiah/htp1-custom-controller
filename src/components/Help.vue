@@ -18,7 +18,7 @@
             </div>
             <div class="alert alert-info small alert-box" role="alert">
               <b>Update 12/2025:</b> The front panel has been completely redesigned. <a
-                :href="`http://${websocketIp}/HTP-1-Front-Panel.pdf`"
+                :href="`http://${websocketIp}/HTP-1_Front_Panel.pdf`"
                 target="_blank">Click here to access a PDF copy of the Front Panel Manual</a>.
             </div>
     <div
