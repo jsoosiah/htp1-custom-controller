@@ -34,7 +34,10 @@
       "uninstallerIcon": "resources/htp1-remote-connected.ico"
     },
     "extraResources": [
-      { "from": "resources", "to": "resources" }
+      {
+        "from": "resources",
+        "to": "resources"
+      }
     ]
   },
   "dependencies": {
@@ -68,6 +71,6 @@
     "electron": "^39.2.7",
     "electron-builder": "^26.0.12",
     "electron-vite": "^5.0.0",
-    "vite": "^7.3.0"
+    "vite": "^7.3.1"
   }
 }

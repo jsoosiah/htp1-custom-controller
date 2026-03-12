@@ -150,6 +150,41 @@
         </tr>
       </tbody>
     </table>
+    <h5>Debug Options</h5>
+    <table class="table table-sm table-striped table-responsive">
+      <tbody>
+        <tr>
+          <th>
+            Quicklogs
+          </th>
+          <td>
+            <a
+              :href="`http://${websocketIp}/quicklogs.zip`"
+            >Download .zip</a>
+          </td>
+        </tr>
+        <tr>
+          <th>
+            Dirac Live Server
+          </th>
+          <td>
+            <a
+              href="#"
+              @click="handleConcordRestart()"
+            >Restart</a>
+          </td>
+        </tr>
+        <tr>
+          <th>avController</th>
+          <td>
+            <a
+              href="#"
+              @click="handleAvControllerRestart()"
+            >Restart</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
@@ -169,7 +204,21 @@ export default {
       );
     });
 
-    return { ...useMso(), ...useLocalStorage(), buildTime };
+    const { mso, concordRestart, avControllerRestart } = useMso();
+
+    function handleConcordRestart() {
+      if (confirm("Restart the Dirac Live server?\r\rThis typically takes around 30 seconds.")) {
+        concordRestart();
+      }
+    }
+
+    function handleAvControllerRestart() {
+      if (confirm("Restart the avController?\r\rThis typically takes around 60 seconds.")) {
+        avControllerRestart();
+      }
+    }
+
+    return { ...useMso(), ...useLocalStorage(), buildTime, handleConcordRestart, handleAvControllerRestart};
   },
 };
 </script>

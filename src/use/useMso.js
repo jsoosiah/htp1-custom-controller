@@ -1764,6 +1764,10 @@ function concordRestart() {
   send('avcui "concord restart"');
 }
 
+function avControllerRestart() {
+  send('avcui "q"');
+}
+
 /**
 * Composition function which exposes the MSO state, as well 
 * as an API to interact with MSO, abstracting away all 
@@ -1825,7 +1829,7 @@ export default function useMso() {
     currentlyRecordingSlot, setRecordingStarted, setRecordingStopped,
     dismissAlert, resetDismissedAlerts,
     clearVuPeakLevels, startVuPoll, stopVuPoll,
-    setSecondaryPowerOnVolume, toggleSeatShaker, diracErrorState, concordRestart,
+    setSecondaryPowerOnVolume, toggleSeatShaker, diracErrorState, concordRestart, avControllerRestart,
     delayPeqAllowed, currentDiracFilterType, diracBCArtFilterExists, peqEnabled, peqWarning,
     displayVolume, factoryReset,
     state, loading,

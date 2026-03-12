@@ -65,6 +65,34 @@
       </div>
     </div>
     <div class="row">
+      <div class="col-xs-auto">
+        <div class="form-group">
+          <label
+            for="secondary-power-on-volume"
+            class="col-form-label col-form-label-sm "
+          >Mix Out Power On Volume</label>
+          <div class="input-group input-group-sm numeric-input">
+            <input
+              type="number"
+              class="form-control"
+              aria-label="Mix Out Power On Volume"
+              aria-describedby="basic-addon2"
+              :value="mso.secondaryPowerOnVolume"
+              min="-100"
+              max="0"
+              @change="({ type, target }) => setSecondaryPowerOnVolume(target.value)"
+            >
+            <div class="input-group-append">
+              <span
+                id="basic-addon2"
+                class="input-group-text"
+              >dB</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
       <h6>Volume Limits</h6>
     </div>
     <div class="row">
@@ -339,36 +367,6 @@
         </table>
       </div>
       <peak-signal-levels />
-      <div class="form-group">
-        <label
-          for="inputEmail3"
-          class="col-form-label col-form-label-sm"
-        >Secondary Output Volume</label>
-        <div class="container">
-          <div class="row">
-            <div class="col">
-              <div class="input-group input-group-sm numeric-input">
-                <input
-                  type="number"
-                  class="form-control"
-                  aria-label="Secondary Output Power On Volume"
-                  aria-describedby="basic-addon2"
-                  :value="mso.secondaryPowerOnVolume"
-                  :min="mso.vpl"
-                  :max="mso.vph"
-                  @change="({ type, target }) => setSecondaryPowerOnVolume(target.value)"
-                >
-                <div class="input-group-append">
-                  <span
-                    id="basic-addon2"
-                    class="input-group-text"
-                  >dB</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </template>
   </div>
 </template>

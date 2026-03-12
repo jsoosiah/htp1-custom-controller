@@ -5,21 +5,21 @@
               class="alert alert-info small alert-box"
               role="alert"
             >
-              The user guide has more information. <a
+              The User Guide has more information. <a
                 :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`"
                 target="_blank"
               >Click
-                here to access a PDF copy of the user guide</a>.
+                here to access a PDF copy of the User Guide</a>.
             </div>
             <div class="alert alert-info small alert-box" role="alert">
               <b>Update 12/2025:</b> Support for Dirac Live Active Room Treatment (ART) has been added. <a
-                :href="`http://${websocketIp}/HTP-1_User_Manual_ART_Addendum.pdf`"
-                target="_blank">Click here to access a PDF copy of the ART addendum</a>.
+                :href="`http://${websocketIp}/HTP-1_User_Guide_Addendum.pdf`"
+                target="_blank">Click here to access a PDF copy of the User Guide Addendum</a>.
             </div>
             <div class="alert alert-info small alert-box" role="alert">
               <b>Update 12/2025:</b> The front panel has been completely redesigned. <a
-                :href="`http://${websocketIp}/HTP-1-Front-Panel.pdf`"
-                target="_blank">Click here to access a PDF copy of the front panel manual</a>.
+                :href="`http://${websocketIp}/HTP-1_Front_Panel.pdf`"
+                target="_blank">Click here to access a PDF copy of the Front Panel Manual</a>.
             </div>
     <div
       id="accordionExample"
@@ -57,11 +57,11 @@
               class="alert alert-info small alert-box"
               role="alert"
             >
-              The user guide has more information. <a
+              The User Guide has more information. <a
                 :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`"
                 target="_blank"
               >Click
-                here to access a PDF copy of the user guide</a>.
+                here to access a PDF copy of the User Guide</a>.
             </div>
             <p>
               The Home page is the primary interface of the system. Although it looks similar to the front panel, it is designed to provide access to configuration options for the entire system.
@@ -133,11 +133,11 @@
               class="alert alert-info small alert-box"
               role="alert"
             >
-              The user guide has more information. <a
+              The User Guide has more information. <a
                 :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`"
                 target="_blank"
               >Click
-                here to access a PDF copy of the user guide</a>.
+                here to access a PDF copy of the User Guide</a>.
             </div>
             <p>
               The <i>Speakers</i> setup page is where you define which speakers are installed and describe their characteristics for <a href="https://en.wikipedia.org/wiki/Bass_management" target="_blank">bass management</a>.<br>
@@ -194,18 +194,18 @@
               class="alert alert-info small alert-box"
               role="alert"
             >
-              The user guide has more information. <a
+              The User Guide has more information. <a
                 :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`"
                 target="_blank"
               >Click
-                here to access a PDF copy of the user guide</a>.
+                here to access a PDF copy of the User Guide</a>.
             </div>
             <div class="alert alert-info small alert-box" role="alert">
               <b>Update 12/2025:</b> Support for Dirac Live Active Room Treatment (ART) has been added. <a
-                :href="`http://${websocketIp}/HTP-1_User_Manual_ART_Addendum.pdf`"
-                target="_blank">Click here to access a PDF copy of the ART addendum</a>.
+                :href="`http://${websocketIp}/HTP-1_User_Guide_Addendum.pdf`"
+                target="_blank">Click here to access a PDF copy of the User Guide Addendum</a>.
             </div>
-            <p> Individual trim and delay settings, along with Dirac Live filters, can be saved in different slots. Dirac Live filters are created using the Dirac Live calibration app, which measures your room and calibrates the system accordingly. The user guide provides detailed instructions on how to perform a Dirac Live calibration. You can download the Dirac Live calibration app here: <a href="https://www.dirac.com/resources/downloads" target="_blank"> https://www.dirac.com/resources/downloads </a> </p>
+            <p> Individual trim and delay settings, along with Dirac Live filters, can be saved in different slots. Dirac Live filters are created using the Dirac Live calibration app, which measures your room and calibrates the system accordingly. The User Guide provides detailed instructions on how to perform a Dirac Live calibration. You can download the Dirac Live calibration app here: <a href="https://www.dirac.com/resources/downloads" target="_blank"> https://www.dirac.com/resources/downloads </a> </p>
             <ul>
               <li>
                 <b>Calibration Slots</b>: You can store either manual calibrations or Dirac Live filters transferred from the Dirac Live calibration app to the HTP-1 in individual slots, allowing you to switch between different calibrations as needed.
@@ -215,13 +215,15 @@
               </li>
               <li>
                 <b>User Trim and Delay</b>: These controls are available if you choose not to run a Dirac Live calibration, or if you need to make small adjustments to the values determined by Dirac Live. User-entered values are added to the Dirac Live values to determine the total delay and trim. Be aware that setting excessively high trim values may result in digital clipping.<br>
-                With the introduction of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no longer allows changes to trim and delay settings after calibration when PEQ is set to <i>post</i>. This restriction also applies when using Dirac Live <b>Bass Control (BC)</b>.
+                With the introduction of Dirac Live <b>Active Room Treatment (ART)</b>, Dirac no longer allows changes to trim and delay settings after calibration. This restriction also applies when using Dirac Live <b>Bass Control (BC)</b>.<br>
+                User trim and delay settings are stored independently with each slot, so you can have different adjustments for each calibration.<br>
+                Delays and trims are set to zero during Dirac Live calibration. When a saved Dirac Live project is opened and a filter is transferred into a slot, any user-defined delays and trims are reset to zero as well.
               </li>
             </ul>
             <p>Additional controls become available when <b>Show Advanced Settings</b> is enabled.</p>
             <ul>
               <li>Individual speakers can be muted to help you check what each speaker is doing. You can also mute or unmute all speakers at once, and invert the current mute selection.</li>
-              <li><i>Advanced PEQ Options</i> let you switch PEQ placement to either <i>pre</i>- or <i>post</i>-bass management.</li>
+              <li><i>Advanced PEQ Options</i> let you switch PEQ placement to either <i>pre</i> or <i>post</i> bass management.</li>
               <li><i>Bulk Edit</i> allows you to adjust trim and delay for multiple speaker channels at the same time. Simply select one or more <i>target channels</i>, enter the desired value, and <i>apply to selected speakers</i>.</li>
             </ul>
           </div>
@@ -258,14 +260,14 @@
               class="alert alert-info small alert-box"
               role="alert"
             >
-              The user guide has more information. <a
+              The User Guide has more information. <a
                 :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`"
                 target="_blank"
               >Click
-                here to access a PDF copy of the user guide</a>.
+                here to access a PDF copy of the User Guide</a>.
             </div>
             <p>
-              <i>Balance</i> lets you make individual level adjustments to input channels. It is applied before bass management, Dirac Live filters, tone controls, and loudness processing, so it does not interfere with calibrations or other signal processing.<br>
+              <i>Balance</i> lets you make individual level adjustments to input channels. It is applied before tone controls, loudness processing, parametric EQ (PEQ), bass management and Dirac Live filters, so it does not interfere with calibrations or other signal processing.<br>
               This makes <i>Balance</i> the ideal place to safely adjust the center channel if dialog is too low, or to increase the level of sounds coming from the surround channels.
             </p>
           </div>
@@ -302,11 +304,11 @@
               class="alert alert-info small alert-box"
               role="alert"
             >
-              The user guide has more information. <a
+              The User Guide has more information. <a
                 :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`"
                 target="_blank"
               >Click
-                here to access a PDF copy of the user guide</a>.
+                here to access a PDF copy of the User Guide</a>.
             </div>
             <p>
               The controls for the signal generators are found here.
@@ -314,7 +316,7 @@
             <ul>
               <li>
                 <b>Signal Generator</b>: 
-                Toggles the signal generator on or off. The signal generator emulates an external (off-board) generator and, once enabled, remains active until explicitly turned off. It continues running when navigating to other configuration pages &ndash;such as <i>Calibration</i> and <i>PEQ</i>&ndash;or when switching inputs. The generator output is processed through Dirac Live room correction, tone controls, and PEQ filters.
+                Toggles the signal generator on or off. The signal generator emulates an external (off-board) generator and, once enabled, remains active until explicitly turned off. It continues running when navigating to other configuration pages&ndash;such as <i>Calibration</i> and <i>PEQ</i>&ndash;or when switching inputs. The generator's output is routed through Dirac Live room correction, along with tone controls, loudness compensation, bass management, parametric EQ (PEQ) filters, and other signal processing.
               </li>
               <li>
                 <b>Signal Select</b>: 
@@ -398,11 +400,11 @@
               class="alert alert-info small alert-box"
               role="alert"
             >
-              The user guide has more information. <a
+              The User Guide has more information. <a
                 :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`"
                 target="_blank"
               >Click
-                here to access a PDF copy of the user guide</a>.
+                here to access a PDF copy of the User Guide</a>.
             </div>
             <p>The parametric equalizer (PEQ) controls are located here.</p>
             <ul>
@@ -415,6 +417,8 @@
               <li>By default, PEQ is set to <i>pre</i>, which is optimal if you plan to use <i>BEQ</i>.</li>
               <li>
                 PEQ can remain active during a Dirac Live calibration. If PEQ is set <i>post</i> Dirac Live filter, the calibration signal will include the PEQ adjustments as part of the room response. This is useful for speaker pre-optimization but means you should not change PEQ after calibration, as it would invalidate the results. Using PEQ <i>post</i> is also ideal for manual room calibration.
+              </li>
+              <li>PEQ settings are global and affect all calibration slots. Any adjustment made to the PEQ in one slot will automatically apply to every other slot.
               </li>
             </ul>
             <p>
@@ -454,11 +458,11 @@
               class="alert alert-info small alert-box"
               role="alert"
             >
-              The user guide has more information. <a
+              The User Guide has more information. <a
                 :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`"
                 target="_blank"
               >Click
-                here to access a PDF copy of the user guide</a>.
+                here to access a PDF copy of the User Guide</a>.
             </div>
             <p>
               Bass EQ (BEQ) is designed to bring back low-frequency content that may have been reduced during post-production. It does this using PEQ settings, which are retrieved from the <a href="https://beqcatalogue.readthedocs.io/en/latest/" target="_blank">BEQ Catalog</a>.
@@ -497,14 +501,14 @@
               class="alert alert-info small alert-box"
               role="alert"
             >
-              The user guide has more information. <a
+              The User Guide has more information. <a
                 :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`"
                 target="_blank"
               >Click
-                here to access a PDF copy of the user guide</a>.
+                here to access a PDF copy of the User Guide</a>.
             </div>
             <p>
-              Traditional tone controls can be turned on, allowing you to adjust both the amount of boost or cut and the corner frequencies.<br>
+              Traditional tone controls can be turned on, allowing you to adjust both the amount of boost or cut and the corner frequencies for the high and/or low frequency ranges.<br>
               The bass tone control is especially useful for compensating for the wide variations in low-frequency content that often exist between different recordings.
             </p>
             <p>
@@ -544,11 +548,11 @@
               class="alert alert-info small alert-box"
               role="alert"
             >
-              The user guide has more information. <a
+              The User Guide has more information. <a
                 :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`"
                 target="_blank"
               >Click
-                here to access a PDF copy of the user guide</a>.
+                here to access a PDF copy of the User Guide</a>.
             </div>
             <p>
               The loudness compensation controls are located here.
@@ -604,11 +608,11 @@
               class="alert alert-info small alert-box"
               role="alert"
             >
-              The user guide has more information. <a
+              The User Guide has more information. <a
                 :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`"
                 target="_blank"
               >Click
-                here to access a PDF copy of the user guide</a>.
+                here to access a PDF copy of the User Guide</a>.
             </div>
             <p>
               The system features a range of algorithms designed to enhance audio playback. Often called <i>upmixers</i> or <i>sound modes</i>, these processes expand content with fewer channels into more channels, allowing older sources such as stereo or 5.1 to better utilize the system's expansive speaker configurations. Each algorithm can be set to appear on the homepage, and buttons let you select and audition a mode while adjusting its settings. Some algorithms also provide extra controls for more detailed fine-tuning.
@@ -678,11 +682,11 @@
               class="alert alert-info small alert-box"
               role="alert"
             >
-              The user guide has more information. <a
+              The User Guide has more information. <a
                 :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`"
                 target="_blank"
               >Click
-                here to access a PDF copy of the user guide</a>.
+                here to access a PDF copy of the User Guide</a>.
             </div>
             <p>
               The input page allows you to assign a human readable name to each
@@ -695,7 +699,7 @@
                 helpful when debugging video connections. The difficulties
                 getting 4k (UHD) video to play nice together are well
                 documented on the web. Disabling UHD for an input will force
-                the source device to send 2k (HD) video. The user guide has
+                the source device to send 2k (HD) video. The User Guide has
                 more ideas of what to try if this fixes the connection.
               </li>
               <li>
@@ -764,11 +768,11 @@
               class="alert alert-info small alert-box"
               role="alert"
             >
-              The user guide has more information. <a
+              The User Guide has more information. <a
                 :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`"
                 target="_blank"
               >Click
-                here to access a PDF copy of the user guide</a>.
+                here to access a PDF copy of the User Guide</a>.
             </div>
             <p>
               The network page allows you to 
@@ -916,15 +920,18 @@
               class="alert alert-info small alert-box"
               role="alert"
             >
-              The user guide has more information. <a
+              The User Guide has more information. <a
                 :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`"
                 target="_blank"
               >Click
-                here to access a PDF copy of the user guide</a>.
+                here to access a PDF copy of the User Guide</a>.
             </div>
             <ul>
               <li>
                 <b>Power On Volume</b>: This number sets the default volume after restart or wake.
+              </li>
+              <li>
+                <b>Mix Out Power On Volume</b>: This number sets the default Mix Out volume after restart or wake.
               </li>
               <li>
                 <b>Min. volume</b>: This number sets the lowest level of
@@ -933,7 +940,7 @@
               </li>
               <li>
                 <b>Max. volume</b>: This number limits the upper
-                range of the volume control. The user guide gives more
+                range of the volume control. The User Guide gives more
                 background. This control can be usefully adjusted to
                 limit the volume of a system that is in fact capable of much
                 higher volumes.
@@ -944,7 +951,7 @@
                 HTP-1 saturates. It should represent the loudest volume
                 the system can achieve. Amplifier manufacturers
                 typically specify this number as the <i>amplifier
-                sensitivity</i>. The user guide discusses what to do if you
+                sensitivity</i>. The User Guide discusses what to do if you
                 don't know the amplifier sensitivity. It suggests starting at
                 1 volt and then adjusting by ear.<br>
               </li>
@@ -990,11 +997,11 @@ If you want to ensure that the digital volume stage is never used, set <i>Max Vo
               class="alert alert-info small alert-box"
               role="alert"
             >
-              The user guide has more information. <a
+              The User Guide has more information. <a
                 :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`"
                 target="_blank"
               >Click
-                here to access a PDF copy of the user guide</a>.
+                here to access a PDF copy of the User Guide</a>.
             </div>
             <ul>
               <li>
@@ -1014,8 +1021,7 @@ If you want to ensure that the digital volume stage is never used, set <i>Max Vo
                 power up will not work when <i>Fast Start</i> is off.
               </li>
               <li>
-                Front panel brightness can be adjusted here. The <i>DIM</i>
-                button on the remote also works.
+                Front panel brightness can be adjusted here. The <i>DIM</i> button on the remote can be used as well.
               </li>
               <li>
                 A <i>Factory Reset</i> clears all user settings and restores the system to its factory defaults. The system will automatically restart. Dirac Live calibrations will be deleted. Network settings are preserved.
@@ -1055,11 +1061,11 @@ If you want to ensure that the digital volume stage is never used, set <i>Max Vo
               class="alert alert-info small alert-box"
               role="alert"
             >
-              The user guide has more information. <a
+              The User Guide has more information. <a
                 :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`"
                 target="_blank"
               >Click
-                here to access a PDF copy of the user guide</a>.
+                here to access a PDF copy of the User Guide</a>.
             </div>
             <p>
                 You can export and import the entire system configuration. It's recommended to export your settings once you're satisfied with them, so you can easily restore them later if they are lost or corrupted.
@@ -1067,7 +1073,6 @@ If you want to ensure that the digital volume stage is never used, set <i>Max Vo
             <ul>
               <li>Clicking <i>Export current Configuration to File</i> downloads the current configuration as a JSON file.</li>
               <li><i>Choose File</i> allows you to select a saved configuration file from your hard drive. A list of parameters to be updated will be displayed. Click <i>Confirm Import Configuration</i> to upload.</li>
-              <li><i>Import/Export Dirac Live Filters</i> lets you back up and restore Dirac Live filters. Only pre-ART filters from firmware version 1.x can be downloaded and uploaded here. These filters cannot be imported into the ART system.</li>
             </ul>
           </div>
         </div>
@@ -1103,16 +1108,17 @@ If you want to ensure that the digital volume stage is never used, set <i>Max Vo
               class="alert alert-info small alert-box"
               role="alert"
             >
-              The user guide has more information. <a
+              The User Guide has more information. <a
                 :href="`http://${websocketIp}/Monolith%20HTP-1%20User%20Guide.pdf`"
                 target="_blank"
               >Click
-                here to access a PDF copy of the user guide</a>.
+                here to access a PDF copy of the User Guide</a>.
             </div>
             <p>This page shows system status and hardware/software versions.</p>
             <ul>
               <li>Click on <i>Current Release Notes</i> for a detailed overview of what has changed between firmware versions.</li>
               <li><i>History and Updates</i> shows whether a new firmware is available and a list of previous firmware releases.</li>
+              <li><b>Debug Options</b>: These options help troubleshoot unusual system behavior. Use them only when instructed.</li>
             </ul>
           </div>
         </div>
