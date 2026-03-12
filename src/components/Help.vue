@@ -13,8 +13,8 @@
             </div>
             <div class="alert alert-info small alert-box" role="alert">
               <b>Update 12/2025:</b> Support for Dirac Live Active Room Treatment (ART) has been added. <a
-                :href="`http://${websocketIp}/HTP-1_User_Manual_ART_Addendum.pdf`"
-                target="_blank">Click here to access a PDF copy of the ART addendum</a>.
+                :href="`http://${websocketIp}/HTP-1_User_Guide_Addendum.pdf`"
+                target="_blank">Click here to access a PDF copy of the User Guide Addendum</a>.
             </div>
             <div class="alert alert-info small alert-box" role="alert">
               <b>Update 12/2025:</b> The front panel has been completely redesigned. <a
@@ -202,8 +202,8 @@
             </div>
             <div class="alert alert-info small alert-box" role="alert">
               <b>Update 12/2025:</b> Support for Dirac Live Active Room Treatment (ART) has been added. <a
-                :href="`http://${websocketIp}/HTP-1_User_Manual_ART_Addendum.pdf`"
-                target="_blank">Click here to access a PDF copy of the ART addendum</a>.
+                :href="`http://${websocketIp}/HTP-1_User_Guide_Addendum.pdf`"
+                target="_blank">Click here to access a PDF copy of the User Guide Addendum</a>.
             </div>
             <p> Individual trim and delay settings, along with Dirac Live filters, can be saved in different slots. Dirac Live filters are created using the Dirac Live calibration app, which measures your room and calibrates the system accordingly. The user guide provides detailed instructions on how to perform a Dirac Live calibration. You can download the Dirac Live calibration app here: <a href="https://www.dirac.com/resources/downloads" target="_blank"> https://www.dirac.com/resources/downloads </a> </p>
             <ul>
