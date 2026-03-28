@@ -7,6 +7,20 @@
       @click="toggleToneControl()"
     />
 
+    <tone-chart 
+      :bass-freq="mso.eq?.bass.freq || 100"
+      :bass-level="mso.eq?.bass.level || 0"
+      :treble-freq="mso.eq?.treble.freq || 5000"
+      :treble-level="mso.eq?.treble.level || 0"
+      :dark-mode="darkMode"
+      :tone-enabled="!!mso.eq?.tc"
+      class="mt-3"
+      @update:bass-freq="setBassCornerFrequency($event)"
+      @update:bass-level="setBassBoostCutLevel($event)"
+      @update:treble-freq="setTrebleCornerFrequency($event)"
+      @update:treble-level="setTrebleBoostCutLevel($event)"
+    />
+
     <div class="row mt-3">
       <div
         v-show="!mso.eq?.tc"
@@ -62,7 +76,7 @@
                 aria-label="Minimum volume"
                 aria-describedby="basic-addon2"
                 :value="mso.eq?.treble.freq"
-                min="501"
+                min="600"
                 max="8000"
                 @change="({ type, target }) => setTrebleCornerFrequency(target.value)"
               >
@@ -128,30 +142,38 @@
           </div>
         </div>
       </div>
+
     </div>
   </div>
 </template>
 
 <script>
   import useMso from '@/use/useMso.js';
+  import useLocalStorage from '@/use/useLocalStorage.js';
   import TwoStateButton from './buttons/TwoStateButton.vue';
   import DismissableAlert from './buttons/DismissableAlert.vue';
-
+  import ToneChart from './ToneChart.vue';
   export default {
     name: 'ToneControl',
     components: {
       TwoStateButton,
       DismissableAlert,
+      ToneChart,
     },
     setup() {
+
+      const { darkMode } = useLocalStorage();
+      const msoApi = useMso();
+      const { setBassCornerFrequency, setTrebleCornerFrequency, setBassBoostCutLevel, setTrebleBoostCutLevel } = msoApi;
 
       const loudnessOptions = [
         {'label': 'ISO 226:2003', 'value': 'iso'},
         {'label': 'Vintage', 'value': 'vintage'},
       ];
 
+
       return {
-        ...useMso(), loudnessOptions
+        ...msoApi, loudnessOptions, darkMode,
       };
     },
   }
@@ -195,5 +217,6 @@
   .col-lg {
     padding-left: 0;
   }
+
 
 </style>
