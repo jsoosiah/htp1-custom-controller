@@ -13,22 +13,22 @@
   const NUM_SAMPLES = 128;
 
   const COLOR_PALLETE = [
-    [147,208,226],
-    [229,174,174],
-    [141,202,189],
-    [216,191,227],
-    [167,197,159],
-    [136,174,225],
-    [222,196,159],
-    [149,187,239],
-    [208,234,197],
-    [169,174,206],
-    [195,240,237],
-    [232,211,202],
-    [151,177,171],
-    [192,206,230],
-    [178,188,166],
-    [178,204,198]
+    [30,144,255],   // DodgerBlue
+    [255,69,58],    // Red
+    [52,199,89],    // Green
+    [255,149,0],    // Orange
+    [175,82,222],   // Purple
+    [0,199,190],    // Teal
+    [255,59,48],    // SystemRed
+    [90,200,250],   // LightBlue
+    [255,204,0],    // Yellow
+    [88,86,214],    // Indigo
+    [255,45,85],    // Pink
+    [50,215,75],    // SystemGreen
+    [191,90,242],   // SystemPurple
+    [64,200,224],   // Cyan
+    [255,159,10],   // SystemOrange
+    [162,132,94]    // Brown
   ];
 
   function getBorderColor(index) {
@@ -98,8 +98,8 @@
                     labelString: 'Gain (dB)'
                   },
                   ticks: {
-                    suggestedMin: -5,
-                    suggestedMax: 5,
+                    suggestedMin: -12,
+                    suggestedMax: 12,
                   },
                   gridLines: {
                     color: gridLinesColor.value,
@@ -108,24 +108,22 @@
                 xAxes: [{
                   type: 'logarithmic',
                   ticks: {
-                    min: 20,
+                    min: 10,
                     max: 20000,
                     callback: function(value, index) {
-                      let formatted = value.toLocaleString('en-US');
-                      let parts = formatted.split(',');
+                      // Define which frequencies to show
+                      const showFrequencies = [10, 20, 30, 40, 60, 80, 100, 200, 400, 600, 1000, 2000, 4000, 6000, 8000, 10000, 20000];
                       
-                      if ((Math.floor(index / 9)) % 2 === 0) {
-                        if (index % 2 !== 0) {
-                          return '';
-                        }
-                      } else {
-                        if (index % 2 === 0) {
-                          return '';
-                        }
-                        
+                      // Only show labels for specified frequencies
+                      if (!showFrequencies.includes(value)) {
+                        return '';
                       }
-
-                      return parts[0] + (parts.length > 1 ? 'k':'');
+                      
+                      // Format the label
+                      if (value >= 1000) {
+                        return (value / 1000) + 'k';
+                      }
+                      return value.toString();
                     },
                     minRotation: 0,
                     maxRotation: 50
@@ -152,7 +150,45 @@
                 }
               },
               legend: {
-                position: 'bottom'
+                position: 'bottom',
+                labels: {
+                  generateLabels: function(chart) {
+                    return chart.data.datasets.map((ds, i) => {
+                      const meta = chart.getDatasetMeta(i);
+                      const hidden = meta.hidden;
+                      return {
+                        text: ds.label,
+                        fillStyle: hidden ? 'rgba(190,190,190,0.20)' : ds.backgroundColor,
+                        strokeStyle: hidden ? 'rgba(190,190,190,0.20)' : ds.borderColor,
+                        lineWidth: ds.borderWidth,
+                        datasetIndex: i,
+                        hidden: false,
+                      };
+                    });
+                  }
+                },
+                onClick: function(e, legendItem) {
+                  const index = legendItem.datasetIndex;
+                  const chart = myChart.chart;
+                  const datasets = chart.config.data.datasets;
+                  const allOthersHidden = datasets.every((ds, i) => {
+                    if (i === index) return true;
+                    return chart.getDatasetMeta(i).hidden;
+                  });
+
+                  if (allOthersHidden) {
+                    // solo on or all others already hidden -> show all
+                    datasets.forEach((ds, i) => {
+                      chart.getDatasetMeta(i).hidden = false;
+                    });
+                  } else {
+                    // solo: hide all others
+                    datasets.forEach((ds, i) => {
+                      chart.getDatasetMeta(i).hidden = i !== index;
+                    });
+                  }
+                  chart.update();
+                }
               }
             }
           });
@@ -193,7 +229,7 @@
           pointBackgroundColor: 'rgba(0,0,0,0)',
           pointBorderColor: 'rgba(0,0,0,0)',
           pointRadius: selected ? 32 : 16,
-          borderWidth: selected ? 8 : 2,
+          borderWidth: selectedOnlyMode.value ? 2 : (selected ? 8 : 2),
         }
       }
 
@@ -208,6 +244,22 @@
 
         return singleSeriesData;
       }
+
+      const selectedOnlyMode = ref(false);
+
+      watch(
+        () => props.activeChannels,
+        (newChannels, oldChannels) => {
+          if (myChart && !isEqual(newChannels, oldChannels)) {
+            // Channel list changed (e.g. pre/post switch), reinitialize chart
+            const chart = myChart.chart;
+            chart.config.data.datasets.length = 0;
+            updateChartData(chart.config.data.datasets);
+            chart.update();
+            localPeqSlots.value = cloneDeep(props.peqSlots);
+          }
+        }
+      )
 
       watch(
         props,
@@ -228,6 +280,19 @@
         },
         {
           deep: true
+        }
+      )
+
+      watch(
+        () => props.selectedChannel,
+        (newIndex) => {
+          if (selectedOnlyMode.value && myChart) {
+            const chart = myChart.chart;
+            chart.config.data.datasets.forEach((ds, i) => {
+              chart.getDatasetMeta(i).hidden = i !== newIndex;
+            });
+            chart.update();
+          }
         }
       )
 
@@ -263,6 +328,12 @@
             myChart.options.scales.xAxes[0].gridLines.color = gridLinesColor.value;
             updateChartData(myChart.chart.config.data.datasets, channelsToUpdate);
             myChart.chart.update();
+            if (selectedOnlyMode.value) {
+              myChart.chart.config.data.datasets.forEach((ds, i) => {
+                myChart.chart.getDatasetMeta(i).hidden = i !== props.selectedChannel;
+              });
+              myChart.chart.update();
+            }
          }
       }
 
@@ -347,6 +418,28 @@
                 a1 =    2 * ((A - 1) - (A + 1) * cosw0);
                 a2 =         (A + 1) - (A - 1) * cosw0 - 2 * Math.sqrt(A) * alpha;
                 break;
+
+              case 4: // LPF (2nd order Butterworth lowpass)
+                alpha = sinw0 / (2 * Q);
+
+                b0 = (1 - cosw0) / 2;
+                b1 =  1 - cosw0;
+                b2 = (1 - cosw0) / 2;
+                a0 =  1 + alpha;
+                a1 = -2 * cosw0;
+                a2 =  1 - alpha;
+                break;
+
+              case 5: // HPF (2nd order Butterworth highpass)
+                alpha = sinw0 / (2 * Q);
+
+                b0 =  (1 + cosw0) / 2;
+                b1 = -(1 + cosw0);
+                b2 =  (1 + cosw0) / 2;
+                a0 =   1 + alpha;
+                a1 =  -2 * cosw0;
+                a2 =   1 - alpha;
+                break;
             }
 
             // normalize
@@ -358,8 +451,7 @@
 
 
             for (let i = 0; i < len; i++) {
-              let ix = convertLogScale(i, 0, len);
-              let f = ntrp(ix, 0, len, 0, sampleRate / 2);
+              let f = 10 * Math.pow(2000, i / (len - 1)); // log scaling 10 Hz - 20000 Hz
               let phi = Math.pow((Math.sin(2.0 * Math.PI * f / (2.0 * sampleRate))), 2.0);
               let r = (Math.pow(b0 + b1 + b2, 2.0) - 4.0 * (b0 * b1 + 4.0 * b0 * b2 + b1 * b2) * phi + 16.0 * b0 * b2 * phi * phi) / (Math.pow(1.0 + a1 + a2, 2.0) - 4.0 * (a1 + 4.0 * a2 + a1 * a2) * phi + 16.0 * a2 * phi * phi);
               r = (r < 0)?0:r;
@@ -372,28 +464,15 @@
               if(!isFinite(r) || isNaN(r)) {
                 r = -100;
               }
-              // let w = Math.exp(Math.log(1 / 0.0001) * i / (len - 1)) * 0.0001 * Math.PI;  // 0.0001 to 1, times pi, log scale
-              // let w = i / (len - 1) * Math.PI; // 0 to pi, linear scale
-              // let phi = Math.pow(Math.sin(w/2), 2);
-              // let y = Math.log(Math.pow(a0+a1+a2, 2) - 4*(a0*a1 + 4*a0*a2 + a1*a2)*phi + 16*a0*a2*phi*phi) - Math.log(Math.pow(1+b1+b2, 2) - 4*(b1 + 4*b2 + b1*b2)*phi + 16*b2*phi*phi);
-              // y = y * 10 / Math.LN10;
+              // Clamp individual filter response floor to -60 dB
+              if (r < -60) r = -60;
 
+              // Accumulate bands and clamp combined response to -60 dB minimum
+              const accumulated = Math.max((tmpSeriesData.data[i].y) + r, -60);
 
-
-              // if (y == -Infinity) {
-              //   y = -200;
-              // }
-
-              // let x = Math.exp(Math.log(1 / 0.0001) * (i / (len - 1))) * 0.0001 * sampleRate * .5;
-
-              // if (x > 19) {
-                tmpSeriesData.data[i] = {
-                  // x: i / (len - 1) / 2 ,
-                  // x: i / (len - 1) * sampleRate / 2, 
-                  // x: x,
-                  // y: (tmpSeriesData.data[i].y) + y
+              tmpSeriesData.data[i] = {
                   x: f,
-                  y: (tmpSeriesData.data[i].y) + r
+                  y: accumulated
                 };
 
                 // console.log('?', i, f, r);
@@ -503,7 +582,31 @@
         return x;
       }
 
-      return { props, chartRef, options, gridLinesColor, exportData };
+      function showSelectedOnly(channelIndex) {
+        if (myChart) {
+          selectedOnlyMode.value = true;
+          const chart = myChart.chart;
+          chart.config.data.datasets.forEach((ds, i) => {
+            updateChartChannelActive(ds, props.activeChannels[i]);
+            chart.getDatasetMeta(i).hidden = i !== channelIndex;
+          });
+          chart.update();
+        }
+      }
+
+      function showAllChannels() {
+        if (myChart) {
+          selectedOnlyMode.value = false;
+          const chart = myChart.chart;
+          chart.config.data.datasets.forEach((ds, i) => {
+            updateChartChannelActive(ds, props.activeChannels[i]);
+            chart.getDatasetMeta(i).hidden = false;
+          });
+          chart.update();
+        }
+      }
+
+      return { props, chartRef, options, gridLinesColor, exportData, showSelectedOnly, showAllChannels };
     }
   }
 </script>
