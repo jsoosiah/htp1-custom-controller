@@ -10,8 +10,8 @@
       v-show="!dragEditorMode"
       ref="chartRef"
       :peq-slots="mso.peq?.slots || []"
-      :active-channels="activeChannels"
-      :selected-channel="selectedChannel"
+      :active-channels="visibleChannels"
+      :selected-channel="visibleSelectedChannel"
       :spk-name="spkNamePre"
       :dark-mode="darkMode"
     />
@@ -226,7 +226,7 @@
                 min="15" 
                 max="20000" 
                 step=".1" 
-                @change="({ type, target }) => { clearAllImports(); setPEQCenterFrequency(activeChannels[chanIndex], mso.peq?.currentpeqslot, target.value) }"
+                @change="({ type, target }) => { handleCenterFreq(activeChannels[chanIndex], mso.peq?.currentpeqslot, target.value) }"
                 @focus="setSelectedChannel(chanIndex, true)"
                 :disabled="mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].bypass === true || !peqEnabled"
               >
@@ -240,7 +240,7 @@
                 min="-99" 
                 max="20" 
                 step=".1" 
-                @change="({ type, target }) => { clearAllImports(); setPEQGain(activeChannels[chanIndex], mso.peq?.currentpeqslot, target.value) }"
+                @change="({ type, target }) => { handleGain(activeChannels[chanIndex], mso.peq?.currentpeqslot, target.value) }"
                 @focus="setSelectedChannel(chanIndex, true)"
                 v-show="!(mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].bypass === true && [3, 4, 5].includes(mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].preBypassFilterType) || [3, 4, 5].includes(mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].FilterType))"
               >
@@ -253,7 +253,7 @@
                 min=".1" 
                 max="10" 
                 step=".1" 
-                @change="({ type, target }) => { clearAllImports(); setPEQQuality(activeChannels[chanIndex], mso.peq?.currentpeqslot, target.value) }"
+                @change="({ type, target }) => { handleQ(activeChannels[chanIndex], mso.peq?.currentpeqslot, target.value) }"
                 @focus="setSelectedChannel(chanIndex, true)"
                 :disabled="mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].bypass === true || !peqEnabled"
                 v-if="!mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].bypass && mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].Q !== 0 || mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].bypass && mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].preBypassQ !== 0"
@@ -304,7 +304,7 @@
                 :button-text="`Bypass: ${mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].bypass ? 'on' : 'off'}`"
                 :state-on="mso.peq?.slots[mso.peq?.currentpeqslot].channels[activeChannels[chanIndex]].bypass === true"
                 :mute-button="true"
-                @btn-click="togglePEQBypass(activeChannels[chanIndex], mso.peq?.currentpeqslot)"
+                @btn-click="handleBypass(activeChannels[chanIndex], mso.peq?.currentpeqslot)"
               />
             </td>
           </tr>
@@ -570,6 +570,37 @@
     </template>
 
     <!-- channel groups -->
+    <div class="row mb-3">
+      <div class="col-12">
+        <label class="mb-1"><strong>Link Channels</strong></label>
+        <div class="d-flex flex-wrap" style="gap: 0.4rem;">
+          <div
+            v-for="channame in activeChannels"
+            :key="channame"
+            class="custom-control custom-checkbox"
+            style="min-width: 4rem;"
+          >
+            <input
+              :id="`link-sel-${channame}`"
+              type="checkbox"
+              class="custom-control-input"
+              :checked="linkSelectedChannels.includes(channame)"
+              @change="toggleLinkSelected(channame)"
+            >
+            <label
+              class="custom-control-label"
+              :for="`link-sel-${channame}`"
+            >
+              {{ spkNamePre(channame) }}
+            </label>
+          </div>
+        </div>
+        <div class="mt-2" style="display: flex; gap: 0.5rem;">
+          <button type="button" class="btn btn-sm btn-secondary" @click="linkSelectedChannels = [...activeChannels]">Select All</button>
+          <button type="button" class="btn btn-sm btn-secondary" @click="linkSelectedChannels = []">Unselect All</button>
+        </div>
+      </div>
+    </div>
     <template v-if="secretSettings">
       <h6>Channel Groups</h6>
       <div class="row mb-3">
@@ -875,6 +906,16 @@
       //   return getActiveChannels(mso.value.speakers?.groups);
       // });
 
+      const visibleChannels = computed(() => {
+        return activeChannels.value.filter(ch => channelVisible(ch));
+      });
+
+      const visibleSelectedChannel = computed(() => {
+        const selectedCh = activeChannels.value[selectedChannel.value];
+        const idx = visibleChannels.value.indexOf(selectedCh);
+        return idx >= 0 ? idx : 0;
+      });
+
       const selectableChannels = computed(() => {
         console.log('selectable',activeChannels)
         return activeChannels.value.filter((ch, index) => index !== selectedChannel.value);
@@ -883,6 +924,7 @@
       const selectedChannel = ref(0);
 
       const linkAllChannels = ref(false);
+      const linkSelectedChannels = ref([]); // Array of channel names to link together
       const showAllChannels = ref(true);
 
       const secretSettings = computed(() => window.location.href.includes('secret'));
@@ -895,17 +937,23 @@
 
       function onDragFreqUpdate(bandIndex, newFreq) {
         const chanName = activeChannels.value[selectedChannel.value];
-        setPEQCenterFrequency(chanName, bandIndex, newFreq);
+        for (const ch of getLinkedChannels(chanName)) {
+          setPEQCenterFrequency(ch, bandIndex, newFreq);
+        }
       }
 
       function onDragGainUpdate(bandIndex, newGain) {
         const chanName = activeChannels.value[selectedChannel.value];
-        setPEQGain(chanName, bandIndex, newGain);
+        for (const ch of getLinkedChannels(chanName)) {
+          setPEQGain(ch, bandIndex, newGain);
+        }
       }
 
       function onDragQUpdate(bandIndex, newQ) {
         const chanName = activeChannels.value[selectedChannel.value];
-        setPEQQuality(chanName, bandIndex, newQ);
+        for (const ch of getLinkedChannels(chanName)) {
+          setPEQQuality(ch, bandIndex, newQ);
+        }
       }
 
       function setSelectedChannel(chanNumber, skipLoader) {
@@ -1120,25 +1168,33 @@
         linkAllChannels.value = !linkAllChannels.value;
       }
 
-      function handleCenterFreq(channel, slot, centerFreq) {
-        clearAllImports(); 
-        if (linkAllChannels.value) {
-          for (const channame of activeChannels.value) {
-            setPEQCenterFrequency(channame, slot, centerFreq);
-          }
+      function toggleLinkSelected(channame) {
+        const idx = linkSelectedChannels.value.indexOf(channame);
+        if (idx === -1) {
+          linkSelectedChannels.value = [...linkSelectedChannels.value, channame];
         } else {
-          setPEQCenterFrequency(channel, slot, centerFreq);
+          linkSelectedChannels.value = linkSelectedChannels.value.filter(c => c !== channame);
+        }
+      }
+
+      // Returns channels to apply a change to: the primary channel plus any linked selected channels
+      function getLinkedChannels(channel) {
+        if (linkAllChannels.value) return activeChannels.value;
+        const linked = new Set([channel, ...linkSelectedChannels.value]);
+        return [...linked];
+      }
+
+      function handleCenterFreq(channel, slot, centerFreq) {
+        clearAllImports();
+        for (const channame of getLinkedChannels(channel)) {
+          setPEQCenterFrequency(channame, slot, centerFreq);
         }
       }
 
       function handleGain(channel, slot, gain) {
-        clearAllImports(); 
-        if (linkAllChannels.value) {
-          for (const channame of activeChannels.value) {
-            setPEQGain(channame, slot, gain);
-          }
-        } else {
-          setPEQGain(channel, slot, gain);
+        clearAllImports();
+        for (const channame of getLinkedChannels(channel)) {
+          setPEQGain(channame, slot, gain);
         }
       }
 
@@ -1149,14 +1205,9 @@
       });
 
       function handleQInternal(channel, slot, q) {
-        console.log("handleQInternal", channel, slot, q);
-        clearAllImports(); 
-        if (linkAllChannels.value) {
-          for (const channame of activeChannels.value) {
-            setPEQQuality(channame, slot, q);
-          }
-        } else {
-          setPEQQuality(channel, slot, q);
+        clearAllImports();
+        for (const channame of getLinkedChannels(channel)) {
+          setPEQQuality(channame, slot, q);
         }
       }
 
@@ -1166,23 +1217,12 @@
         const filterTypeFloat = parseFloat(filterTypeStr);
         const filterType = parseInt(filterTypeFloat);
 
-        if (linkAllChannels.value) {
-          for (const channame of activeChannels.value) {
-            setPEQFilterType(channame, slot, filterType);
-            if (filterTypeFloat === 3.1) {
-              setPEQQuality(channame, slot, 0);
-            }
-            else if (filterTypeFloat === 3.2 && mso?.value?.peq?.slots[slot].channels[channel].Q === 0) {
-              setPEQQuality(channame, slot, 1.0); // TODO
-            }
-          }
-        } else {
-          setPEQFilterType(channel, slot, filterType);
+        for (const channame of getLinkedChannels(channel)) {
+          setPEQFilterType(channame, slot, filterType);
           if (filterTypeFloat === 3.1) {
-            setPEQQuality(channel, slot, 0);
-          }
-          else if (filterTypeFloat === 3.2 && mso?.value?.peq?.slots[slot].channels[channel].Q === 0) {
-            setPEQQuality(channel, slot, 1.0); // TODO
+            setPEQQuality(channame, slot, 0);
+          } else if (filterTypeFloat === 3.2 && mso?.value?.peq?.slots[slot].channels[channame].Q === 0) {
+            setPEQQuality(channame, slot, 1.0);
           }
         }
       }
@@ -1201,13 +1241,9 @@
       }
 
       function handleBypass(channel, slot) {
-        clearAllImports(); 
-        if (linkAllChannels.value) {
-          for (const channame of activeChannels.value) {
-            togglePEQBypass(channame, slot);
-          }
-        } else {
-          togglePEQBypass(channel, slot); 
+        clearAllImports();
+        for (const channame of getLinkedChannels(channel)) {
+          togglePEQBypass(channame, slot);
         }
       }
 
@@ -1336,10 +1372,12 @@
 
       function resetSingleBandForChannel(channel, slot) {
         clearAllImports();
-        setPEQCenterFrequency(channel, slot, 100);
-        setPEQGain(channel, slot, 0);
-        setPEQQuality(channel, slot, 1);
-        setPEQFilterType(channel, slot, 0);
+        for (const channame of getLinkedChannels(channel)) {
+          setPEQCenterFrequency(channame, slot, 100);
+          setPEQGain(channame, slot, 0);
+          setPEQQuality(channame, slot, 1);
+          setPEQFilterType(channame, slot, 0);
+        }
       }
 
       function toggleShowAdvancedPeqOptionsDialog() {
@@ -1347,7 +1385,7 @@
       }
 
       return {
-        ...useMso(), activeChannels, spkNamePre, selectedChannel, setSelectedChannel, selectableChannels,
+        ...useMso(), activeChannels, visibleChannels, visibleSelectedChannel, spkNamePre, selectedChannel, setSelectedChannel, selectableChannels,
         bandHasModifications, channelHasModifications, filterTypes, tabLoaded, setSelectedBand, 
         downloadSingleChannelConfig, downloadSingleBandConfig, downloadFullConfig, 
         channelImportFileSelected, bandImportFileSelected, fullImportFileSelected, channelImportValidationWarnings,
@@ -1359,7 +1397,7 @@
         finalSetFrequency, finalSetGain, finalSetQ, localSlider,
         eqGroupBy, setGroupBy,
         cloneSelectedChannelPEQToTargetChannels, targetCloneChannels, 
-        secretSettings, linkAllChannels, toggleLinkAllChannels,
+        secretSettings, linkAllChannels, toggleLinkAllChannels, linkSelectedChannels, toggleLinkSelected,
         handleCenterFreq, handleGain, handleQ, handleFilterType, handleBypass, darkMode, chartRef,
         downloadSingleChannelTargetCurve, peqWarning, peqEnabled, warningMessagePeq, channelInvalid, bandInvalid,
         diracErrorState, channelVisible, isPeqPre, getFilterTypeFloat,

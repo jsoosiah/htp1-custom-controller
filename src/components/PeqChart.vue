@@ -248,6 +248,20 @@
       const selectedOnlyMode = ref(false);
 
       watch(
+        () => props.activeChannels,
+        (newChannels, oldChannels) => {
+          if (myChart && !isEqual(newChannels, oldChannels)) {
+            // Channel list changed (e.g. pre/post switch), reinitialize chart
+            const chart = myChart.chart;
+            chart.config.data.datasets.length = 0;
+            updateChartData(chart.config.data.datasets);
+            chart.update();
+            localPeqSlots.value = cloneDeep(props.peqSlots);
+          }
+        }
+      )
+
+      watch(
         props,
         newProps => {
           if (newProps.peqSlots) {
